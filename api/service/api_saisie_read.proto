@@ -204,6 +204,7 @@ message Person {
   optional string sosa_nb = 52;
   repeated Event events = 46;
   repeated EventWitness events_witnesses = 47;
+  required bool has_historic = 54;
 }
 
 message Family {

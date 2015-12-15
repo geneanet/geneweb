@@ -496,6 +496,24 @@ value get_sosa_person conf base p =
   [ Not_found -> Num.zero ]
 ;
 
+(* ********************************************************************** *)
+(*  [Fonc] has_history : config -> string -> bool                         *)
+(** [Description] : Indique si l'individu a été modifiée.
+    [Args] :
+      - conf   : configuration de la base
+      - base   : arbre
+      - p      : person
+      - p_auth : indique si l'utilisateur est authentifié
+    [Retour] : Vrai si la personne a été modifiée, Faux sinon.
+    [Rem] : Exporté en clair hors de ce module.                           *)
+(* ********************************************************************** *)
+value has_history conf base p p_auth =
+  let fn = sou base (get_first_name p) in
+  let sn = sou base (get_surname p) in
+  let occ = get_occ p in
+  let person_file = History_diff.history_file fn sn occ in
+  p_auth && (Sys.file_exists (History_diff.history_path conf person_file))
+;
 
 (* ******************************************************************** *)
 (*  [Fonc] get_single_sosa : config -> base -> person -> Num.t          *)
@@ -3333,12 +3351,7 @@ and eval_bool_person_field conf base env (p, p_auth) =
   | "has_first_names_aliases" ->
       if not p_auth && (is_hide_names conf p) then False
       else get_first_names_aliases p <> []
-  | "has_history" ->
-      let fn = sou base (get_first_name p) in
-      let sn = sou base (get_surname p) in
-      let occ = get_occ p in
-      let person_file = History_diff.history_file fn sn occ in
-      p_auth && (Sys.file_exists (History_diff.history_path conf person_file))
+  | "has_history" -> has_history conf base p p_auth
   | "has_image" -> Util.has_image conf base p
   | "has_nephews_or_nieces" -> has_nephews_or_nieces conf base p
   | "has_nobility_titles" -> p_auth && nobtit conf base p <> []

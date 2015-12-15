@@ -44,13 +44,15 @@ value first_possible_duplication : base -> Adef.iper -> excl_dup -> dup;
 
 
 (* Ajout pour l'API *)
-value nobility_titles_list : 
-  config -> base -> person -> 
+value nobility_titles_list :
+  config -> base -> person ->
     list (int * Def.gen_title_name istr * istr * list istr *
        list (option Adef.date * option Adef.date));
 
-value string_of_title : 
-  config -> base -> string -> person -> 
+value has_history : config -> base -> person -> bool -> bool;
+
+value string_of_title :
+  config -> base -> string -> person ->
     (int * Def.gen_title_name istr * istr * list istr *
        list (option Def.date * option Def.date)) -> string;
 
@@ -59,7 +61,7 @@ type event_name =
   | Fevent of Def.gen_fam_event_name istr ]
 ;
 
-value events_list : 
-  config -> base -> person -> 
+value events_list :
+  config -> base -> person ->
     list (event_name * Def.codate * istr * istr * istr *
             array (Def.iper * Def.witness_kind) * option Def.iper);

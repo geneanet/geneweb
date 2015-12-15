@@ -921,6 +921,7 @@ let pers_to_piqi_person conf base p =
       sosa_nb = None;
       events = [];
       events_witnesses = [];
+      has_history = false;
     })
   else
     let base_prefix = conf.command in
@@ -1274,6 +1275,7 @@ let pers_to_piqi_person conf base p =
       then true
       else false
     in
+    let has_history = Perso.has_history conf base p p_auth in
     let titles = Perso.nobility_titles_list conf base p in
     let titles_links =
       let tmp_conf = {(conf) with cancel_links = false} in
@@ -1606,6 +1608,7 @@ let pers_to_piqi_person conf base p =
       sosa_nb = sosa_nb;
       events = events;
       events_witnesses = events_witnesses;
+      has_history = has_history;
     })
 ;;
 
