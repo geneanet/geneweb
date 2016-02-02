@@ -117,13 +117,6 @@ let code_french_date conf d m y =
   s ^ (if s = "" then "" else " ") ^ Date.code_french_year conf y
 ;;
 
-let string_of_french_dmy conf d =
-  code_french_date conf d.day d.month d.year
-;;
-
-let string_of_hebrew_dmy conf d =
-  Date.code_hebrew_date conf d.day d.month d.year
-;;
 
 let encode_dmy conf d m y is_long =
   let date = if d != 0 then string_of_int d else "" in
@@ -245,18 +238,16 @@ let string_of_date_and_conv ?(is_long = false) conf d =
       (date_conv, date, Some `julian)
   | Dgreg (d, Dfrench) ->
       let d1 = Calendar.french_of_gregorian d in
-      let date = string_of_french_dmy conf d1 in
-      (match d.prec with
-      | Sure -> (gregorian_precision conf d is_long, date, Some `french)
-      | About | Before | After | Maybe | OrYear _ | YearInt _ ->
-          (date, "", Some `french))
+      let date_greg = Date.string_of_dmy conf d in
+      let date = Date.string_of_on_french_dmy conf d1
+      in
+      (date, date_greg, Some `french)
   | Dgreg (d, Dhebrew) ->
       let d1 = Calendar.hebrew_of_gregorian d in
-      let date = string_of_hebrew_dmy conf d1 in
-      (match d.prec with
-      | Sure -> (gregorian_precision conf d is_long, date, Some `hebrew)
-      | About | Before | After | Maybe | OrYear _ | YearInt _ ->
-          (date, "", Some `hebrew))
+      let date_greg = Date.string_of_dmy conf d in
+      let date = Date.string_of_on_hebrew_dmy conf d1
+      in
+      (date, date_greg, Some `hebrew)
   | Dtext t -> ("(" ^ string_with_macros conf [] t ^ ")", "", None)
 ;;
 
