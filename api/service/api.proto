@@ -128,6 +128,7 @@ message Person {
   required bool ascend = 20;
   required bool descend = 21;
   required bool visible_for_visitors = 22;
+  required string baseprefix = 23;
 }
 
 message FullPerson {
@@ -166,6 +167,7 @@ message FullPerson {
   required bool visible_for_visitors = 35;
   optional int32 parents = 36;
   repeated InternalInt32 families = 37;
+  required string baseprefix = 38;
 }
 
 message FullFamily {

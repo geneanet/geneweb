@@ -826,6 +826,7 @@ let empty_piqi_person_light conf ref_person base_loop =
     ascend = false;
     descend = false;
     visible_for_visitors = false;
+    baseprefix = conf.command;
   })
 ;;
 
@@ -880,6 +881,7 @@ let empty_piqi_person_full conf ref_person base_loop =
     visible_for_visitors = false;
     parents = None;
     families = [];
+    baseprefix = conf.command;
   })
 ;;
 
@@ -1211,6 +1213,8 @@ let pers_to_piqi_person_light conf base p base_loop compute_sosa load_img =
       (fun c -> Array.length (get_children c) > 0)
       (List.map (foi base) faml)
   in
+  let baseprefix = conf.command
+  in
   let visible = is_visible conf base p in
   M.Person.({
     sosa = sosa_p;
@@ -1235,6 +1239,7 @@ let pers_to_piqi_person_light conf base p base_loop compute_sosa load_img =
     ascend = ascend;
     descend = descend;
     visible_for_visitors = visible;
+    baseprefix = baseprefix;
   })
 ;;
 
@@ -1460,6 +1465,8 @@ let pers_to_piqi_person_full conf base p base_loop compute_sosa load_img =
      | Some ifam -> Some (Int32.of_int (Adef.int_of_ifam ifam))
      | None -> None
   in
+  let baseprefix = conf.command
+  in
   let visible = is_visible conf base p in
   M.Full_person.({
     sosa = sosa_p;
@@ -1497,6 +1504,7 @@ let pers_to_piqi_person_full conf base p base_loop compute_sosa load_img =
     visible_for_visitors = visible;
     parents = parents;
     families = families;
+    baseprefix = baseprefix;
   })
 ;;
 
