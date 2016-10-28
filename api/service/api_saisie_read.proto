@@ -499,3 +499,14 @@ message Error {
 message NbAncestors {
   required int32 nb = 1;
 }
+
+message ConfLine {
+  required string key = 1;
+  required string value = 2;
+}
+
+message ConfBase {
+  repeated ConfLine line = 1;
+  repeated string wizards = 2;
+  repeated string friends = 3;
+}
