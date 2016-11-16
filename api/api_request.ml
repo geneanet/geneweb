@@ -111,6 +111,7 @@ value family_m conf base =
   | Some "API_GRAPH_TREE_V2" -> Api_saisie_read.print_graph_tree_v2 conf base
   | Some "API_PERSON_TREE" -> Api_saisie_read.print_person_tree conf base
   | Some "API_FICHE_PERSON" -> Api_saisie_read.print_fiche_person conf base
+  | Some "API_CONF_BASE" -> Api_saisie_read.print_conf_base conf base
 
   | Some "API_AUTO_COMPLETE" when conf.wizard -> Api_saisie_write.print_auto_complete conf base
   | Some "API_GET_CONFIG" when conf.wizard -> Api_saisie_write.print_config conf base
