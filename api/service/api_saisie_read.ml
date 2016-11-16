@@ -3947,3 +3947,42 @@ let print_graph_tree_v2 conf base =
   let identifier_person = params.Mread.Graph_tree_params.identifier_person in
   print_from_identifier_person conf base print_result_graph_tree_v2 identifier_person
 ;;
+
+(* ******************************************************************** *)
+(*  [Fonc] get_friend_usernames : string -> string list                 *)
+(** [Description] : Retourne une liste de username.
+    [Args] :
+      - string_file : String du fichier wizard ou friend.               *)
+(* ******************************************************************** *)
+let read_usernames string_file =
+  let regexp_usernames = Str.regexp ":[a-zA-Z0-9]+:\n" in
+  let usernames_list = Str.split regexp_usernames string_file in
+  (usernames_list)
+;;
+
+(* ******************************************************************** *)
+(*  [Fonc] read_conf_line : string -> ConfLine list                     *)
+(** [Description] : Retourne une liste d'objets ConfLine. Chaque objet
+        ConfLine concerne une ligne de la configuration avec la clé et
+        sa valeur.
+    [Args] :
+      - string_file : String du fichier de configuration.               *)
+(* ******************************************************************** *)
+let read_conf_line string_file =
+  let regexp_conf_line = Str.regexp "\n" in
+  let line_list = Str.split regexp_conf_line string_file in
+  let key_value = [] in
+  let rec separate_key_value l key_value =
+    match l with
+      | [] -> key_value
+      | data :: l ->
+        let regexp_key_value = Str.regexp "=" in
+        let splitted_line = Str.split regexp_key_value data in
+        let conf_line = Mread.default_conf_line() in
+        conf_line.Mread.Conf_line.key <- List.nth splitted_line 0;
+        conf_line.Mread.Conf_line.value <- List.nth splitted_line 1;
+        let concat_key_value = key_value@[conf_line] in
+        separate_key_value l concat_key_value
+  in
+  separate_key_value line_list key_value
+;;
