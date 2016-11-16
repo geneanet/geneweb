@@ -3949,6 +3949,21 @@ let print_graph_tree_v2 conf base =
 ;;
 
 (* ******************************************************************** *)
+(*  [Fonc] construct_conf_base : base_file -> wizards -> friends        *)
+(*        -> ConfBase                                                   *)
+(** [Description] : Construit l'objet piqi conf_base.
+    [Args] :
+      - conf : configuration de la base                                 *)
+(* ******************************************************************** *)
+let construct_conf_base base_file wizards friends =
+  let conf_base = Mread.default_conf_base() in
+    conf_base.Mread.Conf_base.line <- base_file;
+    conf_base.Mread.Conf_base.wizards <- wizards;
+    conf_base.Mread.Conf_base.friends <- friends;
+  conf_base
+;;
+
+(* ******************************************************************** *)
 (*  [Fonc] get_friend_usernames : string -> string list                 *)
 (** [Description] : Retourne une liste de username.
     [Args] :
@@ -3985,4 +4000,31 @@ let read_conf_line string_file =
         separate_key_value l concat_key_value
   in
   separate_key_value line_list key_value
+;;
+
+
+(* ******************************************************************** *)
+(*  [Fonc] print_conf_base : config -> base -> unit                     *)
+(** [Description] : Retourne les configurations d'une base.
+    [Args] :
+      - conf : configuration de la base
+      - base : base de données                                          *)
+(* ******************************************************************** *)
+let print_conf_base conf base =
+  (* conf file *)
+  let fname = Util.base_path [] (conf.bname ^ ".gwf") in
+  let base_file = read_file fname in
+  let base_file = read_conf_line base_file in
+  (* fichier friend *)
+  let fname = Util.base_path [] (conf.bname ^ ".gwb/friend") in
+  let friend_file = read_file fname in
+  let friends = read_usernames friend_file in
+  (* fichier wizard *)
+  let fname = Util.base_path [] (conf.bname ^ ".gwb/wizard") in
+  let wizard_file = read_file fname in
+  let wizards = read_usernames wizard_file in
+  (* Creation de l'objet ConfBase *)
+  let base_conf = construct_conf_base base_file wizards friends in
+  let data = Mext_read.gen_conf_base base_conf in
+  print_result conf data
 ;;
