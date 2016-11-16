@@ -3939,3 +3939,20 @@ value real_nb_of_persons conf base =
         }
       with [ _ -> Gwdb.nb_of_persons base ] ]
 ;
+
+(* ******************************************************************** *)
+(*  [Fonc] read_file : string -> string                                 *)
+(** [Description] : Lit un fichier puis le retourne sous format string.
+    [Args] :
+      - file_path : chemin du fichier                                   *)
+(* ******************************************************************** *)
+value rec read_file file_path =
+  if Sys.file_exists file_path then do {
+    let ic = open_in file_path in
+    let n = in_channel_length ic in
+    let s = String.create n in
+    really_input ic s 0 n;
+    close_in ic;
+    s
+  } else ""
+;
