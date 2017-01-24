@@ -7,15 +7,20 @@ let _ = Piqirun_ext.init_piqi piqi
 let _dmy_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/dmy"
 let _date_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/date"
 let _witness_event_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/witness-event"
+let _witness_fiche_event_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/witness-fiche-event"
 let _event_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/event"
+let _fiche_event_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/fiche-event"
 let _person_tree_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/person-tree"
 let _simple_person_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/simple-person"
 let _relation_person_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/relation-person"
+let _relation_fiche_person_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/relation-fiche-person"
 let _event_witness_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/event-witness"
+let _event_fiche_witness_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/event-fiche-witness"
 let _person_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/person"
 let _person_type_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/person-type"
 let _fiche_person_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/fiche-person"
 let _family_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/family"
+let _fiche_family_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/fiche-family"
 let _index_person_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/index-person"
 let _node_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/node"
 let _edge_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/edge"
@@ -60,10 +65,20 @@ let parse_witness_event ?opts x (format :Piqirun_ext.input_format) =
   let buf = Piqirun.init_from_string x_pb in
   Api_saisie_read_piqi.parse_witness_event buf
 
+let parse_witness_fiche_event ?opts x (format :Piqirun_ext.input_format) =
+  let x_pb = Piqirun_ext.convert _witness_fiche_event_piqi_type format `pb x ?opts in
+  let buf = Piqirun.init_from_string x_pb in
+  Api_saisie_read_piqi.parse_witness_fiche_event buf
+
 let parse_event ?opts x (format :Piqirun_ext.input_format) =
   let x_pb = Piqirun_ext.convert _event_piqi_type format `pb x ?opts in
   let buf = Piqirun.init_from_string x_pb in
   Api_saisie_read_piqi.parse_event buf
+
+let parse_fiche_event ?opts x (format :Piqirun_ext.input_format) =
+  let x_pb = Piqirun_ext.convert _fiche_event_piqi_type format `pb x ?opts in
+  let buf = Piqirun.init_from_string x_pb in
+  Api_saisie_read_piqi.parse_fiche_event buf
 
 let parse_person_tree ?opts x (format :Piqirun_ext.input_format) =
   let x_pb = Piqirun_ext.convert _person_tree_piqi_type format `pb x ?opts in
@@ -80,10 +95,20 @@ let parse_relation_person ?opts x (format :Piqirun_ext.input_format) =
   let buf = Piqirun.init_from_string x_pb in
   Api_saisie_read_piqi.parse_relation_person buf
 
+let parse_relation_fiche_person ?opts x (format :Piqirun_ext.input_format) =
+  let x_pb = Piqirun_ext.convert _relation_fiche_person_piqi_type format `pb x ?opts in
+  let buf = Piqirun.init_from_string x_pb in
+  Api_saisie_read_piqi.parse_relation_fiche_person buf
+
 let parse_event_witness ?opts x (format :Piqirun_ext.input_format) =
   let x_pb = Piqirun_ext.convert _event_witness_piqi_type format `pb x ?opts in
   let buf = Piqirun.init_from_string x_pb in
   Api_saisie_read_piqi.parse_event_witness buf
+
+let parse_event_fiche_witness ?opts x (format :Piqirun_ext.input_format) =
+  let x_pb = Piqirun_ext.convert _event_fiche_witness_piqi_type format `pb x ?opts in
+  let buf = Piqirun.init_from_string x_pb in
+  Api_saisie_read_piqi.parse_event_fiche_witness buf
 
 let parse_person ?opts x (format :Piqirun_ext.input_format) =
   let x_pb = Piqirun_ext.convert _person_piqi_type format `pb x ?opts in
@@ -104,6 +129,11 @@ let parse_family ?opts x (format :Piqirun_ext.input_format) =
   let x_pb = Piqirun_ext.convert _family_piqi_type format `pb x ?opts in
   let buf = Piqirun.init_from_string x_pb in
   Api_saisie_read_piqi.parse_family buf
+
+let parse_fiche_family ?opts x (format :Piqirun_ext.input_format) =
+  let x_pb = Piqirun_ext.convert _fiche_family_piqi_type format `pb x ?opts in
+  let buf = Piqirun.init_from_string x_pb in
+  Api_saisie_read_piqi.parse_fiche_family buf
 
 let parse_index_person ?opts x (format :Piqirun_ext.input_format) =
   let x_pb = Piqirun_ext.convert _index_person_piqi_type format `pb x ?opts in
@@ -256,10 +286,20 @@ let gen_witness_event ?opts x (format :Piqirun_ext.output_format) =
   let x_pb = Piqirun.to_string buf in
   Piqirun_ext.convert _witness_event_piqi_type `pb format x_pb ?opts
 
+let gen_witness_fiche_event ?opts x (format :Piqirun_ext.output_format) =
+  let buf = Api_saisie_read_piqi.gen_witness_fiche_event x in
+  let x_pb = Piqirun.to_string buf in
+  Piqirun_ext.convert _witness_fiche_event_piqi_type `pb format x_pb ?opts
+
 let gen_event ?opts x (format :Piqirun_ext.output_format) =
   let buf = Api_saisie_read_piqi.gen_event x in
   let x_pb = Piqirun.to_string buf in
   Piqirun_ext.convert _event_piqi_type `pb format x_pb ?opts
+
+let gen_fiche_event ?opts x (format :Piqirun_ext.output_format) =
+  let buf = Api_saisie_read_piqi.gen_fiche_event x in
+  let x_pb = Piqirun.to_string buf in
+  Piqirun_ext.convert _fiche_event_piqi_type `pb format x_pb ?opts
 
 let gen_person_tree ?opts x (format :Piqirun_ext.output_format) =
   let buf = Api_saisie_read_piqi.gen_person_tree x in
@@ -276,10 +316,20 @@ let gen_relation_person ?opts x (format :Piqirun_ext.output_format) =
   let x_pb = Piqirun.to_string buf in
   Piqirun_ext.convert _relation_person_piqi_type `pb format x_pb ?opts
 
+let gen_relation_fiche_person ?opts x (format :Piqirun_ext.output_format) =
+  let buf = Api_saisie_read_piqi.gen_relation_fiche_person x in
+  let x_pb = Piqirun.to_string buf in
+  Piqirun_ext.convert _relation_fiche_person_piqi_type `pb format x_pb ?opts
+
 let gen_event_witness ?opts x (format :Piqirun_ext.output_format) =
   let buf = Api_saisie_read_piqi.gen_event_witness x in
   let x_pb = Piqirun.to_string buf in
   Piqirun_ext.convert _event_witness_piqi_type `pb format x_pb ?opts
+
+let gen_event_fiche_witness ?opts x (format :Piqirun_ext.output_format) =
+  let buf = Api_saisie_read_piqi.gen_event_fiche_witness x in
+  let x_pb = Piqirun.to_string buf in
+  Piqirun_ext.convert _event_fiche_witness_piqi_type `pb format x_pb ?opts
 
 let gen_person ?opts x (format :Piqirun_ext.output_format) =
   let buf = Api_saisie_read_piqi.gen_person x in
@@ -300,6 +350,11 @@ let gen_family ?opts x (format :Piqirun_ext.output_format) =
   let buf = Api_saisie_read_piqi.gen_family x in
   let x_pb = Piqirun.to_string buf in
   Piqirun_ext.convert _family_piqi_type `pb format x_pb ?opts
+
+let gen_fiche_family ?opts x (format :Piqirun_ext.output_format) =
+  let buf = Api_saisie_read_piqi.gen_fiche_family x in
+  let x_pb = Piqirun.to_string buf in
+  Piqirun_ext.convert _fiche_family_piqi_type `pb format x_pb ?opts
 
 let gen_index_person ?opts x (format :Piqirun_ext.output_format) =
   let buf = Api_saisie_read_piqi.gen_index_person x in
@@ -452,10 +507,20 @@ let print_witness_event ?opts x =
 let prerr_witness_event ?opts x =
   Pervasives.prerr_endline (gen_witness_event x `piq ?opts)
 
+let print_witness_fiche_event ?opts x =
+  Pervasives.print_endline (gen_witness_fiche_event x `piq ?opts)
+let prerr_witness_fiche_event ?opts x =
+  Pervasives.prerr_endline (gen_witness_fiche_event x `piq ?opts)
+
 let print_event ?opts x =
   Pervasives.print_endline (gen_event x `piq ?opts)
 let prerr_event ?opts x =
   Pervasives.prerr_endline (gen_event x `piq ?opts)
+
+let print_fiche_event ?opts x =
+  Pervasives.print_endline (gen_fiche_event x `piq ?opts)
+let prerr_fiche_event ?opts x =
+  Pervasives.prerr_endline (gen_fiche_event x `piq ?opts)
 
 let print_person_tree ?opts x =
   Pervasives.print_endline (gen_person_tree x `piq ?opts)
@@ -472,10 +537,20 @@ let print_relation_person ?opts x =
 let prerr_relation_person ?opts x =
   Pervasives.prerr_endline (gen_relation_person x `piq ?opts)
 
+let print_relation_fiche_person ?opts x =
+  Pervasives.print_endline (gen_relation_fiche_person x `piq ?opts)
+let prerr_relation_fiche_person ?opts x =
+  Pervasives.prerr_endline (gen_relation_fiche_person x `piq ?opts)
+
 let print_event_witness ?opts x =
   Pervasives.print_endline (gen_event_witness x `piq ?opts)
 let prerr_event_witness ?opts x =
   Pervasives.prerr_endline (gen_event_witness x `piq ?opts)
+
+let print_event_fiche_witness ?opts x =
+  Pervasives.print_endline (gen_event_fiche_witness x `piq ?opts)
+let prerr_event_fiche_witness ?opts x =
+  Pervasives.prerr_endline (gen_event_fiche_witness x `piq ?opts)
 
 let print_person ?opts x =
   Pervasives.print_endline (gen_person x `piq ?opts)
@@ -496,6 +571,11 @@ let print_family ?opts x =
   Pervasives.print_endline (gen_family x `piq ?opts)
 let prerr_family ?opts x =
   Pervasives.prerr_endline (gen_family x `piq ?opts)
+
+let print_fiche_family ?opts x =
+  Pervasives.print_endline (gen_fiche_family x `piq ?opts)
+let prerr_fiche_family ?opts x =
+  Pervasives.prerr_endline (gen_fiche_family x `piq ?opts)
 
 let print_index_person ?opts x =
   Pervasives.print_endline (gen_index_person x `piq ?opts)
