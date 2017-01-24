@@ -164,6 +164,10 @@ message WitnessEvent {
   required WitnessType witness_type = 1;
   required SimplePerson witness = 2;
 }
+message WitnessFicheEvent {
+  required WitnessType witness_type = 1;
+  required Person witness = 2;
+}
 
 message Event {
   required string name = 1;
@@ -180,6 +184,23 @@ message Event {
   optional string src = 10;
   optional SimplePerson spouse = 11;
   repeated WitnessEvent witnesses = 12;
+}
+
+message FicheEvent {
+  required string name = 1;
+  required EventType type = 2;
+  optional string date = 3;
+  optional string date_long = 4;
+  optional string date_raw = 13;
+  optional string date_conv = 5;
+  optional string date_conv_long = 14;
+  optional Calendar date_cal = 6;
+  optional string place = 7;
+  optional string reason = 8;
+  optional string note = 9;
+  optional string src = 10;
+  optional Person spouse = 11;
+  repeated WitnessFicheEvent witnesses = 12;
 }
 
 message PersonTree {
@@ -225,11 +246,21 @@ message RelationPerson {
   required RelationType r_type = 1;
   required SimplePerson person = 2;
 }
+message RelationFichePerson {
+  required RelationType r_type = 1;
+  required Person person = 2;
+}
 
 message EventWitness {
   required string event_witness_type = 1;
   required SimplePerson husband = 2;
   optional SimplePerson wife = 3;
+}
+
+message EventFicheWitness {
+  required string event_witness_type = 1;
+  required Person husband = 2;
+  optional Person wife = 3;
 }
 
 message Person {
@@ -321,6 +352,11 @@ message FichePerson {
   required bool visible_for_visitors = 21;
   optional Person father = 22;
   optional Person mother = 23;
+  repeated FicheFamily families = 24;
+  repeated RelationFichePerson related = 25;
+  repeated RelationFichePerson rparents = 26;
+  repeated EventFicheWitness events_witnesses = 27;
+  repeated FicheEvent events = 28;
 }
 
 message Family {
@@ -347,6 +383,32 @@ message Family {
   optional string notes = 16;
   optional string fsources = 17;
   repeated SimplePerson children = 18;
+}
+
+message FicheFamily {
+  required int32 index = 1;
+  required Person spouse = 2;
+  optional string marriage_date = 3;
+  optional string marriage_date_long = 4;
+  optional string marriage_date_raw = 19;
+  optional string marriage_date_conv = 5;
+  optional string marriage_date_conv_long = 21;
+  optional string marriage_date_text = 23;
+  optional Calendar marriage_date_cal = 6;
+  optional string marriage_place = 7;
+  optional string marriage_src = 8;
+  required MarriageType marriage_type = 9;
+  required DivorceType divorce_type = 10;
+  optional string divorce_date = 11;
+  optional string divorce_date_long = 12;
+  optional string divorce_date_raw = 20;
+  optional string divorce_date_conv = 13;
+  optional string divorce_date_conv_long = 22;
+  optional Calendar divorce_date_cal = 14;
+  repeated Person witnesses = 15;
+  optional string notes = 16;
+  optional string fsources = 17;
+  repeated Person children = 18;
 }
 
 message IndexPerson {
@@ -483,6 +545,8 @@ message IdentifierPerson {
   optional string p = 3;
   optional int32 oc = 4;
   optional bool track_visit = 5;
+  optional int32 nb_asc_max = 6;
+  optional int32 nb_desc_max = 7;
 }
 
 message Error {
