@@ -6,6 +6,7 @@ let _ = Piqirun_ext.init_piqi piqi
 
 let _dmy_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/dmy"
 let _date_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/date"
+let _fiche_parameters_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/fiche-parameters"
 let _witness_event_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/witness-event"
 let _witness_fiche_event_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/witness-fiche-event"
 let _event_piqi_type = Piqirun_ext.find_piqi_type "api_saisie_read/event"
@@ -59,6 +60,11 @@ let parse_date ?opts x (format :Piqirun_ext.input_format) =
   let x_pb = Piqirun_ext.convert _date_piqi_type format `pb x ?opts in
   let buf = Piqirun.init_from_string x_pb in
   Api_saisie_read_piqi.parse_date buf
+
+let parse_fiche_parameters ?opts x (format :Piqirun_ext.input_format) =
+  let x_pb = Piqirun_ext.convert _fiche_parameters_piqi_type format `pb x ?opts in
+  let buf = Piqirun.init_from_string x_pb in
+  Api_saisie_read_piqi.parse_fiche_parameters buf
 
 let parse_witness_event ?opts x (format :Piqirun_ext.input_format) =
   let x_pb = Piqirun_ext.convert _witness_event_piqi_type format `pb x ?opts in
@@ -281,6 +287,11 @@ let gen_date ?opts x (format :Piqirun_ext.output_format) =
   let x_pb = Piqirun.to_string buf in
   Piqirun_ext.convert _date_piqi_type `pb format x_pb ?opts
 
+let gen_fiche_parameters ?opts x (format :Piqirun_ext.output_format) =
+  let buf = Api_saisie_read_piqi.gen_fiche_parameters x in
+  let x_pb = Piqirun.to_string buf in
+  Piqirun_ext.convert _fiche_parameters_piqi_type `pb format x_pb ?opts
+
 let gen_witness_event ?opts x (format :Piqirun_ext.output_format) =
   let buf = Api_saisie_read_piqi.gen_witness_event x in
   let x_pb = Piqirun.to_string buf in
@@ -501,6 +512,11 @@ let print_date ?opts x =
   Pervasives.print_endline (gen_date x `piq ?opts)
 let prerr_date ?opts x =
   Pervasives.prerr_endline (gen_date x `piq ?opts)
+
+let print_fiche_parameters ?opts x =
+  Pervasives.print_endline (gen_fiche_parameters x `piq ?opts)
+let prerr_fiche_parameters ?opts x =
+  Pervasives.prerr_endline (gen_fiche_parameters x `piq ?opts)
 
 let print_witness_event ?opts x =
   Pervasives.print_endline (gen_witness_event x `piq ?opts)

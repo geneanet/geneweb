@@ -2441,16 +2441,16 @@ let print_from_identifier_person conf base print_result_from_ip identifier_perso
     [Rem] : Non exporté en clair hors de ce module.                      *)
 (* ********************************************************************* *)
 let print_fiche_person conf base =
-  let identifier_person = get_params conf Mext_read.parse_identifier_person
-  in
+  let fiche_parameters = get_params conf Mext_read.parse_fiche_parameters in
+  let identifier_person = fiche_parameters.Mread.Fiche_parameters.identifier_person in
   let print_result_from_ip conf base ip =
       let nb_asc_max =
-        match identifier_person.Mread.Identifier_person.nb_asc_max with
+        match fiche_parameters.Mread.Fiche_parameters.nb_asc_max with
         | Some n -> Int32.to_int n
         | None -> 1 (* Add grand-parents. *)
       in
       let nb_desc_max =
-        match identifier_person.Mread.Identifier_person.nb_desc_max with
+        match fiche_parameters.Mread.Fiche_parameters.nb_desc_max with
         | Some n -> Int32.to_int n
         | None -> 0
       in
