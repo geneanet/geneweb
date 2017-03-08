@@ -2102,9 +2102,9 @@ let pers_to_piqi_person conf base p base_prefix is_main_person =
     [Rem] : Non exporté en clair hors de ce module.                           *)
 (* ************************************************************************** *)
 let rec pers_to_piqi_fiche_person conf base p base_prefix is_main_person nb_asc nb_asc_max nb_desc nb_desc_max with_parent_families simple_graph_info no_event =
-  (* Génère une personne fiche par défaut. *)
+  (* Generates a fiche person by default. *)
   let piqi_fiche_person = Mread.default_fiche_person() in
-  (* Si l'accès est restreint, retourne la personne avec les champs par défaut. *)
+  (* If the access is restricted, returns the person with default fields. *)
   if is_restricted conf base (get_key_index p) then
     get_restricted_person conf base p
   else
@@ -2112,7 +2112,7 @@ let rec pers_to_piqi_fiche_person conf base p base_prefix is_main_person nb_asc 
       let p_auth = authorized_age conf base p in
       let gen_p = Util.string_gen_person base (gen_person_of_person p) in
 
-      (* Sources uniquement retournées pour la personne principale. *)
+      (* Sources only returned for the main person. *)
       let psources = if (is_main_person == true) then fill_sources conf base p p_auth gen_p is_main_person else "" in
       let birth_src = if (is_main_person == true) then fill_birth_src conf base p p_auth gen_p else "" in
       let baptism_src = if (is_main_person == true) then fill_baptism_src conf base p p_auth gen_p else "" in
@@ -2120,7 +2120,7 @@ let rec pers_to_piqi_fiche_person conf base p base_prefix is_main_person nb_asc 
       let burial_src = if (is_main_person == true) then fill_burial_src conf base p p_auth gen_p else "" in
       let has_sources = if (is_main_person == true) then has_sources conf base p p_auth psources birth_src baptism_src death_src burial_src else false in
       let (death_type, death_date, death_date_conv, death_cal) = fill_death conf base p p_auth gen_p in
-      (* Liens de la chronique familiale *)
+      (* Linked links (family book). *)
       let (linked_page_biblio, linked_page_bnote, linked_page_death, linked_page_head, linked_page_occu) = fill_linked_page_if_is_main_person conf base p is_main_person in
       let pers_to_piqi_fiche_person_only conf base p base_prefix =
         pers_to_piqi_fiche_person conf base p base_prefix false 0 0 0 0 false simple_graph_info no_event
@@ -2132,7 +2132,7 @@ let rec pers_to_piqi_fiche_person conf base p base_prefix is_main_person nb_asc 
       (* Returns simple person attributes only when nb of desc is 0. *)
       let return_simple_attributes = (nb_desc_max == 0) in
       let piqi_fiche_person =
-        (* Champs communs à tous les membres de la famille. *)
+        (* Fields shared by all the members of the family. *)
         piqi_fiche_person.Mread.Fiche_person.birth_date_raw <- transform_empty_string_to_None (fill_birth_date_raw conf base p p_auth gen_p);
         piqi_fiche_person.Mread.Fiche_person.birth_text <- transform_empty_string_to_None (fill_birth_text conf base p p_auth);
         piqi_fiche_person.Mread.Fiche_person.burial_date_raw <- transform_empty_string_to_None (fill_burial_date_raw_if_is_main_person conf base p p_auth gen_p is_main_person);
@@ -2148,7 +2148,7 @@ let rec pers_to_piqi_fiche_person conf base p base_prefix is_main_person nb_asc 
         if is_main_person == true || simple_graph_info != true then
           piqi_fiche_person.Mread.Fiche_person.families <- fill_fiche_families conf base p base_prefix nb_asc nb_desc nb_desc_max pers_to_piqi_fiche_person simple_graph_info no_event;
 
-        (* Champs uniquement remplis pour la personne principale. *)
+        (* Fields only filled for the main person. *)
         piqi_fiche_person.Mread.Fiche_person.baptism_date_raw <- if is_main_person == true then transform_empty_string_to_None (fill_baptism_date_raw conf base p p_auth gen_p) else None;
         piqi_fiche_person.Mread.Fiche_person.baptism_text <- if is_main_person == true then transform_empty_string_to_None (fill_baptism_text conf base p p_auth) else None;
         piqi_fiche_person.Mread.Fiche_person.has_possible_duplications <- has_duplication_if_is_main_person conf base p is_main_person nb_asc nb_asc_max;
@@ -2196,7 +2196,7 @@ let rec pers_to_piqi_fiche_person conf base p base_prefix is_main_person nb_asc 
         sex = fill_sex conf base p;
         public_name = fill_publicname conf base p p_auth gen_p;
 
-        (* Champs uniquement remplis pour la personne principale. *)
+        (* Fields only filled for the main person. *)
         baptism_place = if is_main_person == true then transform_empty_string_to_None (fill_baptism_place conf base p p_auth gen_p) else None;
         firstname_aliases = if is_main_person == true then fill_firstname_aliases conf base p p_auth gen_p else [];
         has_sources = has_sources;
