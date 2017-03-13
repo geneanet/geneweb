@@ -160,6 +160,14 @@ enum EventType {
   EFAM_CUSTOM = 112;
 }
 
+message FicheParameters {
+  required IdentifierPerson identifier_person = 1;
+  optional int32 nb_asc_max = 2;
+  optional int32 nb_desc_max = 3;
+  optional bool simple_graph_info = 4;
+  optional bool no_event = 5;
+}
+
 message WitnessEvent {
   required WitnessType witness_type = 1;
   required SimplePerson witness = 2;
@@ -452,7 +460,6 @@ message GraphTreeParams {
   optional int32 indexz = 4;
 }
 
-
 // ***************************************************************************
 // Version identique mais avec des personnes full
 // ***************************************************************************
@@ -545,8 +552,6 @@ message IdentifierPerson {
   optional string p = 3;
   optional int32 oc = 4;
   optional bool track_visit = 5;
-  optional int32 nb_asc_max = 6;
-  optional int32 nb_desc_max = 7;
 }
 
 message Error {
