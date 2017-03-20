@@ -2121,7 +2121,7 @@ let rec pers_to_piqi_fiche_person conf base p base_prefix is_main_person nb_asc 
       let has_sources = if (is_main_person == true) then has_sources conf base p p_auth psources birth_src baptism_src death_src burial_src else false in
       let (death_type, death_date, death_date_conv, death_cal) = fill_death conf base p p_auth gen_p in
       (* Linked links (family book). *)
-      let (linked_page_biblio, linked_page_bnote, linked_page_death, linked_page_head, linked_page_occu) = fill_linked_page_if_is_main_person conf base p is_main_person in
+      let (linked_page_biblio, linked_page_bnote, linked_page_death, linked_page_head, linked_page_occu) = if simple_graph_info != true then fill_linked_page_if_is_main_person conf base p is_main_person else ("", "", "", "", "") in
       let pers_to_piqi_fiche_person_only conf base p base_prefix =
         pers_to_piqi_fiche_person conf base p base_prefix false 0 0 0 0 false simple_graph_info no_event
       in
@@ -2141,7 +2141,7 @@ let rec pers_to_piqi_fiche_person conf base p base_prefix is_main_person nb_asc 
         piqi_fiche_person.Mread.Fiche_person.cremation_text <- transform_empty_string_to_None (fill_cremation_text conf base p p_auth);
         piqi_fiche_person.Mread.Fiche_person.death_date_raw <- transform_empty_string_to_None (fill_death_date_raw conf base p p_auth gen_p);
         piqi_fiche_person.Mread.Fiche_person.death_text <- transform_empty_string_to_None (fill_death_text conf base p p_auth);
-        piqi_fiche_person.Mread.Fiche_person.titles_links <- fill_titles_with_links conf base p;
+        piqi_fiche_person.Mread.Fiche_person.titles_links <- if simple_graph_info != true then fill_titles_with_links conf base p else [];
         piqi_fiche_person.Mread.Fiche_person.sosa_nb <- if sosa_nb = Num.zero then None else Some (Num.to_string sosa_nb);
         piqi_fiche_person.Mread.Fiche_person.father <- fiche_father;
         piqi_fiche_person.Mread.Fiche_person.mother <- fiche_mother;
@@ -2160,8 +2160,8 @@ let rec pers_to_piqi_fiche_person conf base p base_prefix is_main_person nb_asc 
         piqi_fiche_person.Mread.Fiche_person.linked_page_head <- linked_page_head;
         piqi_fiche_person.Mread.Fiche_person.linked_page_occu <- linked_page_occu;
         piqi_fiche_person.Mread.Fiche_person.visible_for_visitors <- is_visible conf base p;
-        piqi_fiche_person.Mread.Fiche_person.related <- if is_main_person == true then get_related_piqi conf base p base_prefix gen_p has_relations pers_to_piqi_fiche_person_only fiche_relation_person_constructor else [];
-        piqi_fiche_person.Mread.Fiche_person.rparents <- if is_main_person == true then get_rparents_piqi base conf p base_prefix gen_p has_relations pers_to_piqi_fiche_person_only fiche_relation_person_constructor else [];
+        piqi_fiche_person.Mread.Fiche_person.related <- if is_main_person == true && simple_graph_info != true then get_related_piqi conf base p base_prefix gen_p has_relations pers_to_piqi_fiche_person_only fiche_relation_person_constructor else [];
+        piqi_fiche_person.Mread.Fiche_person.rparents <- if is_main_person == true && simple_graph_info != true then get_rparents_piqi base conf p base_prefix gen_p has_relations pers_to_piqi_fiche_person_only fiche_relation_person_constructor else [];
         if no_event != true then
           piqi_fiche_person.Mread.Fiche_person.events_witnesses <- if is_main_person == true then get_events_witnesses conf base p base_prefix gen_p p_auth has_relations pers_to_piqi_fiche_person_only fiche_event_witness_constructor else [];
         if no_event != true then
@@ -2175,7 +2175,7 @@ let rec pers_to_piqi_fiche_person conf base p base_prefix is_main_person nb_asc 
         p = fill_fn conf base p p_auth;
         occ = fill_occ conf base p;
 
-        aliases = if return_simple_attributes == true then fill_aliases conf base p p_auth gen_p else [];
+        aliases = if return_simple_attributes == true && simple_graph_info != true then fill_aliases conf base p p_auth gen_p else [];
         baptism_src = transform_empty_string_to_None baptism_src;
         birth_place = transform_empty_string_to_None (fill_birth_place conf base p p_auth gen_p);
         birth_src = transform_empty_string_to_None birth_src;
@@ -2191,19 +2191,19 @@ let rec pers_to_piqi_fiche_person conf base p base_prefix is_main_person nb_asc 
         image = transform_empty_string_to_None (fill_image conf base p);
         firstname = fill_firstname conf base p p_auth gen_p;
         lastname = fill_surname conf base p p_auth gen_p;
-        qualifiers = fill_qualifiers conf base p p_auth gen_p;
+        qualifiers = if simple_graph_info != true || is_main_person == true then fill_qualifiers conf base p p_auth gen_p else [];
         occupation = transform_empty_string_to_None (fill_occupation conf base p p_auth gen_p);
         sex = fill_sex conf base p;
         public_name = fill_publicname conf base p p_auth gen_p;
 
         (* Fields only filled for the main person. *)
         baptism_place = if is_main_person == true then transform_empty_string_to_None (fill_baptism_place conf base p p_auth gen_p) else None;
-        firstname_aliases = if is_main_person == true then fill_firstname_aliases conf base p p_auth gen_p else [];
+        firstname_aliases = if is_main_person == true && simple_graph_info != true then fill_firstname_aliases conf base p p_auth gen_p else [];
         has_sources = has_sources;
         notes = if is_main_person == true && simple_graph_info != true then transform_empty_string_to_None (fill_notes conf base p p_auth is_main_person gen_p) else None;
         psources = if is_main_person == true && simple_graph_info != true then transform_empty_string_to_None psources else None;
         sosa = if is_main_person == true then fill_sosa conf base p else `no_sosa;
-        surname_aliases = if is_main_person == true then fill_surname_aliases conf base p p_auth gen_p else [];
+        surname_aliases = if is_main_person == true && simple_graph_info != true then fill_surname_aliases conf base p p_auth gen_p else [];
 
         (* These fields should not be set because Fiche Person fields are better. *)
         baptism_date = None;
@@ -2220,7 +2220,7 @@ let rec pers_to_piqi_fiche_person conf base p base_prefix is_main_person nb_asc 
         families = if return_simple_attributes == true && simple_graph_info == false then fill_families conf base p base_prefix else [];
         father = if return_simple_attributes == true then father else None;
         mother = if return_simple_attributes == true then mother else None;
-        titles = fill_titles conf base p;
+        titles = if simple_graph_info != true then fill_titles conf base p else [];
         related = if return_simple_attributes == true then get_related_piqi conf base p base_prefix gen_p has_relations pers_to_piqi_simple_person simple_relation_person_constructor else [];
         rparents = if return_simple_attributes == true then get_rparents_piqi base conf p base_prefix gen_p has_relations pers_to_piqi_simple_person simple_relation_person_constructor else [];
         baseprefix = base_prefix;
