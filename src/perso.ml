@@ -5006,9 +5006,10 @@ value print_foreach conf base print_ast eval_expr =
   and print_foreach_first_name_alias env al ((p, p_auth) as ep) =
     if not p_auth && (is_hide_names conf p) then ()
     else
-      List.iter
-        (fun s ->
+      list_iter_first
+        (fun first s ->
            let env = [("first_name_alias", Vstring (sou base s)) :: env] in
+           let env = [("first", Vbool first) :: env] in
            List.iter (print_ast env ep) al)
         (get_first_names_aliases p)
   and print_foreach_level max_lev env al ((p, _) as ep) =
@@ -5202,9 +5203,10 @@ value print_foreach conf base print_ast eval_expr =
   and print_foreach_surname_alias env al ((p, p_auth) as ep) =
     if not p_auth && (is_hide_names conf p) then ()
     else
-      List.iter
-        (fun s ->
+      list_iter_first
+        (fun first s ->
            let env = [("surname_alias", Vstring (sou base s)) :: env] in
+           let env = [("first", Vbool first) :: env] in
            List.iter (print_ast env ep) al)
         (get_surnames_aliases p)
   and print_foreach_witness env al ep =
