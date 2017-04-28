@@ -10,14 +10,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
-%include.css;
-%base_header;
+%include;css
+%include;hed
 </head>
 <body%body_prop;>
 %message_to_wizard;
 <div class="container%if;(evar.wide="on")-fluid%end;">
-%import;perso_utils;
-%import;menubar;
+%include;perso_utils
+%include;menubar
 
 %define;title(xxx)
   <h3>[*xxx]</h3>
@@ -131,9 +131,9 @@
 
 <div class="my-3">Total[:] %count; %if;(count=1)[person/persons]0%else;[person/persons]1%end;.</div>
 
-%base_trailer;
-%include.copyr;
+%include;trl
+%include;copyr
 </div>
-%include.js;
+%include;js
 </body>
 </html>

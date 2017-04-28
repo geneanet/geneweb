@@ -16,14 +16,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
-  %include.favicon;
-  %include.css;
-  %base_header;
+  %include;favicon
+  %include;css
+  %include;hed
 </head>
 <body%body_prop;>
 <div class="container-fluid">
 %message_to_wizard;
-%include.perso_header;
+%include;perso_header
 <script><!--
 
 function long_display_options () {
@@ -132,7 +132,7 @@ function no_options () {
         <input type="radio" name="t" value="N" checked onclick="no_options()"%/> <span class="fa fa-align-left fa-fw"></span> [*short display]*
       </label>
       </div>
-%( Positionne directement l'affiche du numéro sosa en base 10 
+%( Positionne directement l'affiche du numéro sosa en base 10
       <div>
         Sosa base
         <label><input type="radio" class="form-control" name="sosab" value="8"%/>8</label>
@@ -505,9 +505,9 @@ function no_options () {
   </div>
 </form>
 
-%base_trailer;
-%include.copyr;
+%include;trl
+%include;copyr
 </div>
-%include.js;
+%include;js
 </body>
 </html>

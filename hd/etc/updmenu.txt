@@ -7,9 +7,9 @@
   %elseif;has_baptism_date; %slash_baptism_date;
   %end;
    - %nn;
-  %if;has_death_date;%slash_death_date; 
-  %elseif;has_burial_date;%slash_burial_date; 
-  %elseif;has_cremation_date;%slash_cremation_date; 
+  %if;has_death_date;%slash_death_date;
+  %elseif;has_burial_date;%slash_burial_date;
+  %elseif;has_cremation_date;%slash_cremation_date;
   %end;
   </div>
   <div id="jq7">%if;(first_name = "?" or surname = "?")%index;%else;%occ;%end;</div>
@@ -80,8 +80,8 @@
   %apply;jq1b()
 %elseif(evar.upddag = "on")
   <div class="container">
-    %import;templm/upddag
+    %include;templm/upddag
   </div>
 %else;
-  %include.updmenu1
+  %include;updmenu1
 %end;

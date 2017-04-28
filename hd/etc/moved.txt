@@ -6,8 +6,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
-%include.css;
-%include.js;
+%include;css
+%include;js
 </head>
 <body>
 <div class="container">
@@ -22,8 +22,8 @@ fr: La base de données "%bname;" se trouve maintenant à l'adresse:
 </dd></dt></dl>
 </p>
 
-%base_trailer;
-%include.copyr;
+%include;trl
+%include;copyr
 </div>
 </body>
 </html>

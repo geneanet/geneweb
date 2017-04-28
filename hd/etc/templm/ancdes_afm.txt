@@ -2,7 +2,7 @@
 
 %( age father mother by generation tf1/tl1 = afm %)
 
-%import;ancdes_stat
+%include;ancdes_stat
 
 %define;stat_a1()
   %let;l_max_width;180%in;

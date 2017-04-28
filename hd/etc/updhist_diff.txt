@@ -8,8 +8,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
-  %include.css;
-  %base_header;
+  %include;css
+  %include;hed
 </head>
 <body%body_prop;>
 <div class="container">
@@ -307,7 +307,7 @@ function update_old () {
 
 %define;print_diff()
   <div class="d-flex justify-content-center">
-    <a %if;(evar.old=history_len-1)class="invisible"%end; href="%prefix;;m=%evar.m;;t=%evar.t;;f=%evar.f;;new=%evar.old;;old=%expr(evar.old+1)" title="[*previous diff]"><span class="fa fa-arrow-left"></span> [previous/next diff]0</a> | 
+    <a %if;(evar.old=history_len-1)class="invisible"%end; href="%prefix;;m=%evar.m;;t=%evar.t;;f=%evar.f;;new=%evar.old;;old=%expr(evar.old+1)" title="[*previous diff]"><span class="fa fa-arrow-left"></span> [previous/next diff]0</a> |
     <a href="%prefix;;m=%evar.m;;t=SUM;f=%evar.f;">%if;(evar.old-evar.new>1)%expr(evar.old-evar.new-1) [intermediate revisions not shown]%else;[revision history]%end;</a>
      | %if;(evar.new!=0)<a href="%prefix;;m=%evar.m;;t=%evar.t;;f=%evar.f;;new=%expr(evar.new-1);old=%evar.new;" title="[*next diff]"> [previous/next diff]1 <span class="fa fa-arrow-right"></span></a>%elseif;(evar.new=0)[last diff]%end;
   </div>
@@ -359,9 +359,10 @@ function update_old () {
 %else;
   %apply;print_diff()
 %end;
-%base_trailer;
-%include.copyr;
+%include;trl
+%include;copyr
+
 </div>
-%include.js;
+%include;js
 </body>
 </html>

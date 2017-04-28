@@ -16,8 +16,8 @@
   <meta http-equiv="Content-Type" content="text/html; charset=%charset;"%/>
   <meta http-equiv="Content-Style-Type" content="text/css"%/>
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png"%/>
-  %include.css;
-  %base_header;
+  %include;css
+  %include;hed
 </head>
 
 %define;tothegen(xx)
@@ -221,8 +221,8 @@
   </fieldset>
 </form>
 <div style="clear:both;"></div>
-  
-%include.trl;
-%include.copyr;
+
+%include;trl
+%include;copyr
 </body>
 </html>

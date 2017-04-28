@@ -31,5 +31,5 @@
   %elseif;(evar.data = "src")%apply;ldl0(bvar.datalist_src)
   %end;
 %else;
-  %import;upddata1
+  %include;upddata1
 %end;

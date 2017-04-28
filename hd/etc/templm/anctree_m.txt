@@ -1,3 +1,3 @@
 <!-- anctree_m.txt v3 -->
 
-%import;modules/arbre_9gen;
+%include;modules/arbre_9gen

@@ -8,8 +8,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
-  %include.css;
-  %base_header;
+  %include;css
+  %include;hed
 </head>
 <body%body_prop;>
 <div class="container">
@@ -110,16 +110,16 @@
 %else;
   %apply;print_long()
 %end;
-%base_trailer;
-%include.copyr;
+%include;trl
+%include;copyr
 </div>
-%include.js;
+%include;js
 <script>
 $(document).ready(function() {
 jQuery.fn.putCursorAtEnd = function() {
 
   return this.each(function() {
-    
+
     // Cache references
     var $el = $(this),
         el = this;
@@ -134,18 +134,18 @@ jQuery.fn.putCursorAtEnd = function() {
 
       // Double the length because Opera is inconsistent about whether a carriage return is one character or two.
       var len = $el.val().length * 2;
-      
+
       // Timeout seems to be required for Blink
       setTimeout(function() {
         el.setSelectionRange(len, len);
       }, 1);
-    
+
     } else {
-      
+
       // As a fallback, replace the contents with itself
       // Doesn't work in Chrome, but Chrome supports setSelectionRange
       $el.val($el.val());
-      
+
     }
 
     // Scroll to the bottom, in case we're in a tall textarea
@@ -157,7 +157,7 @@ jQuery.fn.putCursorAtEnd = function() {
 };
 
 (function() {
-  
+
   var searchInput = $("#nx_input");
 
   searchInput
@@ -165,7 +165,7 @@ jQuery.fn.putCursorAtEnd = function() {
     .on("focus", function() { // could be on any event
       searchInput.putCursorAtEnd()
     });
-  
+
 })();
 
 });

@@ -16,8 +16,8 @@
   <meta http-equiv="Content-Type" content="text/html; charset=%charset;"%/>
   <meta http-equiv="Content-Style-Type" content="text/css"%/>
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png"%/>
-  %include.css;
-  %base_header;
+  %include;css
+  %include;hed
 </head>
 
 %define;checkbox(cc,xx,yy,uu)
@@ -214,9 +214,9 @@
         [*compact tree] (> 5 gen)
       </legend>
       %(apply;checkbox("├","it","Orientation I (on) [or] H (off)",""%)
-      <label title="">orientation 
+      <label title="">orientation
           <input type="radio" id="itIH" name="it" value="on" %l_on1; %l_on;
-            %if;(evar.it = "on") checked="checked"%end;%/> I 
+            %if;(evar.it = "on") checked="checked"%end;%/> I
           <input type="radio" id="itIH" name="it" value="off" %l_on1; %l_on;
             %if;(evar.it = "off" or evar.it = "") checked="checked"%end;%/> H</label>
       <br>
@@ -314,7 +314,8 @@
   </fieldset>
 </form>
 <div style="clear:both;"></div>
-%include.trl;
-%include.copyr;
+
+%include;trl
+%include;copyr
 </body>
 </html>

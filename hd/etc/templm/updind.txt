@@ -12,10 +12,10 @@
   <meta name="robots" content="none"/>
   <meta charset="utf-8">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png"/>
-  %include.css;
-  %import;js_upd
-  %import;updind_updfam
-  %base_header;
+  %include;css
+  %include;js_upd
+  %include;updind_updfam
+  %include;hed
 </head>
 %(<!-- Begin define -->%)
 %let;l_r_father; placeholder="M" %in;
@@ -91,7 +91,7 @@
 <p style="display:none;">
   <span id=dmy>[ !dates order]0</span>
   %hidden;
-  %include.upd_datalist;
+  %include;upd_datalist
   <input type="hidden" name="digest" value="%digest;"%/>
   <input type="hidden" name="i" value="%index;"%/>
   %if;(evar_m = "MRG_IND_OK" or evar_m = "MRG_MOD_IND_OK")
@@ -130,7 +130,7 @@
   %apply;hevent("bapt","bapt")
   %apply;hevent("death","death")
   %apply;hevent("burial","burial")
-  <input name="death" value=""%/> 
+  <input name="death" value=""%/>
  %( marche pas :
     "NotDead"
     "DontKnowIfDead"
@@ -237,7 +237,7 @@
       <a id="accent1" href="javascript:accent1()" title="[full width/columns]0"> … </a>
     </div>
     <div id="accent" style="display:none">
-      %include.accent;
+      %include;accent
     </div>
 </fieldset>
 <fieldset class="event">
@@ -289,9 +289,9 @@
   </table>
 </fieldset>
 </form>
-%base_trailer;
-%include.copyr;
+%include;trl
+%include;copyr
 </div>
-%include.js;
+%include;js
 </body>
 </html>

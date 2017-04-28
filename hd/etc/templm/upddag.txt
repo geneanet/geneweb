@@ -8,13 +8,13 @@
   <meta http-equiv="Content-Type" content="text/html; charset=%charset;"%/>
   <meta http-equiv="Content-Style-Type" content="text/css"%/>
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png"%/>
-  %import;css;
-  %import;templm/js_upd
-  %base_header;
+  %include;css
+  %include;templm/js_upd
+  %include;hed
 </head>
 <body%body_prop; id="dag">
 %message_to_wizard;
-%import;templm/updind_updfam
+%include;templm/updind_updfam
 
 %let;lt4;title="%ak6;%ak3;%ak7;"%in;
 
@@ -32,9 +32,9 @@
           %elseif;pvar.z1.has_baptism_date; %pvar.z1.slash_baptism_date;
           %end;
            - %nn;
-          %if;pvar.z1.has_death_date;%pvar.z1.slash_death_date; 
-          %elseif;pvar.z1.has_burial_date;%pvar.z1.slash_burial_date; 
-          %elseif;pvar.z1.has_cremation_date;%pvar.z1.slash_cremation_date; 
+          %if;pvar.z1.has_death_date;%pvar.z1.slash_death_date;
+          %elseif;pvar.z1.has_burial_date;%pvar.z1.slash_burial_date;
+          %elseif;pvar.z1.has_cremation_date;%pvar.z1.slash_cremation_date;
           %end;
         </span></td>
       <td class="b1"><a tabindex="10000" href="javascript:invertS('p','z1','_occ',1,1,'');">&darr;</a></td>
@@ -56,9 +56,9 @@
           %elseif;pvar.z1.has_baptism_date; %pvar.z1.slash_baptism_date;
           %end;
            - %nn;
-          %if;pvar.z1.has_death_date;%pvar.z1.slash_death_date; 
-          %elseif;pvar.z1.has_burial_date;%pvar.z1.slash_burial_date; 
-          %elseif;pvar.z1.has_cremation_date;%pvar.z1.slash_cremation_date; 
+          %if;pvar.z1.has_death_date;%pvar.z1.slash_death_date;
+          %elseif;pvar.z1.has_burial_date;%pvar.z1.slash_burial_date;
+          %elseif;pvar.z1.has_cremation_date;%pvar.z1.slash_cremation_date;
           %end;
         </span></td>
       <td class="b1"><a tabindex="10000" href="javascript:invertS('p','z1','_occ',1,1,'');">&darr;</a></td>
@@ -94,9 +94,9 @@
           %elseif;pvar.z1.has_baptism_date; %pvar.z1.slash_baptism_date;
           %end;
            - %nn;
-          %if;pvar.z1.has_death_date;%pvar.z1.slash_death_date; 
-          %elseif;pvar.z1.has_burial_date;%pvar.z1.slash_burial_date; 
-          %elseif;pvar.z1.has_cremation_date;%pvar.z1.slash_cremation_date; 
+          %if;pvar.z1.has_death_date;%pvar.z1.slash_death_date;
+          %elseif;pvar.z1.has_burial_date;%pvar.z1.slash_burial_date;
+          %elseif;pvar.z1.has_cremation_date;%pvar.z1.slash_cremation_date;
           %end;
         </span></td>
       <td class="b1"><a tabindex="10000" href="javascript:invertS('p','z1','_occ',1,1,'');">&darr;</a></td>
@@ -178,7 +178,7 @@
 %end;
 
 <div style="height:300px;clear:both;"> </div>
-  %base_trailer;
-  %include.copyr;
+  %include;trl
+  %include;copyr
 </body>
 </html>

@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
-%include.css;
+%include;css
 </head>
 <body>
 <div class="container">
@@ -27,8 +27,8 @@ it: La base di dati "%old;" ha cambiato nome "%new;".
 </ul>
 </p>
 
-%base_trailer;
-%include.copyr;
+%include;trl
+%include;copyr
 </div>
 </body>
 </html>

@@ -530,10 +530,10 @@
         %if;wedding_birthday; ([happy birthday to them!])%end;
       %end;
     %else;
-      %if;(on_marriage_date = ""), %marriage_place;, 
+      %if;(on_marriage_date = ""), %marriage_place;,
       %else; %on_marriage_date;
         %if;wedding_birthday; ([happy birthday to them!])%end;
-        , %marriage_place, 
+        , %marriage_place,
       %end;
     %end;
   %end;
@@ -824,7 +824,7 @@
 %let;p_mod_nbr;%count;%in;
 
 %define;show_templ(tpl)
-  %include.tpl;
+  %include.tpl
 %end;
 
 %define;get_templ(tplnum)

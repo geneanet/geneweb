@@ -8,14 +8,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
-  %include.favicon;
-  %include.css;
-  %base_header;
+  %include;favicon
+  %include;css
+  %include;hed
 </head>
 <body%body_prop;>
 %message_to_wizard;
 <div class="container">
-%include.perso_header;
+%include;perso_header
 
 <h1>%nn;
   [*update]:<br>
@@ -203,12 +203,12 @@
     %if;(nb_children != 0)
       <br>
       <a href="%prefix;m=CHG_CHN;ip=%index;">[*change children's names]</a>
-    %end;      
+    %end;
     %if;has_possible_duplications;
       <br>
       <a href="%prefix;m=MRG_DUP;ip=%index;">%sq;
       [*merge::possible duplications]</a>
-    %end;      
+    %end;
   </td>
 </tr>
 </table>
@@ -224,9 +224,9 @@
   </p>
 %end;
 
-%base_trailer;
-%include.copyr;
+%include;trl
+%include;copyr
 </div>
-%include.js;
+%include;js
 </body>
 </html>

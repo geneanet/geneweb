@@ -7,8 +7,8 @@
   <meta http-equiv="content-type" content="text/html; charset=%charset;"%/>
   <meta http-equiv="content-style-type" content="text/css"%/>
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png"%/>
-  %include.css;
-  %base_header;
+  %include;css
+  %include;hed
 </head>
 %let;ltd; title="[year/month/day]2" class="d" size="2" maxlength="2" %in;
 %let;ltm; title="[year/month/day]1" class="m" size="2" maxlength="2" %in;
@@ -103,7 +103,7 @@
     %apply;event("burial")
   </fieldset>
 </form>
-%base_trailer;
-%include.copyr;
+%include;trl
+%include;copyr
 </body>
 </html>

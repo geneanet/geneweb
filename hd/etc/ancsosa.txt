@@ -29,15 +29,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
-%include.css;
-%base_header;
+%include;css
+%include;hed
 </head>
 <body%body_prop; id="ancsosa"
 %message_to_wizard;
 <div class="container-fluid">
 
 %if;not cancel_links;
-  %import;menubar;
+  %include;menubar
 %end;
 
 %let;central_index;%index;%in;
@@ -1587,12 +1587,11 @@ TODO: obtenir les secondes valeurs valeurs jj/mm/aaaa pour les cas « ou | » 
 %end;
 
 %if;((evar.t="Z" or evar.t="Y" or evar.t="X") and not cancel_links)
-  %import;buttons;
+  %include;buttons
 %end;
 
 %if;(evar.t = "P")
-  %include.perso_short;
-  
+  %include;perso_short
 %elseif;(evar.t = "N" and evar.only = "on")
   %( short display; only the selected generation %)
   %reset_count;
@@ -1669,9 +1668,8 @@ TODO: obtenir les secondes valeurs valeurs jj/mm/aaaa pour les cas « ou | » 
     %end;
   </ul>
   <p>[*total][:] %count; [[person/persons]1@(c)]</p>
-
-%elseif;(evar.t = "M" and evar.evt = "on")
-  %include.miss_evt;
+  %elseif;(evar.t = "M" and evar.evt = "on")
+    %include;miss_evt
 
 %elseif;(evar.t = "M" and evar.al = "on")
   %( missing ancestors alphabetically %)
@@ -2124,10 +2122,10 @@ TODO: obtenir les secondes valeurs valeurs jj/mm/aaaa pour les cas « ou | » 
     </div>
   %end;
 
-%base_trailer;
-%include.copyr;
+%include;trl
+%include;copyr
 </div>
-%include.js;
+%include;js
 <script>
 // Initialize Bootstrap tooltip and popover component, dismiss on next click function
 $(function () {

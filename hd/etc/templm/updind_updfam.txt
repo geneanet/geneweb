@@ -1,5 +1,5 @@
 <!-- $Id: updind_updfam.txt,v 7.00 2016/03/21 15:24:07 a2 mr Exp $ -->
-%import;js_perso_accesskey
+%include;js_perso_accesskey
 %(updind and updfam %)
 %let;ak1;[*link] [any individual in the base] [with][:]
            [number] occurence (oc=), [first name/first names]0, [surname/surnames]0

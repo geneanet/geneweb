@@ -14,18 +14,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
-  %include.css;
-  %base_header;
+  %include;css
+  %include;hed
 </head>
 <body%body_prop; id="person">
 <div class="container">
 %message_to_wizard;
-%include_perso_header;
+%include;perso_header
 
 %define;nav()
   <div class="container fixed-top" role="navigation">
     <nav class="navbar navbar-light bg-white justify-content-end" id="banner">
-      <nav class="nav nav-pills nav-fill">    
+      <nav class="nav nav-pills nav-fill">
         <a class="nav-item nav-link" href="#person" title="[*person/persons]0"><i class="fa fa-user fa-fw" aria-hidden="true"></i><span class="d-none d-lg-inline-flex ml-1">[*person/persons]0</span></a>
         <a class="nav-item nav-link" href="#birth" title="[*birth]"><i class="fa fa-birthday-cake fa-fw" aria-hidden="true"></i><span class="d-none d-md-inline-flex ml-1">[*birth]</span></a>
         <a class="nav-item nav-link" href="#baptism" title="[*baptism]"><i class="fa fa-dove fa-fw" aria-hidden="true"></i><span class="d-none d-md-inline-flex ml-1">[*baptism]</span></a>
@@ -933,7 +933,7 @@
     </div>
     <button type="submit" class="btn btn-outline-success btn-sm col-2" title="[*validate/delete]0"><i class="fa fa-share fa-rotate-180 mx-1" aria-hidden="true"></i><span class="sr-only font-weight-bold">[*validate/delete]0</span></button>
   </div>
-  
+
 </div></div>
   <div class="card">
     %apply;card_header("birth","birth")
@@ -1088,7 +1088,7 @@
       %end;
     </div>
   </div>
-  
+
   <div class="card">
     %apply;card_header("events","event/events")
     <div class="card-body">
@@ -1255,20 +1255,24 @@
   <div class="card">
     %apply;card_header("notes","note/notes")
     <div class="row ml-3">
-      <div class="d-inline col-9 py-1">%include.toolbar;</div>
+      <div class="d-inline col-9 py-1">
+        %include;toolbar
+      </div>
       <textarea class="col-9 form-control" id="notes_comments" name="notes" rows="4">%notes;</textarea>%sq;
       <button type="submit" class="btn btn-outline-success btn-lg col-4 py-3 mt-2 mb-3 mx-auto order-3" title="[*validate/delete]0" aria-label="[*validate/delete]0">
         <span class="font-weight-bold text-uppercase">[*validate/delete]0</span><i class="fa fa-share fa-rotate-180 fa-fw ml-2" aria-hidden="true"></i>
       </button>
-      <div class="col my-1 mr-2 text-monospace">%include.accent;</div>
+      <div class="col my-1 mr-2 text-monospace">
+        %include;accent
+      </div>
     </div>
   </div>
 </form>
 
-%base_trailer;
-%include.copyr;
+%include;trl
+%include;copyr
 </div>
-%include.js;
+%include;js
 <script>
 <!--
 function changeCalendar(e,v,m,c) {

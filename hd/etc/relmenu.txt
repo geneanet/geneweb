@@ -11,9 +11,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
-  %include.favicon;
-  %include.css;
-  %base_header;
+  %include;favicon
+  %include;css
+  %include;hed
 </head>
 %define;nth_cousins(xx)
   [*%s cousins:::xx]%nn;
@@ -24,7 +24,7 @@
 <body%body_prop; onload="main()">
 <div class="container">
 %message_to_wizard;
-%include.perso_header;
+%include;perso_header
 
 <h1 class="text-center mt-2">[*link between]%sp;
   %if;(public_name != "")%public_name;%else;%first_name;%end;
@@ -278,8 +278,8 @@
     </div>
   </div>
 </form>
-%base_trailer;
-%include.copyr;
+%include;trl
+%include;copyr
 </div>
 
 <script>
@@ -373,6 +373,6 @@
   }
 -->
 </script>
-%include.js;
+%include;js
 </body>
 </html>

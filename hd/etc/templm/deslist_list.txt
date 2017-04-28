@@ -1,6 +1,6 @@
 <!-- $Id: deslist_list.txt,v 7.00 2014/11/20 15:11:46 mr Exp $ -->
 
-%import;ancsosa_deslist
+%include;ancsosa_deslist
 
 %define;descendants_by_list(xx,yy,curlev,maxlev)
   %if;(curlev = 0)<div>%nl;%end;

@@ -7,8 +7,8 @@
   <meta charset="utf-8">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png"%/>
   <link rel="apple-touch-icon" href="%image_prefix;/favicon_gwd.png"%/>
-  %include.css;
-  %base_header;
+  %include;css
+  %include;hed
 </head>
 
 %let;l_on;onclick="this.focus()" onkeydown="if (event.keyCode == 13) javascript:document.upd.submit();"%in;
@@ -253,10 +253,10 @@ zh: 网络家谱
      </td></tr>
   </table>
 <br/>
-%base_trailer;
-%include.copyr;
+%include;trl
+%include;copyr
 </div>
 </div>
-%include.js;
+%include;js
 </body>
 </html>

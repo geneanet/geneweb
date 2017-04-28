@@ -16,37 +16,38 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
-%import;css;
-%base_header;
+%include;css
+%include;hed
 </head>
 <body%body_prop;>
 %message_to_wizard;
+
 <div class="container%if;(evar.wide="on")-fluid%end; clearfix">
-%import;perso_utils
-%import;menubar
+%include;perso_utils
+%include;menubar
 
 %if;(evar.t="T" and evar.t1="7")
-  %import;modules/arbre_7gen;
+  %include;modules/arbre_7gen
 %elseif;(evar.t="T" and evar.t1="h7")
-  %import;modules/arbre_h7;
+  %include;modules/arbre_h7
 %elseif;(evar.t="T" and evar.t1="m") %(m for compatibility with existing arbre_9gen %)
-  %import;modules/arbre_9gen;
+  %include;modules/arbre_9gen
 %elseif;(evar.t="T" and evar.t1="CT") %(CT for compatibility with templm %)
-  %import;modules/arbre_hi_tools;
-  %import;tools;
-  %import;modules/arbre_hi_indexes
-  %import;modules/arbre_hi;
+  %include;modules/arbre_hi_tools
+  %include;tools
+  %include;modules/arbre_hi_indexes
+  %include;modules/arbre_hi
 %elseif;(evar.t="A" or evar.t="C" or evar.t="T")
-  %import;modules/arbre_vertical;
+  %include;modules/arbre_vertical
 %else;
   bad values for evar.t and evar.t1
 %end;
 </div>
 
 <div>
-%base_trailer;
-%import;copyr;
+%include;trl
+%include;copyr
 </div>
-%import;js;
+%include;js
 </body>
 </html>

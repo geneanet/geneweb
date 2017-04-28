@@ -16,8 +16,8 @@
   <meta http-equiv="Content-Type" content="text/html; charset=%charset;"%/>
   <meta http-equiv="Content-Style-Type" content="text/css"%/>
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png"%/>
-  %include.css;
-  %base_header;
+  %include;css
+  %include;hed
 </head>
 
 %( <!-- Begin define --> %)
@@ -72,34 +72,34 @@
       %sp;%dates;<br%/>
   </h1>
   %if;(evar.m = "D" and evar.t = "L" and evar.tl1 = "aad")
-    %include.ancdes_aad;
+    %include;ancdes_aad
   %elseif;(evar.m = "D" and evar.t = "L" and evar.tl1 = "aax")
-    %include.ancdes_aax;
+    %include;ancdes_aax
   %elseif;(evar.m = "D" and evar.t = "L" and evar.tl1 = "nxd")
-    %include.ancdes_nxd;
+    %include;ancdes_nxd
   %elseif;(evar.m = "D" and evar.t = "L" and evar.tl1 = "afm")
-    %include.ancdes_afm;
+    %include;ancdes_afm
   %elseif;(evar.m = "D" and evar.t = "L" and evar.tl1 = "cal")
-    %include.ancdes_cal;
+    %include;ancdes_cal
   %elseif;(evar.m = "D" and evar.t = "L" and evar.tl1 = "mm")
-    %include.ancdes_mm;
+    %include;ancdes_mm
   %elseif;(evar.m = "D" and evar.t = "L" and evar.tl1 = "bmdm")
-    %include.ancdes_bmdm;
+    %include;ancdes_bmdm
   %elseif;(evar.m = "D" and evar.t = "L" and evar.tl1 = "ars")
-    %include.ancdes_ars;
+    %include;ancdes_ars
   %elseif;(evar.m = "D" and evar.t = "L" and evar.tl1 = "tag")
-    %include.ancdes_tag;
+    %include;ancdes_tag
   %elseif;(evar.m = "D" and evar.t = "D")
-    %include.deslist_mr;
+    %include;deslist_mr
   %else;
-    %include.deslist_list;
+    %include;deslist_list
   %end;
   %if;(evar.tl1 != "tag")
     %if;not cancel_links;
-      %import;tools;
+      %include;tools
       %apply;tools_deslist()
-      %base_trailer;
-      %include.copyr;
+      %include;trl
+      %include;copyr
     %end;
   %end;
 </body>

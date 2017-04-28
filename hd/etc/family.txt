@@ -16,23 +16,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
 <link rel="apple-touch-icon" href="%image_prefix;/favicon_gwd.png">
-%include.css;
-%base_header;
+%include;css
+%include;hed
 </head>
 <body%body_prop;>
-%import;perso_utils;
+%include;perso_utils
 <a href="#content" class="sr-only sr-only-focusable">Skip navigation menu</a>
 <div class="container%if;(evar.wide="on")-fluid%end;">
-  %include.menubar;
+  %include;menubar
   %message_to_wizard;
   <div id="content" tabindex="-1">
-    %apply;show_templ("modules/arbre_famille")
+    %include;modules/arbre_famille
   </div>
   %if;(not cancel_links)
-    %include.trl;
-    %include.copyr;
+    %include;trl
+    %include;copyr
   %end;
 </div>
-%include.js;
+%include;js
 </body>
 </html>

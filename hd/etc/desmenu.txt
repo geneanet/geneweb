@@ -16,14 +16,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
-  %include.favicon;
-  %include.css;
-  %base_header;
+  %include;favicon
+  %include;css
+  %include;hed
 </head>
 <body%body_prop;>
 %message_to_wizard;
 <div class="container-fluid">
-%include.perso_header;
+%include;perso_header
 <script><!--
 function no_options () {
   /* On décoche toutes les options. */
@@ -357,9 +357,9 @@ function table_spouse_disabled () {
     </div>
   </div>
 </form>
-%base_trailer;
-%include.copyr;
+%include;trl
+%include;copyr
 </div>
-%include.js;
+%include;js
 </body>
 </html>

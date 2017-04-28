@@ -18,15 +18,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
-%include.css;
-%base_header;
+%include;css
+%include;hed
 </head>
 <body%body_prop;>
 %message_to_wizard;
 <div class="container-fluid">
-%import;perso_utils
+%include;perso_utils
 %if;not cancel_links;
-  %import;menubar;
+  %include;menubar
 %end;
 
 <script type="text/javascript">
@@ -73,7 +73,7 @@
 </h1>
 
 %if;not cancel_links;
-  %import;buttons;
+  %include;buttons
 %end;
 
 %define;ancestors_by_list(xx, nnn)
@@ -542,9 +542,9 @@
   %end;
 %end;
 
-%base_trailer;
-%include.copyr;
+%include;trl
+%include;copyr
 </div>
-%include.js;
+%include;js
 </body>
 </html>

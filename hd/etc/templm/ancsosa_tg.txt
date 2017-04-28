@@ -1,6 +1,6 @@
 <!-- $Id: ancsosa_tg.txt,v 7.00 2014/11/20 11:45:02 mr Exp $ -->
 
-%import;ancsosa_deslist
+%include;ancsosa_deslist
 
 %define;one_ancestor()
   %apply;link1("ancestor","ancestor")

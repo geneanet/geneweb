@@ -6,19 +6,19 @@
 %let;op_m;%if;(op_m!="")%op_m;%else;1%end;%in;
 <div class="row">
     <div class="col-md-3">
-      %let;op_m;1%in;%apply;show_templ("modules/parents")
-      %let;op_m;1%in;%apply;show_templ("modules/fratrie")
+      %let;op_m;1%in;%include;modules/parents
+      %let;op_m;1%in;%include;modules/fratrie
     </div>
   <div class="col-md-6">
-    %let;op_m;2%in;%apply;show_templ("modules/individu")
+    %let;op_m;2%in;%include;modules/individu
     %if;(nb_families > 3)
-      %let;op_m;1%in;%apply;show_templ("modules/unions")
+      %let;op_m;1%in;%include;modules/unions
     %end;
   </div>
   <div class="col-md-3">
     %if;(nb_families < 4)
-      %let;op_m;1%in;%apply;show_templ("modules/unions")
+      %let;op_m;1%in;%include;modules/unions
     %end;
-    %let;op_m;1%in;%apply;show_templ("modules/relations")
+    %let;op_m;1%in;%include;modules/relations
   </div>
 </div>

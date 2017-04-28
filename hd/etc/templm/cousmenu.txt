@@ -3,14 +3,14 @@
 <head>
   <!-- $Id: cousmenu.txt,v 7.00 2014/12/13 16:55:44 mr Exp $ -->
   %( used to create list for dag %)
-  
+
   <title>[*link between] %self; [and]0…</title>
   <meta name="robots" content="none"%/>
   <meta http-equiv="Content-Type" content="text/html; charset=%charset;"%/>
   <meta http-equiv="Content-Style-Type" content="text/css"%/>
-  %include.favicon;
-  %include.css;
-  %base_header;
+  %include;favicon
+  %include;css
+  %include;hed
 </head>
 <body%body_prop;>
 %message_to_wizard;
@@ -42,7 +42,7 @@
 ">[tree]</a></div>
 <p></p>
 
-%base_trailer;
-%include.copyr;
+%include;trl
+%include;copyr
 </body>
 </html>

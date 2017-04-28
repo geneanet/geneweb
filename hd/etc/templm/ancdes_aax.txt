@@ -1,6 +1,6 @@
 <!-- $Id: ancdes_aax.txt,v 7.00 2014/11/22 21:42:28 mr Exp $ -->
 
-%import;ancdes_stat
+%include;ancdes_stat
 
 %( age at spouse birth date by generation tf1/tl1 = aax %)
 

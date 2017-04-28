@@ -16,7 +16,7 @@ type ast =
   | Aop1 of loc * string * ast
   | Aop2 of loc * string * ast * ast
   | Aint of loc * string
-  | Aimport of string * ast list
+  | Ainclude of string * ast list
 and loc = (int * int)
 
 

@@ -8,8 +8,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
   <link rel="apple-touch-icon" href="%image_prefix;/favicon_gwd.png">
-  %include.css;
-  %base_header;
+  %include;css
+  %include;hed
 </head>
 %define;book_of(xx)
   [book of %s:::xx]
@@ -211,15 +211,15 @@ fr: Les <strong>droits des magiciens</strong> sont actuellement <strong>suspendu
                   </div>
                   <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" name="ma" id="ma" value="on">
-                    <label class="custom-control-label" title="[*marriage place]" for="ma">[*marriage/marriages]0</label>           
+                    <label class="custom-control-label" title="[*marriage place]" for="ma">[*marriage/marriages]0</label>
                   </div>
                   <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" name="de" id="de" value="on">
-                    <label class="custom-control-label" title="[*death place]" for="de">[*death]</label>           
+                    <label class="custom-control-label" title="[*death place]" for="de">[*death]</label>
                   </div>
                   <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" name="bu" id="bu" value="on">
-                    <label class="custom-control-label" title="[*burial place]" for="bu">[*burial]</label>           
+                    <label class="custom-control-label" title="[*burial place]" for="bu">[*burial]</label>
                   </div>
                   <button type="submit" class="btn btn-outline-primary border-0 text-secondary mx-2 mt-1" title="[*search/case sensitive]0 [places] / [surname/surnames]0"><i class="fa fa-search"></i> Search</button>
                 </div>
@@ -401,11 +401,10 @@ sv: Om din webbläsare inte automatiskt uppdaterar de modifierade sidorna
       <i class="fa fa-warning fa-fw mr-2"></i><span>%apply;get_visitor_access_msg(lg)</span><span class="fa fa-warning fa-fw"></span>
     </div>
   %end;
-%base_trailer;
-
-%include.copyr;
+%include;trl
+%include;copyr
 
 </div>
-%include.js;
+%include;js
 </body>
 </html>

@@ -1,5 +1,5 @@
 %if;(evar.m!="SND_IMAGE")
-  %import;menu_search
+  %include;menu_search
 %else;
   %if;not cancel_links;
     %if;(evar.n != "" or evar.i != "" or evar.ip !="" or evar.m !="")

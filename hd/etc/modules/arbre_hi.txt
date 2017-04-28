@@ -110,7 +110,7 @@
   %apply;nth%with;/1/2/4/8/16/32/64/128/256/512%and;xx%end;
 %end;
 
-%import;modules/arbre_hi_indexes;
+%include;modules/arbre_hi_indexes
 
 
 %define;prefix_all()
@@ -308,7 +308,7 @@
         %end;'
     >
     %if;(xxx=1)┼
-    %elseif;((xxx>1 and xxx<4) or (xxx>7 and xxx<16) or (xxx>31 and xxx<64) or 
+    %elseif;((xxx>1 and xxx<4) or (xxx>7 and xxx<16) or (xxx>31 and xxx<64) or
              (xxx>127 and xxx<256) or (xxx>511 and xxx<1024) or (xxx>2047 and xxx<4096))
       %if;("yyy"="H")
         %if;(xxx%2=0)
@@ -335,7 +335,7 @@
            %else;┤%end;
          %end;
       %end;
-    %elseif;((xxx>3 and xxx<8) or (xxx>15 and xxx<32) or (xxx>63 and xxx<128) or 
+    %elseif;((xxx>3 and xxx<8) or (xxx>15 and xxx<32) or (xxx>63 and xxx<128) or
              (xxx>255 and xxx<512) or (xxx>1023 and xxx<2048) or (xxx>4095 and xxx<8192))
       %if;("yyy"="H")
         %if;(xxx%2=0)

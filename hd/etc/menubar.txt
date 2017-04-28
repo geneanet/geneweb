@@ -102,7 +102,7 @@ fr: Sélectionnez les modules en cliquant sur le bouton correspondant (max 15).
               </div>
             </div>
           </li>
-          %( end personnal modules selection menu %)         
+          %( end personnal modules selection menu %)
           %( Navigation Sosa <> et individu %)
           %if;has_sosa;
             %if;(sosa_prev.index!="")
@@ -241,7 +241,7 @@ fr: Sélectionnez les modules en cliquant sur le bouton correspondant (max 15).
                 </li>
               %end;
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle 
+                <a class="nav-link dropdown-toggle
                    %if;(evar.m="ADD_FAM" or evar.m="CHG_EVT_FAM_ORD" or evar.m="DEL_FAM"
                    or evar.m="MRG_FAM" or evar.m="INV_FAM" or evar.m="CHG_CHN")active%end;"
                    data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"
@@ -343,7 +343,9 @@ fr: Sélectionnez les modules en cliquant sur le bouton correspondant (max 15).
         </ul>
       </div>
     </nav>
-  %import;home
+  %include;home
   </div>
-  %if;(evar.m="C" and not cancel_links)%import;cousins_tools;%end;
+  %if;(evar.m="C" and not cancel_links)
+    %include;cousins_tools
+  %end;
 %end;

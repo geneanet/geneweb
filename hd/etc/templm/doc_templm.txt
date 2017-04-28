@@ -6,8 +6,8 @@
   <meta name="robots" content="none"%/>
   <meta http-equiv="content-type" content="text/html; charset=%charset;"%/>
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png"%/>
-  %include.css;
-  %base_header;
+  %include;css
+  %include;hed
 </head>
 <body%body_prop;>
 %message_to_wizard;
@@ -43,7 +43,7 @@
       <li>datalist_xx=1 : charge toute la liste en une fois</li>
       <li>datalist_xx=2 : charge la liste filtrée après la saisie de trois caractères</li>
     </ul>
-    Listes possibles :  
+    Listes possibles :
     <ul>
       <li>datalist_fn : prénoms</li>
       <li>datalist_sn : patronymes</li>
@@ -56,7 +56,7 @@
 <tr>
   <td>event_age=%bvar.event_age;</td>
   <td>
-    Sur la page d’une personne, affiche l’âge des parents à la naissance et 
+    Sur la page d’une personne, affiche l’âge des parents à la naissance et
     l’âge de la personne pour chaque événement.
   </td>
 </tr>
@@ -169,7 +169,7 @@
   </td>
 </tr>
 </table>
-%base_trailer;
-%include.copyr;
+%include;trl
+%include;copyr
 </body>
 </html>

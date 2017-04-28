@@ -1,2 +1,2 @@
-%import;perso_utils;
-%include.menubar;
+%include;perso_utils
+%include;menubar

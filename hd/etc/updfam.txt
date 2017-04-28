@@ -18,13 +18,13 @@
       [*merge::family/families]1 # %evar_i;
     %end;
   </title>
-  %include.css;
-  %base_header;
+  %include;css
+  %include;hed
 </head>
 <body%body_prop; id="family">
 %message_to_wizard;
 <div class="container">
-%include_perso_header;
+%include;perso_header
 
 %define;nav()
   <div class="container fixed-top" role="navigation">
@@ -678,7 +678,7 @@ $(document).ready(function(){
     </p>
     %apply;date([*date/dates]0, "div", "divorce")
   </div>
-  
+
       %if;has_fevents;
         %foreach;fevent;
           %apply;one_fevent(cnt, has_fevents)
@@ -839,20 +839,25 @@ $(document).ready(function(){
   <div class="card">
     %apply;card_header("comments","comment")
     <div class="row ml-3">
-      <div class="d-inline col-9 py-1">%include.toolbar;</div>
+      <div class="d-inline col-9 py-1">
+      %include;toolbar
+      </div>
       <textarea class="col-9 form-control" id="notes_comments" name="comment" rows="16">%comment;</textarea>%sq;
       <button type="submit" class="btn btn-outline-success btn-lg col-4 py-3 mt-2 mb-3 mx-auto order-3" title="[*validate/delete]0" aria-label="[*validate/delete]0">
         <span class="font-weight-bold text-uppercase">[*validate/delete]0</span><i class="fa fa-share fa-rotate-180 fa-fw ml-2" aria-hidden="true"></i>
       </button>
-      <div class="col my-1 mr-2 text-monospace">%include.accent;</div>
+      <div class="col my-1 mr-2 text-monospace">
+      %include;accent
+      </div>
     </div>
   </div>
 </form>
 
-%base_trailer;
-%include.copyr;
+<<<<<<< HEAD
+%include;trl
+%include;copyr
 </div>
-%include.js;
+%include;js
 <script>
 <!--
 function changeCalendar(e,v,m,c) {

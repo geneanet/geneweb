@@ -1,5 +1,5 @@
 <!-- $Id: menu_search.txt,v 7.00exp 08/02/2016 05:44:45 A2 Exp $ -->
-%import;js_perso_accesskey
+%include;js_perso_accesskey
 %define;lang(x)
   %apply;nth%with;
     /af/bg/br/ca/cs/da/de/en/eo/es/et/fi/fr/he/is/it/lv/nl/no/oc/pl/pt/pt-br/ro/ru/sk/sl/sv/zh/

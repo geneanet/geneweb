@@ -17,16 +17,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
   <link rel="apple-touch-icon" href="%image_prefix;/favicon_gwd.png">
-  %include.css;
-  %base_header;
+  %include;css
+  %include;hed
 </head>
 <body%body_prop;>
 %message_to_wizard;
 <a href="#content" class="sr-only sr-only-focusable">Skip navigation menu</a>
 <div class="container%if;(evar.wide="on")-fluid%end;">
-%import;perso_utils;
-%include.menubar;
+%include;perso_utils
+%include;menubar
 <div id="content" tabindex="-1">
+
 %define;init_nb_asc(tplnum)
   %let;templ;%bvar.perso_module_tplnum;%in
   %if;(templ = "famille" or templ = "arbre_3gen_v" or templ = "arbre_3gen_v_photo")
@@ -79,31 +80,31 @@
 %end;
 
 %(note that p_mod= (b)%bvar.p_mod; or (e)%evar.p_mod;%)
-%if;(evar.p_mod="zz" or (bvar.p_mod="zz" and evar.p_mod="") or 
+%if;(evar.p_mod="zz" or (bvar.p_mod="zz" and evar.p_mod="") or
     (bvar.p_mod="" and evar.p_mod=""))
   %(Statique%)
   %apply;init_cache(3, 2, 2)
   %if;(has_parents and (father.has_parents or mother.has_parents))
      <div class="collapse" id="collapseExample1">
-        %let;op_m;1%in;%apply;show_templ("modules/gr_parents")
+        %let;op_m;1%in;%include;modules/gr_parents
      </div>
   %end;
  <div class="row">
     %(be carefull h1 is col-12 for full width then an opening <div class="col-8"> is inside personnal_data %)
-      %let;op_m;3%in;%apply;show_templ("modules/individu")
-      %let;op_m;2%in;%apply;show_templ("modules/unions")
-      %let;op_m;1%in;%apply;show_templ("modules/chronologie")
-      %let;op_m;1%in;%apply;show_templ("modules/notes")
-      %let;op_m;2%in;%apply;show_templ("modules/sources")
+      %let;op_m;3%in;%include;modules/individu
+      %let;op_m;2%in;%include;modules/unions
+      %let;op_m;1%in;%include;modules/chronologie
+      %let;op_m;1%in;%include;modules/notes
+      %let;op_m;2%in;%include;modules/sources
     %if;(p_mod="" or p_mod="zz")</div>%end; %( end of <div class="col-8"> from personnal_data %)
     <div class="col-4">
       %if;has_parents;
         <div class="collapse show" id="collapseExample2">
-          %let;op_m;2%in;%apply;show_templ("modules/arbre_3gen_photo")
+          %let;op_m;2%in;%include;modules/arbre_3gen_photo
         </div>
       %end;
-      %let;op_m;1%in;%apply;show_templ("modules/fratrie")
-      %let;op_m;1%in;%apply;show_templ("modules/relations")
+      %let;op_m;1%in;%include;modules/fratrie
+      %let;op_m;1%in;%include;modules/relations
     </div>
   </div>
 %else;
@@ -124,11 +125,11 @@
   %misc_names;<p>
 %end;
 %if;(not cancel_links)
-  %base_trailer;
-  %include.copyr;
+  %include;trl
+  %include;copyr
 %end;
 </div>
 </div>
-%include.js;
+%include;js
 </body>
 </html>

@@ -10,24 +10,24 @@ Options
 %let;op_ph;%if;(op_m=1 or op_m=2 or op_m=8)1%else;0%end;%in;
 
 %if;(op_m=1)
-  %apply;show_templ("modules/arbre_vertical")
+  %include;modules/arbre_vertical
 %elseif;(op_m=2)
-  %apply;show_templ("modules/arbre_horizontal")
+  %include;modules/arbre_horizontal
 %elseif;(op_m=3)
-  %apply;show_templ("modules/arbre_3gen_photo")
+  %include;modules/arbre_3gen_photo
 %elseif;(op_m=4)
-  %apply;show_templ("modules/arbre_7gen")
+  %include;modules/arbre_7gen
 %elseif;(op_m=5)
-  %apply;show_templ("modules/arbre_famille")
+  %include;modules/arbre_famille
 %elseif;(op_m=6)
-  %apply;show_templ("modules/arbre_h7")
+  %include;modules/arbre_h7
 %elseif;(op_m=7)
-  %apply;show_templ("modules/arbre_9gen")
+  %include;modules/arbre_9gen
 %elseif;(op_m=8)
-  %import;modules/arbre_hi_tools;
-  %import;modules/arbre_hi_indexes;
-  %apply;show_templ("modules/arbre_hi")
+  %include;modules/arbre_hi_tools
+  %include;modules/arbre_hi_indexes
+  %include;modules/arbre_hi
 %elseif;(op_m=9)
-  %apply;show_templ("modules/arbre_descendants")
+  %include;modules/arbre_descendants
 %else;
 %end;

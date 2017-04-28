@@ -6,8 +6,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
-%include.css;
-%base_header;
+%include;css
+%include;hed
 </head>
 <body%body_prop;>
 <div class="container">
@@ -169,9 +169,9 @@
     <button type="submit" class="btn btn-outline-primary btn-lg">[*search/case sensitive]0</button>
   </div>
 </form>
-%base_trailer;
-%include.copyr;
+%include;trl
+%include;copyr
 </div>
-%include.js;
+%include;js
 </body>
 </html>

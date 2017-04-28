@@ -10,18 +10,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
-%include.css;
-%base_header;
+%include;css
+%include;hed
 </head>
 <body%body_prop;>
 %message_to_wizard;
 <div class="container%if;(evar.wide="on")-fluid%end;">
-%import;perso_utils;
-%import;menubar;
-%apply;show_templ("modules/arbre_descendants")
-%base_trailer;
-%include.copyr;
+%include;perso_utils
+%include;menubar
+%include;modules/arbre_descendants
+%include;trl
+%include;copyr
 </div>
-%include.js;
+%include;js
 </body>
 </html>

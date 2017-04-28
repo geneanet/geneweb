@@ -11,11 +11,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
-%import;css;
-%base_header;
+
+%include;css
+%include;hed
 </head>
 <body%body_prop;>
-%import;perso_utils;
+%include;perso_utils
 %message_to_wizard;
 <div class="container-fluid">
 %define;tothegen(xxx)
@@ -23,7 +24,7 @@
 %end;
 
 %if;not cancel_links;
-  %import;menubar;
+  %include;menubar
 %end;
 <h1 class="d-inline-block">%nn;
   %if;(evar.v!=0)%apply;a_of_b%with;
@@ -34,7 +35,7 @@
    %if;(cancel_links and evar.v!=0) %apply;togend(evar.v)%end;
 </h1>
 %if;not cancel_links;
-    %import;buttons;
+    %include;buttons
 %end;
 %let;central_index;%index;%in;
 
@@ -851,10 +852,10 @@ zzz est lui même si yyy="desc", ou son conjoint si yyy="spous"
                %else;%apply;desc_count(max_desc_level) [descendants] %if;(evar.marr="on" or evar.t="I")(%count; [person/persons]1 [with root, spouses and unknowns])%end;</p>
                %end;
 
-%import;trl;
-%import;copyr;
+%include;trl
+%include;copyr
 </div>
-%import;js;
+%include;js
 <script>
 // Initialize Bootstrap tooltip and popover component, dismiss on next click function
 $(function () {

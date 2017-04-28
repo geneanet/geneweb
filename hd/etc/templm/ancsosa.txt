@@ -27,8 +27,8 @@
   <meta name="robots" content="none"%/>
   <meta name="format-detection" content="telephone=no"%/>
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png"%/>
-  %include.css;
-  %base_header;
+  %include;css
+  %include;hed
 </head>
 
 %( <!-- Begin define --> %)
@@ -99,22 +99,22 @@
 </dl>
 
 %if;(evar.t = "G")
-  %include.ancsosa_tg;
+  %include;ancsosa_tg
   %elseif;(evar.t = "X" or evar.t = "Y")
-  %include.ancsosa_tdz;
+  %include;ancsosa_tdz
 %elseif;(evar.t = "N" and evar.same != "")
-  %include.ancsosa_same;
+  %include;ancsosa_same
 %elseif;(evar.t = "M")
-  %include.ancsosa_miss;
+  %include;ancsosa_miss
 %elseif;(evar.t = "Z")
-  %include.ancsosa_tab;
-
+  %include;ancsosa_tab
 %end;
 %if;(not cancel_links and evar.t!="Z")
-  %import;tools;
+  %include;tools
+
   %apply;tools_ancsosa()
-  %base_trailer;
-  %include.copyr;
+  %include;trl
+  %include;copyr
 %end;
 </body>
 </html>

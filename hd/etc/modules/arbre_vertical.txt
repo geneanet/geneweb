@@ -14,7 +14,7 @@
     </tr>
   %end;
   <tr>
-  
+
   %foreach;cell;
     %if;(not is_first)
       <td class="text-center"><samp>&nbsp;</samp></td>
@@ -240,7 +240,7 @@
   </div>
   <table class="tree-vert mx-auto my-3" style="border-width:%border;">
     %if;(evar.t="T" and evar.t1="m")
-      %include;modules/arbre_9gen;
+      %include;modules/arbre_9gen
     %elseif(evar.t = "A" or evar.t = "C")
       %if;(evar.t = "A")
         <tr>

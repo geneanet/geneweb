@@ -6,14 +6,14 @@
   %let;l_v;%if;(bvar.max_anc_level = "")%l_v0;%elseif;(bvar.max_anc_level > l_v0)%l_v0;%else;%bvar.max_anc_level;%end;%in;
   <title>%nn;
     %first_name; %surname;
-    %if;(evar.t = "F" and evar.tf1 = "csv") - CSV - 
-    %elseif;(evar.t = "F" and evar.fam7 = "on") - 7 [*family/families]1 - 
-    %elseif;(evar.t = "F" and evar.tf1 = "sb") - [*surnames branch] - 
-    %elseif;(evar.t = "F" and evar.tf1 = "surn") - [*list eclair]0 - [surname/surnames]1 / [places] 
-    %elseif;(evar.t = "F" and evar.tf1 = "place") - [*list eclair]0 - [places] 
-    %elseif;(evar.t = "F" and evar.tf1 = "aad") - [*age at death] ([M/F]0, [M/F]1) 
-    %elseif;(evar.t = "F" and evar.tf1 = "afm") - [*age] ([father/mother]0, [father/mother]1) 
-    %else; - [*ancestors] - 
+    %if;(evar.t = "F" and evar.tf1 = "csv") - CSV -
+    %elseif;(evar.t = "F" and evar.fam7 = "on") - 7 [*family/families]1 -
+    %elseif;(evar.t = "F" and evar.tf1 = "sb") - [*surnames branch] -
+    %elseif;(evar.t = "F" and evar.tf1 = "surn") - [*list eclair]0 - [surname/surnames]1 / [places]
+    %elseif;(evar.t = "F" and evar.tf1 = "place") - [*list eclair]0 - [places]
+    %elseif;(evar.t = "F" and evar.tf1 = "aad") - [*age at death] ([M/F]0, [M/F]1)
+    %elseif;(evar.t = "F" and evar.tf1 = "afm") - [*age] ([father/mother]0, [father/mother]1)
+    %else; - [*ancestors] -
     %end;
   </title>
   <meta name="robots" content="none"%/>
@@ -21,13 +21,13 @@
   <meta http-equiv="Content-Type" content="text/html; charset=%charset;"%/>
   <meta http-equiv="Content-Style-Type" content="text/css"%/>
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png"%/>
-  %include.css;
+  %include;css
   <script type="text/javascript">
     <!--
       var varZIndex = 1;
     //-->
   </script>
-  %base_header;
+  %include;hed
 </head>
 %(<!-- Begin define --> %)
 %let;birth_symbol;%if;(bvar.birth_symbol != "")%bvar.birth_symbol;%else;&deg;%end;%in;
@@ -87,44 +87,44 @@
       %sp;%dates;<br%/>
   %end;
   %if;(evar.t = "F" and evar.tf1 = "csv")
-    %elseif;(evar.t = "F" and evar.tf1 = "place") - [*list eclair]0 - [places] 
-    %elseif;(evar.t = "F" and evar.tf1 = "surn") - [*list eclair]0 - [surname/surnames]1 / [places] 
-    %elseif;(evar.t = "F" and evar.tf1 = "sb") - [*surnames branch] - 
+    %elseif;(evar.t = "F" and evar.tf1 = "place") - [*list eclair]0 - [places]
+    %elseif;(evar.t = "F" and evar.tf1 = "surn") - [*list eclair]0 - [surname/surnames]1 / [places]
+    %elseif;(evar.t = "F" and evar.tf1 = "sb") - [*surnames branch] -
     %else;
   %end;
 </h1>
 %if;(evar.t = "F" and evar.fam7 = "on" and (evar.tf1 = "fam71" or evar.tf1 = "fam72"))
-  %include.anclist_fam7_img;
+  %include;anclist_fam7_img
 %elseif;(evar.t = "F" and evar.fam7 = "on" and evar.tf1 = "fam70")
-  %include.anclist_fam7_table;
+  %include;anclist_fam7_table
 %elseif;(evar.t = "F" and evar.fam7 = "on" and evar.tf1 = "fam73")
-  %include.anclist_fam7_timeline;
+  %include;anclist_fam7_timeline
 %elseif;(wizard and evar.t = "F" and evar.tf1 = "csv")
-  %include.anclist_csv;
+  %include;anclist_csv
 %elseif;(evar.t = "F" and evar.tf1 = "place")
-  %include.anclist_place;
+  %include;anclist_place
 %elseif;(evar.t = "F" and evar.tf1 = "surn")
-  %include.anclist_surn;
+  %include;anclist_surn
 %elseif;(evar.t = "F" and evar.tf1 = "tag")
-  %include.ancdes_tag;
+  %include;ancdes_tag
 %elseif;(evar.t = "F" and evar.tf1 = "bmdm")
-  %include.ancdes_bmdm;
+  %include;ancdes_bmdm
 %elseif;(evar.t = "F" and evar.tf1 = "mm")
-  %include.ancdes_mm;
+  %include;ancdes_mm
 %elseif;(evar.t = "F" and evar.tf1 = "aad")
-  %include.ancdes_aad;
+  %include;ancdes_aad
 %elseif;(evar.t = "F" and evar.tf1 = "aax")
-  %include.ancdes_aax;
+  %include;ancdes_aax
 %elseif;(evar.t = "F" and evar.tf1 = "nxd")
-  %include.ancdes_nxd;
+  %include;ancdes_nxd
 %elseif;(evar.t = "F" and evar.tf1 = "afm")
-  %include.ancdes_afm;
+  %include;ancdes_afm
 %elseif;(evar.t = "F" and evar.tf1 = "cal")
-  %include.ancdes_cal;
+  %include;ancdes_cal
 %elseif;(evar.t ="F" and evar.tf1 = "ars")
-  %include.ancdes_ars;
+  %include;ancdes_ars
 %elseif;(evar.t = "F" and evar.tf1 = "sb")
-  %include.anclist_sb;
+  %include;anclist_sb
 %elseif;(evar.t = "F")
   %( list tf1 = ? %)
   %let;l_url;%prefix;m=A;t=F;i=%index;;v=%l_v;;only=%evar.only;;maxv=%evar.maxv;%in;
@@ -149,14 +149,14 @@
   %apply;togen()
   %apply;ancestors_by_list("self",l_v)
 %elseif;(evar.t = "H")
-  %include.anclist_hrztl;
+  %include;anclist_hrztl
 %end;
 %if;(evar.tf1 != "csv" and evar.tf1 != "tag")
   %if;not cancel_links;
-    %import;tools
+    %include;tools
     %apply;tools_anclist()
-    %base_trailer;
-    %include.copyr;
+    %include;trl
+    %include;copyr
   %end;
 %end;
 </body>

@@ -1,6 +1,6 @@
 <!-- $Id: ancdes_nxd.txt,v 7.00 2014/11/22 22:01:04 mr Exp $ -->
 
-%import;ancdes_stat
+%include;ancdes_stat
 
 %( death date year - spouse death date year tf1/tl1 = nxd %)
 

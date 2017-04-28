@@ -12,12 +12,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="shortcut icon" href="%image_prefix;/favicon_gwd.png">
-%include.css;
-%base_header;
+%include;css
+%include;hed
 </head>
 <body%body_prop;>
 %message_to_wizard;
-%(import;menubar; %index, %foreach;family, ... do not work in this context %)
+%(include;menubar %index, %foreach;family, ... do not work in this context %)
 
 <div class="container%if;(evar.wide="on")-fluid%end;">
 
@@ -25,9 +25,9 @@
 
 %if;not cancel_links;
   <div class="d-flex justify-content-center">
-    %import;home
+    %include;home
   </div>
-  
+
   %if;(evar.m="A")
     %if;(evar.slices = "on")
       <h1>%nn;
@@ -86,14 +86,14 @@
       %if;(evar.notab != "on")
         <div class="text-%right">
           <a href="%prefix_base_password;%foreach;env_binding;%env.key;=%env.val;;%end;%nn;
-                notab=on;slices=on" accesskey="/" 
+                notab=on;slices=on" accesskey="/"
             title="[*display by slices/slice width/overlap/total width]0">
             <span>//</span>
           </a>
         </div>
       %end;
     %end;
-  
+
     <hr style="clear:both; visibility:hidden;"%/>
     <br> %( to adjust vertical positionning (no menubar %)
     %let;evarv;%if;(evar.v!="")%evar.v;%else;3%end;%in;
@@ -129,7 +129,7 @@
             </a>
           %end;
           %for;i;minv;maxv;
-            <a id="v%i;" class="btn btn-outline-%if;(evarv=i)dark font-weight-bold disabled%else;secondary%end; btn-sm border-0 px-1" 
+            <a id="v%i;" class="btn btn-outline-%if;(evarv=i)dark font-weight-bold disabled%else;secondary%end; btn-sm border-0 px-1"
               href="%prefix_base_password;%nn;
                 %foreach;env_binding;%if;(env.key!="v")%env.key;=%env.val;;%else;v=%expr(i);%end;%end;"
               title="%if;(evarv!=i)[*visualize/show/hide/summary]1 %i; %if;(i=1)[generation/generations]0%else;[generation/generations]1%end;
@@ -321,9 +321,9 @@
   %end;
 %end;
 
-%base_trailer;
-%include.copyr;
+%include;trl
+%include;copyr
 </div>
-%include.js;
+%include;js
 </body>
 </html>
