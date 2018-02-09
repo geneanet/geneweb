@@ -159,6 +159,7 @@ let showInfo connection =
 
 let getContent connection url =
   Curl.set_url connection url;
+  Curl.set_timeoutms connection 1000;
   Curl.perform connection
 ;;
 
@@ -593,6 +594,7 @@ let get_link_tree_curl conf request basename bname ip s s2 nb_asc from_gen_desc 
       Curl.set_writefunction connection (writer result);
       Curl.set_followlocation connection true;
       Curl.set_url connection url;
+      Curl.set_timeoutms connection 1000;
       Curl.perform connection;
       (*
         showContent result;

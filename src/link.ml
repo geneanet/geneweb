@@ -91,6 +91,7 @@ let showInfo connection =
 
 let getContent connection url =
   Curl.set_url connection url;
+  Curl.set_timeoutms connection 1000;
   Curl.perform connection
 ;;
 
@@ -168,6 +169,7 @@ let init_cache conf base request base_prefix ip nb_asc from_gen_desc nb_desc =
       Curl.set_writefunction connection (writer result);
       Curl.set_followlocation connection true;
       Curl.set_url connection url;
+      Curl.set_timeoutms connection 1000;
       Curl.perform connection;
       (*
         showContent result;
