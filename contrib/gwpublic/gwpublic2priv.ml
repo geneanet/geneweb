@@ -82,7 +82,7 @@ value change_somebody_access base lim_year trace p year_of_p spouse =
   else None
 ;
 
-value public_all bname lim_year trace = do {
+value public_all bname lim_year trace patched = do {
   let base = Gwdb.open_base bname in
   let () = load_ascends_array base in
   let () = load_couples_array base in
@@ -102,7 +102,7 @@ value public_all bname lim_year trace = do {
     ProgrBar.run i n;
     let ip = Adef.iper_of_int i in
     let p = poi base ip in
-    if year_of p = None && get_access p = IfTitles then do {
+    if year_of p = None && get_access p = IfTitles && (patched && is_patched_person base ip || patched == False) then do {
       match change_somebody_access base lim_year trace p (year_of p) False with
       [ Some _ -> changes.val := True
       | None ->
@@ -147,12 +147,14 @@ value public_all bname lim_year trace = do {
 
 value lim_year = ref 1900;
 value trace = ref False;
+value patched = ref False;
 value bname = ref "";
 
 value speclist =
   [("-y", Arg.Int (fun i -> lim_year.val := i),
     "limit year (default = " ^ string_of_int lim_year.val ^ ")");
-   ("-t", Arg.Set trace, "trace changed persons")]
+   ("-t", Arg.Set trace, "trace changed persons");
+   ("-p", Arg.Set patched, "compute patched persons only")]
 ;
 value anonfun i = bname.val := i;
 value usage = "Usage: public [-y #] [-t] base";
@@ -160,7 +162,7 @@ value usage = "Usage: public [-y #] [-t] base";
 value main () = do {
   Arg.parse speclist anonfun usage;
   if bname.val = "" then do { Arg.usage speclist usage; exit 2; } else ();
-  public_all bname.val lim_year.val trace.val;
+  public_all bname.val lim_year.val trace.val patched.val;
 };
 
 main ();
