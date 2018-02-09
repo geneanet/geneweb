@@ -1,4 +1,4 @@
-(* camlp4r *)
+(* camlp5r ../../src/pa_lock.cmo *)
 (* $Id: public2.ml,v 4.1 2008/03/31 11:34:34 deraugla Exp $ *)
 
 open Printf;
@@ -162,7 +162,24 @@ value usage = "Usage: public [-y #] [-t] base";
 value main () = do {
   Arg.parse speclist anonfun usage;
   if bname.val = "" then do { Arg.usage speclist usage; exit 2; } else ();
-  public_all bname.val lim_year.val trace.val patched.val;
+  lock (Mutil.lock_file bname.val) with
+  [ Accept ->
+      public_all bname.val lim_year.val trace.val patched.val
+  | Refuse -> do {
+      eprintf "Base is locked. Waiting... ";
+      flush stderr;
+      lock_wait (Mutil.lock_file bname.val) with
+      [ Accept -> do {
+          eprintf "Ok\n";
+          flush stderr;
+          public_all bname.val lim_year.val trace.val patched.val;
+        }
+      | Refuse -> do {
+          printf "\nSorry. Impossible to lock base.\n";
+          flush stdout;
+          exit 2
+        } ]
+  } ];
 };
 
 main ();

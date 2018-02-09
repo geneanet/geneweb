@@ -1,4 +1,4 @@
-(* camlp4r *)
+(* camlp5r ../../src/pa_lock.cmo *)
 (* $Id: public.ml,v 4.26 2007/01/19 09:03:02 deraugla Exp $ *)
 
 open Def;
@@ -71,8 +71,26 @@ value main () =
     let gcc = Gc.get () in
     gcc.Gc.max_overhead := 100;
     Gc.set gcc;
-    if everybody.val then private_everybody bname.val
-    else private_some bname.val ind.val
+    lock (Mutil.lock_file bname.val) with
+    [ Accept ->
+        if everybody.val then private_everybody bname.val
+        else private_some bname.val ind.val
+    | Refuse -> do {
+        eprintf "Base is locked. Waiting... ";
+        flush stderr;
+        lock_wait (Mutil.lock_file bname.val) with
+        [ Accept -> do {
+            eprintf "Ok\n";
+            flush stderr;
+            if everybody.val then private_everybody bname.val
+            else private_some bname.val ind.val
+          }
+        | Refuse -> do {
+            printf "\nSorry. Impossible to lock base.\n";
+            flush stdout;
+            exit 2
+          } ]
+    } ];
   }
 ;
 

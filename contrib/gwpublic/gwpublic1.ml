@@ -1,4 +1,4 @@
-(* camlp4r *)
+(* camlp5r ../../src/pa_lock.cmo *)
 (* $Id: public.ml,v 4.26 2007/01/19 09:03:02 deraugla Exp $ *)
 
 open Def;
@@ -63,7 +63,7 @@ value mark_descendants base scanned old lim_year =
         old.(Adef.int_of_iper (get_key_index p)) := True;
         let ndgen = ndgen - 1 in
         for i = 0 to Array.length (get_family p) - 1 do {
-	        let ifam = (get_family p).(i) in
+          let ifam = (get_family p).(i) in
           let fam = foi base ifam in
           let sp = Gutil.spouse (get_key_index p) fam in
           old.(Adef.int_of_iper sp) := True;
@@ -90,13 +90,13 @@ value mark_ancestors base scanned lim_year titled is_quest_string =
          not (is_quest_string (get_surname p))
       then do {
         match year_of p with
-       	[ Some y ->
-       	    if y >= lim_year then do {
-                     eprintf "Problem of date ! %s %d\n" (Gutil.designation base p) y;
-                     flush stderr;
-                   }
-       	    else ()
-       	| None -> () ];
+        [ Some y ->
+           if y >= lim_year then do {
+             eprintf "Problem of date ! %s %d\n" (Gutil.designation base p) y;
+             flush stderr;
+           }
+           else ()
+        | None -> () ];
         let p = {(gen_person_of_person p) with access = Public} in
         patch_person base p.key_index p;
         changes.val := True;
@@ -219,9 +219,28 @@ value main () =
     let gcc = Gc.get () in
     gcc.Gc.max_overhead := 100;
     Gc.set gcc;
-    if everybody.val then public_everybody bname.val
-    else if ind.val = "" then public_all bname.val lim_year.val titled.val
-    else public_some bname.val lim_year.val titled.val ind.val
+    lock (Mutil.lock_file bname.val) with
+    [ Accept ->
+        if everybody.val then public_everybody bname.val
+        else if ind.val = "" then public_all bname.val lim_year.val titled.val
+        else public_some bname.val lim_year.val titled.val ind.val
+    | Refuse -> do {
+        eprintf "Base is locked. Waiting... ";
+        flush stderr;
+        lock_wait (Mutil.lock_file bname.val) with
+        [ Accept -> do {
+            eprintf "Ok\n";
+            flush stderr;
+            if everybody.val then public_everybody bname.val
+            else if ind.val = "" then public_all bname.val lim_year.val titled.val
+            else public_some bname.val lim_year.val titled.val ind.val
+          }
+        | Refuse -> do {
+            printf "\nSorry. Impossible to lock base.\n";
+            flush stdout;
+            exit 2
+          } ]
+    } ];
   }
 ;
 

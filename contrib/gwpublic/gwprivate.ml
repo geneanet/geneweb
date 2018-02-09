@@ -1,4 +1,6 @@
-(* camlp4r *)
+(* camlp5r ../../src/pa_lock.cmo *)
+
+open Printf;
 
 open Def;
 open Gwaccess;
@@ -23,9 +25,29 @@ value main () =
     let gcc = Gc.get () in
     gcc.Gc.max_overhead := 100;
     Gc.set gcc;
-    if everybody.val then Gwaccess.access_everybody Private bname.val
-    else if list_ind.val = "" then Gwaccess.access_some Private bname.val ind.val
-    else Gwaccess.access_some_list Private bname.val list_ind.val
+
+    lock (Mutil.lock_file bname.val) with
+    [ Accept ->
+        if everybody.val then Gwaccess.access_everybody Private bname.val
+        else if list_ind.val = "" then Gwaccess.access_some Private bname.val ind.val
+        else Gwaccess.access_some_list Private bname.val list_ind.val
+    | Refuse -> do {
+        eprintf "Base is locked. Waiting... ";
+        flush stderr;
+        lock_wait (Mutil.lock_file bname.val) with
+        [ Accept -> do {
+            eprintf "Ok\n";
+            flush stderr;
+            if everybody.val then Gwaccess.access_everybody Private bname.val
+            else if list_ind.val = "" then Gwaccess.access_some Private bname.val ind.val
+            else Gwaccess.access_some_list Private bname.val list_ind.val
+          }
+        | Refuse -> do {
+            printf "\nSorry. Impossible to lock base.\n";
+            flush stdout;
+            exit 2
+          } ]
+    } ];
   }
 ;
 
