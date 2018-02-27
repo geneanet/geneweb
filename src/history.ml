@@ -599,7 +599,7 @@ value print_foreach conf base print_ast eval_expr =
           let not_displayed =
             match hist_item with
             [ HI_ind p ->
-                is_hidden p || ((is_hide_names conf p) && not (fast_auth_age conf p))
+                is_hidden p || ((is_hide_names conf p) && not (fast_auth_age conf base p))
             | _ -> False ]
           in
           if not_displayed then i

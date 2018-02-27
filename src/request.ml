@@ -181,7 +181,7 @@ value find_all conf base an =
             if not conf.wizard && not conf.friend then
               List.fold_right
                 (fun p pl ->
-                   if not (is_hide_names conf p) || Util.fast_auth_age conf p
+                   if not (is_hide_names conf p) || Util.fast_auth_age conf base p
                    then [p :: pl]
                    else pl)
                 pl []
@@ -216,7 +216,7 @@ value find_all conf base an =
             if not conf.wizard && not conf.friend then
               List.fold_right
                 (fun p pl ->
-                   if not (is_hide_names conf p) || Util.fast_auth_age conf p
+                   if not (is_hide_names conf p) || Util.fast_auth_age conf base p
                    then [p :: pl]
                    else pl)
                 pl []

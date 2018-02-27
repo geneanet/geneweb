@@ -204,7 +204,7 @@ value gen_search_approx_key std_key conf base an =
     if not conf.wizard && not conf.friend then
       List.fold_right
         (fun p pl ->
-           if not (is_hide_names conf p) || Util.fast_auth_age conf p
+           if not (is_hide_names conf p) || Util.fast_auth_age conf base p
            then [p :: pl]
            else pl)
         pl []
@@ -239,7 +239,7 @@ value search_partial_key conf base an =
     if not conf.wizard && not conf.friend then
       List.fold_right
         (fun p pl ->
-           if not (is_hide_names conf p) || Util.fast_auth_age conf p
+           if not (is_hide_names conf p) || Util.fast_auth_age conf base p
            then [p :: pl]
            else pl)
         pl []
@@ -271,7 +271,7 @@ value search_approx_key conf base an =
     if not conf.wizard && not conf.friend then
       List.fold_right
         (fun p pl ->
-           if not (is_hide_names conf p) || Util.fast_auth_age conf p
+           if not (is_hide_names conf p) || Util.fast_auth_age conf base p
            then [p :: pl]
            else pl)
         pl []
@@ -298,7 +298,7 @@ value search_by_key conf base an =
       if not conf.wizard && not conf.friend then
         List.fold_right
           (fun p pl ->
-             if not (is_hide_names conf p) || Util.fast_auth_age conf p
+             if not (is_hide_names conf p) || Util.fast_auth_age conf base p
              then [p :: pl]
              else pl)
           pl []

@@ -22,7 +22,7 @@ value round_2_dec x = floor (x *. 100.0 +. 0.5) /. 100.0;
 value has_children base u =
   List.exists
     (fun ifam ->
-       let des = foi base ifam in
+      let des = foi base ifam in
        Array.length (get_children des) > 0)
     (Array.to_list (get_family u))
 ;
@@ -590,7 +590,7 @@ value print_sosa conf base p link =
             Wserver.wprint "<a href=\"%s%s\" style=\"text-decoration:none\">"
               (commd conf) sosa_link;
           let title =
-            if (is_hide_names conf ref) && not (fast_auth_age conf ref) then ""
+            if (is_hide_names conf ref) && not (fast_auth_age conf base ref) then ""
             else
               let direct_ancestor =
                 Name.strip_c (p_first_name base ref) '"' ^ " "
@@ -1442,7 +1442,7 @@ value build_surnames_list conf base v p =
   let rec loop lev sosa p surn dp =
     if mark.(Adef.int_of_iper (get_key_index p)) = 0 then ()
     else if lev = v then
-      if (is_hide_names conf p) && not (fast_auth_age conf p) then ()
+      if (is_hide_names conf p) && not (fast_auth_age conf base p) then ()
       else add_surname sosa p surn dp
     else do {
       mark.(Adef.int_of_iper (get_key_index p)) :=
@@ -1588,7 +1588,7 @@ value build_list_eclair conf base v p =
   (* Parcours les ascendants de p et les ajoute dans la Hashtbl. *)
   let rec loop lev p surn =
     if lev = v then
-      if (is_hide_names conf p) && not (fast_auth_age conf p) then ()
+      if (is_hide_names conf p) && not (fast_auth_age conf base p) then ()
       else add_person p surn
     else do {
       add_person p surn;

@@ -90,7 +90,7 @@ value get_all conf base =
           then
             ()
           else do {
-            if (fast_auth_age conf p) then do {
+            if (fast_auth_age conf base p) then do {
               if add_birth && not (is_empty_string pl_bi) then ht_add pl_bi p
               else ();
               if add_baptism && not (is_empty_string pl_bp) then ht_add pl_bp p
@@ -117,7 +117,7 @@ value get_all conf base =
             if not (is_empty_string pl_ma) then
               let fath = pget conf base (get_father fam) in
               let moth = pget conf base (get_mother fam) in
-              if fast_auth_age conf fath && fast_auth_age conf moth then do {
+              if fast_auth_age conf base fath && fast_auth_age conf base moth then do {
                 ht_add pl_ma fath; ht_add pl_ma moth
               }
               else ()

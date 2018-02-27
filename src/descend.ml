@@ -607,7 +607,7 @@ value display_descendant_index conf base max_level ancestor =
         let p = pget conf base (Adef.iper_of_int i) in
         if p_first_name base p <> "?" && p_surname base p <> "?" &&
            p_first_name base p <> "x"
-        && (not (is_hide_names conf p) || fast_auth_age conf p) then
+        && (not (is_hide_names conf p) || fast_auth_age conf base p) then
           list.val := [get_key_index p :: list.val]
         else ()
       else ()
@@ -643,7 +643,7 @@ value display_spouse_index conf base max_level ancestor =
                  let c = pget conf base c in
                  if p_first_name base c <> "?" && p_surname base c <> "?" &&
                     p_first_name base p <> "x" &&
-                    (not (is_hide_names conf c) || fast_auth_age conf c) &&
+                    (not (is_hide_names conf c) || fast_auth_age conf base c) &&
                     not (List.mem (get_key_index c) list.val)
                  then
                    list.val := [get_key_index c :: list.val]

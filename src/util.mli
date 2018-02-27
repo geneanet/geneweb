@@ -48,7 +48,7 @@ value nobtit : config -> base -> person -> list title;
 value strictly_after_private_years : config -> dmy -> bool;
 value authorized_age : config -> base -> person -> bool;
 value is_old_person : config -> gen_person iper istr -> bool;
-value fast_auth_age : config -> person -> bool;
+value fast_auth_age : config -> base -> person -> bool;
 
 value start_with_vowel : string -> bool;
 value know : base -> person -> bool;

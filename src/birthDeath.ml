@@ -363,7 +363,7 @@ value print_oldest_alive conf base =
 
 value print_longest_lived conf base =
   let get_longest p =
-    if Util.fast_auth_age conf p then
+    if Util.fast_auth_age conf base p then
       match (Adef.od_of_codate (get_birth p), get_death p) with
       [ (Some (Dgreg bd _), Death _ cd) ->
           match Adef.date_of_cdate cd with

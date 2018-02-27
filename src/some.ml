@@ -365,7 +365,7 @@ value first_name_print conf base x =
       let pl =
         List.fold_right
           (fun p pl ->
-            if not (is_hide_names conf p) || (fast_auth_age conf p )
+            if not (is_hide_names conf p) || (fast_auth_age conf base p )
             then [p :: pl]
             else pl)
           pl []
@@ -461,7 +461,7 @@ value print_branch conf base psn name =
     stag "strong" begin
       Wserver.wprint "%s"
         (Util.reference conf base p
-           (if (is_hide_names conf p) && not (fast_auth_age conf p) then "x"
+           (if (is_hide_names conf p) && not (fast_auth_age conf base p) then "x"
             else if not psn && p_surname base p = name then
               person_text_without_surname conf base p
             else person_text conf base p));
@@ -481,7 +481,7 @@ value print_branch conf base psn name =
                  Perso.print_sosa conf base p False;
                  stag "em" begin
                    Wserver.wprint "%s"
-                     (if (is_hide_names conf p) && not (fast_auth_age conf p)
+                     (if (is_hide_names conf p) && not (fast_auth_age conf base p)
                      then "x"
                      else if not psn && p_surname base p = name then
                        person_text_without_surname conf base p
@@ -498,7 +498,7 @@ value print_branch conf base psn name =
                stag "strong" begin
                  Wserver.wprint "%s"
                    (reference conf base c
-                      (if (is_hide_names conf c) && not (fast_auth_age conf c)
+                      (if (is_hide_names conf c) && not (fast_auth_age conf base c)
 		                   then "x"
                        else person_text conf base c));
                end;
@@ -858,7 +858,7 @@ value surname_print conf base not_found_fun x =
       let pl =
         List.fold_right
           (fun p pl ->
-	          if not (is_hide_names conf p) || (fast_auth_age conf p)
+	          if not (is_hide_names conf p) || (fast_auth_age conf base p)
 	          then [p :: pl]
 	          else pl)
           pl []
@@ -975,7 +975,7 @@ value search_surname_print conf base not_found_fun x =
       let pl =
         List.fold_right
           (fun p pl ->
-	          if not (is_hide_names conf p) || (fast_auth_age conf p)
+	          if not (is_hide_names conf p) || (fast_auth_age conf base p)
 	          then [p :: pl]
 	          else pl)
           pl []
@@ -1044,7 +1044,7 @@ value search_first_name_print conf base x =
       let pl =
         List.fold_right
           (fun p pl ->
-            if not (is_hide_names conf p) || (fast_auth_age conf p )
+            if not (is_hide_names conf p) || (fast_auth_age conf base p )
             then [p :: pl]
             else pl)
           pl []

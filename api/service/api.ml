@@ -276,7 +276,7 @@ let print_first_available_person conf base =
     else
       let p = poi base (Adef.iper_of_int i) in
       if is_hide_names conf p || is_empty_or_quest_name p ||
-         not (fast_auth_age conf p)
+         not (fast_auth_age conf base p)
       then
         loop (i + 1) nb_ind
       else
