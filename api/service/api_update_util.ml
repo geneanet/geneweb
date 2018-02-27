@@ -784,6 +784,9 @@ let pers_to_piqi_person_search conf base p =
     image = if image = "" then None else Some image;
     sosa = sosa;
     family = family;
+    n = Name.lower (p_surname base p);
+    p = Name.lower (p_first_name base p);
+    oc = Int32.of_int (get_occ p);
   })
 ;;
 
