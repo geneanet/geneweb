@@ -619,6 +619,10 @@ value authorized_age conf base p =
     | (_, _, _, Some (Dgreg d _)) ->
         let a = CheckItem.time_elapsed d conf.today in
         strictly_after_private_years conf a
+    | (None, None, OfCourseDead, None)
+    | (None, None, DeadYoung, None)
+    | (None, None, Death _ _, None)
+    | (None, None, DeadDontKnowWhen, None) 
     | (None, None, DontKnowIfDead, None) -> 
         get_access p <> Private && conf.public_if_no_date
     | _ ->
