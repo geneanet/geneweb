@@ -10,7 +10,7 @@ open Mutil;
 open Printf;
 
 value is_hide_names conf p =
-  if conf.hide_names || get_access p = Private then True
+  if conf.hide_names || get_access p <> Public then True
   else False
 ;
 
