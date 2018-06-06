@@ -57,7 +57,7 @@ pl: af=afrikaans/bg=bułgarski/ca=kataloński/cs=czeski/da=duński/de=niemiecki/
 pt: af=Afrikaans/ca=Catalã/cs=Checo/da=Dinamarquês/de=Alemão/en=Inglês/eo=Esperanto/es=Espanhol/et=Estoniano/fi=Finlandês/fr=Francês/he=Hebreu/is=Islandês/it=Italiano/lv=Lituano/nl=Holandês/no=Norueguês/oc=Occitano/pl=Polonês/pt=Português/pt-br=Português-do-Brasil/ru=Russo/sv=Sueco/zh=Chinês
 pt-br: af=Afrikaner/ca=Catalão/cs=Checo/da=Dinamarquês/de=Alemão/en=Inglês/eo=Esperanto/es=Espanhol/et=Estoniano/fi=Finlandês/fr=Francês/he=Hebreu/is=Islandês/it=Italiano/lv=Lituano/nl=Holandês/no=Norueguês/oc=Occitano/pl=Polonês/pt=Português/pt-br=Português-do-Brasil/ru=Russo/sv=Sueco/zh=Chinês
 ro: af=africaans/ca=catalana/cs=checha/da=daneza/de=germana/en=engleza/eo=esperanto/es=spaniola/fi=finlandeza/fr=franceza/he=evreiasca/is=islandeza/it=italiana/nl=olandeza/no=norvegiana/oc=occitana/pl=poloneza/pt=potugeza/pt-br=portugeza-in-brazilia/ro=romaneste/ru=rusa/sv=suedeza/zh=chineza
-ru: af=африканский/bg=болгарский/ca=каталанский/cs=чешский/da=датский/de=немецкий/en=английский/eo=эсперанто/es=испанский/et=эстонский/fi=финский/fr=французский/he=иврит/is=исландский/it=итальянский/lv=латышский/nl=голландский/no=норвежский/oc=окситанский/pl=польский/pt=португальский/pt-br=бразильско-португальский/ru=русский/sl=славянский/sv=шведский/zh=китайский
+ru: af=африканский/bg=болгарский/ca=каталанский/cs=чешский/da=датский/de=немецкий/en=английский/eo=эсперанто/es=испанский/et=эстонский/fi=финский/fr=французский/he=иврит/is=исландский/it=итальянский/lv=латышский/nl=голландский/no=норвежский/oc=окситанский/pl=польский/pt=португальский/pt-br=бразильско-португальский/ru=русский/sl=словенский/sv=шведский/zh=китайский
 sk: af=afrikánčina/bg=bulharčina/cs=čeština/da=dánčina/de=nemčina/en=angličtina/eo=esperanto/es=španielčina/fi=fínština/fr=francúzština/he=hebrejčina/is=islandčina/it=taliančina/lv=lotyština/nl=holandčina/no=nórčina/oc=okcitánčina/pt=portugalčina/pt-br=brazílčina/ru=ruština/sv=švédčina/zh=čínština
 sl: af=afrikaanščina/ca=katalonščina/cs=češčina/da=danščina/de=nemščina/en=angleščina/eo=esperanto/es=španščina/et=estonščina/fi=finščina/fr=francoščina/he=hebrejščina/is=islandščina/it=italijanščina/lv=litvanščina/nl=nizozemščina/no=norveščina/oc=okcitanščina/pl=poljščina/pt=portugalščina/pt-br=brazilska-portugalščina/ru=ruščina/sl=slovenščina/sv=švedščina/zh=kitajščina
 sv: af=afrikaans/bg=bulgariska/br=bretonska/ca=katalanska/cs=tjeckiska/da=danska/de=tyska/en=engelska/eo=esperanto/es=spanska/et=estniska/fi=finska/fr=franska/he=hebreiska/is=isländska/it=italienska/lv=litauiska/nl=holländska/no=norska/oc=occitanska/pl=polska/pt=portugisiska/pt-br=brasiliansk-portugisiska/ro=rumänska/ru=ryska/sl=slovenska/sv=svenska/zh=kinesiska
@@ -220,6 +220,7 @@ no: %d %s som starter med "%s"
 oc: %d %s que comença amb "%s"
 pt: %d %s começados por '%s'
 sv: %d %s som börjar med "%s"
+ru: %d %s начиная с "%s"
 
     %d years ago
 af: %d jaar gelede
@@ -314,6 +315,7 @@ nl: ongeldig karakter (%s) in familienaam/voornaam
 no: etternavn/fornavn du skrev inn, inneholder ugyldige tegn (%s)
 oc: caractèrs enebits (%s) dins lo nom o lo prenom
 sv: Ogiltigt tecken (%s) i efternamn/förnamn
+ru: недопустимый символ (%s) использован в имени или фамилии
 
     %s modified
 de: %s geändert
@@ -327,6 +329,7 @@ no: %s er endret
 oc: %s modificat/da
 pt: %s modificado
 sv: %s ändrad
+ru: %s изменён
 
     %s, it is %s of
 af: %s, dit is %s van
@@ -457,7 +460,7 @@ eo: la nobeltitolaj datoj de %t estas malkorektaj: %t
 es: las fechas de un título de %t son incorrectas: %t
 et: isiku %t tiitli kuupäev %t on vigane
 fi: henkilön %t arvonimen päivämäärässä %t on virhe
-fr: %t a des dates de titre incorrectes : %t
+fr: %t a des dates de titre incorrectes: %t
 he:  תאריכים לתארים של %t אינם נכונים: %t
 is: %t hefur vitlausa dagsetningu %t
 it: alcune date dei titoli di %t sono incorrette: %t
@@ -544,6 +547,7 @@ no: %t var vitne etter deres død
 oc: %t foguèt testimòni après la mòrt
 pt: %t foi testemunha após a sua morte
 sv: %t var vittne vid hennes/hans död
+ru: %t был(а) свидетелем после своей смерти
 
     %t was witness before his/her birth
 de: %t war Zeitzeuge vor seiner Geburt
@@ -557,6 +561,7 @@ no: %t var vitne før deres fødsel
 oc: %t foguèt testimòni abans la naissença
 pt: %t foi testemunha antes do seu nascimento
 sv: %t var vittne innan hennes/hans död
+ru: %t был(а) свидетелем до своего рождения
 
     %t witnessed the %s after his/her death
 de: %t war Zeuge bei der %s nach seinem Tod
@@ -564,6 +569,7 @@ en: %t was a witness at a %s after their own death
 es: %t ha sido testigo de %s después de su muerte
 fr: %t a été témoin de %s après sa mort
 it: %t è stato testimone del %s dopo la sua morte
+ru: %t был(а) свидетелем %s после его/её смерти
 
     %t witnessed the %s before his/her birth
 de: %t war Zeuge bei der %s vor seiner Geburt
@@ -571,6 +577,7 @@ en: %t was a witness at a %s before their own birth
 es: %t ha sido testigo de %s antes de su nacimiento
 fr: %t a été témoin de %s avant sa naissance
 it: %t è stato testimone del %s prima della sua nascita
+ru: %t был(а) свидетелем %s до его/её рождения
 
     %t's %s before his/her %s
 de: %t: %s vor seiner/ihrer %s
@@ -578,6 +585,7 @@ en: %t: %s before their %s
 es: %t : %s antes de su %s
 fr: %t : %s avant son/sa %s
 it: %t : %s prima della suo/sua %s
+ru: %t: %s до их %s
 
     %t's sex is not coherent with his/her relations
 af: %t se geslag stem nie ooreen met sy/haar verwantskap nie
@@ -750,7 +758,7 @@ oc: genièr/febrièr/març/abril/mai/junh/julhet/agost/setembre/octobre/novembre
 pl: I/II/III/IV/V/VI/VII/VIII/IX/X/XI/XII
 pt: Janeiro/Fevereiro/Março/Abril/Maio/Junho/Julho/Agosto/Setembro/Outubro/Novembro/Dezembro
 ro: januarie/februarie/martie/aprilie/mai/junie/julie/august/septembrie/octombrie/noiembrie/decembrie
-ru: Января/февраля/марта/апреля/мая/июня/июля/августа/сентября/октября/ноября/декабря
+ru: января/февраля/марта/апреля/мая/июня/июля/августа/сентября/октября/ноября/декабря
 sk: január/február/marec/apríl/máj/jún/júl/august/september/október/november/december
 sl: januarja/februarja/marca/aprila/maja/junija/julija/avgusta/septembra/oktobra/novembra/decembra
 sv: januari/februari/mars/april/maj/juni/juli/augusti/september/oktober/november/december
@@ -1305,7 +1313,7 @@ oc: un frairastre/una sorrastra/un frairastre o una sorrastra
 pl: brat przyrodni/siostra przyrodnia/przyrodni brat lub siostra
 pt: um meio-irmão/uma meia-irmã/um(a) meio(a) irmão(ã)
 ro: frate vitreg/sora vitrega/surori sau frati vitregi
-ru: полуродной брат/полуродная сестра/полуродной брат
+ru: сводный брат/сводная сестра/сводный брат или сестра
 sk: nevlastný brat/nevlastná sestra/ nevlastný súrodenec
 sl: polbrata/polsestra/polbrat ali polsestra
 sv: en halvbror/en halvsyster/ett halvsyskon
@@ -1497,6 +1505,7 @@ nl: Bekwaamheid
 no: Utførelse
 pt: concretização
 sv: Prestation
+ru: достижение
 
     acquisition
 de: Akquisition
@@ -1509,6 +1518,7 @@ nl: Aankoop
 no: Anskaffelse
 pt: aquisição
 sv: Förvärvande
+ru: приобретение
 
     add
 af: byvoeg
@@ -1607,6 +1617,7 @@ nl: Lidmaatschap
 no: Medlemskap
 pt: adesão
 sv: Medlemskap
+ru: участие
 
     adoptive father/adoptive mother/adoptive parents
 af: aangenome vader/angenome moeder/aangenome ouers
@@ -1663,7 +1674,7 @@ pl: syn adoptowany/córka adoptowana/dziecko adoptowane
 pt: filho adoptivo/filha adoptiva/filho(a) adoptivo(a)
 pt-br: filho adotivo/filha adotiva/filho(a) adotivo(a)
 ro: fiu adoptiv/fica adoptiva/copil adoptiv
-ru: приемный сын/приемная дочь/приемны ребенок
+ru: приемный сын/приемная дочь/приемный ребенок
 sk: adoptívny syn/adoptívna dcéra/adoptívne dieťa
 sl: posvojenec/posvojenka/posvojeni otrok
 sv: adoptivson/adoptivdotter/adoptivbarn
@@ -1799,6 +1810,7 @@ no: Alder ved fødsel til %s
 oc: atge a la naissença de %s
 pt: idade aquando do nascimento de %s
 sv: ålder vid %s födelsedatum
+ru: возраст на момент рождения %s
 
     age at death
 af: ouderdom by afsterwe
@@ -2327,6 +2339,7 @@ no: en person i ditt tre
 oc: quin individú que siá dins l'arbre
 pt: qualquer pessoa da árvore
 sv: en person i ditt träd
+ru: любой человек в генеалогическом дереве
 
     are
 af: is
@@ -2369,6 +2382,7 @@ no: Postnummer
 oc: còde de comuna
 pt: Código postal
 sv: Postnummer
+ru: почтовый индекс
 
     ascendants tree
 de: Stammbaum der Vorfahren
@@ -2382,6 +2396,7 @@ no: Slektstre
 oc: arbre d’ascendéncia
 pt: árvore de ascendência
 sv: Antavla
+ru: Фамильное дерево
 
     at the same time
 af: ter selfdertyd
@@ -2432,7 +2447,7 @@ oc: atge mejan de décès
 pl: średni wiek śmierci
 pt: idade média ao morrer
 ro: virsta media la deces
-ru: примерный возраст смерти
+ru: средняя продолжительность жизни
 sk: priemerný vek v čase úmrtia
 sl: povprečna starost ob smrti
 sv: medelålder vid dödstillfället
@@ -2508,6 +2523,7 @@ no: Dåpssted
 oc: lòc de baptisme
 pt: local de batismo
 sv: dopplats
+ru: место крещения
 
     baptism src
 de: Ort der Taufe
@@ -2521,6 +2537,7 @@ no: Dåpssted
 oc: lòc de baptisme
 pt: local de batismo
 sv: dop
+ru: свидетельство о крещении
 
     baptismLDS
 de: Taufe HLT
@@ -2575,6 +2592,7 @@ nl: Bar Mitswa
 no: Bar Mitzvah
 pt: bar mitzvah
 sv: Bar Mitzvah
+ru: бар-мицва
 
     base index notes
 af: notas
@@ -2679,6 +2697,7 @@ no: Bat Mitzvah
 oc: bar mitzvah
 pt: bar mitzvah
 sv: Bat Mitzvah
+ru: бат-мицва
 
     before
 af: voor
@@ -2821,6 +2840,7 @@ no: bibliografi
 oc: bibliografia
 pt: bibliografia
 sv: Bibliografi
+ru: библиография
 
     birth
 af: geboorte
@@ -2863,6 +2883,7 @@ no: Fødselsdato og fødselssted
 oc: data e lòc de naissença
 pt: data e local de nascimento
 sv: Födelsedatum och -plats
+ru: дата и место рождения
 
     birth place
 de: Ort der Geburt
@@ -2876,6 +2897,7 @@ no: Fødselssted
 oc: lòc de naissença
 pt: local de nascimento
 sv: Födelseplats
+ru: место рождения
 
     birth src
 de: Ouellenangabe-Geburt
@@ -2889,6 +2911,7 @@ no: Fødselskilde
 oc: font de la naissença
 pt: fonte nascimento
 sv: Födelse
+ru: свидетельство о рождении
 
     birthdays
 af: verjaarsdae
@@ -2933,6 +2956,7 @@ no: liste over %s
 oc: lista dels %s
 pt: lista de %s
 sv: %s seznam
+ru: список - %s
 
     book of ascendants
 de: Buch der Vorfahren
@@ -2946,6 +2970,7 @@ no: forfedre-bok
 oc: libre d'ascendéncia
 pt: livro de ascendência
 sv: Förfädersbok
+ru: список предков
 
     border
 af: rand
@@ -3077,6 +3102,7 @@ no: Begravelsessted
 oc: lòc de sepultura
 pt: local de sepultamento
 sv: Begravningsplats
+ru: место погребения
 
     burial src
 de: Ouellenangabe-Bestattung
@@ -3090,6 +3116,7 @@ no: Begravelseskilde
 oc: font de la sepultura
 pt: fonte de sepultamento
 sv: Begravning
+ru: свидетельство о смерти
 
     buried
 af: begrawe
@@ -3310,6 +3337,7 @@ no: Berømte personer
 oc: Celebritats
 pt: pessoas célebres
 sv: Celebriteter
+ru: знаменитости
 
     change children's names
 af: verander kinders se name
@@ -3381,6 +3409,7 @@ no: Navneendring
 oc: cambiament de nom
 pt: modificar nome
 sv: Namnbyte
+ru: смена имени или фамилии
 
     changed order of children
 af: verander die volgorde van kinders
@@ -3419,6 +3448,7 @@ fr: changement de l'ordre des évènements familiaux
 it: modifica dell'ordine degli eventi di famiglia
 oc: cambiament de l'òrdre dels eveniments familials
 pt: modificar a ordem dos eventos familiares
+ru: порядок семейных событий был изменён
 
     changed order of marriages
 de: Die Reihenfolge der Ehen wurde geändert
@@ -3432,6 +3462,7 @@ no: Rekkefølge av ekteskap er endret
 oc: cambiament de l'òrdre de las unions
 pt: modificar ordem das uniões
 sv: Utbytt ordning för bröllop
+ru: порядок браков был изменён
 
     changed order of person's events
 de: ändern der Reihenfolge bei Ereignissen des Individuums
@@ -3441,6 +3472,7 @@ fr: changement de l'ordre des évènements individu
 it: modifica dell'ordine degli eventi individuo
 oc: cambiament de l'òrdre dels eveniments d'un individú
 pt: modificar ordem dos eventos da pessoa
+ru: порядок личных событий был изменён
 
     child/children
 af: kind/kinders
@@ -3513,6 +3545,7 @@ nl: Besnijdenis
 no: Omskjæring
 pt: circuncisão
 sv: Omskärellse
+ru: обрезание
 
     click
 af: druk
@@ -3656,6 +3689,7 @@ no: Sammenlign
 oc: comparar
 pt: comparar
 sv: Jämför
+ru: сравнить
 
     compare selected revisions
 de: die ausgewählten Revisionen vergleichen
@@ -3669,6 +3703,7 @@ no: Vis revisjonshistorikk
 oc: comparar las revisions seleccionadas
 pt: comparar as revisões selecionadas
 sv: Jämför utvalda revisioner
+ru: сравнить выбранные варианты
 
     compute all marriages
 de: Lebenspartner mit einschließen
@@ -3682,6 +3717,7 @@ no: Inkluder ektefeller
 oc: inclusir totes los conjunts
 pt: incluir todos os cônjuges
 sv: Jämför alla giftermål
+ru: включить все браки
 
     compute approximatives dates
 de: ungefähre Daten berücksichtigen
@@ -3695,6 +3731,7 @@ no: Inkluder usikre datoer
 oc: inclusir totes los conjunts
 pt: ter em conta as datas aproximadas
 sv: Jämför approxamativa datum
+ru: включить приблизительные даты
 
     confirmation
 de: Firmung
@@ -3707,6 +3744,7 @@ nl: Belijdenis
 no: Konfirmasjon
 pt: confirmação
 sv: Konfirmation
+ru: подтверждение
 
     confirmation LDS
 de: Firmung HLT
@@ -3868,6 +3906,7 @@ no: Land
 oc: País
 pt: País
 sv: Land
+ru: Страна
 
     county
 de: Regierungsbezirk
@@ -3881,6 +3920,7 @@ no: Kommune
 oc: Departament
 pt: Distrito
 sv: Kommun
+ru: Регион
 
     cousins
 af: neefs/niggies
@@ -4009,6 +4049,7 @@ nl: Crematie
 no: Kremasjon
 pt: cremação
 sv: Kremering
+ru: кремация
 
     database forum
 af: databasis forum
@@ -4051,6 +4092,7 @@ no: Fra
 oc: data de començament
 pt: data de início
 sv: Datum från
+ru: дата начала
 
     date end
 de: Enddatum
@@ -4064,6 +4106,7 @@ no: Til
 oc: data de fin
 pt: data de fim
 sv: Datum slutar
+ru: дата окончания
 
     date of birth
 de: Geburtsdatum
@@ -4077,6 +4120,7 @@ no: fødselsdato
 oc: data de naissença
 pt: data de nascimento
 sv: födelsedatum
+ru: дата рождения
 
     date of death
 de: Todestag
@@ -4090,6 +4134,7 @@ no: dødsdato
 oc: data de decès
 pt: data de óbito
 sv: dödsdatum
+ru: дата смерти
 
     date of marriage
 de: Hochzeitstag
@@ -4103,6 +4148,7 @@ no: dato for vielse
 oc: data de maridatge
 pt: data de casamento
 sv: vigseldatum
+ru: дата бракосочетания
 
     date/dates
 af: datum
@@ -4203,6 +4249,7 @@ no: Dødsdati og dødssted
 oc: data e lòc de decès
 pt: data e local do óbito
 sv: Dödsdatum och dödsplats
+ru: дата и место смерти
 
     death place
 de: Sterbeort
@@ -4216,6 +4263,7 @@ no: Dødssted
 oc: lòc de decès
 pt: local do óbito
 sv: Dödsplats
+ru: место смерти
 
     death src
 de: Ouellenangabe-Ableben
@@ -4229,6 +4277,7 @@ no: Dødskilde
 oc: font del decès
 pt: fonte do óbito
 sv: Död
+ru: свидетельство о смерти
 
     decoration
 de: Dekoration
@@ -4241,6 +4290,7 @@ nl: Medaille
 no: Medalje
 pt: condecoração
 sv: Dekoration
+ru: награда
 
     delete
 af: verwyder
@@ -4282,6 +4332,7 @@ nl: Demobilisatie
 no: Demobilisering
 pt: desmobilização militar
 sv: Demobilisering
+ru: демобилизация
 
     descendants
 af: Afstammelinge
@@ -4325,6 +4376,7 @@ no: Liste etter navn
 oc: descendents a la ... generacion
 pt: descendentes na geração...
 sv: Ättlingar från denna generation
+ru: потомки в поколении...
 
     died
 af: oorlede
@@ -4369,6 +4421,7 @@ no: død gammel
 oc: es mòrt plan vièlh/es mòrta plan vièlha/es mòrt(a) plan vièlh(a)
 pt: faleceu com uma idade avançada
 sv: Dog vid en hög ålder
+ru: умер в пожилом возрасте/умерла в пожилом возрасте/умер(ла) в пожилом возрасте
 
     died young
 af: jonk oorlede
@@ -4394,7 +4447,7 @@ oc: mòrt jove/mòrta jova/mòrt(a) jove(a)
 pl: zmarł młodo/zmarła młodo/zm.młodo
 pt: morreu jovem
 ro: a decedat tinar
-ru: умер в детстве
+ru: умер во младенчестве/умерла во младенчестве/умер(ла) во младенчестве
 sk: zomrel mladý/zomrela mladá
 sl: umrl mlad/umrla mlada/umrl(a) mlad(a)
 sv: dog ung
@@ -4411,6 +4464,7 @@ no: Revisjonshistorikk
 oc: diferéncia entre las doas revisions
 pt: diferença entre as duas revisões
 sv: skillnad mellan två uppdateringar
+ru: расхождение двух версий
 
     diploma
 de: Diplom
@@ -4423,6 +4477,7 @@ nl: Diploma
 no: Diplom
 pt: diploma
 sv: Diplom
+ru: диплом
 
     direct ancestor of %s
 de: direkter Vorfahre von %s
@@ -4436,6 +4491,7 @@ no: direkte stamfar til %s
 oc: aujòl dirèct de %s
 pt: antepassado direto de %s
 sv: direkt förfader till %s
+ru: прямой предок %s
 
     disappeared
 af: verdwyn
@@ -4461,7 +4517,7 @@ oc: desaparegut/desapareguda/desaparegut(uda)
 pl: zaginął/zaginęła/zaginięcie
 pt: desaparecido/desaparecida/desaparecido(a)
 ro: a disparut
-ru: исчез/исчезла
+ru: пропал без вести/пропала без вести/пропал(а) без вести
 sk: zmiznutý/zmiznutá
 sl: izginil/izginila/izginil(a)
 sv: försvunnen
@@ -4503,6 +4559,7 @@ no: Vis Sosa nummer
 oc: afichar la numerotacion d'Aboville
 pt: exibir a numeração de Aboville
 sv: Visa Aboville nummer
+ru: показать номер Aboville
 
     display border tree
 de: rahmen in den Bäumen zeigen
@@ -4515,6 +4572,7 @@ nl: rand van de stambomen tonen
 no: vis kantlinje
 oc: afichar las bordadura dels arbres
 sv: visa kantlinje
+ru: включая рамку
 
     display by slices/slice width/overlap/total width
 af: weergawe per gedeelte/gedeelte breedte/oorvleul/totale breedte
@@ -4557,6 +4615,7 @@ no: vises etter:/grener/alfabetisk orden
 oc: afichatge per:/brancas/òrdre alfabetic
 pt: exibir por:/ramos/ordem alfabética
 sv: visas efter:/grenar/alfabetisk ordning
+ru: порядок отображения: /по ветвям/алфавитный
 
     display empty picture
 de: Bilder immer anzeigen
@@ -4570,6 +4629,7 @@ no: Vis bilde
 oc: sempre afichar los images
 pt: exibir sempre as imagens
 sv: Visa tom bild
+ru: оставить место под изображение
 
     display generation
 de: nummer der Generation anzeigen
@@ -4583,6 +4643,7 @@ no: vis generasjonsnummer
 oc: afichar los numèros de generacion
 pt: exibir as gerações
 sv: visa generations nummer
+ru: показать поколение
 
     display marriage date
 de: Hochzeitstag anzeigen
@@ -4591,6 +4652,7 @@ es: editar la fecha de casamiento
 fr: afficher la date de mariage
 it: visualizzare la data del matrimonio
 oc: afichar la data de maridatge
+ru: показать дату брака
 
     display notes/sources inline
 de: einschließen der Notizen/Quellen und Inhalt
@@ -4599,6 +4661,7 @@ es: incluir las notas/fuentes en el contenido
 fr: inclure les notes/sources au contenu
 it: includere le note/fonti al contenuto
 oc: apondre las nòtas dins lo contengut
+ru: показать заметки/документы
 
     display picture
 de: Porträt zeigen
@@ -4612,6 +4675,7 @@ no: vis bilder
 oc: afichar las fòtos
 pt: exibir as fotos
 sv: visa bilder
+ru: включая изображения
 
     display smallest sosa number relative to ancestor
 de: Implexe anzeigen
@@ -4625,6 +4689,7 @@ no: vis anesammenfallet (anetapet)
 oc: afichar los implèxes
 pt: exibir os implexos
 sv: visa anförlusten
+ru: редуцировать предков
 
     display spouse
 de: ehepartner anzeigen
@@ -4638,6 +4703,7 @@ no: vis ektefeller
 oc: afichar lo conjunt
 pt: exibir cônjuge
 sv: visa makar
+ru: влючая супругов
 
     display this marriage in this order
 de: diese Verbindung an seine Position setzen
@@ -4651,6 +4717,7 @@ no: Endre sortering av ekteskap
 oc: plaçar aquela union en posicion
 pt: colocar esta união em posição
 sv: Byt ordning på vigsel
+ru: изменить сортировку браков
 
     distinction
 de: Auszeichnung
@@ -4663,6 +4730,7 @@ nl: Rang
 no: Grad
 pt: distinção
 sv: Grad
+ru: звание
 
     divorce
 af: geskei
@@ -4827,6 +4895,7 @@ nl: Opleiding
 no: Utdannelse
 pt: educação
 sv: Utbildning
+ru: образование
 
     election
 de: Wahl
@@ -4839,6 +4908,7 @@ nl: Verkiezing
 no: Valg
 pt: eleição
 sv: Val
+ru: избрание
 
     emigration
 de: Emigration
@@ -4851,6 +4921,7 @@ nl: Emigratie
 no: Utvandring
 pt: emigração
 sv: Utvandring
+ru: эмиграция
 
     end
 af: einde
@@ -5022,6 +5093,7 @@ nl: evenement/evenementen
 no: hendelse/hendelse
 pt: evento/eventos
 sv: Händelse/Händelse
+ru: событие/события
 
     exact
 af: presies
@@ -5064,6 +5136,7 @@ nl: Excommunicatie
 no: Bannlysing
 pt: excomunhão
 sv: Bannlysning
+ru: отлучение от церкви
 
     executed (legally killed)
 af: teregsgestel
@@ -5206,6 +5279,7 @@ no: tillegg til slektstreet
 oc: subre l'arbre
 pt: autor da árvore
 sv: utöver släktträdet
+ru: семейная история
 
     family modified
 af: familie verander
@@ -5248,6 +5322,7 @@ no: Kilde
 oc: font de la familha
 pt: fonte familiar
 sv: Familjekällor
+ru: семейные документы
 
     family/families
 af: familie/families
@@ -5273,7 +5348,7 @@ oc: familha/familhas
 pl: rodzina:a:-ę/rodziny
 pt: família/famílias
 ro: familie/fmalilii
-ru: семья:a:-ю:g:-и/семьи
+ru: семья:a:--ю:g:--и/семьи
 sk: rodina:a:-u/rodiny
 sl: družina/družine
 sv: familj/familjer
@@ -5327,6 +5402,7 @@ fr: saisie obligatoire
 it: inserimento obbligatorio
 oc: sasida obligatòria
 pt: campo obrigatório
+ru: обязательное значение
 
     file
 af: lêer
@@ -5676,6 +5752,7 @@ nl: Begrafenis
 no: Begravelse
 pt: funeral
 sv: Begravning
+ru: похороны
 
     generation/generations
 af: geslag/geslagte
@@ -5775,6 +5852,7 @@ nl: Eindexamen
 no: Utdannelse
 pt: formatura
 sv: Examen
+ru: выпуск
 
     grand-parents
 af: grootouers
@@ -5904,6 +5982,7 @@ no: halvbrødre/halvsøstre/halvsøsken
 oc: frairastres e sorrastras
 pt: meios irmãos e meias irmãs
 sv: halvbröder och halvsystrar
+ru: сводные братья или сёстры
 
     half-siblings
 de: Halbgeschwister
@@ -5917,6 +5996,7 @@ no: Halvsøsken
 oc: frairastres e sorrastras
 pt: meios irmãos e irmãs
 sv: Halvsyskon
+ru: сводные братья или сёстры
 
     happy birthday to them!
 de: Herzlichen Glückwunsch zum Geburtstag!
@@ -5930,6 +6010,7 @@ no: gratulerer med dagen!
 oc: lo bon aniversari!
 pt: feliz aniversário!
 sv: gratulerar på födelsedagen!
+ru: С Днём Рождения!
 
     happy birthday to you!
 af: Geluk met jou verjaarsdag!
@@ -5972,6 +6053,7 @@ no: Ektefelle og barn er kjent
 oc: amb una familha
 pt: tem um cônjuge e/ou filhos
 sv: Har en familj
+ru: в браке
 
     having as children
 af: met as kinders
@@ -6015,6 +6097,7 @@ no: Ektefell og barn er ukjent
 oc: sens familha
 pt: não tem cônjuge nem filhos
 sv: Har ingen familj
+ru: супруг(а) и дети не известы
 
     help modify data
 de: Klicken Sie auf das zu korrigierende "Listen-Element": alle Dateien Ihres Baumes werden sofort korrigiert
@@ -6028,6 +6111,7 @@ no: Klikk 'Oppdater' for å editere og hele ditt slektstre vil automatisk bli op
 oc: CLicatz sus l'element de modificar e totas las fichas del seu arbre seràn corregidas sulpic
 pt: Clique sobre o elemento da lista que pretende corrigir: a totalidade das fichas da sua árvore serão instantaneamente corrigidas
 sv: Hjälp att modifiera data
+ru: Нажмите 'Изменить' для редактирования и всё фамильное дерево будет обновлено
 
     help surname branch
 de: um die Zweige Ihres Stammbaums zu den Nachnamen zu erhalten, klicken Sie auf die Zahlenangabe der Baumzweige
@@ -6041,6 +6125,7 @@ no: klikk på et nummer for å se slektstre
 pc: per obténer l'arbre de las brancas patronimicas, clicatz sul nombre de brancas
 pt: para obter a árvore dos ramos patronímicos, clique no número dos ramos
 sv: Hjälp att hitta förnamn
+ru: выберите номер для просмотра фамильного дерева
 
     here
 af: hier
@@ -6112,6 +6197,7 @@ no: Historikk
 oc: istoric
 pt: histórico
 sv: Historia
+ru: история
 
     history of updates
 af: bywerkingsgeskiedenis
@@ -6183,6 +6269,7 @@ nl: Ziekenhuisopname
 no: Hospitalisering
 pt: hospitalização
 sv: Sjukhusvistelse
+ru: госпитализация
 
     husband/wife
 af: man/vrou
@@ -6432,6 +6519,7 @@ no: i
 oc: a
 pt: em
 sv: i
+ru: в
 
     in (year)
 af: in
@@ -6709,6 +6797,7 @@ no: notater om personen
 oc: nòtas individualas
 pt: notas individuais
 sv: anteckningar om personen
+ru: личные заметки
 
     insert
 af: invoeg
@@ -6750,6 +6839,7 @@ nl: historiek van de revisies van %s is onvoldoende om vergelijkingen uit te voe
 no: Ingen revisjonshistorikk funnet for %s
 oc: l'istoric de las revisions de %s es pas pro per realizar de comparasons
 pt: o histórico das revisões de %s é insuficiente para realizar comparações
+ru: нет истории изменений для %s
 
     inversion done
 af: omgeruil
@@ -6880,6 +6970,7 @@ no: er gammel
 oc: es un parent plan tròp vièlh
 pt: é um pai muito velho
 sv: Är en mycket gammal förälder
+ru: очень старый родитель
 
     is a very young parent
 af: is 'n baie jong ouer
@@ -7120,6 +7211,7 @@ en: link to use
 fr: lien à utiliser
 it: link da usare
 oc: ligam d'utilizar
+ru: использовать ссылку
 
     linked pages
 bg: свързани страници
@@ -7214,10 +7306,12 @@ no: Tavler og lister
 oc: listas, arbres e estats
 pt: listas e gráficos
 sv: Tavlor och listor
+ru: списки и диаграммы
 
     lists of books
 fr: liste des dictionnaires
 oc: lista dels diccionaris
+ru: список словарей
 
     living after %s
 de: lebte nach %s
@@ -7231,6 +7325,7 @@ no: levde etter %s
 oc: viu(va) après %s
 pt: vivo/a após %s
 sv: Lever efter %s
+ru: жил(а) после %s
 
     living before %s
 de: lebte vor %s
@@ -7244,6 +7339,7 @@ no: levde før %s
 oc: viu(va) abans %s
 pt: vivo/a antes de %s
 sv: Lever innan %s
+ru: жил(а) до %s
 
     living between %s and %s
 de: lebte von %s bis %s
@@ -7257,6 +7353,7 @@ no: levde fra %s til %s
 oc: viu(va) entre %s e %s
 pt: vivo/a entre %s e %s
 sv: Lever mellan %s och %s
+ru: жил(а) между %s и %s
 
     living from/to
 de: lebte von/bis
@@ -7270,6 +7367,7 @@ no: levde fra/til
 oc: viu(va) de/entrò
 pt: vivo/a de/até
 sv: Lever från/till
+ru: жил(а) с %s по %s
 
     long display
 af: uitgebreide weergawe
@@ -7312,6 +7410,7 @@ no: Sjekk
 oc: elements de recercar
 pt: elementos a pesquisar
 sv: Leta efter
+ru: параметры поиска
 
     loop in database: %s is his/her own ancestor
 af: fout in die databasis: %s sy/haar eie voorvader
@@ -7441,6 +7540,7 @@ no: Man/Kvinne/Ukjent
 oc: òme/femna/se sap pas
 pt: masculino/feminino/não especificado
 sv: manling/kvinnlig/okänt
+ru: мужчина/женщина/неизвестно
 
     marriage bann
 de: Aufgebot
@@ -7478,6 +7578,7 @@ no: Ekteskapsdato
 oc: data del maridatge
 pt: data de casamento
 sv: Datum för giftermål
+ru: дата бракосочетания
 
     marriage event
 de: Heirat
@@ -7646,6 +7747,7 @@ no: Ekteskapssted
 oc: lòc de maridatge
 pt: local de casamento
 sv: Plats för giftermål
+ru: место бракосочетания
 
     marriage src
 de: Ouellenangabe-Eheschließung
@@ -7659,6 +7761,7 @@ no: Ekteskapskilde
 oc: font sul maridatge
 pt: fonte casamento
 sv: Giftermål
+ru: свидетельство о браке
 
     marriage with
 de: Eheschließung mit
@@ -7672,6 +7775,7 @@ no: giftermål
 oc: maridatge amb
 pt: casamento com
 sv: vigslar
+ru: брак с
 
     marriage/marriages
 af: huwelik/huwelike
@@ -7803,6 +7907,7 @@ no: mormor og morfar
 oc: parents de la maire
 pt: avós maternos
 sv: mormor och morfar
+ru: бабушка и дедушка по материнской линии
 
     maximum
 af: maksimum
@@ -7989,6 +8094,7 @@ nl: Onderscheiding
 no: Militær utmerkelse
 pt: distinção militar
 sv: Militär utmärkelse
+ru: боевая награда
 
     militaryPromotion
 de: militärische Promotion
@@ -8001,6 +8107,7 @@ nl: Promotie
 no: Militær forfremmelse
 pt: promoção militar
 sv: Militär avancemang
+ru: продвижение по службе
 
     militaryService
 de: Militärdienst
@@ -8013,6 +8120,7 @@ nl: Dienstplicht
 no: Verneplikt
 pt: serviço militar
 sv: Värnplikt
+ru: военная служба
 
     miscellaneous
 de: Verschiedenes
@@ -8026,6 +8134,7 @@ no: Øvrig
 oc: divèrs
 pt: diversos
 sv: Övrigt
+ru: прочее
 
     miscellaneous information
 de: verschiedene Felder
@@ -8039,6 +8148,7 @@ no: øvrige felt
 oc: informacions divèrsas
 pt: campos diversos
 sv: övriga fält
+ru: прочие сведения
 
     miscellaneous notes
 bg: разни бележки
@@ -8107,6 +8217,7 @@ no: manglende hendelser
 oc: eveniments que mancan
 pt: eventos em falta
 sv: Saknade händelser
+ru: события неизвестны
 
     missing parents
 de: Eltern fehlen
@@ -8120,6 +8231,7 @@ no: Foreldre ukjent
 oc: parents que mancan
 pt: pais em falta
 sv: Saknade föräldrar
+ru: родители неизвестны
 
     missing sosa
 de: Fehlende SOSA
@@ -8146,6 +8258,7 @@ no: savnede kilder
 oc: fonts que mancan
 pt: fontes em falta
 sv: saknade källor
+ru: неизвестные источники
 
     missing spouse
 de: Lebenspartner fehlt
@@ -8159,6 +8272,7 @@ no: Ektefelle ukjent
 oc: conjunt que manca
 pt: cônjuge em falta
 sv: saknade maka/make
+ru: неизвестный супруг/супруга
 
     mobilisationMilitaire
 de: Mobilmachung
@@ -8171,6 +8285,7 @@ nl: Mobilisatie
 no: Mobilisering
 pt: mobilização militar
 sv: Mobilisering
+ru: мобилизация
 
     modification successful
 de: Änderung durchgeführt
@@ -8184,6 +8299,7 @@ no: Oppdatering fullført
 oc: modification acabada
 pt: modificação bem sucedida
 sv: ändring slutförd
+ru: изменено успешно
 
     modification/modifications
 de: Änderung/Änderungen
@@ -8197,6 +8313,7 @@ no: oppdatering/oppdateringer
 oc: modificacion/modificacions
 pt: modificação/modificações
 sv: ändring/ändringar
+ru: изменение/изменения
 
     modify
 af: wysig
@@ -8377,6 +8494,7 @@ en: sorry, you can add only families connected to the rest.<br />This restrictio
 fr: désolé, vous ne pouvez ajouter que des familles connectées au reste.<br />Cette restriction a été ajoutée par le propriétaire de cette base de données.
 it: spiacenti, puoi aggiungere solo delle famiglie collegate al resto.<br />Questa restrizione è stata aggiunta dal proprietario del data base
 oc: o planhi, mas podètz pas apondre que de familhas ligadas.<br />Aquela restriccion foguèt aponduda pel proprietari d'aquela basa.
+ru: К сожалению, добавить можно только ветви, связанные с основным деревом.<br />Ограничение введено владельцем базы.
 
     murdered
 af: vermoor
@@ -8402,7 +8520,7 @@ oc: assassinat/assassinada/assassinat(ada)
 pl: zamordowany/zamordowana/morderstwo
 pt: assassinado/assassinada/assassinado(a)
 ro: ucis
-ru: убит/убита
+ru: убит/убита/убит(а)
 sk: zavraždený/zavraždená
 sl: umorjen/umorjena
 sv: mördad
@@ -8548,6 +8666,7 @@ no: Grener
 oc: nbre brancas
 pt: nº ramos
 sv: nb grenar
+ru: ветви
 
     nb children
 de: Kinder
@@ -8561,6 +8680,7 @@ no: Barn
 oc: nbre enfants
 pt: nº filhos
 sv: nb barn
+ru: дети
 
     nb events
 de: Ereignisse
@@ -8574,6 +8694,7 @@ no: Hendelser
 oc: nbre eveniments
 pt: nº eventos
 sv: nb händelser
+ru: события
 
     nb individuals
 de: Individuen
@@ -8587,6 +8708,7 @@ no: Individer
 oc: nbre individús
 pt: nº pessoas
 sv: nb individer
+ru: люди
 
     NB: you should try another relationship computing mode
 de: zögern Sie nicht eine neue Berechnung auf einer anderen Basis zu beginnen
@@ -8599,6 +8721,7 @@ nl: aarzel niet opnieuw te berekenen via een andere berekeningswijze
 no: velg en annen utregningsmåte og beregn påny
 oc: podètz ensajar amb un autre metòde de calcul de relacion
 sv: välj ett annat uträkningssätt och räkna ut igen
+ru: попытайтесь найти родственную связь другим образом
 
     nephews and nieces
 af: broers- en susterskinders
@@ -8641,6 +8764,7 @@ no: Fortsett editering
 oc: persegre la modificacion
 pt: continuar a edição
 sv: Ny uppdatering
+ru: продолжить редактирование
 
     next relationship path
 de: nächster Verwandtschaftsgrad
@@ -8649,6 +8773,7 @@ es: siguiente ruta de parentesco
 fr: chemin suivant
 it: percorso seguente
 oc: camin seguent
+ru: следующая родственная связь
 
     next sibling
 af: volgende broer/volgende suster/volgende broer of suster
@@ -8749,6 +8874,7 @@ no: uten etterkommere
 oc: pas cap de descendent
 pt: sem descendentes
 sv: utan ättlingar
+ru: без потомков
 
     no known relationship link between %s and %s
 af: geen bekende verwantskap tussen %s en %s
@@ -8791,6 +8917,7 @@ no: Foreldre
 oc: pas maridats
 pt: não casados
 sv: Sambo
+ru: без браков
 
     no match
 af: geen passing
@@ -8862,6 +8989,7 @@ no: Ingen endringer
 oc: pas de modificacion
 pt: nenhuma modificação
 sv: Ingen uppdatering
+ru: изменений нет
 
     no sexes check
 af: geslag word nie aangedui nie
@@ -9052,6 +9180,7 @@ no: Merknader
 oc: Ensenhador de las nòtas divèrsas
 pt: sumário de notas diversas
 sv: Summerade noteringar
+ru: изменения вкратце
 
     nth
 af: n-de/1ste/2de/3de/4de/5de/6de/7de/8ste/9de/10de/11de/12de/13de/14de/15de/16de/17de/18de/19de/20ste/21ste/22ste/23ste/24ste/25ste/26ste/27ste/28ste/29ste/30de/31ste/32ste/33ste/34ste/35ste/36ste/37ste/38ste/39ste/40ste/41ste/42ste/43ste/44ste/45ste/46ste/47ste/48ste/49ste/50ste/51ste/52ste/53ste/54ste/55ste/56ste/57ste/58ste/59ste/60ste/61ste/62ste/63ste/64ste/65ste/66ste/67ste/68ste/69ste/70ste/71ste/72ste/73ste/74ste/75ste/76ste/77ste/78ste/79ste/80ste/81ste/82ste/83ste/84ste/85ste/86ste/87ste/88ste/89ste/90ste/91ste/92ste/93ste/94ste/95ste/96ste/97ste/98ste/99ste
@@ -9213,6 +9342,7 @@ no: Antall barn
 oc: nombre d'enfants
 pt: número de filhos
 sv: Antal barn
+ru: количество детей
 
     number of events
 de: Anzahl der Ereignisse
@@ -9226,6 +9356,7 @@ no: Antall hendelser
 oc: nombre d'eveniments
 pt: número de eventos
 sv: Antal händelser
+ru: количество событий
 
     number of individuals
 de: Anzahl der Individuen
@@ -9239,6 +9370,7 @@ no: Antall individer
 oc: nombre d'individus
 pt: número de pessoas
 sv: Antal individer
+ru: количество людей
 
     number of living persons:
 bg: брой на живите лица:
@@ -9277,6 +9409,7 @@ no: nummer
 oc: n° d'Aboville
 pt: n° de Aboville
 sv: nummer
+ru: номер в системе d'Aboville
 
     n° Sosa
 de: Nr. SOSA
@@ -9289,6 +9422,7 @@ nl: Sosa nr.
 no: Anenummer
 oc: n° de Sosa
 sv: Annummer
+ru: номер в системе Sosa
 
     n° Sosa relative to
 af: Sosa nommer relatief tot
@@ -9343,7 +9477,7 @@ oc: ocupacion
 pl: zawód
 pt: ocupação
 ro: ocupatie
-ru: занятие
+ru: занятие/занятия
 sk: povolanie
 sl: poklic
 sv: yrke/yrke
@@ -9766,6 +9900,7 @@ no: farmor og farfar
 oc: grands paternals
 pt: avós paternos
 sv: farmor och farfar
+ru: бабушка и дедушка со стороны отца
 
     person added
 af: persoon bygevoeg
@@ -9866,6 +10001,7 @@ no: Kilde til individ
 oc: font de la persona
 pt: fonte pessoa
 sv: Personkälla
+ru: документ, удостоверяющий личность
 
     person/persons
 af: persoon/persone
@@ -9938,6 +10074,7 @@ no: Arkiv & Bilder
 oc: fotos e documents
 pt: Arquivo & Imagens
 sv: Arkiv & Bilder
+ru: фотографии и документы
 
     place
 af: plek
@@ -9980,6 +10117,7 @@ no: steder
 oc: lòcs
 pt: locais
 sv: orternas
+ru: места
 
     plus
 de: Mehr
@@ -9993,6 +10131,7 @@ no: Mer
 oc: Mai
 pt: Mais
 sv: Mer
+ru: Ещё
 
     population pyramid
 bg: възрастова пирамида
@@ -10113,6 +10252,7 @@ no: oversikt over
 oc: vista de l'arbre
 pt: ver árvore
 sv: översikt över
+ru: ветвь фамильного дерева
 
     previous sibling
 af: vorige broer/vorige suster/vorige broer of suster
@@ -10353,6 +10493,7 @@ no: referanse
 oc: referéncia
 pt: referência
 sv: referens
+ru: ID
 
     region
 de: Region
@@ -10366,6 +10507,7 @@ no: Fylke
 oc: Region
 pt: Região
 sv: Län
+ru: регион
 
     relation/relations
 af: verwant/verwante
@@ -10437,6 +10579,7 @@ no: aner
 oc: ascendents dirèctes
 pt: ascendentes diretos
 sv: anor
+ru: прямые потомки
 
     relationship by marriage
 af: aangetroude verwantskappe
@@ -10509,6 +10652,7 @@ no: utregningsmåte
 oc: mòde de calcul
 pt: modo de cálculo
 sv: uträkningssätt
+ru: искать связь
 
     relationship display options
 de: anzeigeoptionen der Verwandtschafts-Bäume:
@@ -10522,6 +10666,7 @@ no: visningsmåte
 oc: opcions d’afichatge dels arbres de parentat:
 pt: opções de edição das árvores de parentesco:
 sv: sätt att visa
+ru: настройки отображения
 
     relationship link between
 de: verwandt mit ...
@@ -10535,6 +10680,7 @@ no: i slekt med...
 oc: ligam de parentat amb...
 pt: parentesco com...
 sv: släktskap med...
+ru: родственные связи между...
 
     relationship link/relationship links
 af: verwantskap/verwantskappe
@@ -10575,6 +10721,7 @@ it: scorciatoie :
 nl: binnenweg :
 no: snarvei:
 oc: acorchas:
+ru: Ссылки:
 
     relationship%t to
 af: verwantskap%t met
@@ -10630,6 +10777,7 @@ no: Pensjonering
 oc: retirat
 pt: reforma
 sv: Pesnionering
+ru: пенсионер
 
     revision history
 de: Verlauf der Revisionen
@@ -10643,6 +10791,7 @@ no: Revisjonshistorikk
 oc: istoric de las revisions
 pt: histórico das revisões
 sv: Uppdateringshistoria
+ru: история изменений
 
     revision of
 de: Revision von
@@ -10656,6 +10805,7 @@ no: Revisjonsdato
 oc: revision del
 pt: revisão de
 sv: Uppdatering gjord
+ru: дата изменения
 
     same ancestor as n° Sosa
 de: identisch mit Sosa Nr.
@@ -10669,6 +10819,7 @@ no: Samme som Sosa #
 oc: identic(a) al n° Sosa #
 pt: idêntico ao nº Sosa
 sv: Samma ättling som n° Sosa
+ru: тот же предок, что и у Sosa
 
     scellentChildLDS
 de: HLT Kindes-Siege
@@ -10745,6 +10896,7 @@ no: Søk
 oc: recercar totes los
 pt: pesquisar todos os
 sv: Sök alla
+ru: поиск
 
     see
 af: sien
@@ -10817,6 +10969,7 @@ no: vis også
 oc: tanben veire
 pt: ver também
 sv: visa också
+ru: смотри также
 
     see ascendants notes/sources
 de: siehe Notizen/Quellen
@@ -10830,6 +10983,7 @@ no: Se på merknader/kilder
 oc: veire las nòtas e las fonts
 pt: ver notas & fontes
 sv: Se kommande generations noteringar och källor
+ru: смотри заметки/документы
 
     see ascendants pictures
 de: siehe Porträts
@@ -10843,6 +10997,7 @@ no: Se på bilder
 oc: veire las fòtos
 pt: ver fotos
 sv: Se kommande generations bilder
+ru: смотри изображения предков
 
     see descendants notes/sources
 de: siehe Notizen/Quellen
@@ -10856,6 +11011,7 @@ no: Se på merknader/kilder
 oc: veire las nòtas e las fonts
 pt: ver notas & fontes
 sv: Se efterföljandes noteringar och källor
+ru: смотри заметки/документы потомков
 
     see descendants pictures
 de: siehe Porträts
@@ -10869,6 +11025,7 @@ no: Se på bilder
 oc: veire las fòtos
 pt: ver fotos
 sv: Se efterföljandes bilder
+ru: смотри изображения потомков
 
     see further
 af: kyk verder
@@ -10911,6 +11068,7 @@ no: Individuell
 oc: estat civil
 pt: ver pessoa
 sv: Individ
+ru: смотри человека
 
     select
 de: auswählen :
@@ -10924,6 +11082,7 @@ no: velg
 oc: causir:
 pt: selecionar:
 sv: välj
+ru: выберите:
 
     select a letter
 de: wählen Sie einen Buchstaben
@@ -10937,6 +11096,7 @@ no: Velg en bokstav
 oc: causissètz-vos una letra
 pt: selecione uma letra
 sv: välj en bokstav
+ru: выберите букву
 
     select a month to see all the anniversaries
 de: zum zeigen der Geburtstage den Monat auswählen
@@ -10950,6 +11110,7 @@ no: velg en måned for å vise alle fødselsdager
 oc: causissètz-vos un mes per veire los aniversaris
 pt: selecione um mês para ver todos os aniversários
 sv: välj en månad för att visa alla födelsedagar
+ru: выберите месяц
 
     select a spouse
 de: Partner auswählen
@@ -10963,6 +11124,7 @@ no: Velg ektefelle
 oc: causissètz-vos un conjunt:
 pt: selecione um cônjuge:
 sv: Välj maka/make
+ru: выберите супруга/супругу
 
     select person to compute relationship
 de: auf die Person klicken, zu der Sie das Verwandtschaftsverhältnis berechnen möchten
@@ -10976,6 +11138,7 @@ no: klikk på personen som du vil beregne slektskapsgraden til
 oc: causissètz-vos la persona de calcular la parentat
 pt: selecione a pessoa sobre a qual pretende realizar um cálculo de parentesco
 sv: klicka på personen som du vill räkna ut släktskapsgraden med
+ru: выберите человека для поиска родственной связи
 
     select the two revisions you want to compare
 de: wählen Sie zwei zu vergleichende Revisionen
@@ -10989,6 +11152,7 @@ no: Velg revisjoner for å se på historikk
 oc: causissètz-vos las doás revisions de comparar
 pt: selecione as duas revisões que pretende comparar
 sv: Välj de två uppdateringar Du vill jämföra
+ru: выберите две версии для сравнения
 
     send
 af: stuur
@@ -11329,6 +11493,7 @@ no: vises etter:/grener/alfabetisk orden
 oc: triar per:/branca/òrdre alfabetic
 pt: ordenar por:/ramo/ordem alfabética
 sv: visas efter:/grenar/alfabetisk ordning
+ru: сортировать по:/ветви/алфавиту
 
     sort by/date begin/alphabetic order/nb individuals/nb events
 de: sortieren nach: /Anfangsdatum/Alphabet/Anzahl der Individuen/Anzahl der Ereignisse
@@ -11342,6 +11507,7 @@ no: Sorter etter:/Dato/alfabetisk rekkefølge/antall individer/antall hendelser
 oc: triar per:/date de debuta/òrdre alfabetic/nombre de personas/nombre d'eveniments
 pt: ordenar por:/data de início/ordem alfabética/número de pessoas/número de eventos
 sv: Sortera efter datum börja alfabetisk ordning/nb individer/nb haändelser
+ru: сортировать по:/дате/алфавиту/людям/событиям
 
     sort by/generation/alphabetic order
 de: sortieren nach: /Generationen/Alphabet
@@ -11355,6 +11521,7 @@ no: vises etter:/grener/alfabetisk orden
 oc: triar per:/generacion/òrdre alfabetic
 pt: ordenar por:/geração/ordem alfabética
 sv: visas efter:/grenar/alfabetisk ordning
+ru: сортировать по:/поколению/алфавиту
 
     Sosa
 af: Sosa
@@ -11403,6 +11570,7 @@ oc: referéncia de Sosa: %t
 pt: referência Sosa: %t
 ro: referinta Sosa: %t
 sk: referenciou "Sosa": %t
+ru: ссылка Sosa: %t
 
     source/sources
 af: bron/bronne
@@ -11475,6 +11643,7 @@ no: partner/partners
 oc: conjunt/conjunts
 pt: cônjuge/cônjuges
 sv: partner/partners
+ru: супруг/супруги
 
     spouses not included
 af: eggenote weggelaat
@@ -11576,6 +11745,7 @@ no: Statistikk og familehendelser
 oc: Estatisticas e aniversaris
 pt: Estatísticas e aniversários
 sv: Statistik och årsdagar
+ru: статистика и годовщины
 
     subdivision
 de: Ort
@@ -11589,6 +11759,7 @@ no: Sted
 oc: Lòc
 pt: Localidade
 sv: Ort
+ru: раздел
 
     summary book ascendants
 de: liste der Dateien
@@ -11602,6 +11773,7 @@ no: sammendrag
 oc: lista de las personas
 pt: lista de fichas
 sv: lista över ansedlar
+ru: список предков
 
     surname alias
 af: van alias
@@ -11738,6 +11910,7 @@ no: grener
 oc: brancas patronimicas
 pt: ramos patronímicos
 sv: grenar
+ru: ветвь фамилии
 
     surnames list
 af: vanne lys
@@ -11781,6 +11954,7 @@ no: tabell
 oc: taula
 pt: tabela
 sv: tabell
+ru: таблица
 
     text
 af: teks
@@ -12173,6 +12347,7 @@ no: Fødselsdato til %t og %t er for langt fra hverandre
 oc: la diferéncia d’atge entre %t e %t es pro importanta
 pt: a diferença de idade entre %t e %t é bastante importante
 sv: Skillnaden i ålder mellan %t och %t är mycket viktig
+ru: значительная разница в возрасте между %t и %t
 
     the father-in-law/the mother-in-law
 af: die skoonpa/die skoonma
@@ -12274,6 +12449,7 @@ no: Fødselsdato til barnet til %t og %t er for nærme hverandre
 oc: aqueles enfants de %t e %t son nascuts plan trop apressats
 pt: os seguintes filhos de %t e de %t nasceram muito próximos
 sv: Följande barn till %t och %t är födda mycket tätt
+ru: даты рождения детей %t и %t очень близки
 
     the following children of %t and %t are not in order
 af: die volgende kinders van %t and %t is nie in die regte volgorde nie
@@ -12328,7 +12504,7 @@ oc: los felens
 pl: wnuki
 pt: os netos
 ro: nepoti
-ru: правнуки
+ru: внуки
 sk: vnúčatá
 sl: vnuki
 sv: barnbarnen
@@ -12462,6 +12638,7 @@ no: Siste %d ekteskap (Ekteskapsdato)
 oc: las %d darrièras unions celebradas
 pt: as últimas %d uniões celebradas
 sv: Det senaste %d firade bröllopet
+ru: последние %d свадеб
 
     the latest %d marriages
 af: die laaste %d huwelike
@@ -12505,6 +12682,7 @@ no: Siste %d ekteskap (Registreringsdato)
 oc: las %d darrièras unions enregistradas
 pt: as últimas %d uniões registadas
 sv: Det senast %d registreade äktenskapet
+ru: последние %d зарегистрированных браков
 
     the latest %t deaths
 af: die laaste %t afsterwes
@@ -12547,6 +12725,7 @@ no: %d registreringer er blitt oppdatert
 oc: la modification se faguèt: %s fichas modificadas
 pt: a alteração decorreu com sucesso: %d ficha(s) corrigida(s)
 sv: Modifiering av inklämda %d personer
+ru: изменения затронули %d людей
 
     the parents
 af: die ouers
@@ -12743,6 +12922,7 @@ no: Editer
 oc: per cambiar
 pt: para modificar
 sv: för att ändra
+ru: к изменению
 
     to come
 de: in Erwartung
@@ -12756,6 +12936,7 @@ no: kommende hendelser
 oc: a venir
 pt: brevemente
 sv: kommande händelser
+ru: ещё будет
 
     to the %s generation
 af: tot die %s geslag
@@ -13030,6 +13211,7 @@ no: verktøy
 oc: aisinas
 pt: ferramentas
 sv: verktyg
+ru: инструменты
 
     total
 af: totaal
@@ -13072,6 +13254,7 @@ no: Sogn
 oc: Comuna
 pt: Localidade
 sv: Socken
+ru: Город
 
     tree
 af: boom
@@ -13114,6 +13297,7 @@ no: Tavler & Lister
 oc: Arbres e Listas
 pt: Tabelas & Listas
 sv: Diagram & Listor
+ru: Деревья и Списки
 
     try again
 bg: опитайте отново
@@ -13131,6 +13315,7 @@ oc: tornar ensajar
 pt: tente novamente
 sk: skús znovu
 sv: försöka igen
+ru: повторите попытку
 
     try another/relationship computing
 de: Klicken Sie hier / um eine andere Berechnungsmethode zu versuchen
@@ -13144,6 +13329,7 @@ no: forsøk en annen kalkuleringsmulighet
 oc: Clicatz aicí/per ensajar un autre mòde de calcul
 pt: Clique aqui/para tentar um modo de cálculo diferente
 sv: Försök ett annat programmeringssätt
+ru: попытайтесь изменить тип связи
 
     uncles and aunts
 af: ooms en tantes
@@ -13333,6 +13519,7 @@ no: Redigere familie
 oc: gerir las unions
 pt: atualizar família
 sv: Redigera familje
+ru: изменить семью
 
     use "link" instead of "create"
 af: gebruik "koppel" eerder as "skep"
@@ -13384,6 +13571,7 @@ pt: utilizador/palavra passe/anular
 ro: utilizator/parola/anulare
 sl: uporabnik/geslo/prekliči
 sv: användare/passord/avbryt
+ru: пользователь/пароль/отмена
 
     validate/delete
 bg: да се потвърди/да се изтрие
@@ -13427,6 +13615,7 @@ fr: version
 it: versione
 nl: versie
 oc: version
+ru: версия
 
     view source
 de: siehe Quelle
@@ -13441,6 +13630,7 @@ no: se kilde
 oc: veire la font
 sk: pozri zdroj
 sv: se källa
+ru: просмотр первоисточника
 
     visualize/show/hide/summary
 bg: да се визуализира/да се покаже/да се скрие/резюме
@@ -13476,6 +13666,7 @@ no: Individ
 oc: Persona
 pt: Pessoa
 sv: Individ
+ru: личность
 
     warnings
 af: waarskuwings
@@ -13518,6 +13709,7 @@ no: fødested
 oc: lòc de naissença
 pt: local de nascimento
 sv: födelseort
+ru: были рождены
 
     where dead
 de: Sterbeort
@@ -13531,6 +13723,7 @@ no: dødssted
 oc: lòc de decès
 pt: local do óbito
 sv: dödsort
+ru: были мертвы
 
     where married
 de: Ort der Trauung
@@ -13544,6 +13737,7 @@ no: sted for vigsel
 oc: lòc de l'union
 pt: local da união
 sv: vigselort
+ru: были в браке
 
     will
 de: letzter Wille
@@ -13805,6 +13999,7 @@ oc: sètz vesedor(a)/sètz pas vesedor(a)
 pt: você é visível/você não é visível
 ro: tu esti vizibil/tu nu esti vizibil
 sv: du är synlig/du är ej synlig
+ru: вы видны/вы скрыты
 
     you must first merge
 af: jy moet eers saamvoeg
