@@ -378,7 +378,6 @@ let ged_pevent base oc per_sel evt =
            match wk with
              Witness -> Printf.fprintf oc "3 RELA witness\n"
            | Witness_GodParent -> Printf.fprintf oc "3 RELA GODP\n"
-           | Witness_Officer -> Printf.fprintf oc "3 RELA officer\n"
          end)
     evt.epers_witnesses
 
@@ -611,7 +610,6 @@ let ged_fevent base oc ifam fam_sel evt =
            match wk with
              Witness -> Printf.fprintf oc "3 RELA witness\n"
            | Witness_GodParent -> Printf.fprintf oc "3 RELA GODP\n"
-           | Witness_Officer -> Printf.fprintf oc "3 RELA officer\n"
          end)
     evt.efam_witnesses
 

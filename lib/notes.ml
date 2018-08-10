@@ -75,19 +75,17 @@ let print_whole_notes conf base fnotes title s ho =
       end
   in
   Hutil.gen_print_link_to_welcome what_links_page conf true;
-  Wserver.printf "<div class=\"d-flex justify-content-between\">\n";
   if title <> "" then
     begin let title =
-      match ho with
-        Some (case_sens, h) -> html_highlight case_sens h title
-      | None -> title
-    in
-      Wserver.printf "<h1 class=\"my-3\">%s</h1>\n" title
+            match ho with
+            | Some (case_sens, h) -> html_highlight case_sens h title
+            | None -> title
+      in
+      Wserver.printf "<h1>%s</h1>\n" title
     end;
-  Wserver.printf "</div>\n";
   begin match Util.open_etc_file "summary" with
-    Some ic -> Templ.copy_from_templ conf [] ic
-  | None -> ()
+    | Some ic -> Templ.copy_from_templ conf [] ic
+    | None -> ()
   end;
   let file_path = file_path conf base in
   let s = string_with_macros conf [] s in
@@ -103,7 +101,7 @@ let print_whole_notes conf base fnotes title s ho =
   in
   let s =
     match ho with
-      Some (case_sens, h) -> html_highlight case_sens h s
+    | Some (case_sens, h) -> html_highlight case_sens h s
     | None -> s
   in
   Wserver.printf "%s\n" s;
@@ -258,7 +256,7 @@ let print_linked_list conf base pgl =
            Wserver.printf "<tt>";
            if conf.wizard then
              begin
-               Wserver.printf "<a class=\"mx-2\" href=\"%s&i=%d&\">"
+               Wserver.printf "<a href=\"%s&i=%d&\">"
                  (commd conf) (Adef.int_of_iper ip);
                Wserver.printf "</sup><i class=\"fa fa-cog\"></i></sup>";
                Wserver.printf "</a>"

@@ -3478,7 +3478,7 @@ and eval_date_field_var conf d =
           end
       | _ -> VVstring ""
       end
-  | [] -> VVstring (Date.string_of_date_sep conf "&#010;  " d)
+  | [] -> VVstring (Date.string_of_date_sep conf "<br />" d)
   | _ -> raise Not_found
 and _eval_place_field_var conf place =
   function

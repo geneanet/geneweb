@@ -890,7 +890,7 @@ let titled_person_text conf base p t =
 let one_title_text base t =
   let place = sou base t.t_place in
   let s = sou base t.t_ident in
-  let s = if place = "" then s else s ^ " " ^ place in " <em>" ^ s ^ "</em>"
+  let s = if place = "" then s else s ^ " " ^ place in ", <em>" ^ s ^ "</em>"
 
 let geneweb_link conf href s =
   if conf.cancel_links then s
@@ -1125,7 +1125,6 @@ let string_of_fevent_name conf base efam_name =
 let string_of_witness_kind conf sex witness_kind =
   match witness_kind with
     Witness -> transl_nth conf "witness/witness/witnesses" 0
-  | Witness_Officer -> transl_nth conf "officer/officer/officers" 0
   | Witness_GodParent ->
       let n = index_of_sex sex in
       transl_nth conf "godfather/godmother/godparents" n

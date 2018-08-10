@@ -278,7 +278,6 @@ and eval_simple_var conf base env (fam, cpl, des) =
                   if i >= 0 && i < Array.length e.efam_witnesses then
                     match snd e.efam_witnesses.(i) with
                       Witness_GodParent -> str_val "godp"
-                    | Witness_Officer -> str_val "offi"
                     | _ -> str_val ""
                   else if
                     i >= 0 && i < 2 && Array.length e.efam_witnesses < 2

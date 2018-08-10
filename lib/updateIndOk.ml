@@ -251,7 +251,6 @@ let rec reconstitute_pevents conf ext cnt =
               let c =
                 match p_getenv conf.env var_c with
                   Some "godp" -> c, Witness_GodParent
-                | Some "offi" -> c, Witness_Officer
                 | _ -> c, Witness
               in
               let var_w =
