@@ -885,7 +885,7 @@ let titled_person_text conf base p t =
 let one_title_text base t =
   let place = sou base t.t_place in
   let s = sou base t.t_ident in
-  let s = if place = "" then s else s ^ " " ^ place in " <em>" ^ s ^ "</em>"
+  let s = if place = "" then s else s ^ " " ^ place in ", <em>" ^ s ^ "</em>"
 
 let geneweb_link conf href s =
   if conf.cancel_links then s
