@@ -657,12 +657,15 @@ let pers_to_piqi_simple_person conf base p base_prefix =
     let has_parent = get_parents p <> None in
     let has_spouse = Array.length (get_family p) >= 1 in
     let has_child =
-    (Array.fold_left
-        (fun has_children ifam ->
-          let fam = foi base ifam in
-          let children = get_children fam in
-          (has_children || Array.length children >= 1))
-        false (get_family p))
+      let a = get_family p in
+      let len = Array.length a in
+      let rec loop i =
+        if i = len then false
+        else
+          let fam = foi base (Array.unsafe_get a i) in
+          get_children fam <> [||] || loop (i + 1)
+      in
+      loop 0
     in
     let gen_p = Util.string_gen_person base (gen_person_of_person p)
     in
