@@ -388,6 +388,35 @@ let event_to_piqi_event pevt_name fevt_name =
   | Some _ -> `efam_custom
   | None -> failwith "event_to_piqi_event"
 
+(* FIXME: SEEMS VERY WRONG (Children/Ancestor *)
+let has_more_infos_aux ~base ~gen ~max_gen p = function
+  | Root -> false
+  | Siblings -> Array.length (get_family p) > 0
+  | Children ->
+    gen = max_gen - 1 && Array.length (get_family p) > 0
+           (*
+           fst (List.fold_left
+                  (fun (children_or_spouses, nb_fam) ifam ->
+                    let nb_fam = succ nb_fam in
+                    let fam = foi base ifam in
+                    let children = get_children fam in
+                    (children_or_spouses || Array.length children > 1 ||
+                       nb_fam > 1, nb_fam))
+                  (false, 0) (Array.to_list (get_family p)))
+           *)
+  | Ancestor ->
+    gen > 1
+    ||
+    (gen = max_gen - 1 && get_parents p <> None)
+    ||
+    (let a = get_family p in
+     match Array.length a with
+     | 0 -> false
+     | x when x > 1 -> true
+     | _ -> Array.length @@ get_children (foi base (Array.unsafe_get a 0)) > 1)
+  | Spouse ->
+    (get_parents p <> None) || Array.length (get_family p) > 1
+
 (* ************************************************************************** *)
 (*  [Fonc] pers_to_piqi_person_tree :
             config -> base -> person -> string -> PersonTree                  *)
@@ -456,35 +485,7 @@ let pers_to_piqi_person_tree conf base p more_info gen max_gen base_prefix =
         then "1" else ""
       else ""
     in
-    let has_more_infos =
-      match more_info with
-      | Root -> false
-      | Siblings -> Array.length (get_family p) > 0
-      | Children ->
-           gen = max_gen - 1 && Array.length (get_family p) > 0
-           (*
-           fst (List.fold_left
-                  (fun (children_or_spouses, nb_fam) ifam ->
-                    let nb_fam = succ nb_fam in
-                    let fam = foi base ifam in
-                    let children = get_children fam in
-                    (children_or_spouses || Array.length children > 1 ||
-                       nb_fam > 1, nb_fam))
-                  (false, 0) (Array.to_list (get_family p)))
-           *)
-      | Ancestor ->
-          gen > 1
-          ||
-          (gen = max_gen - 1 && get_parents p <> None)
-          ||
-          (let a = get_family p in
-           match Array.length a with
-           | 0 -> false
-           | x when x > 1 -> true
-           | _ -> Array.length @@ get_children (foi base (Array.unsafe_get a 0)) > 1)
-      | Spouse ->
-          (get_parents p <> None) || Array.length (get_family p) > 1
-    in
+    let has_more_infos = has_more_infos_aux ~base ~gen ~max_gen p more_info in
     {
       Mread.Person_tree.index = index;
       sex = sex;
@@ -3426,39 +3427,7 @@ let pers_to_piqi_person_tree_full conf base p more_info gen max_gen base_prefix 
       else None
     in
     let visible = is_visible conf base p in
-    let has_more_infos =
-      match more_info with
-      | Root -> false
-      | Siblings -> Array.length (get_family p) > 0
-      | Children ->
-           gen = max_gen - 1 && Array.length (get_family p) > 0
-           (*
-           fst (List.fold_left
-                  (fun (children_or_spouses, nb_fam) ifam ->
-                    let nb_fam = succ nb_fam in
-                    let fam = foi base ifam in
-                    let children = get_children fam in
-                    (children_or_spouses || Array.length children > 1 ||
-                       nb_fam > 1, nb_fam))
-                  (false, 0) (Array.to_list (get_family p)))
-           *)
-      | Ancestor ->
-          let has_parents = get_parents p <> None in
-          (gen = max_gen - 1 && has_parents) ||
-           (fst (List.fold_left
-                   (fun (children_or_spouses, nb_fam) ifam ->
-                     let nb_fam = succ nb_fam in
-                     let fam = foi base ifam in
-                     let children = get_children fam in
-                     (children_or_spouses ||
-                      (gen > 1 && Array.length children > 1) ||
-                      nb_fam > 1,
-                      nb_fam))
-                   (false, 0) (Array.to_list (get_family p))))
-      | Spouse ->
-          let has_parents = get_parents p <> None in
-          has_parents || Array.length (get_family p) > 1
-    in
+    let has_more_infos = has_more_infos_aux ~base ~gen ~max_gen p  more_info in
     {
       Mread.Person_tree_full.index = index;
       sex = sex;
