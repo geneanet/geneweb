@@ -473,16 +473,15 @@ let pers_to_piqi_person_tree conf base p more_info gen max_gen base_prefix =
                   (false, 0) (Array.to_list (get_family p)))
            *)
       | Ancestor ->
-          let has_parents = get_parents p <> None in
-          (gen = max_gen - 1 && has_parents) ||
-           (fst (List.fold_left
-                   (fun (children_or_spouses, nb_fam) ifam ->
-                     let nb_fam = succ nb_fam in
-                     let fam = foi base ifam in
-                     let children = get_children fam in
-                     (children_or_spouses || (gen > 1 && Array.length children > 1) || nb_fam > 1,
-                      nb_fam))
-                   (false, 0) (Array.to_list (get_family p))))
+          gen > 1
+          ||
+          (gen = max_gen - 1 && get_parents p <> None)
+          ||
+          (let a = get_family p in
+           match Array.length a with
+           | 0 -> false
+           | x when x > 1 -> true
+           | _ -> Array.length @@ get_children (foi base (Array.unsafe_get a 0)) > 1)
       | Spouse ->
           (get_parents p <> None) || Array.length (get_family p) > 1
     in
