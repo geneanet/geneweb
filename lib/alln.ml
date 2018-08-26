@@ -274,7 +274,7 @@ let print_frequency_any conf base is_surnames list len =
 
 (* selection *)
 
-let select_names conf base is_surnames ini need_whole_list =
+let select_names conf base is_surnames ini _need_whole_list = (* FIXME *)
   let iii =
     if is_surnames then persons_of_surname base
     else persons_of_first_name base
@@ -322,7 +322,7 @@ let select_names conf base is_surnames ini need_whole_list =
                   | [] -> [k, s, cnt], len
               else list, len
             in
-            match spi_next iii istr need_whole_list with
+            match spi_next iii istr (* need_whole_list *) with
             | (istr, dlen) -> loop istr (len + dlen) list
             | exception Not_found -> list, len
           else list, len

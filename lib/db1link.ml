@@ -1369,7 +1369,7 @@ let link next_family_fun bdir =
     linked_base gen per_index_ic per_ic fam_index_ic fam_ic bdir
   in
   Hashtbl.clear gen.g_patch_p;
-  let base = Gwdb.base_of_base1 dsk_base in
+  let base = (* Gwdb.base_of_base1 *) dsk_base in
   if !do_check && gen.g_pcnt > 0 then
     begin let changed_p (ip, p, o_sex, o_rpar) =
       let p = Gwdb.dsk_person_of_person p in

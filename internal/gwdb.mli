@@ -15,7 +15,7 @@ type fam_event = (iper, istr) Def.gen_fam_event
 
 type string_person_index
 
-type base
+type base = Dbdisk.dsk_base
 
 val open_base : string -> base
 val close_base : base -> unit
@@ -134,8 +134,8 @@ val persons_of_surname : base -> string_person_index
 
 val spi_first : string_person_index -> string -> istr
   (* first [first/sur]name starting with that string *)
-val spi_next : string_person_index -> istr -> bool -> istr * int
-  (* next [first/sur]name by Gutil.alphabetical order *)
+val spi_next : string_person_index -> istr -> (* bool -> *) istr * int
+  (* next [first/sur]name by alphabetical order *)
 val spi_find : string_person_index -> istr -> iper list
   (* all persons having that [first/sur]name *)
 
@@ -194,8 +194,6 @@ val date_of_last_change : base -> float
 (**/**)
 (** For database builders *)
 
-val base_of_base1 : Dbdisk.dsk_base -> base
 val dsk_person_of_person : person -> Dbdisk.dsk_person
 
-val apply_base1 : base -> (Dbdisk.dsk_base -> unit) -> unit
-val apply_base2 : base -> (Db2disk.db2 -> unit) -> unit
+val apply : base -> (Dbdisk.dsk_base -> unit) -> unit

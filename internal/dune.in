@@ -4,5 +4,5 @@
  (libraries str geneweb.wserver camlp5.gramlib)
  (preprocess (action (run %{bin:cppo} %%%API%%% -V OCAML:%{ocaml_version} %{input-file})))
  (wrapped false)
- (modules_without_implementation config dbdisk def templAst)
+ (modules_without_implementation config dbdisk def templAst gwdb_driver)
 )

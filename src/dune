@@ -1,5 +1,5 @@
 (executables
-  (names gwc1 gwc2 mk_consang gwd gwu update_nldb check_base i18n_check)
+  (names gwc1 mk_consang gwd gwu update_nldb check_base i18n_check)
   (libraries geneweb.internal
              geneweb.wserver
              geneweb.dag2html
@@ -9,5 +9,5 @@
 
 (install
  (section bin)
- (files gwd.exe gwu.exe gwc1.exe gwc2.exe mk_consang.exe update_nldb.exe)
+ (files gwd.exe gwu.exe gwc1.exe mk_consang.exe update_nldb.exe)
 )

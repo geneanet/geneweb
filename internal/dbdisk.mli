@@ -65,6 +65,8 @@ type base_func =
     commit_notes : string -> string -> unit;
     patched_ascends : unit -> iper list;
     is_patched_person : iper -> bool;
-    cleanup : unit -> unit }
+    cleanup : unit -> unit
+}
 
-type dsk_base = { data : base_data; func : base_func }
+type dsk_base = { data : base_data
+                ; func : base_func }

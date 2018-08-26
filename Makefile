@@ -18,13 +18,11 @@ BUILD_DIR=_build/default
 
 INSTALL_EXE = \
 	src/gwc1 \
-	src/gwc2 \
 	src/mk_consang \
 	src/gwd \
 	src/gwu \
 	src/update_nldb \
 	ged2gwb/ged2gwb \
-	ged2gwb/ged2gwb2 \
 	gwb2ged/gwb2ged \
 	setup/setup
 
@@ -88,7 +86,6 @@ EVERYTHING_EXE = \
 
 CAMLP5_PA_EXTEND_FILES = \
 	ged2gwb/ged2gwb \
-	ged2gwb/ged2gwb2 \
 	src/pr_transl \
 	internal/templ \
 	internal/update \
@@ -210,7 +207,6 @@ distrib: distrib-exe
 	cp $(BUILD_DIR)/src/gwd.exe $(DISTRIB_DIR)/gw/gwd$(EXE); \
 	cp $(BUILD_DIR)/src/gwu.exe $(DISTRIB_DIR)/gw/gwu$(EXE); \
 	cp $(BUILD_DIR)/ged2gwb/ged2gwb.exe $(DISTRIB_DIR)/gw/ged2gwb$(EXE); \
-	cp $(BUILD_DIR)/ged2gwb/ged2gwb2.exe $(DISTRIB_DIR)/gw/ged2gwb2$(EXE); \
 	cp $(BUILD_DIR)/gwb2ged/gwb2ged.exe $(DISTRIB_DIR)/gw/gwb2ged$(EXE); \
 	cp $(BUILD_DIR)/contrib/gwbase/etc/connex.exe $(DISTRIB_DIR)/gw/connex$(EXE); \
 	cp $(BUILD_DIR)/contrib/gwdiff/gwdiff.exe $(DISTRIB_DIR)/gw/gwdiff$(EXE); \
