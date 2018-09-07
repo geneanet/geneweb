@@ -2200,46 +2200,4 @@ let person_node_map_lia conf base l =
            }))
          l)
 
-
-(* Utiles ... *)
-
-
-(* *********************************************************************** *)
-(*  [Fonc] split : string -> char -> string * string                       *)
-(** [Description] : Renvoie un couple de chaîne avec en première valeur,
-                    la sous chaîne jusqu'au caractère sep et le reste en
-                    deuxième valeur.
-    [Args] :
-      - str : la chaîne que l'on veut découper
-      - sep : le caractère de séparation
-    [Retour] :
-      - string * string : "toto-tata-titi" => ("toto", "tata-titi")
-    [Rem] : Non exporté en clair hors de ce module.                        *)
-(* *********************************************************************** *)
-let split str sep =
-  let i = String.index str sep in
-  let s = String.sub str 0 i in
-  let sn = String.sub str (i + 1) (String.length str - i - 1) in
-  (s, sn)
-
-
-(* *********************************************************************** *)
-(*  [Fonc] explode : string -> char -> string list                         *)
-(** [Description] : Renvoie la liste des chaîne découpé selon le séparateur.
-    [Args] :
-      - str : la chaîne que l'on veut découper
-      - sep : le caractère de séparation
-    [Retour] :
-      - string list : "tata-titi" => ["toto"; "tata"]
-    [Rem] : Non exporté en clair hors de ce module.                        *)
-(* *********************************************************************** *)
-let explode str sep =
-  let rec loop s accu =
-    try
-      let (s, sn) = split s sep in
-      loop sn (s :: accu)
-    with Not_found -> (s :: accu)
-  in
-  loop str []
-
 #endif

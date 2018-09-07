@@ -309,3 +309,12 @@ val fprintf_date : out_channel -> Unix.tm -> unit
 (* [name_key base name] is [name],
    with particles put at the end of the string instead of the beginning *)
 val name_key : Gwdb.base -> string -> string
+
+(* [nb_char_occ c s] return the number of times [c] appears in [s] *)
+val nb_char_occ : char -> string -> int
+
+(* [filter_map fn list] is a combination of map and filter. Not tail-recursive *)
+val filter_map : ('a -> 'b option) -> 'a list -> 'b list
+
+(* [rev_iter fn list] is like [List.iter fn (List.rev list)]. *)
+val rev_iter : ('a -> unit) -> 'a list -> unit

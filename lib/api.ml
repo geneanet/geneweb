@@ -1674,9 +1674,10 @@ let print_index_search conf export_directory =
             in
             list_inx := NameSort.add (i, sn, fn, r, date) !list_inx;
             (* Faut il faire si y'a plusieurs espaces ? *)
-            List.iter (fun sn -> add_to_map sn i) (Api_util.explode sn ' ');
-            List.iter (fun fn -> add_to_map fn i) (Api_util.explode fn ' ');
-            List.iter (fun n -> add_to_map n i) (Api_util.explode r ' ');
+            (* FIXME: Does order matter or not? If not, use List.iter instead *)
+            Util.rev_iter (fun sn -> add_to_map sn i) (String.split_on_char ' ' sn);
+            Util.rev_iter (fun fn -> add_to_map fn i) (String.split_on_char ' ' fn);
+            Util.rev_iter (fun n -> add_to_map n i) (String.split_on_char ' ' r);
           end
       done;
 
@@ -2171,12 +2172,13 @@ let print_synchro_patch_mobile conf base =
                     let (split_l, nb_words, nb_chars) =
                       List.fold_left
                         (fun (split_l, nb_words, nb_chars) s ->
-                          let l = Api_util.explode s ' ' in
-                          let sub_nb_chars =
-                            List.fold_left
-                              (fun nb_chars s -> nb_chars + String.length s)
-                              0 l
-                          in
+                           (* FIXME: Does order matter or not? *)
+                           let l = String.split_on_char ' ' s |> List.rev in
+                           let sub_nb_chars =
+                             match List.length l with
+                             | 0 -> 0
+                             | x -> String.length s - (x - 1)
+                           in
                           (List.rev_append split_l l,
                            nb_words + List.length l,
                            nb_chars + sub_nb_chars))

@@ -527,12 +527,10 @@ let print_config conf base =
   let (gwf_place_format, gwf_place_format_placeholder) =
     match p_getenv conf.base_env "places_format" with
     | Some s ->
-        let expl_placeholder = Api_util.explode s ',' in
         let placeholder =
-          (* Attention explode renvoie en sens inverse *)
           (try
-             List.fold_left
-               (fun accu s ->
+             List.fold_right
+               (fun s accu ->
                   match s with
                   | "Subdivision" -> accu
                   | "Town" -> (transl conf "town") :: accu
@@ -540,16 +538,16 @@ let print_config conf base =
                   | "County" -> (transl conf "county") :: accu
                   | "Region" -> (transl conf "region") :: accu
                   | "Country" -> (transl conf "country") :: accu
-                  | _ -> failwith "decode_places_format")
-               [] (Api_util.explode s ',')
-           with Failure _ -> [])
+                  | _ -> raise Not_found)
+               (String.split_on_char ',' s) []
+           with Not_found -> [])
         in
         let placeholder = String.concat ", " placeholder in
         (* On ajoute les lieux-dit. *)
         let placeholder =
-          match List.rev expl_placeholder with
+          match String.split_on_char ',' s with
           | "Subdivision" :: _ ->
-              "[" ^ (transl conf "subdivision") ^ "] - " ^ placeholder
+            "[" ^ (transl conf "subdivision") ^ "] - " ^ placeholder
           | _ -> placeholder
         in
         (s, placeholder)

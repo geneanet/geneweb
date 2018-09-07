@@ -1153,17 +1153,6 @@ let base_path pref bname =
     else bfile
   else bfile
 
-let explode s c =
-  let rec loop list i j =
-    if i = 0 then
-      if s.[i] = c then "" :: list
-      else let ss = String.sub s 0 j in ss :: list
-    else if s.[i] = c then
-      let ss = String.sub s (i + 1) (j - i - 1) in loop (ss :: list) (i - 1) i
-    else loop list (i - 1) j
-  in
-  let len = String.length s in loop [] (len - 1) len
-
 (* ************************************************************************ *)
 (*  [Fonc] etc_file_name : config -> string -> string                       *)
 (** [Description] : Renvoie le chemin vers le fichier de template passé
@@ -1178,7 +1167,7 @@ let explode s c =
 let etc_file_name conf fname =
   (* On recherche si dans le nom du fichier, on a specifié son *)
   (* répertoire, i.e. si fname est écrit comme ceci : dir/file *)
-  let fname = List.fold_left Filename.concat "" (explode fname '/') in
+  let fname = List.fold_left Filename.concat "" (String.split_on_char '/' fname) in
   (* On cherche le fichier dans cet ordre :
      - dans la base (bases/etc/base_name/name.txt)
      - dans la base (bases/etc/templx/name.txt)
@@ -1710,34 +1699,10 @@ let string_with_macros conf env s =
 
 let place_of_string conf place =
   match p_getenv conf.base_env "place" with
-    Some gwf_place ->
-      (*
-      let lines_list_of_string s =
-        loop [] 0 0 where rec loop lines len i =
-          if i = String.length s then
-            List.rev (if len = 0 then lines else [Buff.get len :: lines])
-          else if s.[i] = ',' then
-            let line = Buff.get len in
-            loop [line :: lines] 0 (i + 1)
-          else
-            loop lines (Buff.store len s.[i]) (i + 1)
-      in
-      *)
-      let split str sep =
-        let i = String.index str sep in
-        let s = String.sub str 0 i in
-        let sn = String.sub str (i + 1) (String.length str - i - 1) in s, sn
-      in
-      let explode str sep =
-        let rec loop s accu =
-          try let (s, sn) = split s sep in loop sn (s :: accu) with
-            Not_found -> s :: accu
-        in
-        loop str []
-      in
-      let list = explode gwf_place ',' in
+  | Some gwf_place ->
+      let list = String.split_on_char ',' gwf_place in
       let list = List.map String.trim list in
-      let list_p = explode place ',' in
+      let list_p = String.split_on_char ',' place in
       let list_p = List.map String.trim list_p in
       let place =
         {other = ""; town = ""; township = ""; canton = ""; district = "";
@@ -3589,3 +3554,19 @@ let fprintf_date oc tm =
   Printf.fprintf oc "%4d-%02d-%02d %02d:%02d:%02d" (1900 + tm.Unix.tm_year)
     (succ tm.Unix.tm_mon) tm.Unix.tm_mday tm.Unix.tm_hour tm.Unix.tm_min
     tm.Unix.tm_sec
+
+let nb_char_occ c s =
+  let cnt = ref 0 in
+  String.iter (fun x -> if x = c then incr cnt) s ;
+  !cnt
+
+let rec filter_map fn = function
+  | [] -> []
+  | hd :: tl ->
+    match fn hd with
+    | Some x -> x :: filter_map fn tl
+    | None -> filter_map fn tl
+
+let rec rev_iter fn = function
+  | [] -> ()
+  | hd :: tl -> let () = rev_iter fn tl in fn hd

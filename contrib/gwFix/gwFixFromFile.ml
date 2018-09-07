@@ -16,22 +16,9 @@ open Gwdb
 
 let trace = ref false
 
-
-let split str sep =
-  let i = String.index str sep in
-  let s = String.sub str 0 i in
-  let sn = String.sub str (i + 1) (String.length str - i - 1) in s, sn
-
-let explode str sep =
-  let rec loop s accu =
-    try let (s, sn) = split s sep in loop sn (s :: accu) with
-      Not_found -> s :: accu
-  in
-  List.rev (loop str [])
-
 let read_file fname =
   let split_name name =
-    match explode name ';' with
+    match String.split_on_char ';' name with
       [sn; fn; occ; _] ->
         let occ =
           try int_of_string occ with

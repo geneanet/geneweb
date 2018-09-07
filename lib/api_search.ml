@@ -235,7 +235,7 @@ let select_both_all base ini_n ini_p maiden_name =
     (* On sépare les noms avec tirets ... *)
     let ini_n =
       List.fold_left
-        (fun accu s -> (explode s '-') @ accu)
+        (fun accu s -> List.rev_append (String.split_on_char '-' s) accu)
         [] ini_n
     in
     let rec loop ifam_l l =
@@ -717,21 +717,20 @@ let search_auto_complete conf base mode place_mode max_res n =
       let ini = Mutil.tr '_' ' ' n in
       let place_format =
         match p_getenv conf.base_env "places_format" with
+        | None -> []
         | Some s ->
-            (try
-               List.fold_right
-                 (fun s accu ->
-                    match s with
-                    | "Subdivision" -> `subdivision :: accu
-                    | "Town" -> `town :: accu
-                    | "Area code" -> `area_code :: accu
-                    | "County" -> `county :: accu
-                    | "Region" -> `region :: accu
-                    | "Country" -> `country :: accu
-                    | _ -> failwith "decode_places_format")
-                 (Api_util.explode s ',') []
-            with Failure _ -> [])
-        | _ -> []
+          try
+            List.map
+              (function
+                | "Subdivision" -> `subdivision
+                | "Town" -> `town
+                | "Area code" -> `area_code
+                | "County" -> `county
+                | "Region" -> `region
+                | "Country" -> `country
+                | _ -> raise Not_found)
+              (String.split_on_char ',' s)
+          with Not_found -> []
       in
       let len_place_format = List.length place_format in
       let rec reduce l accu mode_dico max_res =
@@ -757,41 +756,30 @@ let search_auto_complete conf base mode place_mode max_res n =
                 begin
                   let tmps =
                     if has_subdivision && place_mode = Some `subdivision then
-                      let s =
-                        String.sub k (i + 1) (String.length k - i - 1)
-                      in
-                      List.length (Api_util.explode s ',') + 1
-                    else
-                      List.length (Api_util.explode k ',') + 1
+                      let s = String.sub k (i + 1) (String.length k - i - 1) in
+                      if s = "" then 1
+                      else match Util.nb_char_occ ',' s with
+                        | 0 -> 2
+                        | x -> x + 2
+                    else match Util.nb_char_occ ',' k with
+                      | 0 -> 2
+                      | x -> x + 2
                   in
                   if len_place_format = 0 || tmps = len_place_format || mode_dico then
                   begin
                     let data =
                       if mode_dico && len_place_format > 0 then
-                        let expl_data = Api_util.explode data ',' in
-                        let data =
-                        List.fold_right
-                          (fun format data ->
-                            match format with
-                            | `town ->
-                                (try (List.nth expl_data 4) :: data
-                                 with Failure _ -> data)
-                            | `area_code ->
-                                (try (List.nth expl_data 3) :: data
-                                 with Failure _ -> data)
-                            | `county ->
-                                (try (List.nth expl_data 2) :: data
-                                 with Failure _ -> data)
-                            | `region ->
-                                (try (List.nth expl_data 1) :: data
-                                 with Failure _ -> data)
-                            | `country ->
-                                (try (List.nth expl_data 0) :: data
-                                 with Failure _ -> data)
-                            | _ -> data)
-                          (List.rev place_format) []
-                        in
-                        String.concat ", " data
+                        let expl_data = String.split_on_char ',' data |> List.rev in
+                        String.concat ", " @@
+                        Util.filter_map
+                          (function
+                            | `town -> List.nth_opt expl_data 4
+                            | `area_code -> List.nth_opt expl_data 3
+                            | `county -> List.nth_opt expl_data 2
+                            | `region -> List.nth_opt expl_data 1
+                            | `country -> List.nth_opt expl_data 0
+                            | _ -> None)
+                          place_format
                       else
                         data
                     in
