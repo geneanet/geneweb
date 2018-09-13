@@ -6,6 +6,16 @@ let forbidden_char = [':'; '@'; '#'; '='; '$']
 
 (* Name.lower *)
 
+let nbc c =
+  if Char.code c < 0b10000000 then 1
+  else if Char.code c < 0b11000000 then -1
+  else if Char.code c < 0b11100000 then 2
+  else if Char.code c < 0b11110000 then 3
+  else if Char.code c < 0b11111000 then 4
+  else if Char.code c < 0b11111100 then 5
+  else if Char.code c < 0b11111110 then 6
+  else -1
+
 let unaccent_iso_8859_1 =
   function
   | 'à' | 'á' | 'â' | 'ã' | 'ä' | 'å' | 'æ' -> 'a'
@@ -20,16 +30,6 @@ let unaccent_iso_8859_1 =
   | 'þ' -> 'p'
   | 'ß' -> 's'
   | c -> c
-
-let nbc c =
-  if Char.code c < 0b10000000 then 1
-  else if Char.code c < 0b11000000 then -1
-  else if Char.code c < 0b11100000 then 2
-  else if Char.code c < 0b11110000 then 3
-  else if Char.code c < 0b11111000 then 4
-  else if Char.code c < 0b11111100 then 5
-  else if Char.code c < 0b11111110 then 6
-  else -1
 
 let unaccent_utf_8 lower s i =
   let f s = if lower then String.lowercase_ascii s else s in
