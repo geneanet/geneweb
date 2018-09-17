@@ -41,30 +41,30 @@ let changes = ref false
 
 let mark_descendants base scanned old lim_year =
   let rec loop p ndgen =
-    if not scanned.(Adef.int_of_iper (get_key_index p)) then
+    let p_key_index = get_key_index p in
+    if not scanned.(Adef.int_of_iper p_key_index) then
       let dt = most_recent_year_of p in
       (* a t-il plus de 100 ans *)
       let ndgen =
         match dt with
-          Some y ->
-            scanned.(Adef.int_of_iper (get_key_index p)) <- true;
-            if y < lim_year then nb_desc_gen lim_year p else 0
+        | Some y ->
+          scanned.(Adef.int_of_iper p_key_index) <- true;
+          if y < lim_year then nb_desc_gen lim_year p else 0
         | None -> ndgen
       in
       if ndgen > 0 then
         begin
-          old.(Adef.int_of_iper (get_key_index p)) <- true;
+          old.(Adef.int_of_iper p_key_index) <- true;
           let ndgen = ndgen - 1 in
-          for i = 0 to Array.length (get_family p) - 1 do
-            let ifam = (get_family p).(i) in
-            let fam = foi base ifam in
-            let sp = Gutil.spouse (get_key_index p) fam in
-            old.(Adef.int_of_iper sp) <- true;
-            let children = get_children fam in
-            for ip = 0 to Array.length children - 1 do
-              let p = poi base children.(ip) in loop p ndgen
-            done
-          done
+          Array.iter
+            (fun ifam ->
+               let fam = foi base ifam in
+               let sp = Gutil.spouse p_key_index fam in
+               old.(Adef.int_of_iper sp) <- true ;
+               Array.iter
+                 (fun c -> loop (poi base c) ndgen)
+                 (get_children fam) )
+            (get_family p)
         end
   in
   loop
@@ -82,14 +82,11 @@ let mark_ancestors base scanned lim_year titled is_quest_string =
         then
           begin
             begin match year_of p with
-              Some y ->
-                if y >= lim_year then
-                  begin
-                    Printf.eprintf "Problem of date ! %s %d\n"
-                      (Gutil.designation base p) y;
-                    flush stderr
-                  end
-            | None -> ()
+              | Some y when y >= lim_year ->
+                Printf.eprintf "Problem of date ! %s %d\n"
+                  (Gutil.designation base p) y;
+                flush stderr
+              | None -> ()
             end;
             let p = {(gen_person_of_person p) with access = Public} in
             patch_person base p.key_index p; changes := true
@@ -103,8 +100,9 @@ let mark_ancestors base scanned lim_year titled is_quest_string =
   in
   loop
 
-let public_everybody bname =
+let public_everybody ~mem bname =
   let base = Gwdb.open_base bname in
+  if not mem then load_persons_array base ;
   for i = 0 to nb_of_persons base - 1 do
     let p = poi base (Adef.iper_of_int i) in
     if get_access p <> Public then
@@ -113,10 +111,13 @@ let public_everybody bname =
   done;
   commit_patches base
 
-let public_all bname lim_year titled =
+let public_all ~mem bname lim_year titled =
   let base = Gwdb.open_base bname in
-  let () = load_ascends_array base in
-  let () = load_couples_array base in
+  if not mem then begin
+    load_persons_array base ;
+    load_ascends_array base ;
+    load_couples_array base ;
+  end ;
   Consang.check_noloop base
     (function
        OwnAncestor p ->
@@ -166,6 +167,7 @@ let ind = ref ""
 let bname = ref ""
 let everybody = ref false
 let titled = ref true
+let mem = ref false
 
 let speclist =
   ["-y", Arg.Int (fun i -> lim_year := i),
@@ -173,9 +175,11 @@ let speclist =
    "-ct", Arg.Clear titled,
    "check if the person has a title (default = don't check)";
    "-everybody", Arg.Set everybody, "set flag public to everybody";
-   "-ind", Arg.String (fun x -> ind := x), "individual key"]
+   "-ind", Arg.String (fun x -> ind := x), "individual key";
+   "-mem", Arg.Set mem, "save memory (slower)";
+  ]
 let anonfun i = bname := i
-let usage = "Usage: public1 [-everybody] [-y #] [-ind key] base"
+let usage = "Usage: public1 [-everybody] [-mem] [-y #] [-ind key] base"
 
 let main () =
   Arg.parse speclist anonfun usage;
@@ -186,8 +190,8 @@ let main () =
   Lock.control_retry (Mutil.lock_file !bname)
     ~onerror:Lock.print_error_and_exit
     (fun () ->
-       if !everybody then public_everybody !bname
-       else if !ind = "" then public_all !bname !lim_year !titled
+       if !everybody then public_everybody ~mem:!mem !bname
+       else if !ind = "" then public_all ~mem:!mem !bname !lim_year !titled
        else public_some !bname !lim_year !titled !ind)
 
 let _ = main ()
