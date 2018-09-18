@@ -51,32 +51,6 @@ let chop_base_prefix base_prefix =
 ;;
 
 
-(**/**) (* IO Curl. *)
-
-
-let writer accum data =
-  Buffer.add_string accum data;
-  String.length data
-;;
-
-let showContent content =
-  Printf.printf "%s" (Buffer.contents content);
-  flush stdout
-;;
-
-let showInfo connection =
-  Printf.printf "Time: %f\nURL: %s\n"
-    (Curl.get_totaltime connection)
-    (Curl.get_effectiveurl connection)
-;;
-
-let getContent connection url =
-  Curl.set_url connection url;
-  Curl.set_timeoutms connection 1000;
-  Curl.perform connection
-;;
-
-
 (**/**)
 
 
@@ -147,15 +121,14 @@ let init_cache conf base request base_prefix ip nb_asc from_gen_desc nb_desc =
       in
       Curl.set_httpheader connection headers;
       Curl.set_errorbuffer connection errorBuffer;
-      Curl.set_writefunction connection (writer result);
+      Curl.set_writefunction connection
+        (fun data ->
+           Buffer.add_string result data;
+           String.length data);
       Curl.set_followlocation connection true;
       Curl.set_url connection url;
       Curl.set_timeoutms connection 1000;
       Curl.perform connection;
-      (*
-        showContent result;
-        showInfo connection;
-      *)
       Curl.cleanup connection;
       res := Buffer.contents result
     with

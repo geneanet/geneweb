@@ -128,29 +128,6 @@ let get_links conf base redis ip include_not_validated =
     List.map (findLinksBySourcenameAndBridge redis conf.bname) l
     |> filter_string
 
-
-(**/**) (* CURL. *)
-
-
-let writer accum data =
-  Buffer.add_string accum data;
-  String.length data
-
-let showContent content =
-  Printf.printf "%s" (Buffer.contents content);
-  flush stdout
-
-let showInfo connection =
-  Printf.printf "Time: %f\nURL: %s\n"
-    (Curl.get_totaltime connection)
-    (Curl.get_effectiveurl connection)
-
-let getContent connection url =
-  Curl.set_url connection url;
-  Curl.set_timeoutms connection 1000;
-  Curl.perform connection
-
-
 (**/**) (* Convertion d'une date, personne, famille. *)
 
 (* ************************************************************************ *)
@@ -514,8 +491,6 @@ let get_families_desc base ip ip_spouse from_gen_desc nb_desc =
     in
     loop_desc ipl []
 
-
-
 (**/**)
 
 
@@ -573,15 +548,14 @@ let get_link_tree_curl conf request basename bname ip s s2 nb_asc from_gen_desc 
       in
       Curl.set_httpheader connection headers;
       Curl.set_errorbuffer connection errorBuffer;
-      Curl.set_writefunction connection (writer result);
+      Curl.set_writefunction connection
+        (fun data ->
+           Buffer.add_string result data;
+           String.length data);
       Curl.set_followlocation connection true;
       Curl.set_url connection url;
       Curl.set_timeoutms connection 1000;
       Curl.perform connection;
-      (*
-        showContent result;
-        showInfo connection;
-      *)
       Curl.cleanup connection;
       res := Buffer.contents result
     with
@@ -591,7 +565,6 @@ let get_link_tree_curl conf request basename bname ip s s2 nb_asc from_gen_desc 
         Printf.fprintf stderr "Caught exception: %s\n" s
   end;
   Curl.global_cleanup ();
-
   let output_encoding =
     match Api_util.p_getenvbin conf.env "output" with
      | Some "pb" -> `pb
