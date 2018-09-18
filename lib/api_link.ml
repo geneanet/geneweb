@@ -802,7 +802,7 @@ let print_link_tree conf base =
         let bl = get_bridges conf base redis ip include_not_validated in
         List.fold_left
           (fun accu s ->
-             match Link.nsplit s ':' with
+             match String.split_on_char ':' s with
              | [_; bname_link; id_link] ->
                  begin
                    match
@@ -847,7 +847,7 @@ let print_link_tree conf base =
               (fun (accu_fam, accu_pers, accu_conn) s ->
                 List.fold_left
                   (fun (accu_fam, accu_pers, accu_conn) x ->
-                    match Link.nsplit x ':' with
+                    match String.split_on_char ':' x with
                     | [_; bname_link; id_link; "spouse-children"; id_link_spouse] ->
                         let pl =
                           findKeyBySourcenameAndIdGlinks redis bname_link
@@ -913,7 +913,7 @@ let print_link_tree conf base =
              (fun (accu_fam, accu_pers, accu_conn) s ->
                 List.fold_left
                   (fun (accu_fam, accu_pers, accu_conn) x ->
-                     match Link.nsplit x ':' with
+                     match String.split_on_char ':' x with
                      | [_; bname_link; id_link; "parents"] ->
                          let pl =
                            findKeyBySourcenameAndIdGlinks redis bname_link

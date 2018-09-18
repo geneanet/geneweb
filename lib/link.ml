@@ -31,28 +31,8 @@ let (ht_corresp : ((string * Def.iper), (string * Def.iper)) Hashtbl.t) = Hashtb
 
 (**/**) (* Quelques outils. *)
 
-
-let nsplit s c =
-  let rec loop list i j =
-    if i = 0 then
-      if s.[i] = c then ("" :: list)
-      else
-        let ss = String.sub s 0 j in
-        (ss :: list)
-    else
-      if s.[i] = c then
-        let ss = String.sub s (i + 1) (j - i - 1) in
-        loop (ss :: list) (i - 1) i
-      else loop list (i - 1) j
-  in
-  if s = "" then []
-  else
-    let len = String.length s in
-    loop [] (len - 1) len
-;;
-
 let ip_of_ref_person base ref_p =
-  match nsplit ref_p '|' with
+  match String.split_on_char '|' ref_p with
   | [n; p; oc] ->
       let oc = if oc = "" then 0 else int_of_string oc in
       Gwdb.person_of_key base p n oc
