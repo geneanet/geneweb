@@ -15,9 +15,15 @@ build: [
   [ make "install-exe" ]
 ]
 
-install: [ [ make "install" ] ]
+install: [
+  [ "./configure" "--api" ]
+  [ make "install" ]
+]
 
-remove: [ [ make "uninstall" ] ]
+remove: [
+  [ "./configure" "--api" ]
+  [ make "uninstall" ]
+]
 
 pin-depends: [
   [ "piqilib.dev" "git://github.com/alavrik/piqi" ]
