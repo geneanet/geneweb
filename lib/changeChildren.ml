@@ -246,6 +246,8 @@ let rename_image_file conf base p (nfn, nsn, noc) =
       (try Sys.rename old_f new_f with Sys_error _ -> ())
   | _ -> ()
 
+exception FirstNameMissing of iper
+
 let change_child conf base parent_surname changed ip =
   let p = poi base ip in
   let var = "c" ^ string_of_int (Adef.int_of_iper (get_key_index p)) in
@@ -265,32 +267,39 @@ let change_child conf base parent_surname changed ip =
       Some x -> x
     | _ -> 0
   in
-  if new_first_name = "" then
-    error_person conf (transl conf "first name missing")
+  if new_first_name = "" then raise (FirstNameMissing ip)
   else if
     new_first_name <> p_first_name base p ||
     new_surname <> p_surname base p || new_occ <> get_occ p
-  then
+  then begin
     let key = new_first_name ^ " " ^ new_surname in
     let ipl = Gutil.person_ht_find_all base key in
     check_conflict conf base p key new_occ ipl;
     rename_image_file conf base p (new_first_name, new_surname, new_occ);
     (* On ajoute les enfants dans le type Change_children_name       *)
     (* pour la future mise à jour de l'historique et du fichier gwf. *)
-    changed :=
+    let changed =
       ((p_first_name base p, p_surname base p, get_occ p, ip),
-       (new_first_name, new_surname, new_occ, ip)) ::
-      !changed;
+       (new_first_name, new_surname, new_occ, ip))
+      :: changed
+    in
     let p =
-      {(gen_person_of_person p) with first_name =
-        Gwdb.insert_string base new_first_name;
-       surname = Gwdb.insert_string base new_surname; occ = new_occ}
+      { (gen_person_of_person p) with
+        first_name = Gwdb.insert_string base new_first_name
+      ; surname = Gwdb.insert_string base new_surname
+      ; occ = new_occ}
     in
     patch_person base ip p;
     patch_key base ip new_first_name new_surname new_occ;
     Gutil.person_ht_add base key ip;
     let np_misc_names = gen_person_misc_names base p (fun p -> p.titles) in
-    List.iter (fun key -> Gutil.person_ht_add base key p.key_index) np_misc_names
+    List.iter (fun key -> Gutil.person_ht_add base key p.key_index) np_misc_names ;
+    changed
+  end
+  else changed
+
+let change_children conf base parent_surname =
+  List.fold_left (fun changed ip -> change_child conf base parent_surname changed ip) []
 
 let print_update_child conf base =
   match p_getenv conf.env "m" with
@@ -301,24 +310,26 @@ let print_change_ok conf base p =
   try
     let ipl = select_children_of base p in
     let parent_surname = p_surname base p in
-    let changed = ref [] in
     let redisp =
       match p_getenv conf.env "return" with
         Some _ -> true
       | _ -> false
     in
     if redisp then print_update_child conf base
-    else
-      begin
-        check_digest conf (digest_children base ipl);
-        List.iter (change_child conf base parent_surname changed) ipl;
-        Util.commit_patches conf base;
-        let changed =
-          U_Change_children_name
-            (Util.string_gen_person base (gen_person_of_person p), !changed)
-        in
-        History.record conf base changed "cn"; print_change_done conf base p
-      end
+    else begin
+      check_digest conf (digest_children base ipl);
+      let changed =
+        try change_children conf base parent_surname ipl
+        with FirstNameMissing _ -> error_person conf (transl conf "first name missing")
+      in
+      Util.commit_patches conf base;
+      let changed =
+        U_Change_children_name
+          (Util.string_gen_person base (gen_person_of_person p), changed)
+      in
+      History.record conf base changed "cn";
+      print_change_done conf base p
+    end
   with Update.ModErr -> ()
 
 let print_ok o_conf base =
