@@ -146,16 +146,6 @@ let nobility_titles_list conf base p =
        | _ -> (t_nth, t_name, t_ident, [t_place], t_dates) :: l)
     titles []
 
-(* obsolete; should be removed one day *)
-
-let string_of_titles conf base and_txt p =
-  let titles = nobility_titles_list conf base p in
-  List.fold_left
-    (fun s t ->
-       s ^ (if s = "" then "" else ",") ^ "\n" ^
-       string_of_title conf base and_txt p t)
-    "" titles
-
 let string_of_num sep num =
   let len = ref 0 in
   Sosa.print (fun x -> len := Buff.mstore !len x) sep num; Buff.get !len

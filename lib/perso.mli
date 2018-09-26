@@ -16,7 +16,6 @@ type sosa_t =
     mutable last_zil : (Def.iper * Sosa.t) list;
     sosa_ht : (Def.iper, (Sosa.t * Gwdb.person) option) Hashtbl.t }
 
-val string_of_titles : config -> base -> string -> person -> string
 val string_of_marriage_text : config -> base -> family -> string
 val interp_templ : string -> config -> base -> person -> unit
 val interp_templ_with_menu :
