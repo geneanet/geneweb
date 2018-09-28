@@ -43,7 +43,7 @@ notifications:
   email:
     recipients:
       - julien.sagot@geneanet.org
-    on_success: always
+    on_success: change
     on_failure: always
 
 after_failure:
