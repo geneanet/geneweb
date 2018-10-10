@@ -36,8 +36,6 @@ script:
     opam install geneweb --deps-only ;
     ./configure && make clean install uninstall clean ;
     make clean distrib clean ;
-    ./configure --api && make clean install uninstall clean ;
-    opam depext lablgtk && opam install lablgtk && make clean everything-exe clean ;
 
 notifications:
   email:
