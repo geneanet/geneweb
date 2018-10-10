@@ -16,34 +16,18 @@ build: [
 ]
 
 install: [
-  [ "./configure" "--api" ]
+  [ "./configure" ]
   [ make "install" ]
 ]
 
 remove: [
-  [ "./configure" "--api" ]
+  [ "./configure" ]
   [ make "uninstall" ]
-]
-
-pin-depends: [
-  [ "piqilib.dev" "git://github.com/alavrik/piqi" ]
-  [ "piqi.dev" "git://github.com/alavrik/piqi-ocaml" ]
 ]
 
 depends: [
   "camlp5" { build }
   "cppo" { build }
-  "dune" { build>= "1.1.1" }
+  "dune" { build >= "1.1.1" }
   "ocaml" { >= "4.05" }
-  "ocurl" { = "0.8.1" }
-  "piqi" { = "dev" }
-  "piqilib" { = "dev" }
-  "redis"
-  "redis-sync"
-  "yojson"
-]
-
-depexts: [
-  [ [ "ubuntu" "linux" ] [ "protobuf-compiler" ] ]
-  [ [ "homebrew" "osx" ] [ "protobuf" ] ]
 ]
