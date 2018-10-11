@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="%lang;">
 <head>
-  <!-- $Id: dag.txt,v 5.5 2017/11/11 13:15:19 ddr hg Exp $ -->
-  <!-- Copyright (c) 1998-2017 INRIA -->
+  <!-- $Id: dag.txt, v7-exp 28/10/2018 16:58:09 ddr hg Exp $ -->
+  <!-- Copyright (c) 1998-2018 INRIA -->
   <title>%nn;
     %if;(evar.slices = "on")
       [*display by slices/slice width/overlap/total width]0%nn;
@@ -220,7 +220,7 @@
               %if;(evar.image!="off")image=off;%end;"
             title="%if;(evar.image!="off")[*visualize/show/hide/summary]2%else;%nn;
               [*visualize/show/hide/summary]1%end; [image/images]1">
-            <i class="far %if;(evar.image="off")text-muted%end; fa-image fa-lg"></i>
+            <i class="fa fa-image fa-lg%if;(evar.image!="off") text-muted%end;"></i>
           </a>
         </div>
         <div class="btn-group ml-2">
@@ -228,7 +228,7 @@
               %foreach;env_binding;%if;(env.key!="dag" and env.val!="")%env.key;=%env.val;;%end;%end;%nn;
               %if;(evar.dag!="on")dag=on;%end;"
             title="%if;(evar.dag="on")[*dag on/dag off]1%else;[*dag on/dag off]0%end;">
-            <i class="far fa-arrow-alt-circle-right %if;(evar.dag!="on")text-muted%end; fa-lg"></i>
+            <i class="far fa-arrow-alt-circle-right fa-lg%if;(evar.dag="on") text-muted%end;"></i>
           </a>
         </div>
         <div class="btn-group ml-2">
@@ -245,13 +245,42 @@
   %end; %( evar.m="A" %)
 %end; %( if not cancel_links %)
 
-
-%if;(evar.slices != "on")
-  %if;(link_next != "")
-    <p>
+%if;(evar.slices!="on")
+  %if;(link_next!="" and evar.cgl!="on")
+    <div class="btn-toolbar mt-1 mb-2" role="toolbar" arial-label="config buttons toolbar">
       <img src="%image_prefix;/picto_parente.png" alt="&gt;&gt;" %/>
-      <a href="%link_next;;%if;(evar.image!="off")image=on;%end;" accesskey=">">[*next relationship path]</a>%nl;
-    </p>
+      %if;(evar.i!="")
+        %let;l_o;&ei=%evar.i;&i=%evar.ei;%nn;
+          %if;(evar.image!="")&image=%evar.image;%end;%nn;
+          %if;(evar.spouse!="")&spouse=%evar.spouse;%end;%nn;
+          %if;(evar.bd!="")&bd=%evar.bd;%end;%nn;
+          %if;(evar.color!="")&color=%evar.color;%end;%nn;
+        %in;
+        <a class="ml-2" href="%prefix_base_password&em=R&et=A%l_o;">[*relationship link/relationship links]1</a>
+        <a class="ml-2" href="%prefix_base_password&em=R&et=M%l_o;">[*relationship by marriage]</a>
+      %end;
+      <a href="%link_next;%if;(evar.image!="")&image=%evar.image;%end;;"
+        title="[*next relationship path] (>)" accesskey=">">
+        <i class="fa fa-chevron-right fa-fw p-0 ml-1"></i>
+      </a>
+      <a href="%prefix_base_password;%nn;
+        %foreach;env_binding;%if;(env.key!="image")%env.key;=%env.val;;%end;%end;%nn;
+        %if;(evar.image!="off")image=off;%end;"
+        %if;(evar.dag="on")class="disabled"%end;
+        title="%if;(evar.image!="off")[*visualize/show/hide/summary]2%else;
+            [*visualize/show/hide/summary]1%end; [image/images]0">
+        <i class="far fa-images fa-fw p-0 ml-1%if;(evar.image!="off") text-muted%end;"></i>
+      </a>
+      <a href="%prefix_base_password;%nn;
+        %foreach;env_binding;%if;(env.key!="spouse")%env.key;=%env.val;;%end;%end;%nn;
+        %if;(evar.spouse!="on")spouse=on;%end;"
+        %if;(evar.dag="on")class="disabled"%end;"
+        title="%if;(evar.spouse!="on")[*visualize/show/hide/summary]1%else;
+            [*visualize/show/hide/summary]2%end; [spouse/spouses]0">
+        <i class="fa fa-user male p-0 ml-2"></i>%if;(evar.spouse!="on")<i class="fa fa-user female p-0"></i>%end;
+      </a>
+      <a href="%url&cgl=on" target="_blank"><i class="fa fa-unlink fa-fw ml-2" title="[*cancel GeneWeb links]"></i></a>
+    </div>
   %end;
   %if;(evar.notab = "on" or evar.pos2 != "")
     %let;dpos;%if;(evar.dpos != "")%evar.dpos;%else;78%end;%in;
@@ -299,7 +328,7 @@
         %if;dag_cell.is_nothing;&nbsp;%nn;
         %elseif;dag_cell.is_bar;
           %if;(dag_cell.bar_link != "" and evar.cgl != "on")
-            <a style="text-decoration:none" href="%dag_cell.bar_link;">|</a>%nn;
+            <a style="text-decoration:none" href="%dag_cell.bar_link;%if;(evar.image!="")&image=%evar.image;%end;">|</a>%nn;
           %else;|%end;
         %elseif;(dag_cell.item != "")%dag_cell.item;
         %elseif;(dag_cell.text != "")%dag_cell.text;
