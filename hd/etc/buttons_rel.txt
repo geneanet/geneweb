@@ -1,0 +1,147 @@
+<!-- $Id: buttons_rel.txt v7.00 28/10/2018 17:16:03 $ -->
+<!-- Copyright (c) 1998-2018 INRIA -->
+%( Boutons de configurations et d'options %)
+%if;(evar.cgl!="on")
+  <div class="btn-toolbar my-1" role="toolbar" arial-label="config buttons toolbar">
+    %if;(evar.em="R")
+      <a href="%prefix_base_password;%nn;
+        %if;(evar.select!="")&select=%evar.select;%end;%nn;
+        %if;(evar.m!="")&m=%evar.m;%end;%nn;
+        %if;(evar.em!="")&em=%evar.em;%end;%nn;
+        %if;(evar.ei!="")&ei=%evar.ei;%end;%nn;
+        %if;(evar.et!="")&et=%evar.et;%end;%nn;
+        %if;(evar.p!="")&p=%evar.p;%end;%nn;
+        %if;(evar.n!="")&n=%evar.n;%end;%nn;
+        %if;(evar.oc!="")&oc=%evar.oc;%end;%nn;
+        %if;(evar.i!="")&i=%evar.i;%end;%nn;
+        %if;(evar.l1!="")&l1=%evar.l1;%end;%nn;
+        %if;(evar.p1!="")&p1=%evar.p1;%end;%nn;
+        %if;(evar.n1!="")&n1=%evar.n1;%end;%nn;
+        %if;(evar.oc1!="")&oc1=%evar.oc1;%end;%nn;
+        %if;(evar.b1!="")&b1=%evar.b1;%end;%nn;
+        %if;(evar.l2!="")&l2=%evar.l2;%end;%nn;
+        %if;(evar.p2!="")&p2=%evar.p2;%end;%nn;
+        %if;(evar.n2!="")&n2=%evar.n2;%end;%nn;
+        %if;(evar.oc2!="")&oc2=%evar.oc2;%end;%nn;
+        %if;(evar.b2!="")&b2=%evar.b2;%end;%nn;
+        %if;(evar.p3!="")&p3=%evar.p3;%end;%nn;
+        %if;(evar.n3!="")&n3=%evar.n3;%end;%nn;
+        %if;(evar.oc3!="")&oc3=%evar.oc3;%end;%nn;
+        %if;(evar.p4!="")&p4=%evar.p4;%end;%nn;
+        %if;(evar.n4!="")&n4=%evar.n4;%end;%nn;
+        %if;(evar.oc4!="")&oc4=%evar.oc4;%end;%nn;
+        %if;(evar.fn!="")&fn=%evar.fn;%end;%nn;
+        %if;(evar.sn!="")&sn=%evar.sn;%end;%nn;
+        %if;(evar.en!="")&en=%evar.en;%end;%nn;
+        %if;(evar.ep!="")&ep=%evar.ep;%end;%nn;
+        %if;(evar.pz!="")&pz=%evar.pz;%end;%nn;
+        %if;(evar.nz!="")&nz=%evar.nz;%end;%nn;
+        %if;(evar.ocz!="")&ocz=%evar.ocz;%end;%nn;
+        %if;(evar.iz!="")&iz=%evar.iz;%end;%nn;
+        %if;(evar.spouse!="")&spouse=%evar.spouse;%end;%nn;
+        %if;(evar.image!="")&image=%evar.image;%end;%nn;
+        %(if;(evar.long!="")&long=%evar.long;%end;%nn;%)
+        %if;(evar.color!="")&color=%evar.color;%end;%nn;
+        %if;(evar.bd!="")&bd=%evar.bd;%end;%nn;
+        %if;(evar.v!="")&v=%evar.v;%end;%nn;
+        %if;(evar.long!="on")&long=on%end;"
+        title="%if;(evar.long!="on")[*visualize/show/hide/summary]1%else;
+            [*visualize/show/hide/summary]2%end; [long display]">
+       <i class="fa fa-chevron-%if;(evar.long="on")up%else;down%end; fa-fw p-0"></i>
+      </a>
+    %end;
+    %if;((evar.em="R" and evar.long="on") or evar.m="RL")
+      <a href="%prefix_base_password;%nn;
+        %if;(evar.select!="")&select=%evar.select;%end;%nn;
+        %if;(evar.m!="")&m=%evar.m;%end;%nn;
+        %if;(evar.em!="")&em=%evar.em;%end;%nn;
+        %if;(evar.ei!="")&ei=%evar.ei;%end;%nn;
+        %if;(evar.et!="")&et=%evar.et;%end;%nn;
+        %if;(evar.p!="")&p=%evar.p;%end;%nn;
+        %if;(evar.n!="")&n=%evar.n;%end;%nn;
+        %if;(evar.oc!="")&oc=%evar.oc;%end;%nn;
+        %if;(evar.i!="")&i=%evar.i;%end;%nn;
+        %if;(evar.l1!="")&l1=%evar.l1;%end;%nn;
+        %if;(evar.p1!="")&p1=%evar.p1;%end;%nn;
+        %if;(evar.n1!="")&n1=%evar.n1;%end;%nn;
+        %if;(evar.oc1!="")&oc1=%evar.oc1;%end;%nn;
+        %if;(evar.b1!="")&b1=%evar.b1;%end;%nn;
+        %if;(evar.l2!="")&l2=%evar.l2;%end;%nn;
+        %if;(evar.p2!="")&p2=%evar.p2;%end;%nn;
+        %if;(evar.n2!="")&n2=%evar.n2;%end;%nn;
+        %if;(evar.oc2!="")&oc2=%evar.oc2;%end;%nn;
+        %if;(evar.b2!="")&b2=%evar.b2;%end;%nn;
+        %if;(evar.p3!="")&p3=%evar.p3;%end;%nn;
+        %if;(evar.n3!="")&n3=%evar.n3;%end;%nn;
+        %if;(evar.oc3!="")&oc3=%evar.oc3;%end;%nn;
+        %if;(evar.p4!="")&p4=%evar.p4;%end;%nn;
+        %if;(evar.n4!="")&n4=%evar.n4;%end;%nn;
+        %if;(evar.oc4!="")&oc4=%evar.oc4;%end;%nn;
+        %if;(evar.fn!="")&fn=%evar.fn;%end;%nn;
+        %if;(evar.sn!="")&sn=%evar.sn;%end;%nn;
+        %if;(evar.en!="")&en=%evar.en;%end;%nn;
+        %if;(evar.ep!="")&ep=%evar.ep;%end;%nn;
+        %if;(evar.pz!="")&pz=%evar.pz;%end;%nn;
+        %if;(evar.nz!="")&nz=%evar.nz;%end;%nn;
+        %if;(evar.ocz!="")&ocz=%evar.ocz;%end;%nn;
+        %if;(evar.iz!="")&iz=%evar.iz;%end;%nn;
+        %if;(evar.spouse!="")&spouse=%evar.spouse;%end;%nn;
+        %(if;(evar.image!="")&image=%evar.image;%end;%nn;%)
+        %if;(evar.long!="")&long=%evar.long;%end;%nn;
+        %if;(evar.color!="")&color=%evar.color;%end;%nn;
+        %if;(evar.bd!="")&bd=%evar.bd;%end;%nn;
+        %if;(evar.v!="")&v=%evar.v;%end;%nn;
+        %if;(evar.image!="off")&image=off%end;"
+        title="%if;(evar.image!="off")[*visualize/show/hide/summary]2%else;
+            [*visualize/show/hide/summary]1%end; [image/images]0">
+        <i class="fa fa-images p-0 ml-1%if;(evar.image!="off") text-muted%end;"></i>
+      </a>
+      <a href="%prefix_base_password;%nn;
+        %if;(evar.select!="")&select=%evar.select;%end;%nn;
+        %if;(evar.m!="")&m=%evar.m;%end;%nn;
+        %if;(evar.em!="")&em=%evar.em;%end;%nn;
+        %if;(evar.ei!="")&ei=%evar.ei;%end;%nn;
+        %if;(evar.et!="")&et=%evar.et;%end;%nn;
+        %if;(evar.p!="")&p=%evar.p;%end;%nn;
+        %if;(evar.n!="")&n=%evar.n;%end;%nn;
+        %if;(evar.oc!="")&oc=%evar.oc;%end;%nn;
+        %if;(evar.i!="")&i=%evar.i;%end;%nn;
+        %if;(evar.l1!="")&l1=%evar.l1;%end;%nn;
+        %if;(evar.p1!="")&p1=%evar.p1;%end;%nn;
+        %if;(evar.n1!="")&n1=%evar.n1;%end;%nn;
+        %if;(evar.oc1!="")&oc1=%evar.oc1;%end;%nn;
+        %if;(evar.b1!="")&b1=%evar.b1;%end;%nn;
+        %if;(evar.l2!="")&l2=%evar.l2;%end;%nn;
+        %if;(evar.p2!="")&p2=%evar.p2;%end;%nn;
+        %if;(evar.n2!="")&n2=%evar.n2;%end;%nn;
+        %if;(evar.oc2!="")&oc2=%evar.oc2;%end;%nn;
+        %if;(evar.b2!="")&b2=%evar.b2;%end;%nn;
+        %if;(evar.p3!="")&p3=%evar.p3;%end;%nn;
+        %if;(evar.n3!="")&n3=%evar.n3;%end;%nn;
+        %if;(evar.oc3!="")&oc3=%evar.oc3;%end;%nn;
+        %if;(evar.p4!="")&p4=%evar.p4;%end;%nn;
+        %if;(evar.n4!="")&n4=%evar.n4;%end;%nn;
+        %if;(evar.oc4!="")&oc4=%evar.oc4;%end;%nn;
+        %if;(evar.fn!="")&fn=%evar.fn;%end;%nn;
+        %if;(evar.sn!="")&sn=%evar.sn;%end;%nn;
+        %if;(evar.en!="")&en=%evar.en;%end;%nn;
+        %if;(evar.ep!="")&ep=%evar.ep;%end;%nn;
+        %if;(evar.pz!="")&pz=%evar.pz;%end;%nn;
+        %if;(evar.nz!="")&nz=%evar.nz;%end;%nn;
+        %if;(evar.ocz!="")&ocz=%evar.ocz;%end;%nn;
+        %if;(evar.iz!="")&iz=%evar.iz;%end;%nn;
+        %(if;(evar.spouse!="")&spouse=%evar.spouse;%end;%nn;%)
+        %if;(evar.image!="")&image=%evar.image;%end;%nn;
+        %if;(evar.long!="")&long=%evar.long;%end;%nn;
+        %if;(evar.color!="")&color=%evar.color;%end;%nn;
+        %if;(evar.bd!="")&bd=%evar.bd;%end;%nn;
+        %if;(evar.v!="")&v=%evar.v;%end;%nn;
+        %if;(evar.spouse!="on")&spouse=on%end;"
+        title="%if;(evar.spouse!="on")[*visualize/show/hide/summary]1%else;
+            [*visualize/show/hide/summary]2%end; [spouse/spouses]0">
+        <i class="fa fa-user male p-0 ml-2"></i>%if;(evar.spouse!="on")<i class="fa fa-user female p-0"></i>%end;
+      </a>
+      <a href="%url&cgl=on" target="_blank"><i class="fa fa-unlink fa-fw ml-2" title="[*cancel GeneWeb links]"></i></a>
+    %end;
+  </div>
+%end;
