@@ -37,12 +37,12 @@
 %end;
 %define;left9mdx(xx)
   %apply;nth%with;
-  ////250//90//125//125//125//125//30//30//30//30//30//30//30//30//15//15//15//15//15//15//15//15//15//15//15//15//15//15//15//15//
+  ////250//90//125//125//125//125//30//30//30//30//30//30//30//30//15//15//15//15//15//15//15//15//15//15//15//15//15//15//15//15//15/
   %and;xx%end;
 %end;
 %define;top9mdy(xx)
   %apply;nth%with;
-  ////75//75//150//80//150//80//75//75//75//75//75//75//75//75//30//25//30//25//30//25//30//25//30//25//30//25//30//25//30//25//
+  ////75//75//150//80//150//80//75//75//75//75//75//75//75//75//30//25//30//25//30//25//30//25//30//25//30//25//30//25//30//25//30/
   %and;xx%end;
 %end;
 %define;dy1()60%end;
@@ -80,7 +80,7 @@
  <!--
 
   function over1(xx)
-  { 
+  {
    document.getElementById(xx).style.outline="#00F solid 4px";
    return false;
   }
@@ -179,9 +179,12 @@
                 %else;%top1;
                 %end;
       %in;
-      %let;dx;%apply;left9mdx(ancestor.anc_sosa.v)%in;
-      %let;dy;%apply;top9mdy(ancestor.anc_sosa.v)%in;
-      %let;leftl;%if;(ancestor.anc_sosa.v=6 or 
+      %let;dt;%apply;left9mdx(ancestor.anc_sosa.v)%in;
+      %let;dx;%if;(dt!="")%dt;%else;0%end;%in;
+      %let;dt;%apply;top9mdy(ancestor.anc_sosa.v)%in;
+      %let;dy;%if;(dt!="")%dt;%else;0%end;%in;
+      %(dx=%dx;;%ancestor.anc_sosa.v;<br>%)
+      %let;leftl;%if;(ancestor.anc_sosa.v=6 or
                       ancestor.anc_sosa.v=18 or ancestor.anc_sosa.v=22 or
                       ancestor.anc_sosa.v=26 or ancestor.anc_sosa.v=30)%expr(left-dx)%else;%expr(left+dx)%end;%in;
       %let;topl1;%if; (ancestor.anc_sosa.v=10 or ancestor.anc_sosa.v=14)
@@ -206,7 +209,7 @@
                 %else;%topl1;
                 %end;
       %in;
-       
+
     %( draw lines %)
      %if;(level>2 and level<7)
       <div style="position:absolute;top:%topl;px;left:%leftl;px;width:%widl;px;height:%higl;px;
@@ -214,7 +217,7 @@
       </div>
       %end;
     %(draw box %)
-      <div id="s%ancestor.anc_sosa.v;" 
+      <div id="s%ancestor.anc_sosa.v;"
            style="position:absolute;top:%top;px;left:%left;px;width:%wid;px;
                   background-color:#%bg;;padding:0px;text-align:center;border:solid %bord;px;
                   font-family:monospace;font-size:%font;;"
@@ -224,7 +227,7 @@
       %if;(level>1)
       %end;
       %if;(level>1 and level<5)
-        %if;(evar.cgl!="on") 
+        %if;(evar.cgl!="on")
           %if;(evar.nav="on")
         <a href="%prefix_no_pmod;m=A;p=%ancestor.first_name;;n=%ancestor.surname;;oc=%ancestor.occ;;%nn;
                maxv=;v=7;t=T;marriage=on;image=on;bd=;color=on;t1=m;nav=on"%nn;
@@ -247,7 +250,7 @@
         %if;(ancestor.spouse.has_image)<img src="%ancestor.spouse.image_url;" height="50px"%/>%end;
       %end;</td>
       </tr></table>
-        %if;(evar.cgl!="on") 
+        %if;(evar.cgl!="on")
           %if;(evar.nav="on")
             <a href="%prefix_no_pmod;m=A;p=%ancestor.spouse.first_name;;n=%ancestor.spouse.surname;;oc=%ancestor.spouse.occ;;%nn;
               maxv=;v=7;t=T;marriage=on;image=on;bd=;color=on;t1=m;nav=on"%nn;
@@ -264,7 +267,7 @@
         %if;(ancestor.spouse.birth_date.year = "" and ancestor.spouse.death_date.year != "")†%else;%ancestor.spouse.death_date.year;%end;&#013;
       %end;
       %if;(level> 4)
-        %if;(evar.cgl!="on") 
+        %if;(evar.cgl!="on")
           %if;(evar.nav="on")
         <a href="%prefix_no_pmod;m=A;p=%ancestor.first_name;;n=%ancestor.surname;;oc=%ancestor.occ;;%nn;
                maxv=;v=7;t=T;marriage=on;image=on;bd=;color=on;t1=m;nav=on"%nn;
@@ -275,7 +278,7 @@
       %end;
     %end;
       %if;(ancestor.same != "")%ancestor.same;%else;%ancestor.anc_sosa;%end;%if;(evar.cgl!="on")</a>%end;
-    %end; 
+    %end;
       </div>
       </div>
      %end; %( is_male %)
