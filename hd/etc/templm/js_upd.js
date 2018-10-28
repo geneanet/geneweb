@@ -793,14 +793,14 @@
     document.getElementById("new_pvar").outerHTML = '\
     <tr id="' + t1 + '"\n\
     ><td class="b1"><a tabindex="10000" href="javascript:addPvar(' + c1 + ',\'0\');">+<\/a\n\
-    ><\/td><td><input id="' + t1 + '_occ" name="oc' + c1 + '" class="occ3" autocomplete="off" size="5" maxlength="8" value="" onkeypress="javascript:return oKP2(event,\'p\',' + c1 + ',\'_occ\',\'\')"\n\
+    ><\/td><td><input id="' + t1 + '_occ" name="oc' + c1 + '" class="form-control occ3" autocomplete="off" size="5" maxlength="8" value="" onkeypress="javascript:return oKP2(event,\'p\',' + c1 + ',\'_occ\',\'\')"\n\
     ><td class="b1"><a tabindex="10000" href="javascript:delS(\'p\',' + c1 + ',\'_occ\',\'\');">x<\/a\n\
-    ><\/td><td><input id="' + t1 + '_fn" name="p' + c1 + '" class="ar" size="30" maxlength="200" value="" onblur="tUC1(this)"\n\
-    ><\/td><td><input id="' + t1 + '_sn" name="n' + c1 + '" size="30" maxlength="200" value="" onblur="tUC(this);jq1(\''+ t1 +'\',\'\')"\n\
+    ><\/td><td><input id="' + t1 + '_fn" name="p' + c1 + '" class="form-control ar" size="30" maxlength="200" value="" onblur="tUC1(this)"\n\
+    ><\/td><td><input id="' + t1 + '_sn" name="n' + c1 + '" class="form-control" size="30" maxlength="200" value="" onblur="tUC(this);jq1(\''+ t1 +'\',\'\')"\n\
     ><td class="b1"><a tabindex="10000" href="javascript:invertS(\'p\',' + c1 + ',\'_occ\',0,1,\'\');">&uarr;<\/a\n\
     ><\/td><td class="b1"><span id="'+ t1 +'_jq1"> <\/span\n\
     ><td class="b1"><a tabindex="10000" href="javascript:invertS(\'p\',' + c1 + ',\'_occ\',1,1,\'\');">&darr;<\/a\n\
-    ><\/td><td><input id="' + t1 + '_t" name="t' + c1 + '" size="30" maxlength="200" value=""\n\
+    ><\/td><td><input id="' + t1 + '_t" name="t' + c1 + '" class="form-control" size="30" maxlength="200" value=""\n\
     ><input type="hidden" id="' + t1 + '_i" name="i' + c1 + '" size="5" value=""\n\
     ><\/td><\/tr><tr id="new_pvar"><\/tr>';
     if(z2 == 0)
