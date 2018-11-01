@@ -12,6 +12,7 @@ The documentation is available online: http://geneweb.tuxfamily.org/
 We encourage you to participate in this open source project. We love
 pull requests, bugs reports, ideas...
 
+* Documentation: http://geneweb.tuxfamily.org/wiki/GeneWeb
 * Mailing list: https://groups.yahoo.com/neo/groups/GeneWeb/info
 * IRC: irc://irc.freenode.net/geneweb
 * Git: https://github.com/geneweb/geneweb
@@ -34,20 +35,28 @@ pull requests, bugs reports, ideas...
 
 ### Build instructions
 
+In June 2018, the build environment of GeneWeb moved to Dune/Jbuilder.
+The new configure script return only the following line:
+```
+[INFO] Checking OS type ......................................... OsType
+```
 1. Install OCaml (http://ocaml.org/)
-  1. Install opam (https://opam.ocaml.org/)
-  2. Install camlp5 (with opam)
-  3. (Optional) Install ocamlfind (with opam)
+- Install opam (https://opam.ocaml.org/)
+- Install GeneWeb (with opam).
+- Install additional components. If opam has not proposed to install missing components,
+try with apt/apt-get
+
 2. Clone the repository
 ```
 git clone https://github.com/geneweb/geneweb
 ```
-3. Compil GeneWeb
+3. Compile GeneWeb
 ```
 ./configure
-make opt
+make clean; make
 make distrib
 ```
+
 ### Building the API
 
 The API uses the Google Protocol Buffer to exchange informations
@@ -55,29 +64,18 @@ encoded as pb, json, xml.
 
 It has the following dependancies:
 
-- OCaml
-- camlp5
-- lwt
-- ocamlfind
-- ocurl
-- piqi
-- piqilib
-- protobuf
-- re
-- uuidm
-- yojson
-- redis
+- OCaml, camlp5, lwt, ocamlfind, ocurl, piqi, piqilib, protobuf, re, uuidm, yojson, redis
 
-### Docker 
+### Docker
 
-You can use Docker to build and run geneweb on any computer. 
+You can use Docker to build and run geneweb on any computer.
 ```
 git clone https://github.com/geneweb/geneweb
-cd geneweb 
+cd geneweb
 docker build -t geneweb .
 docker run --rm -it -p 2316:2316 -p 2317:2317 -v `pwd`:/home/opam/geneweb/ -v YOUR_BASE_DIR:/home/opam/bases/ geneweb /home/opam/geneweb/docker/build.sh --run --api --clean
 ```
-the following options are available for the build script : 
+the following options are available for the build script:
 - run: runs geneweb and gwsetup right after build
 - clean: runs `make clean` before build phase
 - api: builds the api
@@ -123,6 +121,15 @@ commit message "PR #XXX: Title of the PR/Bug".
 | src       | sources of main programs                                |
 | tools     | tools for compiling                                     |
 | wserver   | library for creating Web services                       |
+
+
+After June 2018, source files have been distributes across three folders:
+
+|   File    |                  Description                            |
+| --------- | ------------------------------------------------------- |
+| internal  | sources of tools                                        |
+| lib       | sources of server components                            |
+| src       | sources of main programs                                |
 
 ## COPYRIGHT
 
