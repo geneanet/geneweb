@@ -24,7 +24,8 @@
 <body%body_prop; id="family">
 %message_to_wizard;
 <div class="container">
-%include;perso_header
+%( do not use %include;perso_header %)
+%include_perso_header;
 
 %define;nav()
   <div class="container fixed-top" role="navigation">
@@ -853,7 +854,6 @@ $(document).ready(function(){
   </div>
 </form>
 
-<<<<<<< HEAD
 %include;trl
 %include;copyr
 </div>

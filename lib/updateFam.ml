@@ -581,7 +581,7 @@ and eval_relation_kind =
   | NoMention -> "no_ment"
 and eval_special_var conf base =
   function
-    ["include_perso_header"] ->
+    ["include_perso_header"] -> (* TODO merge with mainstream includes ?? *)
       begin match p_getint conf.env "ip" with
         Some i ->
           let has_base_loop =
