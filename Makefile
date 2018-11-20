@@ -47,6 +47,7 @@ ALL_EXE = \
 	bin/contrib/gwbase/etc/public2 \
 	bin/contrib/gwpublic/gwiftitles \
 	bin/contrib/gwpublic/gwprivate \
+	bin/contrib/gwpublic/gwpublic \
 	bin/contrib/gwpublic/gwpublic1 \
 	bin/contrib/gwpublic/gwpublic2 \
 	bin/contrib/gwpublic/gwpublic2priv \

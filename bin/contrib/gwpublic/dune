@@ -1,4 +1,4 @@
 (executables
-  (names gwpublic1 gwpublic2 gwpublic2priv gwprivate gwiftitles)
+  (names gwpublic gwpublic1 gwpublic2 gwpublic2priv gwprivate gwiftitles)
   (libraries geneweb)
 )
