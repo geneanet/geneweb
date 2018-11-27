@@ -409,26 +409,28 @@ let fam_to_piqi_full_family conf base ip ifam add_children =
 
 (**/**)
 
-
-let get_families_asc base ip nb_asc =
+let get_families_asc conf base ip nb_asc =
   let rec loop_asc parents families =
     match parents with
     | [] -> families
     | (ip, gen) :: parents ->
     if gen = nb_asc then loop_asc parents families
     else
-      match get_parents (poi base ip) with
-      | Some ifam ->
+      let p = poi base ip in
+      if Util.authorized_age conf base p
+      then match get_parents p with
+        | Some ifam ->
           let cpl = foi base ifam in
           let ifath = get_father cpl in
           let imoth = get_mother cpl in
           loop_asc ((ifath, gen + 1) :: (imoth, gen + 1) :: parents)
             ((ip, ifam, gen) :: families)
-      | None -> loop_asc parents families
+        | None -> loop_asc parents families
+      else loop_asc parents families
   in
   loop_asc [(ip, 0)] []
 
-let get_families_desc base ip ip_spouse from_gen_desc nb_desc =
+let get_families_desc conf base ip ip_spouse from_gen_desc nb_desc =
   if from_gen_desc <= 0 then []
   else
     let rec loop_asc pl accu =
@@ -437,14 +439,17 @@ let get_families_desc base ip ip_spouse from_gen_desc nb_desc =
       | (ip, gen) :: pl ->
           if gen = from_gen_desc then loop_asc pl accu
           else
-            match get_parents (poi base ip) with
-            | Some ifam ->
+            let p = poi base ip in
+            if Util.authorized_age conf base p
+            then match get_parents (poi base ip) with
+              | Some ifam ->
                 let cpl = foi base ifam in
                 let ifath = get_father cpl in
                 let imoth = get_mother cpl in
                 loop_asc ((ifath, gen + 1) :: (imoth, gen + 1) :: pl)
-                  ((ip, gen) :: accu)
-            | None -> loop_asc pl accu
+                    ((ip, gen) :: accu)
+              | None -> loop_asc pl accu
+            else loop_asc pl accu
     in
     (* Récupère les ascendants jusqu'au nombre de générations from_gen_desc. *)
     (* Utile pour le template affichant les parents des conjoints. *)
@@ -458,7 +463,10 @@ let get_families_desc base ip ip_spouse from_gen_desc nb_desc =
       match pl with
       | [] -> accu (* Retourne accu lorsqu'il n'y a plus rien à parcourir. *)
       | (ip, gen) :: pl ->
-          let fam = Array.to_list (get_family (poi base ip)) in
+        let p = poi base ip in
+        if Util.authorized_age conf base p
+        then
+          let fam = Array.to_list (get_family p) in
           let fam =
             if gen = 0 && ip_spouse <> Adef.iper_of_int (-1) then
               List.filter
@@ -488,11 +496,11 @@ let get_families_desc base ip ip_spouse from_gen_desc nb_desc =
               pl fam
           in
           loop_desc pl accu
+        else loop_desc pl accu
     in
     loop_desc ipl []
 
 (**/**)
-
 
 let get_link_tree_curl conf request basename bname ip s s2 nb_asc from_gen_desc nb_desc =
   let host =
@@ -640,7 +648,7 @@ let print_link_tree conf base =
 
   (* La liste de toutes les personnes à renvoyer. *)
   let pl =
-    get_families_desc base ip_local ip_local_spouse from_gen_desc nb_desc
+    get_families_desc conf base ip_local ip_local_spouse from_gen_desc nb_desc
   in
   (* On dédoublonne la liste. *)
   let pl =
@@ -658,7 +666,7 @@ let print_link_tree conf base =
        ip_local <> Adef.iper_of_int (-1) &&
        ip_distant <> Adef.iper_of_int (-1)
     then
-      let families = get_families_asc base ip_local nb_asc in
+      let families = get_families_asc conf base ip_local nb_asc in
       List.map
         (fun (ip, ifam, gen) ->
           let add_children = gen < from_gen_desc in
