@@ -716,7 +716,7 @@ let short_dates_text conf base p =
               prec_year_text conf b ^ "-"
           | _ -> prec_year_text conf b
           end
-      | _, Some (Dgreg (d, _)) -> "-" ^ prec_year_text conf d
+      | _, Some (Dgreg (d, _)) -> death_symbol conf ^ prec_year_text conf d
       | _, _ ->
           (* La personne peut être décédée mais ne pas avoir de date. *)
           match get_death p with
