@@ -1920,22 +1920,11 @@ let main ~speclist () =
           try
             let host = Unix.gethostbyname x in
             let url = Unix.string_of_inet_addr host.Unix.h_addr_list.(0) in
-            Api_link.redis_host_all := url
-          with _ -> Api_link.redis_host_all := x),
+            Api_link.redis_host := url
+          with _ ->
+            Api_link.redis_host := x),
      "host redis for links tree") ::
-    ("-redis_p", Arg.Int (fun x -> Api_link.redis_port_all := x),
-     "redis port for links tree") ::
-    ("-redis_moderate",
-     Arg.String
-       (fun x ->
-          try
-            let host = Unix.gethostbyname x in
-            let url = Unix.string_of_inet_addr host.Unix.h_addr_list.(0) in
-            Api_link.redis_host_moderate := url
-          with _ -> Api_link.redis_host_moderate := x),
-     "host redis for links tree") ::
-    ("-redis_p_moderate",
-     Arg.Int (fun x -> Api_link.redis_port_moderate := x),
+    ("-redis_p", Arg.Int (fun x -> Api_link.redis_port := x),
      "redis port for links tree") ::
     ("-links_tree_url",
      Arg.String

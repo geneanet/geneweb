@@ -8,17 +8,9 @@ open Config
 open Def
 open Gwdb
 
-(* base redis contenant tous les liens. *)
-let redis_host_all = ref "127.0.0.1" ;;
-let redis_port_all = ref 6379 ;;
-(* base redis contenant tous les liens modérés. *)
-let redis_host_moderate = ref "127.0.0.1" ;;
-let redis_port_moderate = ref 6379 ;;
-(* base redis utilisée. *)
-let redis_host = ref !redis_host_all ;;
-let redis_port = ref !redis_port_all ;;
-let api_servers = ref [] ;;
-
+let redis_host = ref "127.0.0.1"
+let redis_port = ref 6379
+let api_servers = ref []
 
 (**/**) (* Redis. *)
 
