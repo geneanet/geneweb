@@ -143,6 +143,14 @@ let public_all ~mem bname treshold =
     load_ascends_array base ;
     load_couples_array base ;
   end ;
+  Consang.check_noloop base
+    (function
+        OwnAncestor p ->
+        Printf.printf "I cannot deal this database.\n";
+        Printf.printf "%s is his own ancestors\n" (Gutil.designation base p);
+        flush stdout;
+        exit 2
+      | _ -> assert false);
   let nb = nb_of_persons base in
   let old = Array.make nb false in
   let scanned = Array.make nb (-1) in
