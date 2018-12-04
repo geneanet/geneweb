@@ -1905,8 +1905,6 @@ let main ~speclist () =
   in
 #ifdef API
   let speclist =
-    ("-api_url", Arg.String (fun x -> Link.api_url := x),
-     "Url api for links tree") ::
     ("-api_h", Arg.String (fun x -> selected_api_host := x),
      "<host>\n       Host for Geneweb API (default = " ^ !selected_api_host ^
      ")") ::

@@ -6,9 +6,6 @@ module MLinkext = Api_link_tree_piqi_ext
 
 open Config
 
-let api_url = ref "127.0.0.1:2322" ;;
-
-
 (**/**) (* Hashtbl pour gérer le cache. *)
 
 (* La clé du cache est toujours (bname, ip) et on stocke les objets proto. *)
