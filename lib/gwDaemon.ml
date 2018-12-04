@@ -1886,7 +1886,7 @@ let main ~speclist () =
     ("-version", Arg.Unit Util.print_version_commit,
      "\n       Print version and commit number.") ::
     (if Sys.unix then
-       ( " -max_clients"
+       ( "-max_clients"
        , Arg.Int (fun x -> max_clients := Some x)
        , "<num>\n       \
           Max number of clients treated at the same time (default: no limit) \
