@@ -225,6 +225,8 @@ let to_iso_8859_1 s =
     let s' = Bytes.create len in
     let rec loop i i' =
       if i = String.length s then Bytes.unsafe_to_string s'
+      else if i = String.length s - 1 then
+        begin Bytes.set s' i' s.[i] ; Bytes.unsafe_to_string s' end
       else
         match Char.code s.[i] with
           166 | 172 | 173 | 182 | 188 | 189 as c ->
