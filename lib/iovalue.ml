@@ -96,6 +96,11 @@ type 'a out_funs =
 let size_32 = ref 0
 let size_64 = ref 0
 
+let output_binary_int64 ofuns oc x =
+  for i = 1 to 8 do
+    ofuns.output_byte oc (x lsr (64 - 8 * i) land 0xFF)
+  done
+
 let gen_output_block_header ofuns oc tag size =
   let hd = size lsl 10 + tag in
   if tag < 16 && size < 8 then
@@ -103,9 +108,7 @@ let gen_output_block_header ofuns oc tag size =
   else if Sys.word_size = 64 && hd >= 1 lsl 32 then
     begin
       ofuns.output_byte oc code_BLOCK64;
-      for i = 1 to 8 do
-        ofuns.output_byte oc (hd lsr (64 - 8 * i) land 0xFF)
-      done
+      output_binary_int64 ofuns oc hd
     end
   else
     begin
@@ -143,9 +146,7 @@ let rec output_loop ofuns oc x =
     else
       begin
         ofuns.output_byte oc code_INT64;
-        for i = 1 to 8 do
-          ofuns.output_byte oc ((Obj.magic x) lsr (64 - 8 * i) land 0xFF)
-        done
+        output_binary_int64 ofuns oc (Obj.magic x)
       end
   else if Obj.tag x = Obj.string_tag then
     let len = String.length (Obj.magic x) in
