@@ -242,7 +242,7 @@ let reconstitute_person conf base mod_p =
         let note =
           Opt.map_default
             "" (fun n -> Util.sanitize_html (only_printable_or_nl (Mutil.strip_all_trailing_spaces n)))
-            evt.Mwrite.Pevent.src
+            evt.Mwrite.Pevent.note
         in
         let src = Opt.map_default "" only_printable evt.Mwrite.Pevent.src in
         let witnesses =
