@@ -15,6 +15,7 @@ let prefix_SMALL_STRING = 0x20
 let code_INT8 = 0x0
 let code_INT16 = 0x1
 let code_INT32 = 0x2
+let code_INT64 = 0x3
 let code_BLOCK32 = 0x8
 let code_BLOCK64 = 0x13
 let code_STRING8 = 0x9
@@ -50,6 +51,9 @@ let rec input_loop ifuns ic =
     let x3 = ifuns.input_byte ic in
     let x4 = ifuns.input_byte ic in
     Obj.magic (sign_extend x1 lsl 24 + x2 lsl 16 + x3 lsl 8 + x4)
+  else if code = code_INT64 then
+    let () = assert (Sys.word_size = 64) in
+    Obj.magic (input_binary_int64 ifuns ic)
   else if code = code_BLOCK32 then
     let header = ifuns.input_binary_int ic in
     Obj.magic (input_block ifuns ic (header land 0xff) (header lsr 10))
@@ -125,16 +129,23 @@ let rec output_loop ofuns oc x =
         ofuns.output_byte oc code_INT8;
         ofuns.output_byte oc (Obj.magic x)
       end
-    else if Obj.magic x >= -32768 && Obj.magic x < 32768 then
+    else if Obj.magic x >= -32768 && Obj.magic x <= 32767 then
       begin
         ofuns.output_byte oc code_INT16;
         ofuns.output_byte oc (Obj.magic x lsr 8);
         ofuns.output_byte oc (Obj.magic x)
       end
-    else
+    else if Obj.magic x >= -1073741824 && Obj.magic x <= 1073741823 then
       begin
         ofuns.output_byte oc code_INT32;
         ofuns.output_binary_int oc (Obj.magic x)
+      end
+    else
+      begin
+        ofuns.output_byte oc code_INT64;
+        for i = 1 to 8 do
+          ofuns.output_byte oc ((Obj.magic x) lsr (64 - 8 * i) land 0xFF)
+        done
       end
   else if Obj.tag x = Obj.string_tag then
     let len = String.length (Obj.magic x) in
