@@ -91,7 +91,7 @@ let rec infer_death conf base p =
           | _ ->
             let death =
               let children = get_children fam in
-              let len = Array.length families in
+              let len = Array.length children in
               let rec loop_children j =
                 if j = len then DontKnowIfDead
                 else

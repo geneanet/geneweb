@@ -323,7 +323,7 @@ let print_alphabetic conf base is_surnames =
       in
       loop [] 0 'Z'
     else
-      select_names conf base is_surnames ini all 
+      select_names conf base is_surnames ini all
   in
   if fast then
     let list = List.map (fun (s, _, _) -> s, 1) list in
