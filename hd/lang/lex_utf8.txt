@@ -9197,7 +9197,7 @@ he:  השם %s בשימוש כבר ע"י %tאדם זה%t
 is: nafnið %s er þegar í %tnotkun af%t
 it: nome %s già utilizzato da %tquesta persona%t
 lv: vārds - %s jau ir %tšai personai%t
-nl: de naam %s is al gebruikt door deze persoon%t
+nl: de naam %s is al gebruikt door %tdeze persoon%t
 no: navn %s brukes allerede av %tdenne personen%t
 oc: nom %s ja utilizat per %taquela persona%t
 pl: imię %s jest już używane przez %ttę osobę%t
