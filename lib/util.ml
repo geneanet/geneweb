@@ -71,6 +71,15 @@ let amp_capitalize capitale s =
         String.sub s 2 (String.length s - 2)
     | _ -> s
 
+
+(* Copied from Ocaml < 4.03. To be removed with proper utf8 support *)
+let uppercase c =
+  if (c >= 'a' && c <= 'z')
+  || (c >= '\224' && c <= '\246')
+  || (c >= '\248' && c <= '\254')
+  then Char.unsafe_chr(Char.code c - 32)
+  else c
+
 let rec capitale_utf_8 s =
   if String.length s = 0 then ""
   else
@@ -90,7 +99,8 @@ let rec capitale_utf_8 s =
     else
       match Char.code c with
         0xC3 when Char.code s.[1] <> 0xBF ->
-          let c1 = Char.chr (Char.code s.[1] - 0xA0 + 0x80) in
+        let c1 = uppercase (Char.chr (Char.code s.[1] + 0x40)) in
+        let c1 = Char.chr (Char.code c1 - 0x40) in
           Printf.sprintf "%c%c%s" c c1 (String.sub s 2 (String.length s - 2))
       | 0xC3 when Char.code s.[1] = 0xBF ->
           (* ÿ *)
