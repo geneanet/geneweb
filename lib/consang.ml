@@ -94,7 +94,7 @@ let topological_sort base poi =
     | _ -> ()
   done;
   let todo =
-    let stop = nb_of_persons base - 1 in
+    let stop = nb_of_persons base in
     let rec loop i acc =
       if i >= stop then acc else
       loop (i + 1) (if tab.(i) = 0 then i :: acc else acc)
