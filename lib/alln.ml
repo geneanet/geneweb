@@ -160,7 +160,7 @@ let print_alphabetic_all conf base is_surnames ini list len =
             end;
             Wserver.printf " (%d)" cnt;
             Wserver.printf "</li>\n")
-         l;
+         (List.sort (fun (a, _) (b, _) -> Gutil.alphabetic_order a b) l);
        Wserver.printf "</ul>\n";
        Wserver.printf "</li>\n")
     list;
@@ -184,7 +184,7 @@ let print_alphabetic_small conf base is_surnames ini list len =
            Wserver.printf "</a>";
            Wserver.printf " (%d)" cnt;
            Wserver.printf "</li>\n")
-        list;
+        (List.sort (fun (_, a, _) (_, b, _) -> Gutil.alphabetic_order a b) list);
       Wserver.printf "</ul>\n"
     end;
   Hutil.trailer conf
