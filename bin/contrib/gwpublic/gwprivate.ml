@@ -17,9 +17,7 @@ let usage = "Usage: private [-everybody] [-ind key] [-list-ind file] base"
 let main () =
   Arg.parse speclist anonfun usage;
   if !bname = "" then begin Arg.usage speclist usage; exit 2 end;
-  let gcc = Gc.get () in
-  gcc.Gc.max_overhead <- 100;
-  Gc.set gcc;
+  Secure.set_base_dir (Filename.dirname !bname);
   Lock.control_retry (Mutil.lock_file !bname)
     ~onerror:Lock.print_error_and_exit
     (fun () ->
