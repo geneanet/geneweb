@@ -373,8 +373,8 @@ let unauthorized conf auth_type =
 let commd conf =
   let c = conf.command ^ "?" in
   List.fold_left (fun c (k, v) ->
-    if ( k = "oc" || k = "ocz" && v = "" || v = "0" ) || v = "" then
-      c else c ^ k ^ "=" ^ v ^ "&") c (conf.henv @ conf.senv)
+    if ( (k = "oc" || k = "ocz") && v = "0" ) || v = "" then c
+    else c ^ k ^ "=" ^ v ^ "&") c (conf.henv @ conf.senv)
 
 let commd_2 conf =
   let c = conf.command ^ "?" in
