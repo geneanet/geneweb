@@ -1865,36 +1865,6 @@ let check_ampersands s =
   in
   loop false 0
 
-let replace_quotes s =
-  let b = Buffer.create (String.length s + 100) in (* hack: +100 to account for quote -> &#34; *)
-  let rec loop i =
-    if i = String.length s then
-      Buffer.contents b
-    else
-      match s.[i] with
-      | '<' ->
-        let tag_content =
-          let rec loop str j =
-            if j = String.length s then str
-            else
-              match s.[j] with
-              | '>' -> str
-              | c -> loop ( str ^ ( String.make 1 c )) (j + 1)
-          in loop "" (i+1)
-        in
-        Buffer.add_string b ( "<" ^ tag_content ^ ">" );
-        loop (i + ( String.length tag_content + 2 ))
-      | '"' ->
-        Buffer.add_string b "&#34;";
-        loop (i + 1)
-      | '\'' ->
-        Buffer.add_string b "&#39;";
-        loop (i + 1)
-      | c ->
-        Buffer.add_char b c;
-        loop (i + 1)
-  in loop 0
-
 let check_xhtml s =
   let b = Buffer.create (String.length s) in
   let rec loop tag_stack i =

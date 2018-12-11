@@ -2085,7 +2085,6 @@ and eval_simple_str_var conf base env (_, p_auth) =
                Wiki.wi_always_show_link = conf.wizard || conf.friend}
             in
             let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-            let s = Util.replace_quotes s in
             if conf.pure_xhtml then Util.check_xhtml s else s
           else ""
       | _ -> raise Not_found
@@ -2241,7 +2240,6 @@ and eval_simple_str_var conf base env (_, p_auth) =
                Wiki.wi_always_show_link = conf.wizard || conf.friend}
             in
             let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-            let s = Util.replace_quotes s in
             if conf.pure_xhtml then Util.check_xhtml s else s
           else ""
       | _ -> raise Not_found
@@ -2261,7 +2259,6 @@ and eval_simple_str_var conf base env (_, p_auth) =
                Wiki.wi_always_show_link = conf.wizard || conf.friend}
             in
             let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-            let s = Util.replace_quotes s in
             if conf.pure_xhtml then Util.check_xhtml s else s
           else ""
       | _ -> raise Not_found
@@ -3533,7 +3530,6 @@ and eval_str_event_field conf base (p, p_auth)
            Wiki.wi_always_show_link = conf.wizard || conf.friend}
         in
         let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-        let s = Util.replace_quotes s in
         if conf.pure_xhtml then Util.check_xhtml s else s
       else ""
   | "src" ->
@@ -3548,7 +3544,6 @@ and eval_str_event_field conf base (p, p_auth)
           in
           Wiki.syntax_links conf wi (sou base src)
         in
-        let src = Util.replace_quotes src in
         string_with_macros conf env src
       else ""
   | _ -> raise Not_found
@@ -4094,7 +4089,6 @@ and eval_str_person_field conf base env (p, p_auth as ep) =
            Wiki.wi_always_show_link = conf.wizard || conf.friend}
         in
         let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-        let s = Util.replace_quotes s in
         if conf.pure_xhtml then Util.check_xhtml s else s
       else ""
   | "baptism_place" ->
@@ -4114,7 +4108,6 @@ and eval_str_person_field conf base env (p, p_auth as ep) =
            Wiki.wi_always_show_link = conf.wizard || conf.friend}
         in
         let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-        let s = Util.replace_quotes s in
         if conf.pure_xhtml then Util.check_xhtml s else s
       else ""
   | "burial_place" ->
@@ -4133,7 +4126,6 @@ and eval_str_person_field conf base env (p, p_auth as ep) =
            Wiki.wi_always_show_link = conf.wizard || conf.friend}
         in
         let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-        let s = Util.replace_quotes s in
         if conf.pure_xhtml then Util.check_xhtml s else s
       else ""
   | "child_name" ->
@@ -4187,7 +4179,6 @@ and eval_str_person_field conf base env (p, p_auth as ep) =
            Wiki.wi_always_show_link = conf.wizard || conf.friend}
         in
         let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-        let s = Util.replace_quotes s in
         if conf.pure_xhtml then Util.check_xhtml s else s
       else ""
   | "died" -> string_of_died conf p p_auth
@@ -4360,7 +4351,6 @@ and eval_str_person_field conf base env (p, p_auth as ep) =
            Wiki.wi_always_show_link = conf.wizard || conf.friend}
         in
         let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-        let s = Util.replace_quotes s in
         if conf.pure_xhtml then Util.check_xhtml s else s
       else ""
   | "occ" ->
@@ -4378,7 +4368,6 @@ and eval_str_person_field conf base env (p, p_auth as ep) =
           in
           Wiki.syntax_links conf wi s
         in
-        let s = Util.replace_quotes s in
         string_with_macros conf [] s
       else ""
   | "on_baptism_date" ->
@@ -4443,7 +4432,6 @@ and eval_str_person_field conf base env (p, p_auth as ep) =
            Wiki.wi_always_show_link = conf.wizard || conf.friend}
         in
         let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-        let s = Util.replace_quotes s in
         if conf.pure_xhtml then Util.check_xhtml s else s
       else ""
   | "slash_burial_date" ->
@@ -4565,7 +4553,6 @@ and eval_str_person_field conf base env (p, p_auth as ep) =
             in
             Wiki.syntax_links conf wi s
           in
-          let s = Util.replace_quotes s in
           string_with_macros conf env s
       | _ -> raise Not_found
       end

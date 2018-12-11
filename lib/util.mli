@@ -127,7 +127,6 @@ val body_prop : config -> string
 val url_no_index : config -> base -> string
 val message_to_wizard : config -> unit
 val check_xhtml : string -> string
-val replace_quotes : string -> string
 
 val print_alphab_list :
   ('a -> string) -> ('a -> unit) -> 'a list -> unit
