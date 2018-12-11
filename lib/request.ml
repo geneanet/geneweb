@@ -22,7 +22,7 @@ open Util
 let set_senv conf vm vi =
   conf.senv <- ["em", vm; "ei", vi];
   begin match p_getenv conf.env "image" with
-    Some "off" -> conf.senv <- conf.senv @ ["image", "off"]
+    Some "on" -> conf.senv <- conf.senv @ ["image", "on"]
   | _ -> ()
   end;
   begin match p_getenv conf.env "long" with

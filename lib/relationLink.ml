@@ -319,7 +319,7 @@ let sign_text conf base sign info b1 b2 c1 c2 =
      Some "on" -> "&spouse=on"
    | _ -> "") ^
   (match p_getenv conf.env "image" with
-     Some "off" -> "&image=off"
+     Some "on" -> "&image=on"
    | _ -> "") ^
   (match p_getenv conf.env "bd" with
      None | Some ("0" | "") -> ""
