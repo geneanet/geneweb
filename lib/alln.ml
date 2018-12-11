@@ -376,7 +376,7 @@ let print_alphabetic_short conf base is_surnames ini list len =
             Wserver.printf "%s" (alphab_string base is_surnames s);
             if href <> "" || name <> "" then Wserver.printf "</a>";
             Wserver.printf " (%d)" cnt)
-         l;
+         (List.sort (fun (a, _) (b, _) -> Gutil.alphabetic_order a b) l);
        Wserver.printf "\n";
        Wserver.printf "</p>\n")
     list;
