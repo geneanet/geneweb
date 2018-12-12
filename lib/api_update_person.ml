@@ -169,7 +169,7 @@ let reconstitute_person conf base mod_p =
   let psources = Opt.map_default "" only_printable mod_p.Mwrite.Person.psources in
   let notes =
     Opt.map_default ""
-      (fun s -> Util.sanitize_html (only_printable_or_nl (Mutil.strip_all_trailing_spaces s)))
+      (fun s -> only_printable_or_nl (Mutil.strip_all_trailing_spaces s))
       mod_p.Mwrite.Person.notes
   in
   let pevents =
@@ -241,7 +241,7 @@ let reconstitute_person conf base mod_p =
         let reason = Opt.map_default "" (fun r -> no_html_tags (only_printable r)) evt.Mwrite.Pevent.reason in
         let note =
           Opt.map_default
-            "" (fun n -> Util.sanitize_html (only_printable_or_nl (Mutil.strip_all_trailing_spaces n)))
+            "" (fun n -> only_printable_or_nl (Mutil.strip_all_trailing_spaces n))
             evt.Mwrite.Pevent.note
         in
         let src = Opt.map_default "" only_printable evt.Mwrite.Pevent.src in

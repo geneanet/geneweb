@@ -25,7 +25,6 @@ val get_referer : config -> string
 
 val no_html_tags : string -> string
 val clean_html_tags : string -> string list -> string
-val sanitize_html : string -> string
 
 val nl : unit -> unit
 val html : ?content_type:string -> config -> unit
@@ -202,8 +201,6 @@ val default_sosa_ref : config -> base -> person option
 val find_sosa_ref : config -> base -> person option
 val update_gwf_sosa : config -> base -> iper * (string * string * int) -> unit
 
-val quote_escaped : string -> string
-
 val get_server_string : string list -> string
 val get_request_string : string list -> string
 
@@ -377,3 +374,18 @@ val rm_rf : string -> unit
     Remove [fname]. If [fname] does not exists, do nothing.
 *)
 val rm : string -> unit
+
+(** [escape_html str] replaces '&', '"', '\'', '<' and '>'
+    with their corresponding character entities (using entity number) *)
+val escape_html : string -> string
+
+(**
+   [safe_html s] sanitizes [s] element in order to fix ill-formed
+   HTML input and to prevent XSS injection
+
+   It removes any tag which is not allowed by geneweb.
+   It removes all attributes starting with ["on"].
+   It removes any attribute when the value starts with ["javascript"].
+   Text is escaped using [escape_html].
+ *)
+val safe_html : string -> string

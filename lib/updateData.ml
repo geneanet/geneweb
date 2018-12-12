@@ -493,7 +493,7 @@ let print_long conf list len =
                 in
                 Wserver.printf "<a href=\"%sm=MOD_DATA&data=%s&%s&s=%s#mod\">"
                   (commd conf) data k (code_varenv ini);
-                Wserver.printf "%s" (quote_escaped s);
+                Wserver.printf "%s" (Util.escape_html s);
                 Wserver.printf "</a>"
               else
                 begin
@@ -523,7 +523,7 @@ let print_long conf list len =
                       Wserver.printf
                         "<input type=\"text\" name=\"nx_input\" size=\"80\" maxlength=\"%d\" value=\"%s\" id=\"nx_input\"%s>\n"
                         (if data = "src" then 300 else 200)
-                        (quote_escaped (only_printable s)) conf.xhs;
+                        (Util.escape_html (only_printable s)) conf.xhs;
                       if data = "sn" then
                         begin
                           Wserver.printf
@@ -1054,7 +1054,7 @@ let print_mod_ok conf base =
               conf.xhs;
             Wserver.printf
               "<input type=\"hidden\" name=\"nx_input\" size=\"80\" maxlength=\"200\" value=\"%s\" id=\"data\"%s>\n"
-              (quote_escaped (only_printable new_input)) conf.xhs;
+              (Util.escape_html (only_printable new_input)) conf.xhs;
             Wserver.printf "%s"
               (capitale (transl conf "continue correcting"));
             begin
@@ -1352,7 +1352,7 @@ and eval_compound_var conf base env xx sl =
         | None -> ""
         end
     | "encode" :: sl -> code_varenv (loop sl)
-    | "escape" :: sl -> quote_escaped (loop sl)
+    | "escape" :: sl -> Util.escape_html (loop sl)
     | "html_encode" :: sl -> no_html_tags (loop sl)
     | "printable" :: sl -> only_printable (loop sl)
     | _ -> raise Not_found

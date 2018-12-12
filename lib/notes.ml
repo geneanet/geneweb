@@ -34,7 +34,7 @@ let print_search_form conf from_note =
   Wserver.printf
     "<input name=\"s\" size=\"30\" maxlength=\"40\" value=\"%s\"%s>\n"
     (match p_getenv conf.env "s" with
-       Some s -> quote_escaped s
+       Some s -> Util.escape_html s
      | None -> "")
     conf.xhs;
   begin match from_note with

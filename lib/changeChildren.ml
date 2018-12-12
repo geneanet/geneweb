@@ -33,7 +33,7 @@ let print_child_person conf base p =
   Wserver.printf "<td colspan=\"3\">\n";
   Wserver.printf "<input name=\"%s_first_name\" class=\"form-control\" \
 size=\"23\" maxlength=\"200\" id=\"%s_fn\" value=\"%s\">\n" var var 
-(quote_escaped first_name);
+(Util.escape_html first_name);
   Wserver.printf "</td>\n";
   Wserver.printf "<td align=\"%s\">" conf.right;
   Wserver.printf "<label for=\"%s_occ\" class=\"mx-2 mb-0\">%s</label>"
@@ -188,7 +188,7 @@ let print_conflict conf base ip_var p =
   List.iter
     (fun (x, v) ->
        Wserver.printf "<input type=\"hidden\" name=\"%s\" value=\"%s\">\n" x
-         (quote_escaped (decode_varenv v)))
+         (Util.escape_html (decode_varenv v)))
     (conf.henv @ conf.env);
   begin let var = "c" ^ string_of_int (Adef.int_of_iper ip_var) in
     Wserver.printf "<input type=\"hidden\" name=\"field\" value=\"%s\">\n" var

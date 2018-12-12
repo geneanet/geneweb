@@ -302,13 +302,15 @@ let translate_eval s = Translate.eval (Mutil.nominative s)
 
 (* *)
 
-let escape_amp s =
+let escape_char src dst str =
   let rec loop i len =
-    if i = String.length s then Buff.get len
-    else if s.[i] = '&' then loop (i + 1) (Buff.mstore len "&amp;")
-    else loop (i + 1) (Buff.store len s.[i])
+    if i = String.length str then Buff.get len
+    else if str.[i] = src then loop (i + 1) (Buff.mstore len dst)
+    else loop (i + 1) (Buff.store len str.[i])
   in
   loop 0 0
+
+let escape_amp = escape_char '&' "&#38;"
 
 let get_referer conf =
   let referer = Wserver.extract_param "referer: " '\n' conf.request in
@@ -417,42 +419,122 @@ let prefix_base_password_2 conf =
 let code_varenv = Wserver.encode
 let decode_varenv = Wserver.decode
 
-let quote_escaped s =
-  let rec need_code i =
-    if i < String.length s then
-      match s.[i] with
-        '"' | '&' | '<' | '>' -> true
-      | _ -> need_code (succ i)
-    else false
+let safe_html_allowd_tags =
+  [ ("http://www.w3.org/1999/xhtml", "a")
+  ; ("http://www.w3.org/1999/xhtml", "area")
+  ; ("http://www.w3.org/1999/xhtml", "b")
+  ; ("http://www.w3.org/1999/xhtml", "blockquote")
+  ; ("http://www.w3.org/1999/xhtml", "br")
+  ; ("http://www.w3.org/1999/xhtml", "center")
+  ; ("http://www.w3.org/1999/xhtml", "cite")
+  ; ("http://www.w3.org/1999/xhtml", "dd")
+  ; ("http://www.w3.org/1999/xhtml", "dir")
+  ; ("http://www.w3.org/1999/xhtml", "div")
+  ; ("http://www.w3.org/1999/xhtml", "dl")
+  ; ("http://www.w3.org/1999/xhtml", "dt")
+  ; ("http://www.w3.org/1999/xhtml", "em")
+  ; ("http://www.w3.org/1999/xhtml", "embed")
+  ; ("http://www.w3.org/1999/xhtml", "font")
+  ; ("http://www.w3.org/1999/xhtml", "h1")
+  ; ("http://www.w3.org/1999/xhtml", "h2")
+  ; ("http://www.w3.org/1999/xhtml", "h3")
+  ; ("http://www.w3.org/1999/xhtml", "h4")
+  ; ("http://www.w3.org/1999/xhtml", "h5")
+  ; ("http://www.w3.org/1999/xhtml", "h6")
+  ; ("http://www.w3.org/1999/xhtml", "hr")
+  ; ("http://www.w3.org/1999/xhtml", "i")
+  ; ("http://www.w3.org/1999/xhtml", "img")
+  ; ("http://www.w3.org/1999/xhtml", "li")
+  ; ("http://www.w3.org/1999/xhtml", "map")
+  ; ("http://www.w3.org/1999/xhtml", "object")
+  ; ("http://www.w3.org/1999/xhtml", "ol")
+  ; ("http://www.w3.org/1999/xhtml", "ol")
+  ; ("http://www.w3.org/1999/xhtml", "p")
+  ; ("http://www.w3.org/1999/xhtml", "param")
+  ; ("http://www.w3.org/1999/xhtml", "pre")
+  ; ("http://www.w3.org/1999/xhtml", "s")
+  ; ("http://www.w3.org/1999/xhtml", "small")
+  ; ("http://www.w3.org/1999/xhtml", "span")
+  ; ("http://www.w3.org/1999/xhtml", "strike")
+  ; ("http://www.w3.org/1999/xhtml", "strong")
+  ; ("http://www.w3.org/1999/xhtml", "sub")
+  ; ("http://www.w3.org/1999/xhtml", "sup")
+  ; ("http://www.w3.org/1999/xhtml", "table")
+  ; ("http://www.w3.org/1999/xhtml", "tbody")
+  ; ("http://www.w3.org/1999/xhtml", "td")
+  ; ("http://www.w3.org/1999/xhtml", "tfoot")
+  ; ("http://www.w3.org/1999/xhtml", "th")
+  ; ("http://www.w3.org/1999/xhtml", "thead")
+  ; ("http://www.w3.org/1999/xhtml", "tr")
+  ; ("http://www.w3.org/1999/xhtml", "tt")
+  ; ("http://www.w3.org/1999/xhtml", "u")
+  ; ("http://www.w3.org/1999/xhtml", "ul")
+  ; ("http://www.w3.org/1999/xhtml", "nav")
+  ; ("http://www.w3.org/1999/xhtml", "section")
+  ]
+
+(** [escape_html str] replaces '&', '"', '<' and '>'
+    with their corresponding character entities (using entity number) *)
+let escape_html str =
+  let strlen = String.length str in
+  let rec loop acc i =
+    if i < strlen then
+      match String.unsafe_get str i with
+      | '&' | '"' | '\'' | '<' | '>' -> loop (acc + 5) (i + 1) (* "&#xx;" *)
+      | _ -> loop (acc + 1) (i + 1)
+    else if acc = strlen then str
+    else
+      let buf = Bytes.create acc in
+      let rec loop istr ibuf =
+        if istr = strlen then Bytes.unsafe_to_string buf
+        else match String.unsafe_get str istr with
+          | '&' -> Bytes.blit_string "&#38;" 0 buf ibuf 5 ; loop (istr + 1) (ibuf + 5)
+          | '"' -> Bytes.blit_string "&#34;" 0 buf ibuf 5 ; loop (istr + 1) (ibuf + 5)
+          | '\'' -> Bytes.blit_string "&#39;" 0 buf ibuf 5 ; loop (istr + 1) (ibuf + 5)
+          | '<' -> Bytes.blit_string "&#60;" 0 buf ibuf 5 ; loop (istr + 1) (ibuf + 5)
+          | '>' -> Bytes.blit_string "&#62;" 0 buf ibuf 5 ; loop (istr + 1) (ibuf + 5)
+          | c -> Bytes.unsafe_set buf ibuf c ; loop (istr + 1) (ibuf + 1)
+      in loop 0 0
   in
-  let rec compute_len i i1 =
-    if i < String.length s then
-      let i1 =
-        match s.[i] with
-          '"' -> i1 + 6
-        | '&' -> i1 + 5
-        | '<' | '>' -> i1 + 4
-        | _ -> succ i1
-      in
-      compute_len (succ i) i1
-    else i1
+  loop 0 0
+
+(* Few notes:
+
+   According to https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs,
+   > Data URLs are treated as unique opaque origins by modern browsers,
+   > rather than inheriting the origin of the settings object responsible for the navigation.
+   We do not need to filter this attribute.
+
+   We filter out all attributes starting with ["on"] (prevent javascript from being executed).
+
+   Remove any attribute when the value start with ["javascript"].
+
+   Text is escaped using [escape_html].
+
+   Markup.ml automatically return tags names in lowercase.
+ *)
+let safe_html s =
+  let open Markup in
+  let make_safe = function
+    | `Start_element (name, attrs) ->
+      if not @@ List.mem name safe_html_allowd_tags then `Comment ""
+      else
+        let attrs =
+          List.filter (function ((_, k), v) ->
+              (String.length k <= 2
+               || (String.get k 0 <> 'o' || String.get k 1 <> 'n') )
+              && not (Mutil.contains (String.lowercase_ascii v) "javascript") )
+            attrs
+        in
+        `Start_element (name, attrs)
+    | e -> e
   in
-  let rec copy_code_in s1 i i1 =
-    if i < String.length s then
-      let i1 =
-        match s.[i] with
-          '"' -> String.blit "&#034;" 0 s1 i1 6; i1 + 6
-        | '&' -> String.blit "&amp;" 0 s1 i1 5; i1 + 5
-        | '<' -> String.blit "&lt;" 0 s1 i1 4; i1 + 4
-        | '>' -> String.blit "&gt;" 0 s1 i1 4; i1 + 4
-        | c -> Bytes.set s1 i1 c; succ i1
-      in
-      copy_code_in s1 (succ i) i1
-    else Bytes.unsafe_to_string s1
-  in
-  if need_code 0 then
-    let len = compute_len 0 0 in copy_code_in (Bytes.create len) 0 0
-  else s
+  string s
+  |> parse_html ~context:(`Fragment "body")
+  |> signals
+  |> map make_safe
+  |> write_html ~escape_text:escape_html
+  |> to_string
 
 let no_html_tags s =
   let rec need_code i =
@@ -483,24 +565,11 @@ let clean_html_tags s l =
     (fun s html_tag -> Str.global_replace (Str.regexp html_tag) "&nbsp;" s) s
     l
 
-(* ********************************************************************* *)
-(*  [Fonc] value sanitize_html : string -> string                        *)
-(*  [Description] : Assainit une chaîne de caractères HTML en enlevant
-                    les éléments dangereux.
-    [Args] :
-      - html_str : Chaîne de caractères à assainir.
-    [Retour] : La chaîne de caractères assainie.                         *)
-(* ********************************************************************* *)
-let sanitize_html html_str =
-  (* Enlève les évènements DOM. *)
-  let regexp_dom_events = Str.regexp "on[a-zA-Z]+=\"[^\"]*\"" in
-  Str.global_replace regexp_dom_events "" html_str
-
 let hidden_env conf =
   List.iter
     (fun (k, v) ->
        Wserver.printf "<input type=\"hidden\" name=\"%s\" value=\"%s\"%s>\n" k
-         (quote_escaped (decode_varenv v)) conf.xhs)
+         (escape_html (decode_varenv v)) conf.xhs)
     (conf.henv @ conf.senv)
 
 let p_getenv env label =
@@ -1518,10 +1587,7 @@ let tag_id s i =
   loop i 0
 
 let default_good_tag_list =
-  ["a"; "b"; "blockquote"; "br"; "center"; "cite"; "dd"; "dir"; "div"; "dl";
-   "dt"; "em"; "font"; "hr"; "h1"; "h2"; "h3"; "h4"; "h5"; "h6"; "i"; "img";
-   "li"; "ol"; "p"; "pre"; "span"; "strong"; "sub"; "sup"; "table"; "tbody";
-   "td"; "tfoot"; "th"; "thead"; "tr"; "tt"; "u"; "ul"; "!--"; "area"; "map"]
+  "!--" :: List.map snd safe_html_allowd_tags
 
 let allowed_tags_file = ref ""
 
@@ -2689,7 +2755,7 @@ let rchild_type_text conf t n =
 
 let wprint_hidden conf pref name valu =
   Wserver.printf "<input type=\"hidden\" name=\"%s%s\" value=\"%s\"%s>\n" pref
-    name (quote_escaped valu) conf.xhs
+    name (escape_html valu) conf.xhs
 
 let wprint_hidden_person conf base pref p =
   let first_name = p_first_name base p in

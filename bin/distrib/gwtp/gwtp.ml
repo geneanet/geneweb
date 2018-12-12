@@ -165,13 +165,13 @@ let copy_template genv (varenv, filenv) env if_env fname =
           | 'v' ->
               let v = get_variable ic in
               begin try
-                print_string (Util.quote_escaped (List.assoc v varenv))
+                print_string (Util.escape_html (List.assoc v varenv))
               with Not_found -> ()
               end
           | 'f' ->
               let v = get_variable ic in
               begin try
-                print_string (Util.quote_escaped (List.assoc v filenv))
+                print_string (Util.escape_html (List.assoc v filenv))
               with Not_found -> ()
               end
           | 'l' -> print_string lang

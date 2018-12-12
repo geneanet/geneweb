@@ -221,9 +221,8 @@ let rec reconstitute_pevents conf ext cnt =
       in
       let epers_note =
         match get_nth conf "e_note" cnt with
-          Some note ->
-            Util.sanitize_html
-              (only_printable_or_nl (Mutil.strip_all_trailing_spaces note))
+        | Some note ->
+          only_printable_or_nl (Mutil.strip_all_trailing_spaces note)
         | _ -> ""
       in
       let epers_src =
@@ -668,9 +667,7 @@ let reconstitute_person conf =
   let (pevents, ext) = reconstitute_insert_pevent conf ext 0 pevents in
   let notes =
     if first_name = "?" || surname = "?" then ""
-    else
-      Util.sanitize_html
-        (only_printable_or_nl (Mutil.strip_all_trailing_spaces (get conf "notes")))
+    else only_printable_or_nl (Mutil.strip_all_trailing_spaces (get conf "notes"))
   in
   let psources = only_printable (get conf "src") in
   (* Mise à jour des évènements principaux. *)
@@ -839,7 +836,7 @@ let print_conflict conf base p =
   List.iter
     (fun (x, v) ->
        Wserver.printf "<input type=\"hidden\" name=\"%s\" value=\"%s\"%s>\n" x
-         (quote_escaped (decode_varenv v)) conf.xhs)
+         (Util.escape_html (decode_varenv v)) conf.xhs)
     (conf.henv @ conf.env);
   Wserver.printf "<input type=\"hidden\" name=\"free_occ\" value=\"%d\"%s>\n"
     free_n conf.xhs;

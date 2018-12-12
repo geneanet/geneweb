@@ -1492,7 +1492,7 @@ let gwf conf =
   else
     let benv = read_base_env in_base in
     let trailer =
-      Util.quote_escaped
+      Util.escape_html
         (file_contents (Filename.concat "lang" (in_base ^ ".trl")))
     in
     let conf = { conf with env = benv @ ("trailer", trailer) :: conf.env } in

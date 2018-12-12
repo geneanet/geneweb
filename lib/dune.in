@@ -9,6 +9,7 @@
             syslog
             camlp5
             camlp5.gramlib
-            geneweb.wserver)
+            geneweb.wserver
+            markup)
  (modules_without_implementation config dbdisk def templAst)
 )

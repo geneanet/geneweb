@@ -715,7 +715,7 @@ let print_mod_view_page conf can_edit mode fname title env s =
   Wserver.printf "<td>\n";
   Wserver.printf "<textarea name=\"notes\" id=\"notes_comments\" rows=\"25\" cols=\"110\"%s>"
     (if can_edit then "" else " readonly=\"readonly\"");
-  Wserver.printf "%s" (quote_escaped sub_part);
+  Wserver.printf "%s" (Util.escape_html sub_part);
   Wserver.printf "</textarea>";
   Wserver.printf "</td>\n";
   Wserver.printf "</tr>\n";

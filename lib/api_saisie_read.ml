@@ -173,7 +173,7 @@ let string_of_dmy_raw d =
 let string_of_date_raw conf d =
   match d with
   | Dgreg (d, _) -> string_of_dmy_raw d
-  | Dtext t -> string_with_macros conf [] t
+  | Dtext t -> Util.safe_html (string_with_macros conf [] t)
 
 let gregorian_precision conf d is_long =
   if d.delta = 0 then string_of_dmy conf d is_long
@@ -248,7 +248,7 @@ let string_of_date_and_conv conf d =
       let date_conv_long = Date.string_of_dmy conf d
       in
       (date, date_long, date_conv, date_conv_long, Some `hebrew)
-  | Dtext t -> ("(" ^ string_with_macros conf [] t ^ ")", "", "", "", None)
+  | Dtext t -> ("(" ^ Util.safe_html (string_with_macros conf [] t) ^ ")", "", "", "", None)
 
 (**/**) (* Affichage nom/prénom *)
 

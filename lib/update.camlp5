@@ -210,12 +210,12 @@ let print_return conf =
          begin
            Wserver.printf "<textarea style=\"display:none;\" name=\"%s\">\n"
              x;
-           Wserver.printf "%s" (quote_escaped (decode_varenv v));
+           Wserver.printf "%s" (Util.escape_html (decode_varenv v));
            Wserver.printf "</textarea>\n"
          end
        else
          Wserver.printf "<input type=\"hidden\" name=\"%s\" value=\"%s\"%s>\n"
-           x (quote_escaped (decode_varenv v)) conf.xhs)
+           x (Util.escape_html (decode_varenv v)) conf.xhs)
     (conf.henv @ conf.env);
   Wserver.printf "<input type=\"hidden\" name=\"return\" value=\"on\"%s>\n"
     conf.xhs;
@@ -807,16 +807,16 @@ let error_locked conf =
          begin
            Wserver.printf "<textarea style=\"display:none;\" name=\"%s\">\n"
              x;
-           Wserver.printf "%s" (quote_escaped (decode_varenv v));
+           Wserver.printf "%s" (Util.escape_html (decode_varenv v));
            Wserver.printf "</textarea>\n"
          end
        else
          Wserver.printf "<input type=\"hidden\" name=\"%s\" value=\"%s\"%s>\n"
-           x (quote_escaped (decode_varenv v)) conf.xhs)
+           x (Util.escape_html (decode_varenv v)) conf.xhs)
     (conf.henv @ conf.env);
   (* just to see in the traces... *)
   Wserver.printf "<input type=\"hidden\" name=\"retry\" value=\"%s\"%s>\n"
-    (quote_escaped conf.user) conf.xhs;
+    (Util.escape_html conf.user) conf.xhs;
   Wserver.printf "<input type=\"submit\" value=\"%s\"%s>\n"
     (capitale (transl conf "try again")) conf.xhs;
   Wserver.printf "</form>\n";
@@ -826,7 +826,7 @@ let error_locked conf =
   List.iter
     (fun (x, v) ->
        Wserver.printf "<input type=\"hidden\" name=\"%s\" value=\"%s\"%s>\n" x
-         (quote_escaped (decode_varenv v)) conf.xhs)
+         (Util.escape_html (decode_varenv v)) conf.xhs)
     conf.henv;
   begin let ip =
     match p_getenv conf.env "ip" with
@@ -1121,12 +1121,12 @@ let print_create_conflict conf base p var =
          begin
            Wserver.printf "<textarea style=\"display:none;\" name=\"%s\">\n"
              x;
-           Wserver.printf "%s" (quote_escaped (decode_varenv v));
+           Wserver.printf "%s" (Util.escape_html (decode_varenv v));
            Wserver.printf "</textarea>\n"
          end
        else
          Wserver.printf "<input type=\"hidden\" name=\"%s\" value=\"%s\"%s>\n"
-           x (quote_escaped (decode_varenv v)) conf.xhs)
+           x (Util.escape_html (decode_varenv v)) conf.xhs)
     (conf.henv @ conf.env);
   Wserver.printf "<input type=\"hidden\" name=\"field\" value=\"%s\"%s>\n" var
     conf.xhs;

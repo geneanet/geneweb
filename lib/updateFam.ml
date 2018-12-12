@@ -111,7 +111,7 @@ and eval_simple_var conf base env (fam, cpl, des) =
       in
       eval_key k sl
   | ["cnt"] -> eval_int_env "cnt" env
-  | ["comment"] -> str_val (quote_escaped fam.comment)
+  | ["comment"] -> str_val (Util.escape_html fam.comment)
   | ["digest"] -> eval_string_env "digest" env
   | ["divorce"] ->
       let s =
@@ -129,7 +129,7 @@ and eval_simple_var conf base env (fam, cpl, des) =
       in
       eval_date_var d s
   | "father" :: sl -> eval_key (Gutil.father cpl) sl
-  | ["fsources"] -> str_val (quote_escaped fam.fsources)
+  | ["fsources"] -> str_val (Util.escape_html fam.fsources)
   | ["is_first"] ->
       begin match get_env "first" env with
         Vbool x -> bool_val x
@@ -141,12 +141,12 @@ and eval_simple_var conf base env (fam, cpl, des) =
       | _ -> raise Not_found
       end
   | ["marriage"; s] -> eval_date_var (Adef.od_of_cdate fam.marriage) s
-  | ["marriage_place"] -> str_val (quote_escaped fam.marriage_place)
-  | ["marriage_note"] -> str_val (quote_escaped fam.marriage_note)
-  | ["marriage_src"] -> str_val (quote_escaped fam.marriage_src)
+  | ["marriage_place"] -> str_val (Util.escape_html fam.marriage_place)
+  | ["marriage_note"] -> str_val (Util.escape_html fam.marriage_note)
+  | ["marriage_src"] -> str_val (Util.escape_html fam.marriage_src)
   | ["mrel"] -> str_val (eval_relation_kind fam.relation)
   | ["nb_fevents"] -> str_val (string_of_int (List.length fam.fevents))
-  | ["origin_file"] -> str_val (quote_escaped fam.origin_file)
+  | ["origin_file"] -> str_val (Util.escape_html fam.origin_file)
   | "parent" :: sl ->
       let k =
         match get_env "cnt" env with
@@ -294,7 +294,7 @@ and eval_simple_var conf base env (fam, cpl, des) =
       let v = extract_var "evar_" s in
       if v <> "" then
         match p_getenv (conf.env @ conf.henv) v with
-          Some vv -> str_val (quote_escaped vv)
+          Some vv -> str_val (Util.escape_html vv)
         | None -> str_val ""
       else
         let v = extract_var "bvar_" s in
@@ -377,7 +377,7 @@ and eval_date_var_aux od =
       end
   | "text" ->
       begin match od with
-        Some (Dtext s) -> s
+        Some (Dtext s) -> Util.safe_html s
       | _ -> ""
       end
   | "year" ->
@@ -415,23 +415,23 @@ and eval_event_var e =
           | Efam_MarriageLicense -> str_val "#marl"
           | Efam_PACS -> str_val "#pacs"
           | Efam_Residence -> str_val "#resi"
-          | Efam_Name x -> str_val (quote_escaped x)
+          | Efam_Name x -> str_val (Util.escape_html x)
           end
       | _ -> str_val ""
       end
   | ["e_place"] ->
       begin match e with
-        Some {efam_place = x} -> str_val (quote_escaped x)
+        Some {efam_place = x} -> str_val (Util.escape_html x)
       | _ -> str_val ""
       end
   | ["e_note"] ->
       begin match e with
-        Some {efam_note = x} -> str_val (quote_escaped x)
+        Some {efam_note = x} -> str_val (Util.escape_html x)
       | _ -> str_val ""
       end
   | ["e_src"] ->
       begin match e with
-        Some {efam_src = x} -> str_val (quote_escaped x)
+        Some {efam_src = x} -> str_val (Util.escape_html x)
       | _ -> str_val ""
       end
   | _ -> raise Not_found
@@ -451,9 +451,9 @@ and eval_key (fn, sn, oc, create, _) =
   function
     ["create"] -> str_val (if create <> Update.Link then "create" else "link")
   | ["create"; s] -> str_val (eval_create create s)
-  | ["first_name"] -> str_val (quote_escaped fn)
+  | ["first_name"] -> str_val (Util.escape_html fn)
   | ["occ"] -> str_val (if oc = 0 then "" else string_of_int oc)
-  | ["surname"] -> str_val (quote_escaped sn)
+  | ["surname"] -> str_val (Util.escape_html sn)
   | x ->
       match x with
         ["sex"] ->
@@ -487,7 +487,7 @@ and eval_create c =
       end
   | "birth_place" ->
       begin match c with
-        Update.Create (_, Some {ci_birth_place = pl}) -> quote_escaped pl
+        Update.Create (_, Some {ci_birth_place = pl}) -> Util.escape_html pl
       | _ -> ""
       end
   | "birth_year" ->
@@ -529,7 +529,7 @@ and eval_create c =
       end
   | "death_place" ->
       begin match c with
-        Update.Create (_, Some {ci_death_place = pl}) -> quote_escaped pl
+        Update.Create (_, Some {ci_death_place = pl}) -> Util.escape_html pl
       | _ -> ""
       end
   | "death_year" ->
@@ -553,7 +553,7 @@ and eval_create c =
   | "occupation" ->
       begin match c with
         Update.Create (_, Some {ci_occupation = occupation}) ->
-          quote_escaped occupation
+          Util.escape_html occupation
       | _ -> ""
       end
   | "sex" ->
@@ -603,7 +603,7 @@ and eval_int_env var env =
   | _ -> raise Not_found
 and eval_string_env var env =
   match get_env var env with
-    Vstring x -> str_val (quote_escaped x)
+    Vstring x -> str_val (Util.escape_html x)
   | _ -> str_val ""
 
 (* print *)

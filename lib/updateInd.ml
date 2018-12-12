@@ -67,13 +67,13 @@ and eval_simple_var conf base env p =
   | ["acc_if_titles"] -> bool_val (p.access = IfTitles)
   | ["acc_private"] -> bool_val (p.access = Private)
   | ["acc_public"] -> bool_val (p.access = Public)
-  | ["bapt_place"] -> str_val (quote_escaped p.baptism_place)
-  | ["bapt_note"] -> str_val (quote_escaped p.baptism_note)
-  | ["bapt_src"] -> str_val (quote_escaped p.baptism_src)
+  | ["bapt_place"] -> str_val (Util.escape_html p.baptism_place)
+  | ["bapt_note"] -> str_val (Util.escape_html p.baptism_note)
+  | ["bapt_src"] -> str_val (Util.escape_html p.baptism_src)
   | ["birth"; s] -> eval_date_var (Adef.od_of_cdate p.birth) s
-  | ["birth_place"] -> str_val (quote_escaped p.birth_place)
-  | ["birth_note"] -> str_val (quote_escaped p.birth_note)
-  | ["birth_src"] -> str_val (quote_escaped p.birth_src)
+  | ["birth_place"] -> str_val (Util.escape_html p.birth_place)
+  | ["birth_note"] -> str_val (Util.escape_html p.birth_note)
+  | ["birth_src"] -> str_val (Util.escape_html p.birth_src)
   | ["bapt"; s] -> eval_date_var (Adef.od_of_cdate p.baptism) s
   | ["bt_buried"] ->
       bool_val
@@ -94,9 +94,9 @@ and eval_simple_var conf base env p =
         | _ -> None
       in
       eval_date_var od s
-  | ["burial_place"] -> str_val (quote_escaped p.burial_place)
-  | ["burial_note"] -> str_val (quote_escaped p.burial_note)
-  | ["burial_src"] -> str_val (quote_escaped p.burial_src)
+  | ["burial_place"] -> str_val (Util.escape_html p.burial_place)
+  | ["burial_note"] -> str_val (Util.escape_html p.burial_note)
+  | ["burial_src"] -> str_val (Util.escape_html p.burial_src)
   | ["cnt"] -> eval_int_env "cnt" env
   | ["dead_dont_know_when"] -> bool_val (p.death = DeadDontKnowWhen)
   | ["death"; s] ->
@@ -106,9 +106,9 @@ and eval_simple_var conf base env p =
         | _ -> None
       in
       eval_date_var od s
-  | ["death_place"] -> str_val (quote_escaped p.death_place)
-  | ["death_note"] -> str_val (quote_escaped p.death_note)
-  | ["death_src"] -> str_val (quote_escaped p.death_src)
+  | ["death_place"] -> str_val (Util.escape_html p.death_place)
+  | ["death_note"] -> str_val (Util.escape_html p.death_note)
+  | ["death_src"] -> str_val (Util.escape_html p.death_src)
   | ["died_young"] -> bool_val (p.death = DeadYoung)
   | ["digest"] -> eval_string_env "digest" env
   | ["dont_know_if_dead"] -> bool_val (p.death = DontKnowIfDead)
@@ -168,7 +168,7 @@ and eval_simple_var conf base env p =
           end
       | _ -> str_val ""
       end
-  | ["first_name"] -> str_val (quote_escaped p.first_name)
+  | ["first_name"] -> str_val (Util.escape_html p.first_name)
   | ["first_name_alias"] -> eval_string_env "first_name_alias" env
   | ["has_aliases"] -> bool_val (p.aliases <> [])
   | ["has_birth_date"] -> bool_val (Adef.od_of_cdate p.birth <> None)
@@ -242,7 +242,7 @@ and eval_simple_var conf base env p =
   | ["has_relations"] -> bool_val (p.rparents <> [])
   | ["has_surnames_aliases"] -> bool_val (p.surnames_aliases <> [])
   | ["has_titles"] -> bool_val (p.titles <> [])
-  | ["image"] -> str_val (quote_escaped p.image)
+  | ["image"] -> str_val (Util.escape_html p.image)
   | ["index"] -> str_val (string_of_int (Adef.int_of_iper p.key_index))
   | ["is_female"] -> bool_val (p.sex = Female)
   | ["is_male"] -> bool_val (p.sex = Male)
@@ -258,7 +258,7 @@ and eval_simple_var conf base env p =
       end
   | ["nb_pevents"] -> str_val (string_of_int (List.length p.pevents))
   | ["not_dead"] -> bool_val (p.death = NotDead)
-  | ["notes"] -> str_val (quote_escaped p.notes)
+  | ["notes"] -> str_val (Util.escape_html p.notes)
   | ["next_pevent"] ->
       begin match get_env "next_pevent" env with
         Vcnt c -> str_val (string_of_int !c)
@@ -270,9 +270,9 @@ and eval_simple_var conf base env p =
       | _ -> str_val ""
       end
   | ["occ"] -> str_val (if p.occ <> 0 then string_of_int p.occ else "")
-  | ["occupation"] -> str_val (quote_escaped p.occupation)
+  | ["occupation"] -> str_val (Util.escape_html p.occupation)
   | ["of_course_dead"] -> bool_val (p.death = OfCourseDead)
-  | ["public_name"] -> str_val (quote_escaped p.public_name)
+  | ["public_name"] -> str_val (Util.escape_html p.public_name)
   | ["qualifier"] -> eval_string_env "qualifier" env
   | "relation" :: sl ->
       let r =
@@ -282,8 +282,8 @@ and eval_simple_var conf base env p =
         | _ -> None
       in
       eval_relation_var r sl
-  | ["sources"] -> str_val (quote_escaped p.psources)
-  | ["surname"] -> str_val (quote_escaped p.surname)
+  | ["sources"] -> str_val (Util.escape_html p.psources)
+  | ["surname"] -> str_val (Util.escape_html p.surname)
   | ["surname_alias"] -> eval_string_env "surname_alias" env
   | "title" :: sl ->
       let t =
@@ -387,7 +387,7 @@ and eval_simple_var conf base env p =
       let v = extract_var "evar_" s in
       if v <> "" then
         match p_getenv (conf.env @ conf.henv) v with
-          Some vv -> str_val (quote_escaped vv)
+          Some vv -> str_val (Util.escape_html vv)
         | None -> str_val ""
       else
         let v = extract_var "bvar_" s in
@@ -470,7 +470,7 @@ and eval_date_var_aux od =
       end
   | "text" ->
       begin match od with
-        Some (Dtext s) -> s
+        Some (Dtext s) -> Util.safe_html s
       | _ -> ""
       end
   | "year" ->
@@ -598,23 +598,23 @@ and eval_event_var e =
           | Epers_ScellentSpouseLDS -> str_val "#slgs"
           | Epers_VenteBien -> str_val "#vteb"
           | Epers_Will -> str_val "#will"
-          | Epers_Name x -> str_val (quote_escaped x)
+          | Epers_Name x -> str_val (Util.escape_html x)
           end
       | _ -> str_val ""
       end
   | ["e_place"] ->
       begin match e with
-        Some {epers_place = x} -> str_val (quote_escaped x)
+        Some {epers_place = x} -> str_val (Util.escape_html x)
       | _ -> str_val ""
       end
   | ["e_note"] ->
       begin match e with
-        Some {epers_note = x} -> str_val (quote_escaped x)
+        Some {epers_note = x} -> str_val (Util.escape_html x)
       | _ -> str_val ""
       end
   | ["e_src"] ->
       begin match e with
-        Some {epers_src = x} -> str_val (quote_escaped x)
+        Some {epers_src = x} -> str_val (Util.escape_html x)
       | _ -> str_val ""
       end
   | _ -> raise Not_found
@@ -622,12 +622,12 @@ and eval_title_var t =
   function
     ["t_estate"] ->
       begin match t with
-        Some {t_place = x} -> str_val (quote_escaped x)
+        Some {t_place = x} -> str_val (Util.escape_html x)
       | _ -> str_val ""
       end
   | ["t_ident"] ->
       begin match t with
-        Some {t_ident = x} -> str_val (quote_escaped x)
+        Some {t_ident = x} -> str_val (Util.escape_html x)
       | _ -> str_val ""
       end
   | ["t_main"] ->
@@ -637,7 +637,7 @@ and eval_title_var t =
       end
   | ["t_name"] ->
       begin match t with
-        Some {t_name = Tname x} -> str_val (quote_escaped x)
+        Some {t_name = Tname x} -> str_val (Util.escape_html x)
       | _ -> str_val ""
       end
   | ["t_nth"] ->
@@ -687,10 +687,10 @@ and eval_person_var (fn, sn, oc, create, _) =
       | Update.Create (Neuter, _) -> str_val "neuter"
       | _ -> str_val ""
       end
-  | ["first_name"] -> str_val (quote_escaped fn)
+  | ["first_name"] -> str_val (Util.escape_html fn)
   | ["link"] -> bool_val (create = Update.Link)
   | ["occ"] -> str_val (if oc = 0 then "" else string_of_int oc)
-  | ["surname"] -> str_val (quote_escaped sn)
+  | ["surname"] -> str_val (Util.escape_html sn)
   | _ -> raise Not_found
 and eval_is_cal cal =
   function
@@ -733,7 +733,7 @@ and eval_int_env var env =
   | _ -> raise Not_found
 and eval_string_env var env =
   match get_env var env with
-    Vstring x -> str_val (quote_escaped x)
+    Vstring x -> str_val (Util.escape_html x)
   | _ -> str_val ""
 
 (* print *)

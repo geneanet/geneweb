@@ -231,7 +231,7 @@ let print_search_form conf from_wiz =
   Wserver.printf
     "<input name=\"s\" size=\"30\" maxlength=\"40\" value=\"%s\"%s>\n"
     (match p_getenv conf.env "s" with
-       Some s -> quote_escaped s
+       Some s -> Util.escape_html s
      | None -> "")
     conf.xhs;
   if from_wiz <> "" then
@@ -345,7 +345,7 @@ let print_whole_wiznote conf base auth_file wz wfile (s, date) ho =
   Wserver.printf "<table border=\"0\" width=\"100%%\">\n";
   Wserver.printf "<tr>\n";
   Wserver.printf "<td>\n";
-  begin let s = string_with_macros conf [] s in
+  begin let s = Util.safe_html @@ string_with_macros conf [] s in
     let s =
       let wi =
         {Wiki.wi_mode = "NOTES"; Wiki.wi_cancel_links = conf.cancel_links;
@@ -360,7 +360,7 @@ let print_whole_wiznote conf base auth_file wz wfile (s, date) ho =
         Some (case_sens, h) -> html_highlight case_sens h s
       | None -> s
     in
-    Wserver.printf "%s\n" (if conf.pure_xhtml then Util.check_xhtml s else s)
+    Wserver.printf "%s\n" (Util.safe_html @@ if conf.pure_xhtml then Util.check_xhtml s else s)
   end;
   Wserver.printf "</td>\n";
   Wserver.printf "</tr>\n";
@@ -386,7 +386,7 @@ let print_whole_wiznote conf base auth_file wz wfile (s, date) ho =
 let print_part_wiznote conf base wz s cnt0 =
   let title = wz in
   Hutil.header_no_page_title conf (fun _ -> Wserver.printf "%s" title);
-  let s = string_with_macros conf [] s in
+  let s = Util.safe_html @@ string_with_macros conf [] s in
   let lines = Wiki.extract_sub_part s cnt0 in
   let lines = if cnt0 = 0 then title :: "<br /><br />" :: lines else lines in
   let file_path = Notes.file_path conf base in
@@ -509,7 +509,7 @@ let print_mod_ok conf base =
       [], fst (read_wizard_notes (wzfile (dir conf base) wz))
     in
     let commit = commit_wiznotes conf base in
-    let string_filter = string_with_macros conf [] in
+    let string_filter s = Util.safe_html @@ string_with_macros conf [] s in
     let file_path = Notes.file_path conf base in
     let wi =
       {Wiki.wi_mode = mode; Wiki.wi_cancel_links = conf.cancel_links;

@@ -547,7 +547,7 @@ and eval_message_text_var conf base str so =
         | None -> s
       in
       VVstring s
-  | ["raw"] -> VVstring (quote_escaped str)
+  | ["raw"] -> VVstring (Util.escape_html str)
   | sl -> eval_message_string_var conf str so sl
 and eval_message_string_var conf str so =
   function
@@ -555,9 +555,9 @@ and eval_message_string_var conf str so =
       begin try VVstring (no_html_tags (sp2nbsp (int_of_string s) str)) with
         Failure _ -> raise Not_found
       end
-  | ["v"] -> VVstring (quote_escaped str)
+  | ["v"] -> VVstring (Util.escape_html str)
   | [] ->
-      let s = quote_escaped str in
+      let s = Util.escape_html str in
       let s =
         match so with
           Some h ->

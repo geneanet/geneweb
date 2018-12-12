@@ -680,12 +680,12 @@ let rec eval_variable conf =
   | ["evar"; v; "ns"] ->
       begin try
         let vv = List.assoc v (conf.env @ conf.henv) in
-        Util.quote_escaped (Wserver.gen_decode false vv)
+        Util.escape_html (Wserver.gen_decode false vv)
       with Not_found -> ""
       end
   | ["evar"; v] ->
       begin match Util.p_getenv (conf.env @ conf.henv) v with
-        Some vv -> Util.quote_escaped vv
+        Some vv -> Util.escape_html vv
       | None -> ""
       end
   | "time" :: sl -> eval_time_var conf sl

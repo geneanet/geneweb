@@ -30,7 +30,7 @@ let string_of_marriage_text conf base fam =
   in
   match marriage_place with
     "" -> s
-  | _ -> s ^ ", " ^ string_with_macros conf [] marriage_place ^ ","
+  | _ -> s ^ ", " ^ Util.safe_html (string_with_macros conf [] marriage_place) ^ ","
 
 let string_of_title conf base and_txt p (nth, name, title, places, dates) =
   let href =
@@ -2085,7 +2085,7 @@ and eval_simple_str_var conf base env (_, p_auth) =
                Wiki.wi_always_show_link = conf.wizard || conf.friend}
             in
             let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-            if conf.pure_xhtml then Util.check_xhtml s else s
+            Util.safe_html @@ if conf.pure_xhtml then Util.check_xhtml s else s
           else ""
       | _ -> raise Not_found
       end
@@ -2240,7 +2240,7 @@ and eval_simple_str_var conf base env (_, p_auth) =
                Wiki.wi_always_show_link = conf.wizard || conf.friend}
             in
             let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-            if conf.pure_xhtml then Util.check_xhtml s else s
+            Util.safe_html @@ if conf.pure_xhtml then Util.check_xhtml s else s
           else ""
       | _ -> raise Not_found
       end
@@ -2259,7 +2259,7 @@ and eval_simple_str_var conf base env (_, p_auth) =
                Wiki.wi_always_show_link = conf.wizard || conf.friend}
             in
             let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-            if conf.pure_xhtml then Util.check_xhtml s else s
+            Util.safe_html @@ if conf.pure_xhtml then Util.check_xhtml s else s
           else ""
       | _ -> raise Not_found
       end
@@ -2430,7 +2430,7 @@ and eval_simple_str_var conf base env (_, p_auth) =
         ["evar_",
          (fun v ->
             match p_getenv (conf.env @ conf.henv) v with
-              Some vv -> quote_escaped vv
+              Some vv -> Util.escape_html vv
             | None -> "");
          (* warning: "cvar_" deprecated since 5.00; use "bvar." *)
          "cvar_",
@@ -3341,7 +3341,7 @@ and eval_date_field_var conf d =
   function
     ["prec"] ->
       begin match d with
-        Dgreg (dmy, _) -> VVstring (quote_escaped (Date.prec_text conf dmy))
+        Dgreg (dmy, _) -> VVstring (Util.escape_html (Date.prec_text conf dmy))
       | _ -> VVstring ""
       end
   | ["day"] ->
@@ -3530,7 +3530,7 @@ and eval_str_event_field conf base (p, p_auth)
            Wiki.wi_always_show_link = conf.wizard || conf.friend}
         in
         let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-        if conf.pure_xhtml then Util.check_xhtml s else s
+        Util.safe_html @@ if conf.pure_xhtml then Util.check_xhtml s else s
       else ""
   | "src" ->
       if p_auth then
@@ -3544,7 +3544,7 @@ and eval_str_event_field conf base (p, p_auth)
           in
           Wiki.syntax_links conf wi (sou base src)
         in
-        string_with_macros conf env src
+        Util.safe_html @@ string_with_macros conf env src
       else ""
   | _ -> raise Not_found
 and eval_event_field_var conf base env (p, p_auth)
@@ -4089,7 +4089,7 @@ and eval_str_person_field conf base env (p, p_auth as ep) =
            Wiki.wi_always_show_link = conf.wizard || conf.friend}
         in
         let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-        if conf.pure_xhtml then Util.check_xhtml s else s
+        Util.safe_html @@ if conf.pure_xhtml then Util.check_xhtml s else s
       else ""
   | "baptism_place" ->
       if p_auth then
@@ -4108,7 +4108,7 @@ and eval_str_person_field conf base env (p, p_auth as ep) =
            Wiki.wi_always_show_link = conf.wizard || conf.friend}
         in
         let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-        if conf.pure_xhtml then Util.check_xhtml s else s
+        Util.safe_html @@ if conf.pure_xhtml then Util.check_xhtml s else s
       else ""
   | "burial_place" ->
       if p_auth then Util.string_of_place conf (sou base (get_burial_place p))
@@ -4126,7 +4126,7 @@ and eval_str_person_field conf base env (p, p_auth as ep) =
            Wiki.wi_always_show_link = conf.wizard || conf.friend}
         in
         let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-        if conf.pure_xhtml then Util.check_xhtml s else s
+        Util.safe_html @@ if conf.pure_xhtml then Util.check_xhtml s else s
       else ""
   | "child_name" ->
       let force_surname =
@@ -4173,7 +4173,7 @@ and eval_str_person_field conf base env (p, p_auth as ep) =
            Wiki.wi_always_show_link = conf.wizard || conf.friend}
         in
         let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-        if conf.pure_xhtml then Util.check_xhtml s else s
+        Util.safe_html @@ if conf.pure_xhtml then Util.check_xhtml s else s
       else ""
   | "died" -> string_of_died conf p p_auth
   | "fam_access" ->
@@ -4345,7 +4345,7 @@ and eval_str_person_field conf base env (p, p_auth as ep) =
            Wiki.wi_always_show_link = conf.wizard || conf.friend}
         in
         let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-        if conf.pure_xhtml then Util.check_xhtml s else s
+        Util.safe_html @@ if conf.pure_xhtml then Util.check_xhtml s else s
       else ""
   | "occ" ->
       if is_hide_names conf p && not p_auth then ""
@@ -4362,7 +4362,7 @@ and eval_str_person_field conf base env (p, p_auth as ep) =
           in
           Wiki.syntax_links conf wi s
         in
-        string_with_macros conf [] s
+        Util.safe_html @@ string_with_macros conf [] s
       else ""
   | "on_baptism_date" ->
       begin match p_auth, Adef.od_of_cdate (get_baptism p) with
@@ -4426,7 +4426,7 @@ and eval_str_person_field conf base env (p, p_auth as ep) =
            Wiki.wi_always_show_link = conf.wizard || conf.friend}
         in
         let s = Wiki.syntax_links conf wi (String.concat "\n" lines) in
-        if conf.pure_xhtml then Util.check_xhtml s else s
+        Util.safe_html @@ if conf.pure_xhtml then Util.check_xhtml s else s
       else ""
   | "slash_burial_date" ->
       begin match get_burial p with
@@ -4547,7 +4547,7 @@ and eval_str_person_field conf base env (p, p_auth as ep) =
             in
             Wiki.syntax_links conf wi s
           in
-          string_with_macros conf env s
+          Util.safe_html @@ string_with_macros conf env s
       | _ -> raise Not_found
       end
   | "surname" ->

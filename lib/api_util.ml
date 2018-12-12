@@ -139,7 +139,7 @@ let string_of_prec_dmy d =
 
 let string_of_date = function
     Dgreg (d, _) -> string_of_prec_dmy d
-  | Dtext t -> "(" ^ t ^ ")"
+  | Dtext t -> "(" ^ Util.safe_html t ^ ")"
 
 
 (* Lecture et écriture des dates, directement empruntées à gwcomp/gwu *)
@@ -191,7 +191,7 @@ let string_of_date2 date =
   | Dgreg (d, Djulian) -> string_of_dmy (Calendar.julian_of_gregorian d) ^ "J"
   | Dgreg (d, Dfrench) -> string_of_dmy (Calendar.french_of_gregorian d) ^ "F"
   | Dgreg (d, Dhebrew) -> string_of_dmy (Calendar.hebrew_of_gregorian d) ^ "H"
-  | Dtext t -> Printf.sprintf "0(%s)" (spaces_to_underscore t)
+  | Dtext t -> Printf.sprintf "0(%s)" (spaces_to_underscore @@ Util.safe_html t)
 
 
 let string_of_date_option date =
@@ -273,7 +273,7 @@ let piqi_date_of_date date =
         prec = None;
         dmy = None;
         dmy2 = None;
-        text = Some txt;
+        text = Some (Util.safe_html txt);
       }
 
 
@@ -288,7 +288,7 @@ let piqi_date_of_date date =
 (* ********************************************************************* *)
 let date_of_piqi_date date =
   match date.Mapp.Date.text with
-  | Some txt -> Dtext txt
+  | Some txt -> Dtext (Util.safe_html txt)
   | _ ->
       let cal =
         match date.Mapp.Date.cal with
