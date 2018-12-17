@@ -24,10 +24,8 @@ let print_error conf code =
     let piqi_error = Mread.default_error() in
         piqi_error.Mread.Error.code <- code;
     let data = Mext_read.gen_error piqi_error in
-    begin
-        Wserver.printf "HTTP/1.0 400\013\010";
-        print_result conf data
-    end
+    Wserver.http HttpStatus.Bad_Request ;
+    print_result conf data
 
 (**/**) (* Conversion de dates *)
 
