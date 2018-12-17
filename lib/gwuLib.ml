@@ -13,7 +13,9 @@ module Make (Select : Select) =
   struct
     open Def
     open Gwdb
+
     let old_gw = ref false
+
     let put_events_in_notes base p =
       (* Si on est en mode old_gw, on mets tous les évènements *)
       (* dans les notes.                                       *)
@@ -34,8 +36,11 @@ module Make (Select : Select) =
         in
         loop (get_pevents p)
       else false
+
     let ht_dup_occ = Hashtbl.create 20001
+
     let ht_orig_occ = Hashtbl.create 20001
+
     let prepare_free_occ base =
       (* Parce qu'on est obligé ... *)
       let sn = "?" in
@@ -91,16 +96,20 @@ module Make (Select : Select) =
              Hashtbl.replace ht_orig_occ key new_list_occ
            with Not_found -> ())
         ht_dup_occ
+
     let get_new_occ p =
       try Hashtbl.find ht_dup_occ (get_key_index p) with
         Not_found -> get_occ p
+
     type mfam =
       { m_ifam : ifam;
         m_fam : family;
         m_fath : person;
         m_moth : person;
         m_chil : person array }
+
     let soy y = if y = 0 then "-0" else string_of_int y
+
     let print_date_dmy oc d =
       begin match d.prec with
         About -> Printf.fprintf oc "~"
@@ -128,10 +137,12 @@ module Make (Select : Select) =
             else Printf.fprintf oc "..%d/%d/%s" d2.day2 d2.month2 (soy d2.year2)
           else Printf.fprintf oc "..%s" (soy d2.year2)
       | _ -> ()
+
     let is_printable =
       function
         '\000'..'\031' -> false
       | _ -> true
+
     let starting_char no_num s =
       match s.[0] with
       (*'a'..'z' | 'A'..'Z' | 'à'..'ý' | 'À'..'Ý' *)
@@ -139,6 +150,7 @@ module Make (Select : Select) =
       | '0'..'9' -> not no_num
       | '?' -> if s = "?" then true else false
       | _ -> false
+
     let no_newlines s =
       let conv_char i =
         match s.[i] with
@@ -146,9 +158,13 @@ module Make (Select : Select) =
         | _ -> s.[i]
       in
       String.init (String.length s) conv_char
+
     let raw_output = ref false
+
     let no_picture = ref false
+
     let isolated = ref false
+
     let gen_correct_string no_num no_colon s =
       let s = String.trim s in
       let rec loop i len =
@@ -170,13 +186,18 @@ module Make (Select : Select) =
               loop (i + 1) (Buff.store len c)
       in
       loop 0 0
+
     let s_correct_string s =
       let s = gen_correct_string false false s in if s = "" then "_" else s
+
     let s_correct_string_nonum s =
       let s = gen_correct_string true false s in if s = "" then "_" else s
+
     let correct_string base is = s_correct_string (sou base is)
+
     let correct_string_no_colon base is =
       gen_correct_string false true (sou base is)
+
     let gen_print_date no_colon oc =
       function
         Dgreg (d, Dgregorian) -> print_date_dmy oc d
@@ -189,13 +210,18 @@ module Make (Select : Select) =
       | Dtext t ->
           (* Dans le cas d'une date texte pour un titre, on échappe les ':' *)
           let t = gen_correct_string false no_colon t in Printf.fprintf oc "0(%s)" t
+
     let gen_print_date_option no_colon oc =
       function
         Some d -> gen_print_date no_colon oc d
       | None -> ()
+
     let print_date oc = gen_print_date false oc
+
     let print_date_option oc = gen_print_date_option false oc
+
     let print_title_date_option oc = gen_print_date_option true oc
+
     let lines_list_of_string s =
       let rec loop lines len i =
         if i = String.length s then
@@ -205,6 +231,7 @@ module Make (Select : Select) =
         else loop lines (Buff.store len s.[i]) (i + 1)
       in
       loop [] 0 0
+
     let has_infos_not_in_events base p =
       let has_picture_to_export =
         sou base (get_image p) <> "" && not !no_picture
@@ -219,6 +246,7 @@ module Make (Select : Select) =
       get_access p <> IfTitles ||
       sou base (get_occupation p) <> "" ||
       sou base (get_psources p) <> ""
+
     let has_infos_not_dates base p =
       has_infos_not_in_events base p ||
       sou base (get_birth_place p) <> "" ||
@@ -229,29 +257,39 @@ module Make (Select : Select) =
       sou base (get_death_src p) <> "" ||
       sou base (get_burial_place p) <> "" ||
       sou base (get_burial_src p) <> ""
+
     let has_infos base p =
       has_infos_not_dates base p ||
       get_birth p <> Adef.cdate_None ||
       get_baptism p <> Adef.cdate_None ||
       get_death p <> NotDead
+
     let print_if_not_equal_to x oc base lab is =
       if sou base is = x then ()
       else Printf.fprintf oc " %s %s" lab (correct_string base is)
+
     let print_if_no_empty = print_if_not_equal_to ""
+
     let print_if_no_empty_endline oc base lab is =
       if sou base is = "" then ()
       else Printf.fprintf oc " %s %s\n" lab (correct_string base is)
+
     let print_if_no_empty_no_newline oc base lab is =
       if sou base is = "" then ()
       else Printf.fprintf oc " %s %s" lab (no_newlines (correct_string base is))
+
     let print_first_name_alias oc base is =
       Printf.fprintf oc " {%s}" (correct_string base is)
+
     let print_surname_alias oc base is =
       Printf.fprintf oc " #salias %s" (correct_string base is)
+
     let print_qualifier oc base is =
       Printf.fprintf oc " #nick %s" (correct_string base is)
+
     let print_alias oc base is =
       Printf.fprintf oc " #alias %s" (correct_string base is)
+
     let print_burial oc b =
       match b with
         Buried cod ->
@@ -267,6 +305,7 @@ module Make (Select : Select) =
           | _ -> ()
           end
       | UnknownBurial -> ()
+
     let print_title oc base t =
       let t_date_start = Adef.od_of_cdate t.t_date_start in
       let t_date_end = Adef.od_of_cdate t.t_date_end in
@@ -296,6 +335,7 @@ module Make (Select : Select) =
       print_title_date_option oc t_date_end;
       if t.t_nth <> 0 then Printf.fprintf oc ":%d" t.t_nth;
       Printf.fprintf oc "]"
+
     let zero_birth_is_required base is_child p =
       let has_infos_to_print =
         if !old_gw then has_infos_not_dates base p
@@ -313,6 +353,7 @@ module Make (Select : Select) =
             true
         | _ -> false
         end
+
     let print_infos oc base is_child csrc cbp p =
       List.iter (print_first_name_alias oc base) (get_first_names_aliases p);
       List.iter (print_surname_alias oc base) (get_surnames_aliases p);
@@ -388,6 +429,7 @@ module Make (Select : Select) =
           print_if_no_empty oc base "#rp" (get_burial_place p);
           print_if_no_empty oc base "#rs" (get_burial_src p)
         end
+
     type gen =
       { mark : bool array;
         mark_rel : bool array;
@@ -398,7 +440,9 @@ module Make (Select : Select) =
         mutable ext_files : (string * string list ref) list;
         mutable notes_alias : (string * string) list;
         mutable pevents_pl_p : person list }
+
     let map_notes aliases f = try List.assoc f aliases with Not_found -> f
+
     let add_linked_files gen from s some_linked_files =
       let slen = String.length s in
       let rec loop new_linked_files i =
@@ -438,6 +482,7 @@ module Make (Select : Select) =
         else loop new_linked_files (i + 1)
       in
       loop some_linked_files 0
+
     let find_free_occ base f s =
       let ipl = persons_of_name base (f ^ " " ^ s) in
       let first_name = f in
@@ -464,6 +509,7 @@ module Make (Select : Select) =
         | [] -> cnt1
       in
       loop 0 list_occ
+
     let print_parent oc base gen p =
       let has_printed_parents =
         match get_parents p with
@@ -490,6 +536,7 @@ module Make (Select : Select) =
       if pr then
         if has_infos then print_infos oc base false "" "" p
         else if first_name <> "?" && surname <> "?" then Printf.fprintf oc " 0"
+
     let print_child oc base fam_surname csrc cbp p =
       Printf.fprintf oc "-";
       begin match get_sex p with
@@ -505,8 +552,10 @@ module Make (Select : Select) =
         Printf.fprintf oc " %s" (s_correct_string_nonum (sou base (get_surname p)));
       print_infos oc base true csrc cbp p;
       Printf.fprintf oc "\n"
+
     let bogus_person base p =
       p_first_name base p = "?" && p_surname base p = "?"
+
     let common_children proj base children =
       if Array.length children <= 1 then None
       else
@@ -527,8 +576,11 @@ module Make (Select : Select) =
               ("", 0, "", 0) list
           in
           if n_max > 1 then Some src_max else None
+
     let common_children_sources = common_children get_psources
+
     let common_children_birth_place = common_children get_birth_place
+
     let array_forall f a =
       let rec loop i =
         if i = Array.length a then true
@@ -536,9 +588,11 @@ module Make (Select : Select) =
         else false
       in
       loop 0
+
     let empty_family base m =
       bogus_person base m.m_fath && bogus_person base m.m_moth &&
       array_forall (bogus_person base) m.m_chil
+
     let print_witness oc base gen p =
       Printf.fprintf oc "%s %s%s" (correct_string base (get_surname p))
         (correct_string base (get_first_name p))
@@ -560,6 +614,7 @@ module Make (Select : Select) =
           if get_pevents p <> [] then
             gen.pevents_pl_p <- p :: gen.pevents_pl_p
         end
+
     let print_pevent oc base gen e =
       begin match e.epers_name with
         Epers_Birth -> Printf.fprintf oc "#birt"
@@ -644,6 +699,7 @@ module Make (Select : Select) =
       if note <> "" then
         List.iter (fun line -> Printf.fprintf oc "note %s\n" line)
           (lines_list_of_string note)
+
     let get_persons_with_pevents m list =
       let fath = m.m_fath in
       let moth = m.m_moth in
@@ -663,6 +719,7 @@ module Make (Select : Select) =
              [] -> list
            | _ -> p :: list)
         (Array.to_list m.m_chil) list
+
     let print_pevents_for_person oc base gen p =
       let pevents = get_pevents p in
       let surn = s_correct_string (p_surname base p) in
@@ -676,12 +733,16 @@ module Make (Select : Select) =
           List.iter (print_pevent oc base gen) pevents;
           Printf.fprintf oc "end pevt\n"
         end
+
     let rec list_memf f x =
       function
         [] -> false
       | a :: l -> f x a || list_memf f x l
+
     let eq_key p1 p2 = get_key_index p1 = get_key_index p2
+
     let eq_key_fst (p1, _) (p2, _) = get_key_index p1 = get_key_index p2
+
     let print_pevents oc base gen ml =
       let pl =
         List.fold_right get_persons_with_pevents ml gen.pevents_pl_p
@@ -695,6 +756,7 @@ module Make (Select : Select) =
            if gen.per_sel (get_key_index p) then
              print_pevents_for_person oc base gen p)
         pl
+
     let print_fevent oc base gen in_comment e =
       let print_sep () =
         if not in_comment then Printf.fprintf oc "\n" else Printf.fprintf oc " "
@@ -743,6 +805,7 @@ module Make (Select : Select) =
       if note <> "" then
         List.iter (fun line -> Printf.fprintf oc "note %s" line; print_sep ())
           (lines_list_of_string note)
+
     let print_comment_for_family oc base gen fam =
       let comm = sou base (get_comment fam) in
       (* Si on est en mode old_gw, on mets tous les évènements dans les notes. *)
@@ -775,12 +838,14 @@ module Make (Select : Select) =
             end;
           Printf.fprintf oc "\n"
         end
+
     let print_empty_family oc base p =
       let string_quest = Gwdb.insert_string base "?" in
       Printf.fprintf oc "fam ? ?.0 + #noment ? ?.0\n";
       Printf.fprintf oc "beg\n";
       print_child oc base string_quest "" "" p;
       Printf.fprintf oc "end\n"
+
     let print_family oc base gen m =
       let fam = m.m_fam in
       Printf.fprintf oc "fam ";
@@ -899,6 +964,7 @@ module Make (Select : Select) =
         String.concat " " (List.map (sou base) sl)
       in
       ignore (add_linked_files gen f s [] : _ list)
+
     let get_persons_with_notes base m list =
       let fath = m.m_fath in
       let moth = m.m_moth in
@@ -930,6 +996,7 @@ module Make (Select : Select) =
              "" -> if put_events_in_notes base p then p :: list else list
            | _ -> p :: list)
         (Array.to_list m.m_chil) list
+
     let notes_aliases bdir =
       let fname = Filename.concat bdir "notes.alias" in
       match try Some (Secure.open_in fname) with Sys_error _ -> None with
@@ -950,6 +1017,7 @@ module Make (Select : Select) =
           in
           loop []
       | None -> []
+
     let print_notes_for_person oc base gen p =
       let print_witness_in_notes witnesses =
         Array.iter
@@ -1036,6 +1104,7 @@ module Make (Select : Select) =
         String.concat " " (List.map (sou base) sl)
       in
       ignore (add_linked_files gen f s [] : _ list)
+
     let print_notes oc base gen ml =
       let pl =
         List.fold_right (get_persons_with_notes base) ml gen.notes_pl_p
@@ -1049,14 +1118,17 @@ module Make (Select : Select) =
            if gen.per_sel (get_key_index p) then
              print_notes_for_person oc base gen p)
         pl
+
     let is_isolated p =
       match get_parents p with
         Some _ -> false
       | None -> Array.length (get_family p) = 0
+
     let is_definition_for_parent p =
       match get_parents p with
         Some _ -> false
       | None -> true
+
     let get_isolated_related base m list =
       let concat_isolated p_relation ip list =
         let p = poi base ip in
@@ -1087,6 +1159,7 @@ module Make (Select : Select) =
         (fun p list ->
            List.fold_right (concat_isolated p) (get_related p) list)
         (Array.to_list m.m_chil) list
+
     let get_persons_with_relations base m list =
       let fath = m.m_fath in
       let moth = m.m_moth in
@@ -1117,6 +1190,7 @@ module Make (Select : Select) =
              [] -> list
            | _ -> (p, false) :: list)
         (Array.to_list m.m_chil) list
+
     let print_relation_parent oc base mark defined_p p =
       Printf.fprintf oc "%s %s%s" (correct_string base (get_surname p))
         (correct_string base (get_first_name p))
@@ -1131,6 +1205,7 @@ module Make (Select : Select) =
           else Printf.fprintf oc " 0";
           defined_p := p :: !defined_p
         end
+
     let print_relation_for_person oc base gen def_p r =
       let fath =
         match r.r_fath with
@@ -1227,6 +1302,7 @@ module Make (Select : Select) =
               end;
               Printf.fprintf oc "\n"
             end
+
     let print_relations_for_person oc base gen def_p is_definition p =
       let surn = correct_string base (get_surname p) in
       let fnam = correct_string base (get_first_name p) in
@@ -1266,6 +1342,7 @@ module Make (Select : Select) =
             (get_rparents p);
           Printf.fprintf oc "end\n"
         end
+
     let print_relations oc base gen ml =
       let pl = List.fold_right (get_persons_with_relations base) ml [] in
       let pl = List.fold_right (get_isolated_related base) ml pl in
@@ -1289,6 +1366,7 @@ module Make (Select : Select) =
             loop (pl @ List.map (fun p -> p, false) !def_p)
       in
       loop pl
+
     let print_isolated_relations oc base gen p =
       let pl = [p, false] in
       let pl =
@@ -1309,6 +1387,7 @@ module Make (Select : Select) =
             loop (pl @ List.map (fun p -> p, false) !def_p)
       in
       loop pl
+
     let rec merge_families ifaml1f ifaml2f =
       match ifaml1f, ifaml2f with
         ifam1 :: ifaml1, ifam2 :: ifaml2 ->
@@ -1324,10 +1403,12 @@ module Make (Select : Select) =
           else ifam1 :: merge_families ifaml1 ifaml2
       | ifaml1, [] -> ifaml1
       | [], ifaml2 -> ifaml2
+
     let rec filter f =
       function
         x :: l -> if f x then x :: filter f l else filter f l
       | [] -> []
+
     let connected_families base fam_sel ifam cpl =
       let rec loop ifaml ipl_scanned =
         function
@@ -1349,6 +1430,7 @@ module Make (Select : Select) =
         | [] -> ifaml
       in
       loop [ifam] [] [get_father cpl]
+
     let find_person base p1 po p2 =
       match person_of_key base p1 p2 po with
         Some ip -> ip
@@ -1357,6 +1439,7 @@ module Make (Select : Select) =
             (if po = 0 then "" else " " ^ string_of_int po) p2;
           flush stdout;
           exit 2
+
     let read_file_contents fname =
       match try Some (open_in fname) with Sys_error _ -> None with
         Some ic ->
@@ -1369,7 +1452,9 @@ module Make (Select : Select) =
           with End_of_file -> Buff.get !len
           end
       | None -> ""
+
     type separate = ToSeparate | NotScanned | BeingScanned | Scanned
+
     let rec find_ancestors base surn p list =
       match get_parents p with
         Some ifam ->
@@ -1390,6 +1475,7 @@ module Make (Select : Select) =
               find_ancestors base surn moth list
             else list
       | None -> p :: list
+
     let mark_branch base mark surn p =
       let rec loop top p =
         for i = 0 to Array.length (get_family p) - 1 do
@@ -1420,6 +1506,7 @@ module Make (Select : Select) =
         done
       in
       loop true p
+
     let mark_someone base mark s =
       match Gutil.person_ht_find_all base s with
         [ip] ->
@@ -1431,9 +1518,13 @@ module Make (Select : Select) =
           Printf.eprintf "Error: several answers for \"%s\"\n" s;
           flush stderr;
           exit 2
+
     let sep_limit = ref 21
+
     let only_file = ref ""
+
     let separate_list = ref []
+
     let scan_connex_component base test_action len ifam =
       let rec loop len ifam =
         let fam = foi base ifam in
@@ -1469,6 +1560,7 @@ module Make (Select : Select) =
           len children
       in
       loop len ifam
+
     let mark_one_connex_component base mark ifam =
       let origin_file = sou base (get_origin_file (foi base ifam)) in
       let test_action loop len ifam =
@@ -1504,17 +1596,20 @@ module Make (Select : Select) =
           flush stderr;
           set_mark Scanned
         end
+
     let mark_connex_components base mark ifam =
       let test_action _loop _len ifam =
         if mark.(Adef.int_of_ifam ifam) = NotScanned then
           mark_one_connex_component base mark ifam
       in
       scan_connex_component base test_action () ifam
+
     let add_small_connex_components base mark =
       for i = 0 to nb_of_families base - 1 do
         if mark.(i) = ToSeparate then
           mark_connex_components base mark (Adef.ifam_of_int i)
       done
+
     let separate base =
       match List.rev !separate_list with
         [] -> (fun _ -> false)
@@ -1533,6 +1628,7 @@ module Make (Select : Select) =
           Printf.eprintf "*** extracted %d families\n" len;
           flush stderr;
           fun ifam -> mark.(Adef.int_of_ifam ifam) = ToSeparate
+
     let rs_printf oc s =
       let rec loop bol i =
         if i = String.length s then ()
@@ -1545,12 +1641,19 @@ module Make (Select : Select) =
           end
       in
       loop true 0
+
     let surnames = ref []
+
     let no_spouses_parents = ref false
+
     let no_notes = ref false
+
     let censor = ref 0
+
     let with_siblings = ref false
+
     let maxlev = ref (-1)
+
     let gwu base in_dir out_dir out_oc src_oc_ht anc desc ancdesc =
       let to_separate = separate base in
       let anc =
@@ -1774,18 +1877,31 @@ module Make (Select : Select) =
               Printf.fprintf oc "\nend wizard-note\n"
           done
         with Sys_error _ -> ()
+
     let in_file = ref ""
+
     let out_file = ref ""
+
     let out_dir = ref ""
+
     let anc_1st = ref ""
+
     let anc_occ = ref 0
+
     let anc_2nd = ref ""
+
     let desc_1st = ref ""
+
     let desc_occ = ref 0
+
     let desc_2nd = ref ""
+
     let ancdesc_1st = ref ""
+
     let ancdesc_occ = ref 0
+
     let ancdesc_2nd = ref ""
+
     type arg_state =
         ASnone
       | ASwaitAncOcc
@@ -1794,8 +1910,11 @@ module Make (Select : Select) =
       | ASwaitDescSurn
       | ASwaitAncdescOcc
       | ASwaitAncdescSurn
+
     let arg_state = ref ASnone
+
     let mem = ref false
+
     let speclist =
       ["-o", Arg.String (fun s -> out_file := s),
        "<file>    output file name (else stdout)";
@@ -1859,6 +1978,7 @@ module Make (Select : Select) =
         than "
        ^ string_of_int !sep_limit
        ^ ". The present option changes this limit."]
+
     let anonfun s =
       match !arg_state with
         ASnone ->
@@ -1883,6 +2003,7 @@ module Make (Select : Select) =
             ancdesc_occ := 0; ancdesc_2nd := s; arg_state := ASnone
           end
       | ASwaitAncdescSurn -> ancdesc_2nd := s; arg_state := ASnone
+
     let errmsg =
       "Usage: "
       ^ Sys.argv.(0)
@@ -1890,6 +2011,7 @@ module Make (Select : Select) =
          If both options -a and -d are used, intersection is assumed. \
          If several options -s are used, union is assumed. \
          Options are:"
+
     let main () =
       Mutil.verbose := false;
       Argl.parse speclist anonfun errmsg;
@@ -1967,5 +2089,7 @@ module Make (Select : Select) =
       Hashtbl.iter (fun _ (oc, _) -> flush oc; close_out oc) src_oc_ht;
       flush out_oc;
       if !out_file = "" then () else close_out out_oc
+
     let run_main = Printexc.print main
+
   end
