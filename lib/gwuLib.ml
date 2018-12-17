@@ -581,17 +581,9 @@ module Make (Select : Select) =
 
     let common_children_birth_place = common_children get_birth_place
 
-    let array_forall f a =
-      let rec loop i =
-        if i = Array.length a then true
-        else if f a.(i) then loop (i + 1)
-        else false
-      in
-      loop 0
-
     let empty_family base m =
       bogus_person base m.m_fath && bogus_person base m.m_moth &&
-      array_forall (bogus_person base) m.m_chil
+      Array.for_all (bogus_person base) m.m_chil
 
     let print_witness oc base gen p =
       Printf.fprintf oc "%s %s%s" (correct_string base (get_surname p))
