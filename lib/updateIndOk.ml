@@ -765,9 +765,9 @@ let error_person conf err =
 let strip_pevents p =
   let strip_array_witness pl =
     let pl =
-      List.fold_right
+      Array.fold_right
         (fun ((f, _, _, _, _), _ as p) pl -> if f = "" then pl else p :: pl)
-        (Array.to_list pl) []
+        pl []
     in
     Array.of_list pl
   in
@@ -892,13 +892,13 @@ let check_conflict conf base sp ipl =
 let check_sex_married conf base sp op =
   if sp.sex <> get_sex op then
     let no_check =
-      List.for_all
+      Array.for_all
         (fun ifam ->
            let r = get_relation (foi base ifam) in
            r = NoSexesCheckNotMarried || r = NoSexesCheckMarried)
-        (Array.to_list (get_family op))
+        (get_family op)
     in
-    if no_check then () else print_cannot_change_sex conf base op
+    if not no_check then print_cannot_change_sex conf base op
 
 let rename_image_file conf base op sp =
   match auto_image_file conf base op with
@@ -924,8 +924,8 @@ let rparents_of rparents =
 let pwitnesses_of pevents =
   List.fold_left
     (fun ipl e ->
-       List.fold_left (fun ipl (ip, _) -> ip :: ipl) ipl
-         (Array.to_list e.epers_witnesses))
+       Array.fold_left (fun ipl (ip, _) -> ip :: ipl) ipl
+         e.epers_witnesses)
     [] pevents
 
 (* sp.death *)
@@ -1040,10 +1040,10 @@ let update_relations_of_related base ip old_related =
          List.fold_right
            (fun e (list, rad) ->
               let (witnesses, rad) =
-                List.fold_right
+                Array.fold_right
                   (fun (ip2, k) (accu, rad) ->
                      if ip2 = ip then accu, true else (ip2, k) :: accu, rad)
-                  (Array.to_list e.epers_witnesses) ([], rad)
+                  e.epers_witnesses ([], rad)
               in
               let e = {e with epers_witnesses = Array.of_list witnesses} in
               e :: list, rad)
@@ -1070,10 +1070,10 @@ let update_relations_of_related base ip old_related =
            List.fold_right
              (fun e (list, rad) ->
                 let (witnesses, rad) =
-                  List.fold_right
+                  Array.fold_right
                     (fun (ip2, k) (accu, rad) ->
                        if ip2 = ip then accu, true else (ip2, k) :: accu, rad)
-                    (Array.to_list e.efam_witnesses) ([], rad)
+                    e.efam_witnesses ([], rad)
                 in
                 let e = {e with efam_witnesses = Array.of_list witnesses} in
                 e :: list, rad)
