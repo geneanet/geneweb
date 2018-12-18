@@ -53,27 +53,21 @@ module Make (Select : Select) =
         let sn = sou base (get_surname p) in
         let fn = sou base (get_first_name p) in
         if sn = "?" && fn = "?" then ()
-        else if Name.lower sn = "" || Name.lower fn = "" then
-          let key = Name.lower fn ^ " #@# " ^ Name.lower sn in
-          let occ = get_occ p in
-          try
-            let l = Hashtbl.find ht_orig_occ key in
-            if List.mem occ l then Hashtbl.add ht_dup_occ ip occ
-            else Hashtbl.replace ht_orig_occ key (occ :: l)
-          with Not_found -> Hashtbl.add ht_orig_occ key [occ]
+        else
+          let fn = Name.lower fn in
+          let sn = Name.lower sn in
+          if fn = "" || sn = "" then
+            let key = fn ^ " #@# " ^ sn in
+            let occ = get_occ p in
+            try
+              let l = Hashtbl.find ht_orig_occ key in
+              if List.mem occ l then Hashtbl.add ht_dup_occ ip occ
+              else Hashtbl.replace ht_orig_occ key (occ :: l)
+            with Not_found -> Hashtbl.add ht_orig_occ key [occ]
       done;
       Hashtbl.iter
-        (fun key l ->
-           Hashtbl.replace ht_orig_occ key (List.sort Pervasives.compare l))
+        (fun key l -> Hashtbl.replace ht_orig_occ key (List.sort compare l))
         ht_orig_occ;
-      let concat l1 l2 =
-        let rec loop l1 l2 =
-          match l1 with
-            [] -> l2
-          | x :: l1 -> loop l1 (x :: l2)
-        in
-        loop (List.rev l1) l2
-      in
       Hashtbl.iter
         (fun ip _ ->
            let p = poi base ip in
@@ -84,11 +78,9 @@ module Make (Select : Select) =
              let list_occ = Hashtbl.find ht_orig_occ key in
              let rec loop list init new_list =
                match list with
-                 x :: y :: l ->
-                   if y - x > 1 then
-                     succ x, concat (concat new_list [x; succ x; y]) l
-                   else loop (y :: l) y (concat new_list [x])
-               | x :: l -> loop l (succ x) (concat new_list [x])
+               | x :: y :: l when y - x > 1 ->
+                 succ x, List.rev_append (y :: succ x :: x :: new_list) l
+               | x :: l -> loop l (succ x) (x :: new_list)
                | [] -> init, [init]
              in
              let (new_occ, new_list_occ) = loop list_occ 0 [] in
