@@ -498,6 +498,29 @@ let escape_html str =
   in
   loop 0 0
 
+(** [escape_attribute str] only escapes double quote and ampersand.
+    Since we will return normalized HTML, ['"'] should be the only
+    dangerous character here. *)
+let escape_attribute str =
+  let strlen = String.length str in
+  let rec loop acc i =
+    if i < strlen then
+      match String.unsafe_get str i with
+      | '&' | '"' -> loop (acc + 5) (i + 1) (* "&#xx;" *)
+      | _ -> loop (acc + 1) (i + 1)
+    else if acc = strlen then str
+    else
+      let buf = Bytes.create acc in
+      let rec loop istr ibuf =
+        if istr = strlen then Bytes.unsafe_to_string buf
+        else match String.unsafe_get str istr with
+          | '&' -> Bytes.blit_string "&#38;" 0 buf ibuf 5 ; loop (istr + 1) (ibuf + 5)
+          | '"' -> Bytes.blit_string "&#34;" 0 buf ibuf 5 ; loop (istr + 1) (ibuf + 5)
+          | c -> Bytes.unsafe_set buf ibuf c ; loop (istr + 1) (ibuf + 1)
+      in loop 0 0
+  in
+  loop 0 0
+
 (* Few notes:
 
    According to https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs,
@@ -533,7 +556,7 @@ let safe_html s =
   |> parse_html ~context:(`Fragment "body")
   |> signals
   |> map make_safe
-  |> write_html ~escape_text:escape_html
+  |> write_html ~escape_text:escape_html ~escape_attribute
   |> to_string
 
 let no_html_tags s =
