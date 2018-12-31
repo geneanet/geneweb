@@ -534,14 +534,19 @@ let escape_attribute str =
 
    Text is escaped using [escape_html].
 
+   Replace tags not authorized with empty comments.
+
    Markup.ml automatically return tags names in lowercase.
  *)
 let safe_html s =
   let open Markup in
+  let stack = ref [] in
   let make_safe = function
     | `Start_element (name, attrs) ->
-      if not @@ List.mem name safe_html_allowd_tags then `Comment ""
-      else
+      if not @@ List.mem name safe_html_allowd_tags then begin
+        stack := `KO :: !stack ;
+        `Comment ""
+      end else begin
         let attrs =
           List.filter (function ((_, k), v) ->
               (String.length k <= 2
@@ -549,7 +554,15 @@ let safe_html s =
               && not (Mutil.contains (String.lowercase_ascii v) "javascript") )
             attrs
         in
+        stack := `OK :: !stack ;
         `Start_element (name, attrs)
+      end
+    | `End_element ->
+      begin match !stack with
+        | `KO :: tl -> stack := tl ; `Comment ""
+        | `OK :: tl -> stack := tl ; `End_element
+        | _ -> failwith __LOC__
+      end
     | e -> e
   in
   string s
