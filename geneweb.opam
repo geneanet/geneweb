@@ -25,10 +25,15 @@ remove: [
   [ make "uninstall" ]
 ]
 
+pin-depends: [
+  [ "markup.dev" "git://github.com/geneanet/markup.ml" ]
+]
+
 depends: [
   "camlp5" { build }
   "cppo" { build }
   "dune" { build>= "1.1.1" }
+  "markup"
   "ocaml" { >= "4.05" }
   "ocurl" { = "0.8.1" }
   "ounit"
