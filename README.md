@@ -36,7 +36,7 @@ pull requests, bugs reports, ideas...
 ### Build instructions
 
 In June 2018, the build environment of GeneWeb moved to Dune/Jbuilder.
-The new configure script return only the following line:
+The new configure script returns only the following line:
 ```
 [INFO] Checking OS type ......................................... OsType
 ```
@@ -44,7 +44,7 @@ The new configure script return only the following line:
 - Install opam (https://opam.ocaml.org/)
 - Install GeneWeb (with opam).
 - Install additional components. If opam has not proposed to install missing components,
-try with apt/apt-get
+try with apt/apt-get.
 
 2. Clone the repository
 ```
@@ -52,6 +52,7 @@ git clone https://github.com/geneweb/geneweb
 ```
 3. Compile GeneWeb
 ```
+cd geneweb
 ./configure
 make clean; make
 make distrib
@@ -59,10 +60,10 @@ make distrib
 
 ### Building the API
 
-The API uses the Google Protocol Buffer to exchange informations
+The API uses the Google Protocol Buffer to exchange information
 encoded as pb, json, xml.
 
-It has the following dependancies:
+It has the following dependencies:
 
 - OCaml, camlp5, lwt, ocamlfind, ocurl, piqi, piqilib, protobuf, re, uuidm, yojson, redis
 
@@ -75,7 +76,7 @@ cd geneweb
 docker build -t geneweb .
 docker run --rm -it -p 2316:2316 -p 2317:2317 -v `pwd`:/home/opam/geneweb/ -v YOUR_BASE_DIR:/home/opam/bases/ geneweb /home/opam/geneweb/docker/build.sh --run --api --clean
 ```
-the following options are available for the build script:
+The following options are available for the build script:
 - run: runs geneweb and gwsetup right after build
 - clean: runs `make clean` before build phase
 - api: builds the api
