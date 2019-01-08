@@ -75,7 +75,7 @@ let get_all =
     (fold_place : string -> 'a)
     (filter : 'a -> bool)
     (mk_value : 'b option -> person -> 'b)
-    (foo : 'b -> 'c) :
+    (fn : 'b -> 'c) :
     ('a * 'c) array ->
   let add_marriage = p_getenv conf.env "ma" = Some "on" in
   let ht_size = 2048 in (* FIXME: find the good heuristic *)
@@ -133,7 +133,7 @@ let get_all =
   let i = ref 0 in
   Hashtbl.iter
     (fun k v ->
-       Array.unsafe_set array !i (k, foo v) ;
+       Array.unsafe_set array !i (k, fn v) ;
        incr i)
     ht ;
   array
