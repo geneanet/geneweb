@@ -1403,11 +1403,11 @@ let build_surnames_list conf base v p =
   List.sort
     (fun (s1, _) (s2, _) ->
        match
-         Gutil.alphabetic_order (surname_end base s1) (surname_end base s2)
+         Gutil.alphabetic_order (surname_without_particle base s1) (surname_without_particle base s2)
        with
          0 ->
-           Gutil.alphabetic_order (surname_begin base s1)
-             (surname_begin base s2)
+           Gutil.alphabetic_order (surname_particle base s1)
+             (surname_particle base s2)
        | x -> x)
     !list
 
@@ -1532,12 +1532,12 @@ let build_list_eclair conf base v p =
   List.sort
     (fun (s1, pl1, _, _, _, _) (s2, pl2, _, _, _, _) ->
        match
-         Gutil.alphabetic_order (surname_end base s1) (surname_end base s2)
+         Gutil.alphabetic_order (surname_without_particle base s1) (surname_without_particle base s2)
        with
          0 ->
            begin match
-             Gutil.alphabetic_order (surname_begin base s1)
-               (surname_begin base s2)
+             Gutil.alphabetic_order (surname_particle base s1)
+               (surname_particle base s2)
            with
              0 -> Gutil.alphabetic_order pl1 pl2
            | x -> x
@@ -4560,10 +4560,10 @@ and eval_str_person_field conf base env (p, p_auth as ep) =
       if not p_auth && is_hide_names conf p then "x" else p_surname base p
   | "surname_begin" ->
       if not p_auth && is_hide_names conf p then ""
-      else surname_begin base (p_surname base p)
+      else surname_particle base (p_surname base p)
   | "surname_end" ->
       if not p_auth && is_hide_names conf p then "x"
-      else surname_end base (p_surname base p)
+      else surname_without_particle base (p_surname base p)
   | "surname_key" ->
       if is_hide_names conf p && not p_auth then ""
       else code_varenv (Name.lower (p_surname base p))

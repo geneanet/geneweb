@@ -13,6 +13,16 @@ let ini len k =
   (* ini_k is "a fresh string": we can use unsafe. *)
   Util.str_replace ~unsafe:true ' ' ~by:'_' ini_k
 
+let particle_at_the_end base is_surnames s =
+  if is_surnames then
+    surname_without_particle base s ^ surname_particle base s
+  else s
+
+let compare_particle_at_the_end base is_surnames a b =
+  Gutil.alphabetic_order
+    (particle_at_the_end base is_surnames a)
+    (particle_at_the_end base is_surnames b)
+
 let groupby_ini len list =
   list
   |> Util.groupby
@@ -26,11 +36,6 @@ let groupby_count list =
     ~key:(fun (_, _, c) -> c)
     ~value:(fun (_, s, _) -> s)
   |> List.sort (fun (a, _) (b, _) -> compare b a)
-
-let alphab_string base is_surname s =
-  if is_surname then
-    surname_end base s ^ surname_begin base s
-  else s
 
 (* print *)
 
@@ -156,11 +161,11 @@ let print_alphabetic_all conf base is_surnames ini list len =
               "m=" ^ mode ^ "&v=" ^ code_varenv s ^ "&t=A"
             in
               wprint_geneweb_link conf href
-                (alphab_string base is_surnames s)
+                (particle_at_the_end base is_surnames s)
             end;
             Wserver.printf " (%d)" cnt;
             Wserver.printf "</li>\n")
-         (List.sort (fun (a, _) (b, _) -> Gutil.alphabetic_order a b) l);
+         (List.sort (fun (a, _) (b, _) -> compare_particle_at_the_end base is_surnames a b) l);
        Wserver.printf "</ul>\n";
        Wserver.printf "</li>\n")
     list;
@@ -180,11 +185,12 @@ let print_alphabetic_small conf base is_surnames ini list len =
            Wserver.printf "<li>";
            Wserver.printf "<a href=\"%sm=%s&v=%s&t=A\">" (commd conf) mode
              (code_varenv s);
-           Wserver.printf "%s" (alphab_string base is_surnames s);
+           Wserver.printf "%s" (particle_at_the_end base is_surnames s);
            Wserver.printf "</a>";
            Wserver.printf " (%d)" cnt;
            Wserver.printf "</li>\n")
-        (List.sort (fun (_, a, _) (_, b, _) -> Gutil.alphabetic_order a b) list);
+        (List.sort (fun (_, a, _) (_, b, _) ->
+             compare_particle_at_the_end base is_surnames a b) list);
       Wserver.printf "</ul>\n"
     end;
   Hutil.trailer conf
@@ -209,7 +215,7 @@ let print_frequency_any conf base is_surnames list len =
                   Wserver.printf "<li>";
                   Wserver.printf "<a href=\"%sm=%s&v=%s\">" (commd conf) mode
                     (code_varenv (Name.lower s));
-                  Wserver.printf "%s" (alphab_string base is_surnames s);
+                  Wserver.printf "%s" (particle_at_the_end base is_surnames s);
                   Wserver.printf "</a>";
                   incr n;
                   Wserver.printf "</li>\n")
@@ -373,7 +379,7 @@ let print_alphabetic_short conf base is_surnames ini list len =
             if not first then Wserver.printf ",\n";
             if href <> "" || name <> "" then
               Wserver.printf "<a%s%s>" href name;
-            Wserver.printf "%s" (alphab_string base is_surnames s);
+            Wserver.printf "%s" (particle_at_the_end base is_surnames s);
             if href <> "" || name <> "" then Wserver.printf "</a>";
             Wserver.printf " (%d)" cnt)
          (List.sort (fun (a, _) (b, _) -> Gutil.alphabetic_order a b) l);

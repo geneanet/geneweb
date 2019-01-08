@@ -133,10 +133,15 @@ val print_alphab_list :
 val of_course_died : config -> person -> bool
 val hexa_string : string -> string
 
-val surname_begin : base -> string -> string
-val surname_end : base -> string -> string
-val old_surname_begin : string -> string
-val old_surname_end : string -> string
+(** [surname_particle base sn]
+    Extract the particle of [sn] if there is one.
+    The list of particles to use is defined in [base]. *)
+val surname_particle : base -> string -> string
+
+(** [surname_without_particle base sn]
+    Remove the particle of [sn] if there is one.
+    The list of particles to use is defined in [base]. *)
+val surname_without_particle : base -> string -> string
 
 val specify_homonymous : config -> base -> person -> bool -> unit
 

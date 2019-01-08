@@ -437,15 +437,15 @@ let print_elem conf base paths precision (n, pll) =
   html_li conf;
   match List.rev pll with
     [[p]] ->
-      Wserver.printf "<strong>%s %s %s</strong>" (surname_end base n)
+      Wserver.printf "<strong>%s %s %s</strong>" (surname_without_particle base n)
         (reference conf base p (person_text_without_surname conf base p))
-        (surname_begin base n);
+        (surname_particle base n);
       Wserver.printf "%s" (Date.short_dates_text conf base p);
       print_ref conf base paths p;
       Wserver.printf "\n"
   | pll ->
-      Wserver.printf "<strong>%s%s</strong>\n" (surname_end base n)
-        (surname_begin base n);
+      Wserver.printf "<strong>%s%s</strong>\n" (surname_without_particle base n)
+        (surname_particle base n);
       Wserver.printf "<ul>\n";
       List.iter
         (fun pl ->

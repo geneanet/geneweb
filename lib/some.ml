@@ -197,7 +197,7 @@ let print_elem conf base is_surname (p, xl) =
        Wserver.printf "<a href=\"%s%s\" id=\"i%s\">" (commd conf)
          (acces conf base x) (string_of_int (Adef.int_of_iper iper));
        if is_surname then
-         Wserver.printf "%s%s" (surname_end base p) (surname_begin base p)
+         Wserver.printf "%s%s" (surname_without_particle base p) (surname_particle base p)
        else Wserver.printf "%s" (if p = "" then "?" else p);
        Wserver.printf "</a>";
        Wserver.printf "%s" (Date.short_dates_text conf base x);
@@ -265,7 +265,7 @@ let first_name_print_list conf base x1 xl liste =
   let list =
     List.map
       (fun (sn, ipl) ->
-         let txt = Util.surname_end base sn ^ Util.surname_begin base sn in
+         let txt = Util.surname_without_particle base sn ^ Util.surname_particle base sn in
          let ord = name_unaccent txt in ord, txt, ipl)
       liste
   in
@@ -637,7 +637,7 @@ let print_several_possible_surnames x conf base (_, homonymes) =
   let list =
     List.map
       (fun sn ->
-         let txt = Util.surname_end base sn ^ Util.surname_begin base sn in
+         let txt = Util.surname_without_particle base sn ^ Util.surname_particle base sn in
          let ord = name_unaccent txt in ord, txt, sn)
       homonymes
   in

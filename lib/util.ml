@@ -999,22 +999,6 @@ let person_title conf base p =
     | None -> ""
   else ""
 
-let old_surname_begin n =
-  let i = Mutil.initial n in
-  if i = 0 then ""
-  else
-    let i =
-      let rec strip_spaces i =
-        if i >= 1 && n.[i-1] = ' ' then strip_spaces (pred i) else i
-      in
-      strip_spaces i
-    in
-    " (" ^ String.sub n 0 i ^ ")"
-
-let old_surname_end n =
-  let i = Mutil.initial n in
-  if i = 0 then n else String.sub n i (String.length n - i)
-
 let name_key base s =
   let part = Mutil.get_particle (Gwdb.base_particles base) s in
   if part = "" then s
@@ -1022,14 +1006,14 @@ let name_key base s =
     let i = String.length part in
     String.sub s i (String.length s - i) ^ " " ^ String.sub s 0 i
 
-let surname_begin base s =
+let surname_particle base s =
   let part = Mutil.get_particle (Gwdb.base_particles base) s in
   let len = String.length part in
   if len = 0 then ""
   else if part.[len-1] = ' ' then " (" ^ String.sub part 0 (len - 1) ^ ")"
   else " (" ^ part ^ ")"
 
-let surname_end base s =
+let surname_without_particle base s =
   let part_len = String.length (Mutil.get_particle (Gwdb.base_particles base) s) in
   String.sub s part_len (String.length s - part_len)
 

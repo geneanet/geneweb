@@ -427,14 +427,14 @@ let print_places_list conf base t t_equiv list =
            give_access_all_titles conf t true)
         t_equiv
   in
-  let order s = capitale (Name.lower (surname_end base s)) in
+  let order s = capitale (Name.lower (surname_without_particle base s)) in
   let list = List.sort (fun s1 s2 -> compare (order s1) (order s2)) list in
   let absolute = p_getenv conf.env "a" = Some "A" in
   let wprint_elem p =
     Wserver.printf "<a href=\"%sm=TT&sm=S&t=%s&p=%s%s\">" (commd conf)
       (code_varenv t) (code_varenv p) (if absolute then "&a=A" else "");
     if p = "" then Wserver.printf "..."
-    else Wserver.printf "%s%s" (surname_end base p) (surname_begin base p);
+    else Wserver.printf "%s%s" (surname_without_particle base p) (surname_particle base p);
     Wserver.printf "</a>"
   in
   Hutil.header conf title;
