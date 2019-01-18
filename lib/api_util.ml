@@ -70,10 +70,10 @@ let ht_img = Hashtbl.create 5003
 let load_image_ht conf =
   let dir_img = base_path ["images"] conf.bname in
   let images =
-    if Sys.file_exists dir_img then Array.to_list (Sys.readdir dir_img)
-    else []
+    if Sys.file_exists dir_img then Sys.readdir dir_img
+    else [||]
   in
-  List.iter
+  Array.iter
     (fun img ->
       if img = "old" then ()
       else
@@ -2033,13 +2033,13 @@ let conv_data_list_person conf base filters l =
 
 let data_list_person conf base filters l =
   let compute_sosa =
-    if List.length l > 2 then
+    if List.length l > 1 then
       let () = Perso.build_sosa_ht conf base in
       Perso.get_sosa_person
     else (Perso.get_single_sosa conf base)
   in
   let load_img =
-    if List.length l > 2 then let () = load_image_ht conf in true
+    if List.length l > 20 then let () = load_image_ht conf in true
     else false
   in
   let l = List.filter (apply_filters_p conf filters compute_sosa) l in
