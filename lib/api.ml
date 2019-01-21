@@ -407,6 +407,23 @@ let print_last_modified_persons conf base =
         is_date_included prec date date_begin date_end
     | None -> true
   in
+  let date_before_interval time =
+    match range with
+    | Some (date_begin, _, prec) ->
+      (* time : 0000-00-00 00:00:00 *)
+      let date =
+        let y = int_of_string (String.sub time 0 4) in
+        let m = int_of_string (String.sub time 5 2) in
+        let d = int_of_string (String.sub time 8 2) in
+        let dmy =
+          { day = d; month = m; year = y; prec = Sure; delta = 0; }
+        in
+        Some (Dgreg (dmy, Dgregorian))
+      in
+      let dmy_zero = { day = 1; month = 1; year = 1970; prec = Sure; delta = 0; } in
+      is_date_included prec date dmy_zero date_begin
+    | None -> true
+  in
   let p_mem ip list =
     let rec loop list =
       match list with
@@ -417,13 +434,13 @@ let print_last_modified_persons conf base =
     in
     loop list
   in
-  let compute_sosa = Perso.get_single_sosa conf base in
   let list =
     match
       try Some (Secure.open_in_bin (History.file_name conf))
       with Sys_error _ -> None
     with
     | Some ic ->
+        let () = Perso.build_sosa_ht conf base in
         let pos = in_channel_length ic in
         let vv = (ref (Bytes.create 0), ref 0) in
         let rec loop list res pos =
@@ -436,24 +453,28 @@ let print_last_modified_persons conf base =
             | Some (line, pos) ->
                 (match History.line_fields line with
                 | Some (time, user, action, keyo) ->
-                    if (wiz = "" || user = wiz) && is_time_included time then
-                      match keyo with
-                      | Some key ->
-                          (match action with
-                          | "mn" | "dp" | "cp" | "cs" | "co" ->
-                              loop list res pos
-                          | _ ->
-                              (match Gutil.person_ht_find_all base key with
-                              | [ip] ->
-                                  let p = poi base ip in
-                                  if not (is_empty_or_quest_name p) &&
-                                     apply_filters_p
-                                       conf filters compute_sosa p &&
-                                     not (p_mem ip list)
-                                  then loop (p :: list) (res - 1) pos
-                                  else loop list res pos
-                              | _ -> loop list res pos))
-                      | None -> loop list res pos
+                    if (wiz = "" || user = wiz) then
+                      if is_time_included time then
+                        match keyo with
+                        | Some key ->
+                            (match action with
+                            | "mn" | "dp" | "cp" | "cs" | "co" ->
+                                loop list res pos
+                            | _ ->
+                                (match Gutil.person_ht_find_all base key with
+                                | [ip] ->
+                                    let p = poi base ip in
+                                    if not (is_empty_or_quest_name p) &&
+                                      apply_filters_p
+                                        conf filters (Perso.get_sosa_person) p &&
+                                      not (p_mem ip list)
+                                    then loop (p :: list) (res - 1) pos
+                                    else loop list res pos
+                                | _ -> loop list res pos))
+                        | None -> loop list res pos
+                      else
+                        if date_before_interval time then list
+                        else loop list res pos
                     else loop list res pos
                 | None -> loop list res pos)
             | None -> list
@@ -2576,4 +2597,3 @@ let print_notification_birthday conf base =
   print_result conf data
 
 #endif
-
