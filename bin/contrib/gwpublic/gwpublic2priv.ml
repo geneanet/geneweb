@@ -2,17 +2,6 @@ open Geneweb
 open Def
 open Gwdb
 
-let year_of p =
-  match
-    Adef.od_of_cdate (get_birth p), Adef.od_of_cdate (get_baptism p),
-    get_death p, CheckItem.date_of_death (get_death p)
-  with
-    _, _, NotDead, _ -> None
-  | Some (Dgreg (d, _)), _, _, _ -> Some d.year
-  | _, Some (Dgreg (d, _)), _, _ -> Some d.year
-  | _, _, _, Some (Dgreg (d, _)) -> Some d.year
-  | _ -> None
-
 let find_dated_ancestor base p =
   let mark = Array.make (nb_of_persons base) false in
   let rec loop nb_gen iplist =
@@ -42,7 +31,7 @@ let find_dated_ancestor base p =
         function
           ip :: iplist ->
             let p = poi base ip in
-            begin match year_of p with
+            begin match Gwaccess.oldest_year_of p with
               Some year -> Some (p, year, nb_gen)
             | None -> loop_ind iplist
             end
@@ -55,8 +44,6 @@ let find_dated_ancestor base p =
 let nb_years_by_gen = 30
 
 let change_somebody_access base lim_year trace p year_of_p spouse =
-  (* Dans le cas d'un calcul par rapport au conjoint, on ignore *)
-  (* le statu parce qu'il a pu être modifié précédemment.       *)
   if year_of_p = None && (get_access p = IfTitles || spouse) then
     match find_dated_ancestor base p with
       Some (a, year, nb_gen) ->
@@ -99,11 +86,11 @@ let public_all ~fast bname lim_year trace patched =
     ProgrBar.run i n;
     let ip = Adef.iper_of_int i in
     let p = poi base ip in
-    if year_of p = None && get_access p = IfTitles &&
+    if Gwaccess.oldest_year_of p = None && get_access p = IfTitles &&
        (patched && is_patched_person base ip || patched = false)
     then
       match
-        change_somebody_access base lim_year trace p (year_of p) false
+        change_somebody_access base lim_year trace p (Gwaccess.oldest_year_of p) false
       with
         Some _ -> changes := true
       | None ->
@@ -114,7 +101,7 @@ let public_all ~fast bname lim_year trace patched =
               let ifam = fama.(i) in
               let isp = Gutil.spouse ip (foi base ifam) in
               let sp = poi base isp in
-              let year_of_sp = year_of sp in
+              let year_of_sp = Gwaccess.oldest_year_of sp in
               let acc_opt =
                 match year_of_sp with
                   Some year ->
@@ -167,10 +154,9 @@ let usage = "Usage: " ^ Sys.argv.(0) ^ " [OPTION] base"
 let main () =
   Arg.parse speclist anonfun usage;
   if !bname = "" then begin Arg.usage speclist usage; exit 2 end;
+  Secure.set_base_dir (Filename.dirname !bname);
   Lock.control_retry
-    (Mutil.lock_file !bname)
-    ~onerror:Lock.print_error_and_exit @@
-  fun () ->
+    (Mutil.lock_file !bname) ~onerror:Lock.print_error_and_exit @@ fun () ->
   public_all ~fast:!fast !bname !lim_year !trace !patched
 
 let _ = main ()

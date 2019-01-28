@@ -1,6 +1,32 @@
 open Geneweb
 open Gwdb
 
+(** [oldest_year_of p]
+    Find a year in [[ birth ; baptism ; death ]].
+*)
+let oldest_year_of p =
+  let open Def in
+  match Adef.od_of_cdate (get_birth p) with
+  | Some (Dgreg (d, _)) -> Some d.year
+  | _ -> match Adef.od_of_cdate (get_baptism p) with
+    | Some (Dgreg (d, _)) -> Some d.year
+    | _ -> match CheckItem.date_of_death (get_death p) with
+      | Some (Dgreg (d, _)) -> Some d.year
+      | _ -> None
+
+(** [most_recent_year_of p]
+    Find a year in [[ death ; baptism ; birth ]].
+*)
+let most_recent_year_of p =
+  let open Def in
+  match CheckItem.date_of_death (get_death p) with
+  | Some (Dgreg (d, _)) -> Some d.year
+  | _ -> match Adef.od_of_cdate (get_baptism p) with
+    | Some (Dgreg (d, _)) -> Some d.year
+    | _ -> match Adef.od_of_cdate (get_birth p) with
+      | Some (Dgreg (d, _)) -> Some d.year
+      | _ -> None
+
 let input_person file =
   let pl = ref [] in
   begin match (try Some (open_in file) with Sys_error _ -> None) with

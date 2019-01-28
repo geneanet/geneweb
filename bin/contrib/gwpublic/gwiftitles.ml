@@ -2,7 +2,6 @@ open Geneweb
 open Def
 open Gwdb
 
-
 let private_everybody bname =
   let base = Gwdb.open_base bname in
   for i = 0 to nb_of_persons base - 1 do
@@ -12,7 +11,6 @@ let private_everybody bname =
       patch_person base p.key_index p
   done;
   commit_patches base
-
 
 let private_some bname key =
   let base = Gwdb.open_base bname in
@@ -48,13 +46,10 @@ let usage = "Usage: gwiftitles [-everybody] [-ind key] base"
 let main () =
   Arg.parse speclist anonfun usage;
   if !bname = "" then begin Arg.usage speclist usage; exit 2 end;
-  let gcc = Gc.get () in
-  gcc.Gc.max_overhead <- 100;
-  Gc.set gcc;
-  Lock.control_retry (Mutil.lock_file !bname)
-    ~onerror:Lock.print_error_and_exit
-    (fun () ->
-       if !everybody then private_everybody !bname
-       else private_some !bname !ind)
+  Secure.set_base_dir (Filename.dirname !bname);
+  Lock.control_retry
+    (Mutil.lock_file !bname) ~onerror:Lock.print_error_and_exit @@ fun () ->
+  if !everybody then private_everybody !bname
+  else private_some !bname !ind
 
 let _ = main ()

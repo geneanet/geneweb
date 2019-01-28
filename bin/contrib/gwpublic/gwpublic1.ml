@@ -8,38 +8,6 @@ open Gwdb
     generations by century for descendants).
 *)
 
-(**
-   If [NotDead], return [None].
-   Otherwise, try to find a year in [[ birth ; baptism ; death ]]
-   an return it.
-*)
-let oldest_year_of p =
-  match get_death p with
-  | NotDead -> None
-  | death -> match Adef.od_of_cdate (get_birth p) with
-    | Some (Dgreg (d, _)) -> Some d.year
-    | _ -> match Adef.od_of_cdate (get_baptism p) with
-      | Some (Dgreg (d, _)) -> Some d.year
-      | _ -> match CheckItem.date_of_death death with
-        | Some (Dgreg (d, _)) -> Some d.year
-        | _ -> None
-
-(**
-   If [NotDead], return [None].
-   Otherwise, try to find a year in [[ death ; baptism ; birth ]]
-   an return it.
-*)
-let most_recent_year_of p =
-  match get_death p with
-  | NotDead -> None
-  | death -> match CheckItem.date_of_death death with
-    | Some (Dgreg (d, _)) -> Some d.year
-    | _ -> match Adef.od_of_cdate (get_baptism p) with
-      | Some (Dgreg (d, _)) -> Some d.year
-      | _ -> match Adef.od_of_cdate (get_birth p) with
-        | Some (Dgreg (d, _)) -> Some d.year
-        | _ -> None
-
 let nb_gen_by_century = 3
 
 let changes = ref false
@@ -61,7 +29,7 @@ let mark_descendants base scanned old treshold =
     let i = Adef.int_of_iper p_key_index in
     if scanned.(i) < ndgen then begin
       (* If we did not already scanned with ndgen >= current ndgen *)
-      let ndgen = match most_recent_year_of p with
+      let ndgen = match Gwaccess.most_recent_year_of p with
         | Some y ->
           (* We have a date: we do not want to scan this person again with a higher ndgen *)
           scanned.(i) <- max_int ;
@@ -83,9 +51,9 @@ let mark_descendants base scanned old treshold =
                  let ndgen'' =
                    Opt.map_default ndgen
                      (compute_ndgen treshold)
-                     (most_recent_year_of (poi base sp))
+                     (Gwaccess.most_recent_year_of (poi base sp))
                  in
-                 if ndgen'' <> 0 then old.(i) <- true ;
+                 if ndgen'' > 0 then old.(i) <- true ;
                  Array.iter
                    (fun c -> loop (poi base c) (min ndgen' ndgen''))
                    (get_children fam)
@@ -101,7 +69,7 @@ let mark_ancestors base scanned treshold =
     let i = Adef.int_of_iper (get_key_index p) in
     if not scanned.(i) then begin
       scanned.(i) <- true ;
-      begin match oldest_year_of p with
+      begin match Gwaccess.oldest_year_of p with
         | Some y when y >= treshold ->
           Printf.eprintf "Problem of date ! %s %d\n" (Gutil.designation base p) y;
           flush stderr
@@ -124,17 +92,6 @@ let mark_ancestors base scanned treshold =
     end
   in
   loop
-
-let public_everybody ~mem bname =
-  let base = Gwdb.open_base bname in
-  if not mem then load_persons_array base ;
-  for i = 0 to nb_of_persons base - 1 do
-    let p = poi base (Adef.iper_of_int i) in
-    if get_access p <> Public then
-      let p = {(gen_person_of_person p) with access = Public} in
-      patch_person base p.key_index p
-  done;
-  commit_patches base
 
 let public_all ~mem bname treshold =
   let base = Gwdb.open_base bname in
@@ -226,6 +183,6 @@ let () =
   if !everybody then
     if !ind <> "" then failwith "-everybody and -ind options are mutually exclusive"
     else if !treshold <> 1900 then failwith "-everybody and -y options are mutually exclusive"
-    else public_everybody ~mem:!mem !bname
+    else Gwaccess.access_everybody Def.Public !bname
   else if !ind = "" then public_all ~mem:!mem !bname !treshold
   else public_some !bname !treshold !ind

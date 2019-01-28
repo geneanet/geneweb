@@ -2,17 +2,6 @@ open Geneweb
 open Def
 open Gwdb
 
-let year_of p =
-  match
-    Adef.od_of_cdate (get_birth p), Adef.od_of_cdate (get_baptism p),
-    get_death p, CheckItem.date_of_death (get_death p)
-  with
-    _, _, NotDead, _ -> None
-  | Some (Dgreg (d, _)), _, _, _ -> Some d.year
-  | _, Some (Dgreg (d, _)), _, _ -> Some d.year
-  | _, _, _, Some (Dgreg (d, _)) -> Some d.year
-  | _ -> None
-
 let find_dated_ancestor base p =
   let mark = Array.make (nb_of_persons base) false in
   let rec loop nb_gen iplist =
@@ -42,7 +31,7 @@ let find_dated_ancestor base p =
         function
           ip :: iplist ->
             let p = poi base ip in
-            begin match year_of p with
+            begin match Gwaccess.oldest_year_of p with
               Some year -> Some (p, year, nb_gen)
             | None -> loop_ind iplist
             end
@@ -97,8 +86,8 @@ let public_all bname lim_year trace =
     ProgrBar.run i n;
     let ip = Adef.iper_of_int i in
     let p = poi base ip in
-    if year_of p = None && get_access p = IfTitles then
-      match change_somebody_access base lim_year trace p (year_of p) with
+    if Gwaccess.oldest_year_of p = None && get_access p = IfTitles then
+      match change_somebody_access base lim_year trace p (Gwaccess.oldest_year_of p) with
         Some _ -> changes := true
       | None ->
           let fama = get_family p in
@@ -108,7 +97,7 @@ let public_all bname lim_year trace =
               let ifam = fama.(i) in
               let isp = Gutil.spouse ip (foi base ifam) in
               let sp = poi base isp in
-              let year_of_sp = year_of sp in
+              let year_of_sp = Gwaccess.oldest_year_of sp in
               let acc_opt =
                 match year_of_sp with
                   Some year ->
