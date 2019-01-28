@@ -25,19 +25,14 @@ remove: [
   [ make "uninstall" ]
 ]
 
-pin-depends: [
-  [ "piqilib.dev" "git://github.com/alavrik/piqi" ]
-  [ "piqi.dev" "git://github.com/alavrik/piqi-ocaml" ]
-]
-
 depends: [
   "camlp5" { build }
   "cppo" { build }
   "dune" { build>= "1.1.1" }
   "ocaml" { >= "4.05" }
   "ocurl" { = "0.8.1" }
-  "piqi" { = "dev" }
-  "piqilib" { = "dev" }
+  "piqi"
+  "piqilib"
   "redis"
   "redis-sync"
   "yojson"
