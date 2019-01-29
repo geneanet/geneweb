@@ -34,9 +34,9 @@ script:
     eval $(opam config env) ;
     opam pin add geneweb . --no-action ;
     opam install geneweb --deps-only ;
-    ./configure && make clean install uninstall clean ;
+    ./configure && make clean test install uninstall clean ;
     make clean distrib clean ;
-    ./configure --api && make clean install uninstall clean ;
+    ./configure --api && make clean test install uninstall clean ;
     opam depext lablgtk && opam install lablgtk && make clean everything-exe clean ;
 
 notifications:

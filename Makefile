@@ -232,6 +232,10 @@ doc: | piqi $(GENERATED_FILES_DEP)
 	dune build @doc
 .PHONY: doc
 
+test: install-exe
+	dune build @runtest
+.PHONY: test
+
 clean:
 	$(RM) $(GENERATED_FILES_DEP) lib/*_piqi*.ml
 	$(RM) -r distribution

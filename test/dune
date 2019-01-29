@@ -1,0 +1,6 @@
+(executable
+  (name test_utils)
+  (libraries geneweb oUnit)
+)
+
+(alias (name runtest) (action (run ./test_utils.exe) ) )
