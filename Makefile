@@ -142,6 +142,8 @@ geneweb.install:
 	dune build @install
 .PHONY: geneweb.install
 
+%.exe: | piqi $(GENERATED_FILES_DEP)
+	dune build $@
 install-exe:
 	dune build $(INSTALL_EXE:=.exe)
 exe:
