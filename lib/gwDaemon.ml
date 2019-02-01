@@ -1883,8 +1883,6 @@ let main ~speclist () =
       Print the failed passwords in log (except if option -digest is set) ") ::
     ("-nolock", Arg.Set Lock.no_lock_flag,
      "\n       Do not lock files before writing.") ::
-    ("-version", Arg.Unit Util.print_version_commit,
-     "\n       Print version and commit number.") ::
     (if Sys.unix then
        ( "-max_clients"
        , Arg.Int (fun x -> max_clients := Some x)

@@ -119,22 +119,12 @@ lib/gwlib.ml:
 	echo "  try Sys.getenv \"GWPREFIX\"" >> $@
 	echo "  with Not_found -> \"$(PREFIX)\"" | sed -e 's|\\|/|g' >> $@
 
-lib/compilation.ml:
-	echo "let scan_dmy s =" > $@
-	echo "let open Adef in" >> $@
-	echo "Scanf.sscanf s \"%d %d %d\" @@ fun day month year ->" >> $@
-	echo "Dgreg({day;month;year;prec=Sure;delta=0},Dgregorian)" >> $@
-	echo "let compilation_time = scan_dmy \"$$(date "+%d %m %Y")\"" >> $@
-	echo "let commit = \"$$(git show -s --pretty=format:%h)\"" >> $@
-	echo "let commit_date = scan_dmy \"$$(git show -s --pretty=format:%cd --date=format:'%d %m %Y')\"" >> $@
-.PHONY:lib/compilation.ml
-
 %/dune: %/dune.in
 	sed -e "s/%%%API%%%/$(API)/g" -e "s/%%%API_DEP%%%/$(API_DEP)/g" $< > $@
 
 ###### [End] Generated files section
 
-GENERATED_FILES_DEP = lib/gwlib.ml $(CAMLP5_FILES:=.ml) lib/dune lib/compilation.ml
+GENERATED_FILES_DEP = lib/gwlib.ml $(CAMLP5_FILES:=.ml) lib/dune
 
 ifdef API
 piqi:

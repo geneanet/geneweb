@@ -3557,10 +3557,6 @@ let rec rev_iter fn = function
   | [] -> ()
   | hd :: tl -> let () = rev_iter fn tl in fn hd
 
-let print_version_commit () =
-  Printf.eprintf "GeneWeb %s, commit %s\n" Version.txt Compilation.commit;
-  exit 0
-
 let groupby ~key ~value list =
   let h = Hashtbl.create (List.length list) in
   List.iter

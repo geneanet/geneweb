@@ -332,11 +332,6 @@ val filter_map : ('a -> 'b option) -> 'a list -> 'b list
 *)
 val rev_iter : ('a -> unit) -> 'a list -> unit
 
-(** [print_version_commit]
-    Print geneweb version and commit number on stdout and exit.
-*)
-val print_version_commit : unit -> unit
-
 (** [group_by ~key ~value list]
     Group the elements returning the same key together.
     Ordering of elements is unspecified.

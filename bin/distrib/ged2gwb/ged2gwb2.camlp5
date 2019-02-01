@@ -3116,8 +3116,6 @@ let speclist =
   ["-o", Arg.String (fun s -> out_file := s),
    "<file>\n       Output database (default: \"a\").";
    "-f", Arg.Set force, "\n       Remove database if already existing";
-   "-version", Arg.Unit Util.print_version_commit,
-   "\n       Print version and commit numbers";
    "-log", Arg.String (fun s -> log_oc := open_out s),
    "<file>\n       Redirect log trace to this file.";
    "-lf", Arg.Set lowercase_first_names,

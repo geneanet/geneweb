@@ -7,9 +7,7 @@ open Gwdb
 let fname = ref ""
 
 let errmsg = "usage: " ^ Sys.argv.(0) ^ " [options] <file_name>"
-let speclist = [
-   "-version", Arg.Unit Util.print_version_commit, " print version and commit numbers"
-]
+let speclist = []
 let anonfun s =
   if !fname = "" then fname := s
   else raise (Arg.Bad "Cannot treat several databases")

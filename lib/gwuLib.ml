@@ -1905,8 +1905,6 @@ module Make (Select : Select) =
        "-odir", Arg.String (fun s -> out_dir := s),
        "<dir>  create files from original name in directory (else on -o file)";
        "-mem", Arg.Set mem, "        save memory space, but slower";
-       "-version", Arg.Unit Util.print_version_commit,
-       ": Print version and commit numbers";
        "-a", Arg.String (fun s -> anc_1st := s; arg_state := ASwaitAncOcc),
        "\"<1st_name>\" [num] \"<surname>\" : select ancestors of...";
        "-d", Arg.String (fun s -> desc_1st := s; arg_state := ASwaitDescOcc),

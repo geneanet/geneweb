@@ -116,7 +116,6 @@ let speclist =
    "-nopicture", Arg.Set Gwcomp.no_picture,
    " do not create associative pictures";
    "-q", Arg.Clear Mutil.verbose, " no verbose";
-   "-version", Arg.Unit Util.print_version_commit, " print version and commit numbers";
    "-v", Arg.Set Mutil.verbose, " verbose"]
 
 let anonfun x =

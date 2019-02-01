@@ -17,8 +17,6 @@ let speclist =
    "-i", Arg.Set indexes, ": build the indexes again";
    "-t", Arg.Int (fun i -> tlim := i), " <int>: time limit in seconds";
    "-scratch", Arg.Set scratch, ": from scratch";
-   "-version", Arg.Unit Util.print_version_commit,
-   ": Print version and commit numbers";
    "-mem", Arg.Set Outbase.save_mem,
    ": Save memory, but slower when rewritting database";
    "-nolock", Arg.Set Lock.no_lock_flag, ": do not lock database."]
