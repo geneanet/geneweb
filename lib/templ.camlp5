@@ -705,9 +705,6 @@ and eval_simple_variable conf =
     "action" -> conf.command
   | "border" -> string_of_int conf.border
   | "charset" -> conf.charset
-  | "compilation_time" -> Date.string_of_date conf Compilation.compilation_time
-  | "commit" -> Compilation.commit
-  | "commit_date" -> Date.string_of_date conf Compilation.commit_date
   | "connections" ->
       begin match conf.n_connect with
         Some (c, cw, cf, _) ->
