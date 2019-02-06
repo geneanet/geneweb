@@ -28,11 +28,50 @@ let mutil_start_with _ =
 ; assert_bool "Mutil.start_with \"\" 0 \"foo\""
     (Mutil.start_with "" 0 "foo")
 
+let mutil_arabian_romian _ =
+  let test a r =
+    assert_equal a (Mutil.arabian_of_roman r) ;
+    assert_equal r (Mutil.roman_of_arabian a)
+  in
+  test 39 "XXXIX" ;
+  test 246 "CCXLVI" ;
+  test 421 "CDXXI" ;
+  test 160 "CLX" ;
+  test 207 "CCVII" ;
+  test 1066 "MLXVI"
+
+let mutil_compare_after_particle _ =
+  let particles =
+    [ "da " ; "dal " ; "de la " ; "de " ; "del " ; "della " ; "des " ; "du "
+    ; "d'" ; "van " ; "von " ]
+  in
+  let test a b =
+    let test exp a b =
+      let cmp = Mutil.compare_after_particle particles in
+      let assert_equal =
+        assert_equal ~printer:(fun i -> Printf.sprintf "%i (%s / %s)" i a b)
+      in
+      assert_equal exp (cmp a b)
+    in
+    test (-1) a b ;
+    test 1 b a ;
+    test 0 a a ;
+    test 0 b b
+  in
+  test "de la fontaine" "de musset" ;
+  test "de sade" "de sévigné" ;
+  test "de lattre de tassigny" "de montgolfier" ;
+  test "des cars" "du guesclin" ;
+  test "d'aboville" "d'artagnan" ;
+  test "descartes" "dupont"
+
 let _ =
   "Geneweb utils" >:::
   [ "Mutil" >:::
     [ "mutil_contains" >:: mutil_contains
     ; "mutil_start_with" >:: mutil_start_with
+    ; "mutil_arabian_romian" >:: mutil_arabian_romian
+    ; "mutil_compare_after_particle" >:: mutil_compare_after_particle
     ]
   ]
   |> run_test_tt_main
