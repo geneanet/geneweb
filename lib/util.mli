@@ -347,8 +347,15 @@ val groupby : key:('a -> 'k) -> value:('a -> 'v) -> 'a list -> ('k * 'v list) li
  *)
 val str_replace : ?unsafe:bool -> char -> by:char -> string -> string
 
+(** [str_nth_pos str n]
+    Return a position of the byte starting the [n]-th UTF8 character.
+ *)
+val str_nth_pos : string -> int -> int
+
 (** [str_sub ?pad s start len]
     Return a fresh UTF8-friendly substring of [len] characters, padded if needed.
+    Be careful [start] is the index of the byte where to start in [s],
+    not the [start-th] UTF8-character.
 *)
 val str_sub : ?pad:char -> string -> int -> int -> string
 

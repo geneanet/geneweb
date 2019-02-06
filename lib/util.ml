@@ -3579,6 +3579,15 @@ let str_replace ?(unsafe = false) c ~by str =
     done ;
     Bytes.(if unsafe then unsafe_to_string else to_string) bytes
 
+let str_nth_pos str nth =
+  let strlen = String.length str in
+  let rec loop n i =
+    if n = nth then i
+    else if i >= strlen then raise (Invalid_argument "str_sub")
+    else loop (n + 1) (index_of_next_char str i)
+  in
+  loop 0 0
+
 let str_sub ?pad str start len =
   let strlen = String.length str in
   let n, i =

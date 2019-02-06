@@ -65,6 +65,22 @@ let mutil_compare_after_particle _ =
   test "d'aboville" "d'artagnan" ;
   test "descartes" "dupont"
 
+let util_str_sub _ =
+  let test ?pad e s i j =
+    let i = Util.str_nth_pos s i in
+    assert_equal e ~printer:(fun x -> x) (Util.str_sub ?pad s i j)
+  in
+  test "日" "日本語" 0 1 ;
+  test "日本語" "日本語" 0 3 ;
+  test "語" "日本語" 2 1 ;
+  test "ε" "ελληνικά" 0 1 ;
+  test "ελληνικά" "ελληνικά" 0 8 ;
+  test "λ" "ελληνικά" 1 1 ;
+  test "ά" "ελληνικά" 7 1 ;
+  test "š" "švédčina" 0 1 ;
+  test "švédčina" "švédčina" 0 8 ;
+  test "a" "švédčina" 7 1
+
 let _ =
   "Geneweb utils" >:::
   [ "Mutil" >:::
@@ -72,6 +88,7 @@ let _ =
     ; "mutil_start_with" >:: mutil_start_with
     ; "mutil_arabian_romian" >:: mutil_arabian_romian
     ; "mutil_compare_after_particle" >:: mutil_compare_after_particle
+    ; "util_str_sub" >:: util_str_sub
     ]
   ]
   |> run_test_tt_main
