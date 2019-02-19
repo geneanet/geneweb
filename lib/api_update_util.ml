@@ -610,7 +610,7 @@ let child_of_parent conf base p =
       let is = index_of_sex (get_sex p) in
       translate_eval
         (transl_a_of_gr_eq_gen_lev conf
-           (transl_nth conf "son/daughter/child" is) s)
+           (transl_nth conf "son/daughter/child" is) s s)
 
 let husband_wife conf base p =
   let rec loop i =

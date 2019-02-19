@@ -741,8 +741,8 @@ let print_link_name conf base n p1 p2 sol =
     else if x2 < x1 then
       let s =
         let info = (info, x1), (fun r -> r.Consang.lens1) in
-        transl_a_of_gr_eq_gen_lev conf (brother_label conf x2 (get_sex p2))
-          (ancestor_label conf base info (x1 - x2) Neuter)
+        let s = ancestor_label conf base info (x1 - x2) Neuter in
+        transl_a_of_gr_eq_gen_lev conf (brother_label conf x2 (get_sex p2)) s s
       in
       s, sp1, sp2
     else
@@ -758,22 +758,22 @@ let print_link_name conf base n p1 p2 sol =
               [ip2] -> if get_sex (pget conf base ip2) = Male then sm else sf
             | _ -> sm
         in
-        transl_a_of_gr_eq_gen_lev conf d s
+        transl_a_of_gr_eq_gen_lev conf d s s
       in
       s, sp1, sp2
   in
   let s =
     if sp2 then
       transl_a_of_gr_eq_gen_lev conf
-        (transl_nth conf "the spouse" (index_of_sex (get_sex p2))) s
+        (transl_nth conf "the spouse" (index_of_sex (get_sex p2))) s s
     else s
   in
   let s =
     if sp1 then
       match pp1 with
         Some pp1 ->
-          transl_a_of_gr_eq_gen_lev conf s
-            (transl_nth conf "the spouse" (index_of_sex (get_sex pp1)))
+        let s' = transl_nth conf "the spouse" (index_of_sex (get_sex pp1)) in
+        transl_a_of_gr_eq_gen_lev conf s s' s'
       | None -> s
     else s
   in
@@ -783,8 +783,8 @@ let print_link_name conf base n p1 p2 sol =
     else gen_person_title_text no_reference raw_access conf base p1
   in
   let s =
-    if x2 < x1 then transl_a_of_b conf s1 s2
-    else transl_a_of_gr_eq_gen_lev conf s1 s2
+    if x2 < x1 then transl_a_of_b conf s1 s2 s2
+    else transl_a_of_gr_eq_gen_lev conf s1 s2 s2
   in
   Wserver.printf "%s.\n" (Util.translate_eval s)
 
@@ -910,12 +910,12 @@ let print_solution_not_ancestor conf base long p1 p2 sol =
       let s = gen_person_title_text no_reference raw_access conf base p in
       let s =
         match pp with
-          None -> transl_a_of_b conf alab s
+          None -> transl_a_of_b conf alab s s
         | Some pp ->
             transl_a_of_gr_eq_gen_lev conf
-              (transl_a_of_b conf alab
-                 (transl_nth conf "the spouse" (index_of_sex (get_sex pp))))
-              s
+              (let s = transl_nth conf "the spouse" (index_of_sex (get_sex pp)) in
+               transl_a_of_b conf alab s s)
+              s s
       in
       Wserver.printf "%s\n" (Util.translate_eval s)
     in
@@ -1071,10 +1071,10 @@ let print_propose_upto conf base p1 p2 rl =
         (Util.image_prefix conf) "picto_fleche_bleu.png" conf.xhs;
       Wserver.printf "<span class=\"smaller\">";
       Wserver.printf "%s"
-        (capitale
+        (let s = person_title_text conf base p in
+         capitale
            (translate_eval
-              (transl_a_of_b conf (transl conf "ancestors")
-                 (person_title_text conf base p))));
+              (transl_a_of_b conf (transl conf "ancestors") s s)));
       Wserver.printf " %s"
         (transl_decline conf "up to" (person_title_text conf base a));
       Wserver.printf "\n&nbsp;";

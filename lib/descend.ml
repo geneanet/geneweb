@@ -37,11 +37,11 @@ let text_level conf =
         (transl_nth conf "nth (generation)" i)
 
 let descendants_title conf base p h =
-  let txt_fun = if h then gen_person_text_no_html else gen_person_text in
+  let s1 = gen_person_text raw_access conf base p in
+  let s2 = if h then gen_person_text_no_html raw_access conf base p else s1 in
   let s =
     translate_eval
-      (transl_a_of_gr_eq_gen_lev conf (transl conf "descendants")
-         (txt_fun raw_access conf base p))
+      (transl_a_of_gr_eq_gen_lev conf (transl conf "descendants") s1 s2)
   in
   Wserver.printf "%s" (capitale s)
 
@@ -389,8 +389,9 @@ let display_descendants_with_numbers conf base max_level ancestor =
          string_of_int (Adef.int_of_iper (get_key_index ancestor)) ^ "&v=" ^
          string_of_int max_level ^ "&t=G")
         (capitale
-           (transl_a_of_gr_eq_gen_lev conf (transl conf "descendants")
-              (person_text conf base ancestor)))
+           (let s1 = person_text conf base ancestor in
+            let s2 = person_text_no_html conf base ancestor in
+            transl_a_of_gr_eq_gen_lev conf (transl conf "descendants") s1 s2))
   in
   let marks = Array.make (nb_of_persons base) false in
   let paths = Array.make (nb_of_persons base) [] in
@@ -1305,8 +1306,8 @@ let print_tree conf base v p =
   let gv = min (limit_by_tree conf) v in
   let page_title =
     translate_eval
-      (transl_a_of_gr_eq_gen_lev conf (transl conf "descendants")
-         (person_text_no_html conf base p))
+      (let s = person_text_no_html conf base p in
+       transl_a_of_gr_eq_gen_lev conf (transl conf "descendants") s s)
   in
   let hts = make_tree_hts conf base gv p in
   Dag.print_slices_menu_or_dag_page conf page_title hts ""

@@ -5851,10 +5851,10 @@ let eval_predefined_apply conf env f vl =
       vl
   in
   match f, vl with
-    "a_of_b", [s1; s2] -> Util.translate_eval (transl_a_of_b conf s1 s2)
-  | "a_of_b2", [s1; s2; s3] -> Util.translate_eval (transl_a_of_b2 conf s1 s2 s3)
+    "a_of_b", [s1; s2] -> Util.translate_eval (transl_a_of_b conf s1 s2 s2)
+  | "a_of_b2", [s1; s2; s3] -> Util.translate_eval (transl_a_of_b conf s1 s2 s3)
   | "a_of_b_gr_eq_lev", [s1; s2] ->
-      Util.translate_eval (transl_a_of_gr_eq_gen_lev conf s1 s2)
+      Util.translate_eval (transl_a_of_gr_eq_gen_lev conf s1 s2 s2)
   | "add_in_sorted_list", sl ->
       begin match get_env "list" env with
         Vslist l -> l := SortedList.add sl !l; ""

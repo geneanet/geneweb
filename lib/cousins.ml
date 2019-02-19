@@ -194,9 +194,10 @@ let rec print_descend_upto conf base max_cnt ini_p ini_br lev children =
                      end
                    else
                      let s =
+                       let s = person_title_text conf base p in
                        transl_a_of_gr_eq_gen_lev conf
                          (transl_nth conf "child/children" 1)
-                         (person_title_text conf base p)
+                         s s
                      in
                      Wserver.printf "%s%s%s%s\n" (capitale (Util.translate_eval s)) with_sp
                        (Util.transl conf ":") (if with_sp = "" then "<br>" else "")
@@ -288,36 +289,26 @@ let include_templ conf name =
 
 let print_cousins conf base p lev1 lev2 =
   let title h =
-    let txt_fun = if h then gen_person_text_no_html else gen_person_text in
+    let txt_fun a =
+      let txt = gen_person_text raw_access conf base p in
+      transl_a_of_gr_eq_gen_lev conf a
+        (if h then gen_person_text_no_html raw_access conf base p else txt)
+        txt
+    in
     if lev1 = lev2 then
-      let s =
-        transl_a_of_gr_eq_gen_lev conf (brother_label conf lev1)
-          (txt_fun raw_access conf base p)
-      in
+      let s = txt_fun (brother_label conf lev1) in
       Wserver.printf "%s" (capitale (Util.translate_eval s))
     else if lev1 = 2 && lev2 = 1 then
-      let s =
-        transl_a_of_gr_eq_gen_lev conf 
-          (transl_nth conf "an uncle/an aunt" 4) (txt_fun raw_access conf base p)
-      in
+      let s = txt_fun (transl_nth conf "an uncle/an aunt" 4) in
       Wserver.printf "%s" (capitale (Util.translate_eval s))
     else if lev1 = 3 && lev2 = 1 then
-      let s =
-        transl_a_of_gr_eq_gen_lev conf 
-          (transl_nth conf "a great-uncle/a great-aunt" 4) (txt_fun raw_access conf base p)
-      in
+      let s = txt_fun (transl_nth conf "a great-uncle/a great-aunt" 4) in
       Wserver.printf "%s" (capitale (Util.translate_eval s))
     else if lev1 = 1 && lev2 = 2 then
-      let s =
-        transl_a_of_gr_eq_gen_lev conf (transl_nth conf "a nephew/a niece" 4)
-          (txt_fun raw_access conf base p)
-      in
+      let s = txt_fun (transl_nth conf "a nephew/a niece" 4) in
       Wserver.printf "%s" (capitale (Util.translate_eval s))
     else if lev1 = 1 && lev2 = 3 then
-      let s =
-        transl_a_of_gr_eq_gen_lev conf
-          (transl_nth conf "a great-nephew/a great-niece" 4) (txt_fun raw_access conf base p)
-      in
+      let s = txt_fun (transl_nth conf "a great-nephew/a great-niece" 4) in
       Wserver.printf "%s" (capitale (Util.translate_eval s))
     else
       Wserver.printf "%s %d / %s %d" (capitale (transl conf "ancestors")) lev1

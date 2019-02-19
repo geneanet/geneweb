@@ -623,10 +623,14 @@ let print_merged conf base wl p =
       Wserver.printf "<a href=%sm=MRG_DUP&ip=%d%s%s>" (commd conf) ip s1 s2;
       Wserver.printf "%s" (capitale (transl conf "continue merging"));
       Wserver.printf "</a>";
-      Wserver.printf "\n(%s)\n"
-        (Util.transl_a_of_b conf (transl conf "possible duplications")
-           (referenced_person_text conf base
-              (poi base (Adef.iper_of_int ip))));
+      begin
+        let p =  poi base (Adef.iper_of_int ip) in
+        let s = person_text conf base p in
+        Wserver.printf "\n(%s)\n"
+          (Util.transl_a_of_b conf
+             (transl conf "possible duplications")
+             (reference conf base p s) s)
+      end ;
       Wserver.printf "</p>\n"
   | _ -> ()
   end;

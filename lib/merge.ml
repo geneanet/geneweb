@@ -107,17 +107,19 @@ let print_possible_continue_merging conf base =
           if s1 <> "" || s2 <> "" then
             begin
               Wserver.printf "<p>\n";
+              Wserver.printf "<a href=%sm=MRG_DUP&ip=%d%s%s>" (commd conf)
+                ip s1 s2;
+              Wserver.printf "%s"
+                (capitale (transl conf "continue merging"));
+              Wserver.printf "</a>" ;
               begin
-                Wserver.printf "<a href=%sm=MRG_DUP&ip=%d%s%s>" (commd conf)
-                  ip s1 s2;
-                Wserver.printf "%s"
-                  (capitale (transl conf "continue merging"));
-                Wserver.printf "</a>"
+                let p = poi base (Adef.iper_of_int ip) in
+                let s = person_text conf base p in
+                Wserver.printf "\n(%s)\n"
+                  (transl_a_of_b conf
+                     (transl conf "possible duplications")
+                     (reference conf base p s) s)
               end;
-              Wserver.printf "\n(%s)\n"
-                (transl_a_of_b conf (transl conf "possible duplications")
-                   (referenced_person_text conf base
-                      (poi base (Adef.iper_of_int ip))));
               Wserver.printf "</p>\n"
             end
       | None -> ()

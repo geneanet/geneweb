@@ -174,7 +174,7 @@ let plus_decl s =
       else None
   | None -> None
 
-let gen_decline wt s =
+let gen_decline_basic wt s =
   let s1 = if s = "" then "" else if wt = "" then s else " " ^ s in
   let len = String.length wt in
   if String.rindex_opt wt '/' <> None then
@@ -193,9 +193,9 @@ let gen_decline wt s =
         if s = "" then start else Mutil.decline 'n' s ^ " " ^ start
     | _ -> wt ^ Mutil.decline 'n' s1
 
-let transl_decline conf w s = Translate.eval (gen_decline (transl conf w) s)
+let transl_decline conf w s = Translate.eval (gen_decline_basic (transl conf w) s)
 
-let gen_decline2 wt s1 s2 alt =
+let gen_decline wt s1 s2 s2_raw =
   let string_of =
     function
       '1' -> Some s1
@@ -227,7 +227,7 @@ let gen_decline2 wt s1 s2 alt =
                 match string_of wt.[j+2] with
                   Some s ->
                     let s =
-                      if alt then String.sub wt (k+1) (j-k-1) ^ s (* [aa|bb]  *)
+                      if start_with_vowel s2_raw then String.sub wt (k+1) (j-k-1) ^ s (* [aa|bb]  *)
                       else String.sub wt (i + 1) (k-i-1) ^ s      (* i  k  j  *)
                     in
                     s, j + 2
@@ -241,12 +241,10 @@ let gen_decline2 wt s1 s2 alt =
   in
   loop 0
 
-let transl_a_of_b conf x y =
-  gen_decline2 (transl_nth conf "%1 of %2" 0) x y (start_with_vowel y)
-let transl_a_of_b2 conf x y1 y2 =
-  gen_decline2 (transl_nth conf "%1 of %2" 0) x y1 (start_with_vowel y2)
-let transl_a_of_gr_eq_gen_lev conf x y =
-  gen_decline2 (transl_nth conf "%1 of %2" 1) x y (start_with_vowel y)
+let transl_a_of_b conf x y1 y2 =
+  gen_decline (transl_nth conf "%1 of %2" 0) x y1 y2
+let transl_a_of_gr_eq_gen_lev conf x y1 y2 =
+  gen_decline (transl_nth conf "%1 of %2" 1) x y1 y2
 
 let check_format ini_fmt (r : string) =
   let s = string_of_format ini_fmt in
@@ -295,7 +293,7 @@ let ftransl conf s = valid_format s (transl conf (string_of_format s))
 let ftransl_nth conf s p =
   valid_format s (transl_nth conf (string_of_format s) p)
 
-let fdecline w s = valid_format w (gen_decline (string_of_format w) s)
+let fdecline w s = valid_format w (gen_decline_basic (string_of_format w) s)
 
 let translate_eval s = Translate.eval (Mutil.nominative s)
 
@@ -2057,7 +2055,7 @@ let child_of_parent conf base p =
       let is = index_of_sex (get_sex p) in
       translate_eval
         (transl_a_of_gr_eq_gen_lev conf
-           (transl_nth conf "son/daughter/child" is) s)
+           (transl_nth conf "son/daughter/child" is) s s)
 
 
 (* ************************************************************************** *)
@@ -2142,7 +2140,7 @@ let first_child conf base p =
             gen_person_text (p_first_name, (fun _ _ -> "")) conf base enfant
         in
         translate_eval
-          (transl_a_of_b conf (transl_nth conf "father/mother" is) child)
+          (transl_a_of_b conf (transl_nth conf "father/mother" is) child child)
       else loop (i + 1)
     else ""
   in

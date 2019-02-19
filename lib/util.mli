@@ -158,17 +158,21 @@ val valid_format : ('a, 'b) format2 -> string -> ('a, 'b) format2
 val transl : config -> string -> string
 val transl_nth : config -> string -> int -> string
 val transl_decline : config -> string -> string -> string
-val transl_a_of_b : config -> string -> string -> string
-val transl_a_of_b2 : config -> string -> string -> string -> string
-val transl_a_of_gr_eq_gen_lev : config -> string -> string -> string
 val ftransl : config -> ('a, 'b) format2 -> ('a, 'b) format2
 val ftransl_nth : config -> ('a, 'b) format2 -> int -> ('a, 'b) format2
 val fdecline : ('a, 'b) format2 -> string -> ('a, 'b) format2
 val fcapitale : ('a, 'b) format2 -> ('a, 'b) format2
 val nth_field : string -> int -> string
-
 val cftransl : config -> string -> string list -> string
 val translate_eval : string -> string
+
+(** [transl_a_of_b conf a b b_raw]
+    Translate "a of b" using [b_raw] for declension.
+    i.e. if [b] is wrapped in html, [b_raw] should be that texte with no html,
+    and [b_raw] should be [b] otherwise.
+*)
+val transl_a_of_b : config -> string -> string -> string -> string
+val transl_a_of_gr_eq_gen_lev : config -> string -> string -> string -> string
 
 val std_color : config -> string -> string
 

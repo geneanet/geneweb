@@ -102,8 +102,10 @@ let print_change conf base p =
   Perso.interp_notempl_with_menu title "perso_header" conf base p;
   Wserver.printf "<h2>";
     title false;
-  Wserver.printf "%s" (Util.transl_a_of_b conf ""
-    (reference conf base p (person_text conf base p)));
+  begin
+    let s = person_text conf base p in
+    Wserver.printf "%s" (Util.transl_a_of_b conf "" (reference conf base p s) s)
+  end ;
   Wserver.printf " %s" (Date.short_dates_text conf base p);
   Wserver.printf "</h2>\n";
   Wserver.printf "<form method=\"post\" action=\"%s\">\n" conf.command;
