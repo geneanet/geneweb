@@ -654,7 +654,7 @@ let print_several_possible_surnames x conf base (_, homonymes) =
     (if List.length homonymes = 1 then code_varenv x ^ "&t=A"
      else code_varenv fx)
     (transl conf "here");
-  Wserver.printf "%s" (transl conf "for the first names by Gutil.alphabetic order");
+  Wserver.printf "%s" (transl conf "for the first names by alphabetic order");
   Wserver.printf ".</em>\n";
   Wserver.printf "</p>\n";
   Hutil.trailer conf
