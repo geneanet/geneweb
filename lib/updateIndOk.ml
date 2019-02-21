@@ -992,7 +992,7 @@ let effective_add conf base sp =
     (fun v -> let v = int_of_string v + 1 in string_of_int v);
   let created_p = ref [] in
   let np =
-    Futil.map_person_ps (Update.insert_person conf base sp.psources created_p)
+    Futil.map_person_ps (Update.insert_person conf base "" created_p)
       (Gwdb.insert_string base) {sp with key_index = pi}
   in
   patch_person base pi np;
