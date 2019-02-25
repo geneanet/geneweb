@@ -577,7 +577,7 @@ let authorized_age conf base p =
       && nobtit conf base p <> [])
   || begin
     let death = get_death p in
-    if death = NotDead then conf.private_years = 0
+    if death = NotDead then conf.private_years < 1
     else
       let check_date none = function
         | Some (Dgreg (d, _)) ->
