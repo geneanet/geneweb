@@ -54,7 +54,7 @@ let read_wizard_notes fname =
   | None -> "", 0.
 
 let write_wizard_notes fname nn =
-  if nn = "" then try Sys.remove fname with Sys_error _ -> ()
+  if nn = "" then Util.rm fname
   else
     match try Some (Secure.open_out fname) with Sys_error _ -> None with
       Some oc ->

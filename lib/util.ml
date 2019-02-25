@@ -5,6 +5,9 @@ open Config
 open Def
 open Gwdb
 
+let rm fname =
+  if Sys.file_exists fname then Sys.remove fname
+
 let is_hide_names conf p =
   if conf.hide_names || get_access p = Private then true else false
 
@@ -2427,8 +2430,8 @@ let write_default_sosa conf key =
   List.iter (fun (k, v) -> Pervasives.output_string oc (k ^ "=" ^ v ^ "\n"))
     gwf;
   close_out oc;
-  (try Sys.remove (fname ^ "~") with Sys_error _ -> ());
-  (try Sys.rename fname (fname ^ "~") with Sys_error _ -> ());
+  rm (fname ^ "~") ;
+  Sys.rename fname (fname ^ "~") ;
   try Sys.rename tmp_fname fname with Sys_error _ -> ()
 
 let update_gwf_sosa conf base (ip, (fn, sn, occ)) =

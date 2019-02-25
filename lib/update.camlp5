@@ -262,15 +262,15 @@ let update_misc_names_of_family base p_sex u =
 let delete_topological_sort_v conf _base =
   let bfile = Util.base_path [] (conf.bname ^ ".gwb") in
   let tstab_file = Filename.concat bfile "tstab_visitor" in
-  (try Sys.remove tstab_file with Sys_error _ -> ());
+  Util.rm tstab_file ;
   let tstab_file = Filename.concat bfile "restrict" in
-  try Sys.remove tstab_file with Sys_error _ -> ()
+  Util.rm tstab_file
 
 let delete_topological_sort conf base =
   let _ = delete_topological_sort_v conf base in
   let bfile = Util.base_path [] (conf.bname ^ ".gwb") in
   let tstab_file = Filename.concat bfile "tstab" in
-  try Sys.remove tstab_file with Sys_error _ -> ()
+  Util.rm tstab_file
 
 let print_someone _conf base p =
   Wserver.printf "%s%s %s" (p_first_name base p)

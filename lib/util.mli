@@ -372,3 +372,8 @@ val ls_r : string list -> string list
     Remove directory [dir] and everything inside [dir].
 *)
 val rm_rf : string -> unit
+
+(** [rm fname]
+    Remove [fname]. If [fname] does not exists, do nothing.
+*)
+val rm : string -> unit

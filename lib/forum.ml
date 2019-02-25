@@ -84,7 +84,7 @@ module MF : MF =
       | None -> ()
       end;
       close_out oc;
-      (try Sys.remove fname with Sys_error _ -> ());
+      Util.rm fname ;
       Sys.rename tmp fname
     let patch fname pos str =
       let fname =
@@ -110,7 +110,7 @@ module MF : MF =
           end;
           close_in ic;
           close_out oc;
-          (try Sys.remove fname with Sys_error _ -> ());
+          Util.rm fname ;
           Sys.rename tmp_fname fname
       | None -> ()
     let open_in fname =

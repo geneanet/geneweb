@@ -1129,6 +1129,8 @@ let comp_families x =
     in
     loop (read_line (ic, E_iso_8859_1)) E_iso_8859_1; close_in ic
   with e ->
-    close_out oc; (try Sys.remove out_file with Sys_error _ -> ()); raise e
+    close_out oc;
+    Util.rm out_file;
+    raise e
   end;
   close_out oc
