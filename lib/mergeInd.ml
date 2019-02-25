@@ -680,8 +680,8 @@ let print conf base =
   | Some p1, Some p2 ->
     begin
       try
-        let (_, warnings) = merge conf base p1 p2 propose_merge_ind in
-        print_merged conf base warnings p1
+        let (ok, warnings) = merge conf base p1 p2 propose_merge_ind in
+        if ok then print_merged conf base warnings p1
       with Error_loop p -> error_loop conf base p
          | Different_sexes -> different_sexes conf
          | Same_person -> same_person conf
