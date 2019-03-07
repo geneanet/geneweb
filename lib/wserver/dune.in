@@ -3,4 +3,5 @@
  (public_name geneweb.wserver)
  (wrapped false)
  (libraries unix)
+ (preprocess (action (run %{bin:cppo} %%%CGI%%% -V OCAML:%{ocaml_version} %{input-file})))
 )

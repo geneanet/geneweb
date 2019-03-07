@@ -36,6 +36,8 @@ script:
     opam install geneweb --deps-only ;
     ./configure && make clean test install uninstall distrib clean ;
     ./configure --api && make clean test install uninstall distrib clean ;
+    ./configure --cgi && make clean test install uninstall distrib clean ;
+    ./configure --api --cgi && make clean test install uninstall distrib clean ;
 
 notifications:
   email:

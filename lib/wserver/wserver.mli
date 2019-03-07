@@ -78,7 +78,6 @@ val stop_server : string ref
        that this file exits. Default "STOP_SERVER". Can have relative
        or absolute path. *)
 val noproc : bool ref
-val cgi : bool ref
 
 (* Example:
 

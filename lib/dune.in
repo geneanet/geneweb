@@ -2,7 +2,7 @@
  (name geneweb)
  (public_name geneweb)
  (synopsis "GeneWeb library")
- (preprocess (action (run %{bin:cppo} %%%API%%% -V OCAML:%{ocaml_version} %{input-file})))
+ (preprocess (action (run %{bin:cppo} %%%API%%% %%%CGI%%% -V OCAML:%{ocaml_version} %{input-file})))
  (libraries unix
             %%%API_DEP%%%
             str

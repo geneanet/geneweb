@@ -22,3 +22,4 @@ install:
 
 build_script:
   - '%CYG_BASH% "cd ${APPVEYOR_BUILD_FOLDER} && eval $(opam env) && ./configure && make clean test distrib clean"'
+  - '%CYG_BASH% "cd ${APPVEYOR_BUILD_FOLDER} && eval $(opam env) && ./configure --cgi && make clean test distrib clean"'

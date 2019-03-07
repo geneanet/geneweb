@@ -14,12 +14,15 @@ OS_TYPE=
 
 API=
 API_DEP=
+CGI=
 
 while [[ $# -ne 0 ]]; do
   case $1 in
     --api)
       API_DEP="piqirun.ext redis-sync yojson curl";
       API="-D API" ;;
+    --cgi)
+      API="-D CGI" ;;
     *)
       echo -e "\\x1b[33m[WARNING]\\x1b[0m Option $1 unknown and ignored.";;
   esac
@@ -87,6 +90,7 @@ print_tools() {
 print_vars() {
   echo "API=${API}"
   echo "API_DEP=${API_DEP}"
+  echo "CGI=${CGI}"
 }
 
 print_makefile() {

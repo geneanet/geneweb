@@ -60,7 +60,9 @@ type config =
     no_image : bool;
     no_note : bool;
     bname : string;
+#ifdef CGI
     cgi_passwd : string;
+#endif
     env : (string * string) list;
     mutable senv : (string * string) list;
     mutable henv : (string * string) list;
@@ -87,7 +89,4 @@ type config =
        command ^ "?m=IM&v=" in CGI mode
        "images" otherwise *)
     image_prefix : string;
-
-    (* if true, the base name is in the b argument of the query string: ?b=BASE&...
-       if false, the base name is the last element of the uri path: .../base?... *)
-    b_arg_for_basename : bool }
+}

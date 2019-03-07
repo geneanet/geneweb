@@ -120,11 +120,15 @@ lib/gwlib.ml:
 	echo "  with Not_found -> \"$(PREFIX)\"" | sed -e 's|\\|/|g' >> $@
 
 %/dune: %/dune.in
-	sed -e "s/%%%API%%%/$(API)/g" -e "s/%%%API_DEP%%%/$(API_DEP)/g" $< > $@
+	sed \
+	-e "s/%%%API%%%/$(API)/g" \
+	-e "s/%%%API_DEP%%%/$(API_DEP)/g" \
+	-e "s/%%%CGI%%%/$(CGI)/g" \
+	$< > $@
 
 ###### [End] Generated files section
 
-GENERATED_FILES_DEP = lib/gwlib.ml $(CAMLP5_FILES:=.ml) lib/dune
+GENERATED_FILES_DEP = lib/gwlib.ml $(CAMLP5_FILES:=.ml) lib/dune lib/wserver/dune
 
 ifdef API
 piqi:

@@ -266,10 +266,6 @@ let rec lexicon_translate conf base nomin strm first_c =
   in
   if upp then capitale r else r
 
-let browser_cannot_handle_passwords conf =
-  let user_agent = Wserver.extract_param "user-agent: " '/' conf.request in
-  String.lowercase_ascii user_agent = "konqueror"
-
 let get_variable strm =
   let rec loop len =
     match Stream.next strm with
@@ -306,7 +302,13 @@ let rec copy_from_stream conf base strm mode =
     function
       'N' -> not (if_expr (Stream.next strm))
     | 'a' -> conf.auth_file <> ""
-    | 'c' -> !(Wserver.cgi) || browser_cannot_handle_passwords conf
+    | 'c' ->
+#ifdef CGI
+       true
+#else
+      let user_agent = Wserver.extract_param "user-agent: " '/' conf.request in
+      String.lowercase_ascii user_agent = "konqueror"
+#endif
     | 'f' -> conf.friend
     | 'h' -> Sys.file_exists (History.file_name conf)
     | 'j' -> conf.just_friend_wizard

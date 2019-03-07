@@ -358,15 +358,18 @@ let html ?content_type conf =
     | None -> if conf.pure_xhtml then "application/xhtml+xml" else "text/html"
   in
   let charset = if conf.charset = "" then "utf-8" else conf.charset in
-  if not !(Wserver.cgi) then Wserver.header "Server: GeneWeb/%s" Version.txt;
+#ifndef CGI
+  Wserver.header "Server: GeneWeb/%s" Version.txt;
+#endif
   Wserver.header "Date: %s" (string_of_ctime conf);
   Wserver.header "Connection: close";
   Wserver.header "Content-type: %s; charset=%s" content_type charset
 
 let unauthorized conf auth_type =
   Wserver.http HttpStatus.Unauthorized;
-  if not !(Wserver.cgi) then
+#ifndef CGI
     Wserver.header "WWW-Authenticate: Basic realm=\"%s\"" auth_type;
+#endif
   Wserver.header "Content-type: text/html; charset=%s" conf.charset;
   Wserver.printf "<head><title>Access failed</title></head>\n";
   Wserver.printf "<body><h1>Access failed</h1>\n";
@@ -387,34 +390,38 @@ let commd_2 conf =
 
 
 let prefix_base conf =
-  if conf.b_arg_for_basename then conf.command ^ "?b=" ^ conf.bname ^ "&"
-  else conf.command ^ "?"
+#ifdef CGI
+  conf.command ^ "?b=" ^ conf.bname ^ "&"
+#else
+  conf.command ^ "?"
+#endif
 
 let prefix_base_2 conf =
-  if conf.b_arg_for_basename then
-    conf.command ^ "?b=" ^ conf.bname
-  else
-    conf.command ^ "?"
+#ifdef CGI
+  conf.command ^ "?b=" ^ conf.bname
+#else
+  conf.command ^ "?"
+#endif
 
 let prefix_base_password conf =
-  if conf.b_arg_for_basename then
-    if conf.cgi_passwd = "" then
-      conf.command ^ "?b=" ^ conf.bname ^ "&"
-    else
-      conf.command ^ "?b=" ^ conf.bname ^ "_" ^ conf.cgi_passwd ^ "&"
+#ifdef CGI
+  if conf.cgi_passwd = "" then
+    conf.command ^ "?b=" ^ conf.bname ^ "&"
   else
-    conf.command ^ "?"
-
+    conf.command ^ "?b=" ^ conf.bname ^ "_" ^ conf.cgi_passwd ^ "&"
+#else
+  conf.command ^ "?"
+#endif
 
 let prefix_base_password_2 conf =
-  if conf.b_arg_for_basename then
-    if conf.cgi_passwd = "" then
-      conf.command ^ "?b=" ^ conf.bname
-    else
-      conf.command ^ "?b=" ^ conf.bname ^ "_" ^ conf.cgi_passwd
+#ifdef CGI
+  if conf.cgi_passwd = "" then
+    conf.command ^ "?b=" ^ conf.bname
   else
-    conf.command ^ "?"
-
+    conf.command ^ "?b=" ^ conf.bname ^ "_" ^ conf.cgi_passwd
+#else
+  conf.command ^ "?"
+#endif
 
 let code_varenv = Wserver.encode
 let decode_varenv = Wserver.decode
@@ -1378,22 +1385,28 @@ let body_prop conf =
     | s -> " " ^ s
   with Not_found -> ""
 
+#ifdef CGI
+let get_server_string _ =
+  let server_name = try Sys.getenv "SERVER_NAME" with Not_found -> "" in
+  let server_port =
+    try Sys.getenv "SERVER_PORT" with Not_found | Failure _ -> "80"
+  in
+  if server_port = "80" then server_name
+  else server_name ^ ":" ^ server_port
+#else
 let get_server_string request =
-  if not !(Wserver.cgi) then Wserver.extract_param "host: " '\r' request
-  else
-    let server_name = try Sys.getenv "SERVER_NAME" with Not_found -> "" in
-    let server_port =
-      try Sys.getenv "SERVER_PORT" with Not_found | Failure _ -> "80"
-    in
-    if server_port = "80" then server_name
-    else server_name ^ ":" ^ server_port
+  Wserver.extract_param "host: " '\r' request
+#endif
 
+#ifdef CGI
+let get_request_string _ =
+  let script_name = try Sys.getenv "SCRIPT_NAME" with Not_found -> "" in
+  let query_string = try Sys.getenv "QUERY_STRING" with Not_found -> "" in
+  script_name ^ "?" ^ query_string
+#else
 let get_request_string request =
-  if not !(Wserver.cgi) then Wserver.extract_param "GET " ' ' request
-  else
-    let script_name = try Sys.getenv "SCRIPT_NAME" with Not_found -> "" in
-    let query_string = try Sys.getenv "QUERY_STRING" with Not_found -> "" in
-    script_name ^ "?" ^ query_string
+  Wserver.extract_param "GET " ' ' request
+#endif
 
 let url_no_index conf base =
   let scratch s = code_varenv (Name.lower (sou base s)) in
@@ -1484,8 +1497,11 @@ let url_no_index conf base =
          let sep = if s = "" then "" else "&" in x ^ "=" ^ v ^ sep ^ s)
       (("lang", conf.lang) :: env) ""
   in
-  if conf.b_arg_for_basename then addr ^ "?b=" ^ conf.bname ^ "&" ^ suff
-  else addr ^ "?" ^ suff
+#ifdef CGI
+  addr ^ "?b=" ^ conf.bname ^ "&" ^ suff
+#else
+  addr ^ "?" ^ suff
+#endif
 
 let message_to_wizard conf =
   if conf.wizard || conf.just_friend_wizard then

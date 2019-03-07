@@ -942,10 +942,13 @@ let loc_of_expr =
   | Aint (loc, _) -> loc
   | _ -> -1, -1
 
+(* FIXME: camlp5 seems to remove so comments in some cases, so we need to have duplicate code here. *)
+
+(* #ifdef CGI *)
 let templ_eval_var conf =
   function
     ["cancel_links"] -> VVbool conf.cancel_links
-  | ["cgi"] -> VVbool !(Wserver.cgi)
+  | ["cgi"] -> VVbool true
   | ["false"] -> VVbool false
   | ["has_referer"] ->
       (* deprecated since version 5.00 *)
@@ -958,6 +961,24 @@ let templ_eval_var conf =
   | ["wizard"] -> VVbool conf.wizard
   | ["is_printed_by_template"] -> VVbool conf.is_printed_by_template
   | _ -> raise Not_found
+(* #else *)
+let templ_eval_var conf =
+  function
+    ["cancel_links"] -> VVbool conf.cancel_links
+  | ["cgi"] -> VVbool false
+  | ["false"] -> VVbool false
+  | ["has_referer"] ->
+      (* deprecated since version 5.00 *)
+      VVbool (Wserver.extract_param "referer: " '\n' conf.request <> "")
+  | ["just_friend_wizard"] -> VVbool conf.just_friend_wizard
+  | ["friend"] -> VVbool conf.friend
+  | ["manitou"] -> VVbool conf.manitou
+  | ["supervisor"] -> VVbool conf.supervisor
+  | ["true"] -> VVbool true
+  | ["wizard"] -> VVbool conf.wizard
+  | ["is_printed_by_template"] -> VVbool conf.is_printed_by_template
+  | _ -> raise Not_found
+(* #endif *)
 
 let bool_of e =
   function
