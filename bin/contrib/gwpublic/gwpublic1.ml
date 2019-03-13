@@ -53,10 +53,12 @@ let mark_descendants base scanned old treshold =
                      (compute_ndgen treshold)
                      (Gwaccess.most_recent_year_of (poi base sp))
                  in
-                 if ndgen'' > 0 then old.(i) <- true ;
-                 Array.iter
-                   (fun c -> loop (poi base c) (min ndgen' ndgen''))
-                   (get_children fam)
+                 if ndgen'' > 0 then begin
+                   old.(i) <- true ;
+                   Array.iter
+                     (fun c -> loop (poi base c) (min ndgen' (max 0 (ndgen'' - 1))))
+                     (get_children fam)
+                 end
                end)
             (get_family p)
         end
