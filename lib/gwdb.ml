@@ -876,7 +876,8 @@ let gen_descend_of_descend des =
 (* Databases - common definitions *)
 
 type base =
-  { close_base : unit -> unit;
+  { bname : string
+  ; close_base : unit -> unit;
     empty_person : iper -> person;
     person_of_gen_person :
       (iper, istr) gen_person * ifam gen_ascend * ifam gen_union -> person;
@@ -1008,12 +1009,13 @@ module C_base :
 
 (* Database - implementation 1 *)
 
-let base1 base =
+let base1 bname base =
   let base_strings_of_first_name_or_surname s =
     List.map (fun s -> Istr s) (base.func.strings_of_fsname s)
   in
   let rec self =
-    {close_base = base.func.cleanup;
+    { bname
+    ; close_base = base.func.cleanup;
      empty_person =
        (fun ip ->
           Person
@@ -1164,7 +1166,7 @@ let base2 db2 =
     List.fold_left (fun istrl s -> Istr2New (db2, s) :: istrl) istrl sl
   in
   let rec self =
-    {close_base =
+    {bname="";close_base =
       (fun () ->
          Hashtbl.iter (fun (_f1, _f2, _f) ic -> close_in ic) db2.cache_chan);
      empty_person =
@@ -1384,7 +1386,7 @@ let open_base bname =
   in
   if Sys.file_exists (Filename.concat bname "base_d") then
     base2 (base_of_base2 bname)
-  else base1 (Database.opendb bname)
+  else base1 bname (Database.opendb bname)
 
 let close_base (b : base) = b.close_base ()
 let empty_person (b : base) = b.empty_person
@@ -1402,10 +1404,10 @@ let patch_person (b : base) ip p =
       let tm = Unix.localtime (Unix.time ()) in
       Log.with_file ~file:(Sys.getenv "LOG_PUBLIC") (fun oc ->
           Printf.fprintf oc
-            "%02d/%02d/%4d %02d:%02d:%02d %s %s %d -> Public\n"
+            "%02d/%02d/%4d %02d:%02d:%02d %s %s %s %d\n"
             tm.Unix.tm_mday (succ tm.Unix.tm_mon) (1900 + tm.Unix.tm_year)
             tm.Unix.tm_hour tm.Unix.tm_min tm.Unix.tm_sec
-            (sou b p.surname) (sou b p.first_name) (p.occ))
+            b.bname (sou b p.surname) (sou b p.first_name) (p.occ))
   end ;
   b.patch_person ip p
 let patch_ascend (b : base) = b.patch_ascend
@@ -1457,7 +1459,7 @@ let nobtit (b : base) = b.nobtit
 let p_first_name (b : base) = b.p_first_name
 let p_surname (b : base) = b.p_surname
 let date_of_last_change (b : base) = b.date_of_last_change ()
-let base_of_base1 = base1
+let base_of_base1 = base1 ""
 let apply_base1 (b : base) = b.apply_base1
 let apply_base2 (b : base) = b.apply_base2
 
