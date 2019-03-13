@@ -139,27 +139,20 @@ let public_all ~mem bname treshold =
 
 let public_some bname treshold key =
   let base = Gwdb.open_base bname in
-  match Gutil.person_ht_find_all base key with
-  | [ip] ->
-    let p = poi base ip in
-    let scanned = Array.make (nb_of_persons base) false in
-    let () = load_ascends_array base in
-    let () = load_couples_array base in
-    mark_ancestors base scanned treshold p;
-    let () = clear_ascends_array base in
-    let () = clear_couples_array base in
-    if !changes then commit_patches base
-  | _ ->
-    match Gutil.person_of_string_dot_key base key with
-    | Some ip ->
-      let p = poi base ip in
-      if get_access p <> Private then begin
-        let p = {(gen_person_of_person p) with access = Private} in
-        patch_person base p.key_index p
-      end ;
-      commit_patches base
-    | None ->
-      Printf.eprintf "Bad key %s\n" key; flush stderr; exit 2
+  let ip = match Gutil.person_ht_find_all base key with
+    | [ip] -> ip
+    | _ -> match Gutil.person_of_string_dot_key base key with
+      | Some ip -> ip
+      | None -> Printf.eprintf "Bad key %s\n" key; flush stderr; exit 2
+  in
+  let p = poi base ip in
+  let scanned = Array.make (nb_of_persons base) false in
+  let () = load_ascends_array base in
+  let () = load_couples_array base in
+  mark_ancestors base scanned treshold p;
+  let () = clear_ascends_array base in
+  let () = clear_couples_array base in
+  if !changes then commit_patches base
 
 let treshold = ref 1900
 let ind = ref ""
