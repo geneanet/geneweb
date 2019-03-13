@@ -1395,7 +1395,19 @@ let foi (b : base) = b.foi
 let sou (b : base) = b.sou
 let nb_of_persons (b : base) = b.nb_of_persons ()
 let nb_of_families (b : base) = b.nb_of_families ()
-let patch_person (b : base) = b.patch_person
+let patch_person (b : base) ip p =
+  if p.access = Public then begin
+    let op = poi b ip in
+    if get_access op <> Public then
+      let tm = Unix.localtime (Unix.time ()) in
+      Log.with_file ~file:(Sys.getenv "LOG_PUBLIC") (fun oc ->
+          Printf.fprintf oc
+            "%02d/%02d/%4d %02d:%02d:%02d %s %s %d -> Public\n"
+            tm.Unix.tm_mday (succ tm.Unix.tm_mon) (1900 + tm.Unix.tm_year)
+            tm.Unix.tm_hour tm.Unix.tm_min tm.Unix.tm_sec
+            (sou b p.surname) (sou b p.first_name) (p.occ))
+  end ;
+  b.patch_person ip p
 let patch_ascend (b : base) = b.patch_ascend
 let patch_union (b : base) = b.patch_union
 let patch_family (b : base) = b.patch_family
