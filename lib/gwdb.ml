@@ -1402,12 +1402,14 @@ let patch_person (b : base) ip p =
     let op = poi b ip in
     if get_access op <> Public then
       let tm = Unix.localtime (Unix.time ()) in
-      Log.with_file ~file:(Sys.getenv "LOG_PUBLIC") (fun oc ->
-          Printf.fprintf oc
-            "%02d/%02d/%4d %02d:%02d:%02d %s %s %s %d\n"
-            tm.Unix.tm_mday (succ tm.Unix.tm_mon) (1900 + tm.Unix.tm_year)
-            tm.Unix.tm_hour tm.Unix.tm_min tm.Unix.tm_sec
-            b.bname (sou b p.surname) (sou b p.first_name) (p.occ))
+      try
+        Log.with_file ~file:(Sys.getenv "LOG_PUBLIC") (fun oc ->
+            Printf.fprintf oc
+              "%02d/%02d/%4d %02d:%02d:%02d %s %s %s %d\n"
+              tm.Unix.tm_mday (succ tm.Unix.tm_mon) (1900 + tm.Unix.tm_year)
+              tm.Unix.tm_hour tm.Unix.tm_min tm.Unix.tm_sec
+              b.bname (sou b p.surname) (sou b p.first_name) (p.occ))
+      with Not_found -> ()
   end ;
   b.patch_person ip p
 let patch_ascend (b : base) = b.patch_ascend
