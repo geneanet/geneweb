@@ -3,7 +3,8 @@ open Def
 open Gwdb
 
 let suspend_with msg = ProgrBar.suspend (); msg () ; flush stdout
-let restart_with_fixed i n = Printf.printf "*** fixed\n"; flush stdout; ProgrBar.restart i n
+let restart_with_fixed i n = Printf.printf "\t\tfixed\n"; flush stdout; ProgrBar.restart i n
+let string_of_p base i = Gutil.designation base (poi base i)
 
 let check_keys ~verbosity1 ~verbosity2 base nb_ind fix =
   if verbosity1 then (Printf.printf "Check keys\n"; flush stdout);
@@ -27,16 +28,14 @@ let check_keys ~verbosity1 ~verbosity2 base nb_ind fix =
         let msg =
           if verbosity2
           then Some (fun () ->
-              Printf.printf
-                "*** key %s.%d %s is \"%s\"\n"
-                fn occ sn (Gutil.designation base (poi base ip2)) )
+              Printf.printf "\tkey %s.%d %s is \"%s\"\n" fn occ sn (string_of_p base ip2) )
           else None
         in
         patch ?msg base ip fn sn occ
       | None ->
         let msg =
           if verbosity2
-          then Some (fun () -> Printf.printf "*** key %s.%d %s = no anwser\n" fn occ sn)
+          then Some (fun () -> Printf.printf "\tkey %s.%d %s = no anwser\n" fn occ sn)
           else None
         in
         patch ?msg base ip fn sn occ
@@ -60,9 +59,7 @@ let check_families_parents ~verbosity1 base nb_fam =
           if not @@ Array.mem ifam (get_family (poi base ip)) then
             begin
               suspend_with (fun () ->
-                  Printf.printf
-                    "*** no family for : %s\n"
-                    (Gutil.designation base (poi base ip)) ) ;
+                  Printf.printf "\tno family for : %s\n" (string_of_p base ip) ) ;
               flush stdout ;
               ProgrBar.restart i nb_fam
             end
@@ -86,24 +83,25 @@ let check_families_children ~verbosity1 ~verbosity2 base nb_fam fix =
       for j = 0 to Array.length children - 1 do
         let ip = children.(j) in
         let a = poi base ip in
-        match get_parents a with
-        | Some ifam1 when ifam1 != ifam && verbosity1 ->
-          Printf.printf "*** bad parents : %s\n" (Gutil.designation base (poi base ip));
-          flush stdout
-        | None ->
+        let parents = get_parents a in
+        if parents = Some (Adef.ifam_of_int (-1)) || parents = None then begin
           if verbosity2 then begin
             ProgrBar.suspend ();
-            Printf.printf "*** no parents : %s in family\n    %s & %s\n"
-              (Gutil.designation base (poi base ip))
-              (let ip = get_father fam in Gutil.designation base (poi base ip))
-              (let ip = get_mother fam in Gutil.designation base (poi base ip));
+            Printf.printf "\tno parents: %s in family [%s & %s]\n"
+              (string_of_p base ip)
+              (string_of_p base @@ get_father fam)
+              (string_of_p base @@ get_mother fam);
             flush stdout
           end ;
-          patch_ascend base ip
-            {parents = Some ifam; consang = get_consang a};
+          patch_ascend base ip {parents = Some ifam; consang = get_consang a};
           incr fix ;
           if verbosity1 then ProgrBar.restart i nb_fam ;
-        | _ -> ()
+        end
+        else if parents <> Some ifam && verbosity1 then begin
+          (* FIXME: what to do here ? *)
+          Printf.printf "\tbad parents : %s\n" (string_of_p base ip);
+          flush stdout
+        end
       done
   done;
   if verbosity1 then ProgrBar.finish ()
@@ -122,9 +120,7 @@ let check_persons_parents ~verbosity1 ~verbosity2 base nb_ind fix =
     let fam = foi base ifam in
     if is_deleted_family fam then begin
       if verbosity2 then begin
-        Printf.printf
-          "*** parent family deleted: %s\n"
-          (Gutil.designation base (poi base ip)) ;
+        Printf.printf "\tparent family deleted: %s\n" (string_of_p base ip) ;
         flush stdout
       end ;
       patch_ascend base ip {parents = None; consang = Adef.fix (-1)};
@@ -135,8 +131,7 @@ let check_persons_parents ~verbosity1 ~verbosity2 base nb_ind fix =
       if not @@ Array.mem ip children then
         begin
           if verbosity2 then begin
-            Printf.printf "*** not in parent's family: %s\n"
-              (Gutil.designation base (poi base ip));
+            Printf.printf "\tnot in parent's family: %s\n" (string_of_p base ip);
             flush stdout
           end ;
           let children = Array.append children [| ip |] in
@@ -156,27 +151,29 @@ let check_persons_families ~verbosity1 ~verbosity2 base nb_ind fix =
     let ip = Adef.iper_of_int i in
     let u = poi base ip in
     let ifams = get_family u in
-    for j = 0 to Array.length ifams - 1 do
-      let ifam = ifams.(j) in
-      let cpl = foi base ifam in
-      if not @@ Array.mem ip (get_parent_array cpl) then
-        begin
-          if verbosity2 then
-            suspend_with (fun () ->
-                Printf.printf "*** not father or mother of hir family: %s\n"
-              (Gutil.designation base (poi base ip)) );
-          let ifams =
-            Array.append (Array.sub ifams 0 j)
-              (Array.sub ifams (j + 1) (Array.length ifams - j - 1))
-          in
-          patch_union base ip {family = ifams};
-          incr fix;
-          if verbosity2 then restart_with_fixed i nb_ind ;
-        end
-    done
+    let ifams' =
+      Array.of_list @@
+      Array.fold_right
+        (fun ifam acc ->
+           let cpl = foi base ifam in
+           if not @@ Array.mem ip (get_parent_array cpl) then
+             begin
+               if verbosity2 then
+                 suspend_with (fun () ->
+                     Printf.printf "\tRemoving ifam %d from [%s] unions\n"
+                       (Adef.int_of_ifam ifam)
+                       (string_of_p base ip));
+               incr fix ;
+               acc
+             end
+           else ifam :: acc)
+        ifams []
+    in
+    if ifams' <> ifams then patch_union base ip {family = ifams'} ;
   done;
   if verbosity1 then ProgrBar.finish ()
 
+(* FIXME? let imoth = get_mother fam in *)
 let check_witnesses ~verbosity1 ~verbosity2 base nb_fam fix =
   if verbosity1 then begin
     Printf.printf "Check witnesses\n";
@@ -197,11 +194,11 @@ let check_witnesses ~verbosity1 ~verbosity2 base nb_fam fix =
           if verbosity2 then
             suspend_with (fun () ->
                 let imoth = get_mother fam in
-                Printf.printf "*** in marriage: %s & %s\n"
-                  (Gutil.designation base (poi base ifath))
-                  (Gutil.designation base (poi base imoth));
-                Printf.printf "*** witness has no pointer to marriage: %s\n"
-                  (Gutil.designation base p) ) ;
+                Printf.printf "\tin marriage: %s & %s\n"
+                  (string_of_p base ifath)
+                  (string_of_p base imoth);
+                Printf.printf "\twitness has no pointer to marriage: %s\n"
+                  (string_of_p base ip) ) ;
           patch_person base ip
             {(gen_person_of_person p) with related = ifath :: get_related p};
           incr fix;
@@ -230,10 +227,8 @@ let check_pevents_witnesses ~verbosity1 ~verbosity2 base nb_ind fix =
            if not (List.memq ip (get_related p2)) then
              begin
                if verbosity2 then suspend_with (fun () ->
-                   Printf.printf "*** in persons' event: %s\n"
-                     (Gutil.designation base (poi base ip2));
-                   Printf.printf "*** witness has no pointer to persons' event: %s\n"
-                     (Gutil.designation base p) ) ;
+                   Printf.printf "\tin persons' event: %s\n" (string_of_p base ip2);
+                   Printf.printf "\twitness has no pointer to persons' event: %s\n" (string_of_p base ip) ) ;
                patch_person base ip2
                  {(gen_person_of_person p2)
                   with related = ip :: get_related p2};
@@ -267,11 +262,10 @@ let check_fevents_witnesses ~verbosity1 ~verbosity2 base nb_fam fix =
                if verbosity2 then
                  suspend_with (fun () ->
                      let imoth = get_mother fam in
-                     Printf.printf "*** in family event: %s & %s\n"
-                       (Gutil.designation base (poi base ifath))
-                       (Gutil.designation base (poi base imoth));
-                     Printf.printf "*** witness has no pointer to family event: %s\n"
-                       (Gutil.designation base p) ) ;
+                     Printf.printf "\tin family event: [%s & %s]\n"
+                       (string_of_p base ifath) (string_of_p base imoth);
+                     Printf.printf "\twitness has no pointer to family event: %s\n"
+                       (string_of_p base  ip) ) ;
                patch_person base ip
                  {(gen_person_of_person p)
                   with related = ifath :: get_related p};
