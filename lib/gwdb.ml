@@ -1398,7 +1398,7 @@ let sou (b : base) = b.sou
 let nb_of_persons (b : base) = b.nb_of_persons ()
 let nb_of_families (b : base) = b.nb_of_families ()
 let patch_person ?log (b : base) ip p =
-  if p.access = Public then
+  if p.access = Public then begin
     let op = poi b ip in
     if get_access op <> Public then begin
       let lg = match log with None -> Syslog.openlog Sys.executable_name | Some log -> log in
@@ -1406,6 +1406,7 @@ let patch_person ?log (b : base) ip p =
       Printf.sprintf "%s [%s %s %d] -> Public"
         (Filename.basename b.bname) (sou b p.surname) (sou b p.first_name) (p.occ) ;
       if log = None then Syslog.closelog lg
+    end
   end ;
   b.patch_person ip p
 let patch_ascend (b : base) = b.patch_ascend
