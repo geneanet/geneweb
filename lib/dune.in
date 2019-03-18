@@ -6,6 +6,7 @@
  (libraries unix
             %%%API_DEP%%%
             str
+            syslog
             camlp5
             camlp5.gramlib
             geneweb.wserver)

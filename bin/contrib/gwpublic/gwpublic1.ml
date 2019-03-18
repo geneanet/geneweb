@@ -18,6 +18,9 @@ let changes = ref false
 let compute_ndgen treshold y =
   (treshold - y) * nb_gen_by_century / 100
 
+let log = Syslog.openlog "gwpublic1"
+let patch_person = patch_person ~log
+
 (** Recursively mark descendants and spouses as old,
     as long as a date allow you to do so, or until
     the number of generations that should be considered old according
@@ -180,4 +183,6 @@ let () =
     else if !treshold <> 1900 then failwith "-everybody and -y options are mutually exclusive"
     else Gwaccess.access_everybody Def.Public !bname
   else if !ind = "" then public_all ~mem:!mem !bname !treshold
-  else public_some !bname !treshold !ind
+  else public_some !bname !treshold !ind ;
+  Syslog.closelog log
+

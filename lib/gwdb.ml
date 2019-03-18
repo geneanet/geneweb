@@ -1397,19 +1397,15 @@ let foi (b : base) = b.foi
 let sou (b : base) = b.sou
 let nb_of_persons (b : base) = b.nb_of_persons ()
 let nb_of_families (b : base) = b.nb_of_families ()
-let patch_person (b : base) ip p =
-  if p.access = Public then begin
+let patch_person ?log (b : base) ip p =
+  if p.access = Public then
     let op = poi b ip in
-    if get_access op <> Public then
-      let tm = Unix.localtime (Unix.time ()) in
-      try
-        Log.with_file ~file:(Sys.getenv "LOG_PUBLIC") (fun oc ->
-            Printf.fprintf oc
-              "%02d/%02d/%4d %02d:%02d:%02d %s %s %s %d\n"
-              tm.Unix.tm_mday (succ tm.Unix.tm_mon) (1900 + tm.Unix.tm_year)
-              tm.Unix.tm_hour tm.Unix.tm_min tm.Unix.tm_sec
-              b.bname (sou b p.surname) (sou b p.first_name) (p.occ))
-      with Not_found -> ()
+    if get_access op <> Public then begin
+      let lg = match log with None -> Syslog.openlog Sys.executable_name | Some log -> log in
+      Syslog.syslog lg `LOG_WARNING @@
+      Printf.sprintf "%s [%s %s %d] -> Public"
+        (Filename.basename b.bname) (sou b p.surname) (sou b p.first_name) (p.occ) ;
+      if log = None then Syslog.closelog lg
   end ;
   b.patch_person ip p
 let patch_ascend (b : base) = b.patch_ascend
