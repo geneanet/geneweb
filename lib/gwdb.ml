@@ -1401,8 +1401,10 @@ let patch_person ?log (b : base) ip p =
   if p.access = Public then begin
     let op = poi b ip in
     if get_access op <> Public then begin
-      let lg = match log with None -> Syslog.openlog Sys.executable_name | Some log -> log in
-      Syslog.syslog lg `LOG_WARNING @@
+      let lg = match log with
+        | None -> Syslog.openlog ~flags:[`LOG_PID] "geneweb"
+        | Some log -> log in
+      Syslog.syslog lg `LOG_DEBUG @@
       Printf.sprintf "%s [%s %s %d] -> Public"
         (Filename.basename b.bname) (sou b p.surname) (sou b p.first_name) (p.occ) ;
       if log = None then Syslog.closelog lg

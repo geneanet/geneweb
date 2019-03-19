@@ -20,8 +20,10 @@ let main () =
   let gcc = Gc.get () in
   gcc.Gc.max_overhead <- 100;
   Gc.set gcc;
-  if !everybody then Gwaccess.access_everybody Public !bname
-  else if !list_ind = "" then Gwaccess.access_some Public !bname !ind
-  else Gwaccess.access_some_list Public !bname !list_ind
+  let log = Syslog.openlog ~flags:[`LOG_PID] "gwpublic" in
+  if !everybody then Gwaccess.access_everybody ~log Public !bname
+  else if !list_ind = "" then Gwaccess.access_some ~log Public !bname !ind
+  else Gwaccess.access_some_list ~log Public !bname !list_ind ;
+  Syslog.closelog log
 
 let _ = main ()

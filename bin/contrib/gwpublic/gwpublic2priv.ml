@@ -2,6 +2,8 @@ open Geneweb
 open Def
 open Gwdb
 
+let log = Syslog.openlog ~flags:[`LOG_PID] "gwpublic2priv"
+
 let find_dated_ancestor base p =
   let mark = Array.make (nb_of_persons base) false in
   let rec loop nb_gen iplist =
@@ -52,7 +54,7 @@ let change_somebody_access base lim_year trace p year_of_p spouse =
           else Public
         in
         let gp = {(gen_person_of_person p) with access = acc} in
-        patch_person base gp.key_index gp;
+        patch_person ~log base gp.key_index gp;
         if trace then
           begin
             Printf.printf "%s -> " (Gutil.designation base p);
@@ -113,7 +115,7 @@ let public_all ~fast bname lim_year trace patched =
               match acc_opt with
                 Some acc ->
                   let gp = {(gen_person_of_person p) with access = acc} in
-                  patch_person base gp.key_index gp;
+                  patch_person ~log base gp.key_index gp;
                   changes := true;
                   if trace then
                     begin
@@ -157,6 +159,7 @@ let main () =
   Secure.set_base_dir (Filename.dirname !bname);
   Lock.control_retry
     (Mutil.lock_file !bname) ~onerror:Lock.print_error_and_exit @@ fun () ->
-  public_all ~fast:!fast !bname !lim_year !trace !patched
+  public_all ~fast:!fast !bname !lim_year !trace !patched ;
+  Syslog.closelog log
 
 let _ = main ()

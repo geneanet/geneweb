@@ -18,7 +18,7 @@ let changes = ref false
 let compute_ndgen treshold y =
   (treshold - y) * nb_gen_by_century / 100
 
-let log = Syslog.openlog "gwpublic1"
+let log = Syslog.openlog ~flags:[`LOG_PID] "gwpublic1"
 let patch_person = patch_person ~log
 
 (** Recursively mark descendants and spouses as old,
