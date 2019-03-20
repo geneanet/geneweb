@@ -63,6 +63,7 @@ let print_search_form conf from_note =
   Wserver.printf "</table>\n"
 
 let print_whole_notes conf base fnotes title s ho =
+  let title = Util.safe_html title in
   Hutil.header_no_page_title conf
     (fun _ -> Wserver.printf "%s" (if title = "" then fnotes else title));
   let what_links_page () =
@@ -99,6 +100,7 @@ let print_whole_notes conf base fnotes title s ho =
     in
     Wiki.html_with_summary_of_tlsw conf wi edit_opt s
   in
+  let s = Util.safe_html s in
   let s =
     match ho with
     | Some (case_sens, h) -> html_highlight case_sens h s
@@ -112,6 +114,7 @@ let print_whole_notes conf base fnotes title s ho =
   Hutil.trailer conf
 
 let print_notes_part conf base fnotes title s cnt0 =
+  let title = Util.safe_html title in
   Hutil.header_no_page_title conf
     (fun _ -> Wserver.printf "%s" (if title = "" then fnotes else title));
   Hutil.print_link_to_welcome conf true;
@@ -309,6 +312,7 @@ let print_linked_list conf base pgl =
        | NotesLinks.PgMisc fnotes ->
            let (nenv, _) = read_notes base fnotes in
            let title = try List.assoc "TITLE" nenv with Not_found -> "" in
+           let title = Util.safe_html title in
            Wserver.printf "<tt>";
            if conf.wizard then
              begin
@@ -385,6 +389,7 @@ let print conf base =
   | _ ->
       let (nenv, s) = read_notes base fnotes in
       let title = try List.assoc "TITLE" nenv with Not_found -> "" in
+      let title = Util.safe_html title in
       match p_getint conf.env "v" with
         Some cnt0 -> print_notes_part conf base fnotes title s cnt0
       | None -> print_whole_notes conf base fnotes title s None
