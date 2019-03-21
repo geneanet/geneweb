@@ -118,8 +118,6 @@ let gen_trailer with_logo conf =
   Templ.include_hed_trl conf "trl";
   if with_logo then Templ.print_copyright_with_logo conf
   else Templ.print_copyright conf;
-  Wserver.printf "</div>\n";
-  (* balances header_without_http *)
   begin match Util.open_templ conf "js" with
     Some ic -> Templ.copy_from_templ conf [] ic
   | None -> ()
