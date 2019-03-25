@@ -81,6 +81,13 @@ let util_str_sub _ =
   test "švédčina" "švédčina" 0 8 ;
   test "a" "švédčina" 7 1
 
+
+let util_safe_html _ =
+  assert_equal
+    ~printer:(fun x -> x)
+    {|<a href="localhost:2318/foo_w?lang=fr&#38;image=on">foo</a>|}
+    (Util.safe_html {|<a href="localhost:2318/foo_w?lang=fr&image=on">foo</a>|})
+
 let _ =
   "Geneweb utils" >:::
   [ "Mutil" >:::
@@ -89,6 +96,7 @@ let _ =
     ; "mutil_arabian_romian" >:: mutil_arabian_romian
     ; "mutil_compare_after_particle" >:: mutil_compare_after_particle
     ; "util_str_sub" >:: util_str_sub
+    ; "util_safe_html" >:: util_safe_html
     ]
   ]
   |> run_test_tt_main
