@@ -27,6 +27,7 @@ remove: [
 
 pin-depends: [
   [ "markup.dev" "git://github.com/geneanet/markup.ml" ]
+  [ "syslog.dev" "git://github.com/geneanet/ocaml-syslog" ]
 ]
 
 depends: [
@@ -41,6 +42,7 @@ depends: [
   "piqilib"
   "redis"
   "redis-sync"
+  "syslog"
   "yojson"
 ]
 
