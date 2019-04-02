@@ -286,36 +286,6 @@ let check_fevents_witnesses ~verbosity1 ~verbosity2 base nb_fam fix =
   done;
   if verbosity1 then ProgrBar.finish ()
 
-
-(* FIXME: copy/paste depuis mk_consang *)
-let init_cache_info bname base =
-  (* Reset le nombre réel de personnes d'une base. *)
-  let nb_real_persons = ref 0 in
-  let nb_ind = Gwdb.nb_of_persons base in
-  let is_empty_name p =
-    (Gwdb.is_empty_string (Gwdb.get_surname p) ||
-     Gwdb.is_quest_string (Gwdb.get_surname p)) &&
-    (Gwdb.is_empty_string (Gwdb.get_first_name p) ||
-     Gwdb.is_quest_string (Gwdb.get_first_name p))
-  in
-  for i = 0 to nb_ind - 1 do
-    let ip = Adef.iper_of_int i in
-    let p = Gwdb.poi base ip in
-    if not @@ is_empty_name p then incr nb_real_persons
-  done;
-  (* Il faudrait que cache_nb_base_persons ne soit pas dans util.ml *)
-  let ht = Hashtbl.create 1 in
-  let () =
-    Hashtbl.add ht "cache_nb_persons" (string_of_int !nb_real_persons)
-  in
-  let bdir =
-    if Filename.check_suffix bname ".gwb" then bname else bname ^ ".gwb"
-  in
-  let fname = Filename.concat bdir "cache_info" in
-  match try Some (Secure.open_out_bin fname) with Sys_error _ -> None with
-    Some oc -> output_value oc ht; close_out oc
-  | None -> ()
-
 let check
     ~verbosity
     ~fast
@@ -358,11 +328,14 @@ let check
     flush stdout
   end ;
   if verbosity1 then (Printf.printf "Rebuilding the indexes..\n" ; flush stdout) ;
-  (* FIXME: this one only works with base1 *)
-  Gwdb.apply_base1 base
-    (fun base -> Outbase.gen_output false base.Dbdisk.data.Dbdisk.bdir base) ;
+  begin match Gwdb.ascends_array base with
+  | (_, _, _, None) ->
+    Gwdb.apply_base1 base
+      (fun base -> Outbase.gen_output false base.Dbdisk.data.Dbdisk.bdir base) 
+  | _ -> ()
+  end ;
   (* On recalcul le nombre reel de personnes. *)
-  init_cache_info bname base ;
+  Util.init_cache_info bname base ;
   if verbosity1 then (Printf.printf "Done" ; flush stdout)
 
 (**/**)
