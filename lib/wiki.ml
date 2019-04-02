@@ -164,12 +164,8 @@ let syntax_links conf wi s =
             let f = wi.wi_file_path (fname_of_path fpath) in
             if Sys.file_exists f then "" else " style=\"color:red\""
           in
-
           let t =
             if wi.wi_cancel_links then text
-            else if i > 4 && String.sub s (i - 5) 5 = "href=" then (* FIXME: rm *)
-              Printf.sprintf "\"%sm=%s&f=%s%s\"%s>%s</a>" (commd conf)
-                wi.wi_mode fname anchor c text
             else
               Printf.sprintf "<a href=\"%sm=%s&f=%s%s\"%s>%s</a>" (commd conf)
                 wi.wi_mode fname anchor c text
@@ -178,42 +174,27 @@ let syntax_links conf wi s =
       | NotesLinks.WLperson (j, (fn, sn, oc), name, _) ->
           let t =
             if wi.wi_cancel_links then name
-            else if i > 4 && String.sub s (i - 5) 5 = "href=" then (* FIXME: rm *)
-              if wi.wi_person_exists (fn, sn, oc) then
-                Printf.sprintf "\"%sp=%s&n=%s%s\" id=\"p_%d\">%s</a>"
-                  (commd conf) (code_varenv fn) (code_varenv sn)
-                  (if oc = 0 then "" else "&oc=" ^ string_of_int oc) pos name
-              else if wi.wi_always_show_link then
-                let s = " style=\"color:red\"" in
-                Printf.sprintf "\"%sp=%s&n=%s%s\"%s id=\"p_%d\">%s</a>"
-                  (commd conf) (code_varenv fn) (code_varenv sn)
-                  (if oc = 0 then "" else "&oc=" ^ string_of_int oc) s pos name
-              else
-                Printf.sprintf "\"%s\" style=\"color:red\">%s</a>" (commd conf)
-                  (if conf.hide_names then "x x" else name)
+            else if wi.wi_person_exists (fn, sn, oc) then
+              Printf.sprintf "<a id=\"p_%d\" href=\"%sp=%s&n=%s%s\">%s</a>" pos
+                (commd conf) (code_varenv fn) (code_varenv sn)
+                (if oc = 0 then "" else "&oc=" ^ string_of_int oc) name
+            else if wi.wi_always_show_link then
+              let s = " style=\"color:red\"" in
+              Printf.sprintf "<a id=\"p_%d\" href=\"%sp=%s&n=%s%s\"%s>%s</a>" pos
+                (commd conf) (code_varenv fn) (code_varenv sn)
+                (if oc = 0 then "" else "&oc=" ^ string_of_int oc) s name
             else
-              if wi.wi_person_exists (fn, sn, oc) then
-                Printf.sprintf "<a id=\"p_%d\" href=\"%sp=%s&n=%s%s\">%s</a>" pos
-                  (commd conf) (code_varenv fn) (code_varenv sn)
-                  (if oc = 0 then "" else "&oc=" ^ string_of_int oc) name
-              else if wi.wi_always_show_link then
-                let s = " style=\"color:red\"" in
-                Printf.sprintf "<a id=\"p_%d\" href=\"%sp=%s&n=%s%s\"%s>%s</a>" pos
-                  (commd conf) (code_varenv fn) (code_varenv sn)
-                  (if oc = 0 then "" else "&oc=" ^ string_of_int oc) s name
-              else
-                Printf.sprintf "<a href=\"%s\" style=\"color:red\">%s</a>" (commd conf)
-                  (if conf.hide_names then "x x" else name)
+              Printf.sprintf "<a href=\"%s\" style=\"color:red\">%s</a>" (commd conf)
+                (if conf.hide_names then "x x" else name)
           in
           loop quot_lev (pos + 1) j (Buff.mstore len t)
       | NotesLinks.WLwizard (j, wiz, name) ->
           let t =
             let s = if name <> "" then name else wiz in
             if wi.wi_cancel_links then s
-            else if i > 4 && String.sub s (i - 5) 5 = "href=" then (* FIXME: rm *)
-              Printf.sprintf "\"%sm=WIZNOTES&f=%s\">%s</a>" (commd conf) wiz s
             else
-              Printf.sprintf "<a href=\"%sm=WIZNOTES&f=%s\">%s</a>" (commd conf) wiz s
+              Printf.sprintf "<a href=\"%sm=WIZNOTES&f=%s\">%s</a>" (commd conf) wiz
+                s
           in
           loop quot_lev (pos + 1) j (Buff.mstore len t)
       | NotesLinks.WLnone -> loop quot_lev pos (i + 1) (Buff.store len s.[i])
