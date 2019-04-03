@@ -8,19 +8,17 @@ environment:
   CYG_BASH: '%CYG_ROOT%/bin/bash -lc'
 
 install:
+  - 'set OPAMYES=1'
   - '%CYG_ROOT%\setup-x86.exe -qnNdO -R %CYG_ROOT% -s http://cygwin.mirror.constant.com -l C:/cygwin/var/cache/setup -P rsync -P patch -P diffutils -P unzip -P m4 -P mingw64-x86_64-gcc-core -P mingw64-x86_64-gtk2.0'
-  - '%CYG_BASH% "curl -fsSL -o opam64.tar.xz https://github.com/fdopen/opam-repository-mingw/releases/download/0.0.0.1/opam64.tar.xz"'
+  - '%CYG_BASH% "curl -fsSL -o opam64.tar.xz https://github.com/fdopen/opam-repository-mingw/releases/download/0.0.0.2/opam64.tar.xz"'
   - '%CYG_BASH% "tar -xf opam64.tar.xz"'
   - '%CYG_BASH% "opam64/install.sh"'
-  - '%CYG_BASH% "opam init -a mingw https://github.com/fdopen/opam-repository-mingw.git --comp 4.05.0+mingw64c --switch 4.05.0+mingw64c"'
-  - '%CYG_BASH% "eval `opam config env`"'
-  - '%CYG_BASH% "opam install -y depext depext-cygwinports"'
-  - 'set PATH=%PATH%;/usr/x86_64-w64-mingw32/sys-root/mingw/bin'
-  - 'set OPAMYES=1'
-  - '%CYG_BASH% "opam install depext depext-cygwinports"'
-  - '%CYG_BASH% "opam install camlp5 cppo dune"'
+  - '%CYG_BASH% "opam init default \"https://github.com/fdopen/opam-repository-mingw.git#opam2\" -c \"ocaml-variants.4.07.1+mingw64\" --disable-sandboxing"'
+  - '%CYG_BASH% "eval $(opam env)"'
+  - '%CYG_BASH% "opam update"'
+  - '%CYG_BASH% "opam pin add --no-action markup git://github.com/geneanet/markup.ml"'
+  - '%CYG_BASH% "opam depext camlp5 cppo dune markup ounit"'
+  - '%CYG_BASH% "opam install camlp5 cppo dune markup ounit"'
 
 build_script:
-  - '%CYG_BASH% "cd ${APPVEYOR_BUILD_FOLDER} && ./configure && make clean install uninstall clean"'
-  - '%CYG_BASH% "cd ${APPVEYOR_BUILD_FOLDER} && ./configure && make clean distrib clean"'
-  - '%CYG_BASH% "cd ${APPVEYOR_BUILD_FOLDER} && opam depext lablgtk && opam install lablgtk && ./configure && make clean everything-exe clean"'
+  - '%CYG_BASH% "cd ${APPVEYOR_BUILD_FOLDER} && eval $(opam env) && ./configure && make clean test distrib clean"'
