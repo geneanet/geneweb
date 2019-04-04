@@ -5,5 +5,6 @@ let _ =
     "Geneweb" >:::
     Test_utils.suite
     @ Test_sosa.suite
+    @ Test_place.suite
   end
 
