@@ -902,10 +902,9 @@ let print_slices_menu conf hts =
   let title _ = Wserver.printf "%s" (txt 0) in
   Hutil.header conf title;
   Hutil.print_link_to_welcome conf true;
-  begin match Util.open_templ conf "buttons_rel" with
-  Some ic -> Templ.copy_from_templ conf conf.env ic;
-  | None -> Wserver.printf "buttons_rel.txt not found<br>\n";
-  end;
+  Opt.iter
+    (Templ.copy_from_templ conf conf.env)
+    (Util.open_templ conf "buttons_rel") ;
   Wserver.printf "<form method=\"get\" action=\"%s\">\n" conf.command;
   html_p conf;
   hidden_env conf;
@@ -969,10 +968,9 @@ let print_dag_page conf page_title hts next_txt =
   in
   let title _ = Wserver.printf "%s" page_title in
   Hutil.header_no_page_title conf title;
-  begin match Util.open_templ conf "buttons_rel" with
-  Some ic -> Templ.copy_from_templ conf conf.env ic;
-  | None -> Wserver.printf "buttons_rel.txt not found<br>\n";
-  end;
+  Opt.iter
+    (Templ.copy_from_templ conf conf.env)
+    (Util.open_templ conf "buttons_rel") ;
   print_html_table conf hts;
   if next_txt <> "" then
     begin
