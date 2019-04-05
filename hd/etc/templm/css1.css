@@ -1,4 +1,12 @@
-/* $Id: templm/css1.css,v 7.00 2016/03/21 22:03:01 a2 mr Exp $ /*
+/* $Id: templm/css1.css,v 7.00 07/11/2018 22:01:39 a2 mr Exp $ */
+/*! Small webfont with 50 monospaced glyphs for descending tree view */
+@font-face {
+    font-family: 'dejavu_sans_mono';
+    src: url('../webfonts/dejavusansmono-genewebfont.woff2') format('woff2'),
+         url('../webfonts/dejavusansmono-genewebfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;}
+tt {font-family: 'dejavu_sans_mono';}
 /* Properties of all html pages.*/
 input[type=number]::-webkit-inner-spin-button {opacity:1}
 html{color:#EEF;background-color:#000;}

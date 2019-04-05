@@ -209,7 +209,6 @@
                     <option value="4">                ↳ [*3rd cousins]</option>
                   %end;
                 %end;
-                %apply;ancestor_siblings(5,"siblings of the great-great-grandparents")
                 <option class="text-uppercase" selected disabled>--</option>
                 %foreach;cousin_level;
                   %if;(level>4)

@@ -389,3 +389,6 @@ val escape_html : string -> string
    Text is escaped using [escape_html].
  *)
 val safe_html : string -> string
+
+(**/**)
+val init_cache_info : string -> Gwdb.base -> unit

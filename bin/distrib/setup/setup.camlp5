@@ -332,6 +332,7 @@ let macro conf =
   | 'x' -> stringify !bin_dir
   | 'w' -> slashify (Sys.getcwd ())
   | 'y' -> Filename.basename (only_file_name ())
+  | 'z' -> string_of_int !port
   | '%' -> "%"
   | 'K' -> (* print the name of -o filename, prepend bname or -o1 filename *)
     let outfile1 = strip_spaces (s_getenv conf.env "o") in
@@ -589,7 +590,7 @@ let rec copy_from_stream conf print strm =
                           print "\"";
                           if v = s then print " checked"
                       | [< >] -> print (strip_spaces v) end
-                  | None -> print "BAD MACRO 2 "
+                  | None -> print "BAD MACRO 2"
               end
           | c -> print (macro conf c)
           end

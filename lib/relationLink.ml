@@ -606,6 +606,10 @@ let print_relation_ok conf base info =
   in
   Hutil.header_no_page_title conf title;
   Hutil.print_link_to_welcome conf true;
+  begin match Util.open_templ conf "buttons_rel" with
+  Some ic -> Templ.copy_from_templ conf conf.env ic;
+  | None -> Wserver.printf "buttons_rel.txt not found<br>\n";
+  end;
   Wserver.printf "<p style=\"clear:both\"%s>\n" conf.xhs;
   print_relation_path conf base info;
   Hutil.trailer conf

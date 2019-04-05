@@ -24,34 +24,6 @@ let anonfun s =
   if !fname = "" then fname := s
   else raise (Arg.Bad "Cannot treat several databases")
 
-let init_cache_info bname base =
-  (* Reset le nombre réel de personnes d'une base. *)
-  let nb_real_persons = ref 0 in
-  let nb_ind = Gwdb.nb_of_persons base in
-  let is_empty_name p =
-    (Gwdb.is_empty_string (Gwdb.get_surname p) ||
-     Gwdb.is_quest_string (Gwdb.get_surname p)) &&
-    (Gwdb.is_empty_string (Gwdb.get_first_name p) ||
-     Gwdb.is_quest_string (Gwdb.get_first_name p))
-  in
-  for i = 0 to nb_ind - 1 do
-    let ip = Adef.iper_of_int i in
-    let p = Gwdb.poi base ip in
-    if not @@ is_empty_name p then incr nb_real_persons
-  done;
-  (* Il faudrait que cache_nb_base_persons ne soit pas dans util.ml *)
-  let ht = Hashtbl.create 1 in
-  let () =
-    Hashtbl.add ht "cache_nb_persons" (string_of_int !nb_real_persons)
-  in
-  let bdir =
-    if Filename.check_suffix bname ".gwb" then bname else bname ^ ".gwb"
-  in
-  let fname = Filename.concat bdir "cache_info" in
-  match try Some (Secure.open_out_bin fname) with Sys_error _ -> None with
-    Some oc -> output_value oc ht; close_out oc
-  | None -> ()
-
 let rebuild_field_array len pad bdir compress f =
   if !(Mutil.verbose) then
     begin
@@ -453,7 +425,7 @@ let simple_output bname base carray =
            in
            Outbase.gen_output (no_patches && not !indexes) bname base);
       (* On recalcul le nombre reel de personnes. *)
-      init_cache_info bname base
+      Util.init_cache_info bname base
 
 let main () =
   Argl.parse speclist anonfun errmsg;

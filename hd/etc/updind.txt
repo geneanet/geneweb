@@ -20,7 +20,8 @@
 <body%body_prop; id="person">
 <div class="container">
 %message_to_wizard;
-%include;perso_header
+%( do not use %include;perso_header %)
+%include_perso_header;
 
 %define;nav()
   <div class="container fixed-top" role="navigation">
