@@ -678,7 +678,7 @@ let print_mod_view_page conf can_edit mode fname title env s =
   Hutil.print_link_to_welcome conf true;
   if can_edit && has_v then
     print_sub_part_links conf (mode_pref ^ mode) sfn v is_empty;
-  Wserver.printf "<form method=\"post\" action=\"%s\">\n" conf.command;
+  Wserver.printf "<form name=\"form_notes\" method=\"post\" action=\"%s\">\n" conf.command;
   Wserver.printf "<p>\n";
   Util.hidden_env conf;
   if can_edit then
