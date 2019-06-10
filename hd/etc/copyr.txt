@@ -83,12 +83,12 @@
           GeneWeb v. %version;
         </div>
         <div class="btn-group">
-          <span>&copy; <a href="https://www.inria.fr" target="_blank" rel="noreferrer" rel="noopener">INRIA</a> 1998-2019</span>
+          <span>&copy; <a href="https://www.inria.fr" target="_blank" rel="noreferrer, noopener">INRIA</a> 1998-2019</span>
           <a href="https://geneweb.tuxfamily.org/wiki/GeneWeb%if;(lang!="en")/%lang;%end;" class="ml-1"
-            target="_blank" rel="noreferrer" rel="noopener" title="Documentation GeneWeb">%nn;
+            target="_blank" rel="noreferrer, noopener" title="Documentation GeneWeb">%nn;
             <i class="fab fa-wikipedia-w"></i></a>%nn;
           <a href="https://github.com/geneweb/geneweb" class="ml-1"
-            target="_blank" rel="noreferrer" rel="noopener" title="GeneWeb on Github">%nn;
+            target="_blank" rel="noreferrer, noopener" title="GeneWeb on Github">%nn;
             <i class="fab fa-github"></i></a>
         </div>
       </div>
