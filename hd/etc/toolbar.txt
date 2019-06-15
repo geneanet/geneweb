@@ -55,6 +55,8 @@ function insertTags (tagOpen, tagClose, sampleText) {
 <i class="fas fa-bold" alt="Texte gras" title="Texte gras"></i></a>%nn;
 <a class="mx-1" onclick="return insertTags('\'\'','\'\'','Texte italique');" href="javascript:;">
 <i class="fas fa-italic" alt="Texte italique" title="Texte italique"></i></a>%nn;
+<a class="ml-2" onclick="return insertTags('<u>','</u>','Souligné');" href="javascript:;">
+<i class="fas fa-underline" alt="Souligné" title="Souligné"></i></a>%nn;
 %( Liste à puce peu utile en l'état, intrusif et ne s’intègre pas au texte existant
 <a class="mx-1" onclick="return insertTags('\n*Element 1\n*Element 2\n*Element 3','','Liste a puces');" href="javascript:;">
 <i class="fas fa-list-ul" alt="Liste a puces" title="Liste a puces"></i></a>%nn;%)
@@ -62,5 +64,11 @@ function insertTags (tagOpen, tagClose, sampleText) {
 <i class="fas fa-heading" alt="Titre de rubrique" title="Titre de rubrique"></i></a>%nn;
 <a class="ml-2" onclick="return insertTags('\n<hr>\n','','');" href="javascript:;">
 <i class="far fa-window-minimize" alt="Ligne horizontale" title="Ligne horizontale"></i></a>
+<a class="ml-2" onclick="return insertTags('<sup>','</sup>','Mise en exposant');" href="javascript:;">
+<i class="fas fa-superscript" alt="Mise en exposant" title="Mise en exposant"></i></a>%nn;
 <a class="ml-2" onclick="return insertTags('\[\[\[','\]\]\]','Lien_interne/Nom du lien');" href="javascript:;">
 <i class="fas fa-link" alt="Lien_interne/Nom du lien" title="Lien_interne/Nom du lien"></i></a>%nn;
+<a class="ml-2" onclick="return insertTags('<div style=\'text-align:center\'>','</div>','Centrer');" href="javascript:;">
+<i class="fas fa-align-center" alt="Centrer" title="Centrer"></i></a>%nn;
+<a class="ml-2" onclick="return insertTags(':','','Indenter');" href="javascript:;">
+<i class="fas fa-indent" alt="Indenter" title="Indenter"></i></a>%nn;
