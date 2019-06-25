@@ -1,6 +1,6 @@
 syntax = "proto2" ;
 
-package geneweb.api.link_tree.object;
+package Geneanet.Geneweb.Api.Proto.LinkTree.Model;
 
 
 enum Calendar {

@@ -3289,7 +3289,7 @@ and eval_date_field_var conf d =
           end
       | _ -> VVstring ""
       end
-  | [] -> VVstring (DateDisplay.string_of_date_sep conf "&#010;  " d)
+  | [] -> VVstring (DateDisplay.string_of_date_sep conf "<br />" d)
   | _ -> raise Not_found
 and _eval_place_field_var conf place =
   function
@@ -3993,14 +3993,8 @@ and eval_str_person_field conf base env (p, p_auth as ep) =
       if p_auth then
         match Date.get_birth_death_date p with
           Some (Dgreg (({prec = Sure | About | Maybe} as d1), _)),
-          Some (Dgreg (({prec = Sure | About | Maybe} as d2), _)), approx
-          when d1 <> d2 ->
-            let a = Date.time_elapsed d1 d2 in
-            let s =
-              if not approx && d1.prec = Sure && d2.prec = Sure then ""
-              else transl_decline conf "possibly (date)" "" ^ " "
-            in
-            s ^ DateDisplay.string_of_age conf a
+          Some (Dgreg (({prec = Sure | About | Maybe} as d2), _)), _approx
+          when d1 <> d2 -> DateDisplay.string_of_age conf (Date.time_elapsed d1 d2)
         | _ -> ""
       else ""
   | "death_place" ->
