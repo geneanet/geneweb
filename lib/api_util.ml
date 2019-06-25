@@ -1911,7 +1911,6 @@ let pers_to_piqi_app_person conf base p =
                  match wk with
                  | Witness -> `witness
                  | Witness_GodParent -> `witness_godparent
-                 | Witness_Officer -> `witness_officer
                in
                let index = Int32.of_string @@ Gwdb.string_of_iper ip in
                Mapp.Witness_event.({
