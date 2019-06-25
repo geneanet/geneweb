@@ -8,13 +8,9 @@ open Gwdb
 let is_hide_names conf p =
   if conf.hide_names || get_access p = Private then true else false
 
-let sharelib =
-  List.fold_right Filename.concat [Gwlib.prefix; "share"] "geneweb"
-
 let add_lang_path = Secure.add_lang_path
 let set_base_dir = Secure.set_base_dir
 
-let _ = add_lang_path sharelib
 let _ = add_lang_path Filename.current_dir_name
 
 let cnt_dir = ref Filename.current_dir_name
@@ -1001,7 +997,7 @@ let titled_person_text conf base p t =
 let one_title_text base t =
   let place = sou base t.t_place in
   let s = sou base t.t_ident in
-  let s = if place = "" then s else s ^ " " ^ place in " <em>" ^ s ^ "</em>"
+  let s = if place = "" then s else s ^ " " ^ place in ", <em>" ^ s ^ "</em>"
 
 let geneweb_link conf href s =
   if conf.cancel_links then s
@@ -1223,153 +1219,38 @@ let string_of_fevent conf base = function
 let string_of_witness_kind conf sex witness_kind =
   match witness_kind with
     Witness -> transl_nth conf "witness/witness/witnesses" 0
-  | Witness_Officer -> transl_nth conf "officer/officer/officers" 0
   | Witness_GodParent ->
       let n = index_of_sex sex in
       transl_nth conf "godfather/godmother/godparents" n
 
 let base_path pref bname =
   let pref = Secure.base_dir () :: pref in
-  let bfile = List.fold_right Filename.concat pref bname in
-  if Sys.unix then
-    if Sys.file_exists bfile then bfile
-    else if String.length bname >= 6 then
-      let dirs = pref @ [String.make 1 bname.[0]; String.make 1 bname.[1]] in
-      List.fold_right Filename.concat dirs bname
-    else bfile
-  else bfile
+  let dirs = pref @ [String.make 1 bname.[0]; String.make 1 bname.[1]] in
+  List.fold_right Filename.concat dirs bname
 
-(* ************************************************************************ *)
-(*  [Fonc] etc_file_name : config -> string -> string                       *)
-(** [Description] : Renvoie le chemin vers le fichier de template passé
-                    en paramètre.
-    [Args] :
-      - conf  : configuration de la base
-      - fname : le fichier de template
-    [Retour] :
-      - string : le chemin vers le fichier de template
-    [Rem] : Exporté en clair hors de ce module.                             *)
-(* ************************************************************************ *)
-let etc_file_name conf fname =
-  (* On recherche si dans le nom du fichier, on a specifié son *)
-  (* répertoire, i.e. si fname est écrit comme ceci : dir/file *)
-  let fname = List.fold_left Filename.concat "" (String.split_on_char '/' fname) in
-  (* On cherche le fichier dans cet ordre :
-     - dans la base (bases/etc/base_name/name.txt)
-     - dans la base (bases/etc/templx/name.txt)
-     - dans le répertoire des programmes (gw/etc/templx/name.txt) *)
-  let file_exist dir =
-    let base_name_tpl_dir =
-      Filename.concat (base_path ["etc"] conf.bname) (fname ^ ".txt")
-    in
-    let base_tpl_dir =
-      Filename.concat (base_path ["etc"] (Filename.basename dir))
-        (fname ^ ".txt")
-    in
-    let etc_tpl_dir =
-      Filename.concat (search_in_lang_path "etc")
-        (Filename.concat dir (fname ^ ".txt"))
-    in
-    if Sys.file_exists base_name_tpl_dir then base_name_tpl_dir
-    else if Sys.file_exists base_tpl_dir then base_tpl_dir
-    else if Sys.file_exists etc_tpl_dir then etc_tpl_dir
-    else ""
-  in
-  (* Recherche le template par défaut en fonction de la variable gwf *)
-  (* template = templ1,templ2,*                                      *)
-  let rec default_templ config_templ std_fname =
-    match config_templ with
-      [] | ["*"] -> std_fname
-    | x :: l ->
-        match file_exist x with
-          "" -> default_templ l std_fname
-        | s -> s
-  in
-  let config_templ =
-    try
-      let s = List.assoc "template" conf.base_env in
-      let rec loop list i len =
-        if i = String.length s then List.rev (Buff.get len :: list)
-        else if s.[i] = ',' then loop (Buff.get len :: list) (i + 1) 0
-        else loop list (i + 1) (Buff.store len s.[i])
-      in
-      loop [] 0 0
-    with Not_found -> [conf.bname; "*"]
-  in
-  let dir =
-    match p_getenv conf.env "templ" with
-      Some x when List.mem "*" config_templ -> x
-    | Some x when List.mem x config_templ -> x
-    | Some _ | None ->
-        match config_templ with
-          [] | ["*"] -> ""
-        | x :: _ -> x
-  in
-  (* template par défaut *)
-  let std_fname =
-    search_in_lang_path (Filename.concat "etc" (fname ^ ".txt"))
-  in
-  (* On cherche le template dans l'ordre de file_exist.         *)
-  (* Si on ne trouve rien, alors on cherche le premier template *)
-  (* par défaut tel que défini par la variable template du gwf  *)
-  match file_exist dir with
-    "" -> default_templ config_templ std_fname
-  | s -> s
+let etc_file_name _conf fname =
+  search_in_lang_path (Filename.concat "etc" (fname ^ ".txt"))
 
 let open_etc_file fname =
-  let fname1 = base_path ["etc"] (Filename.basename fname ^ ".txt") in
-  let fname2 =
-    search_in_lang_path
-      (Filename.concat "etc" (Filename.basename fname ^ ".txt"))
-  in
-  try Some (Secure.open_in fname1) with
-    Sys_error _ -> try Some (Secure.open_in fname2) with Sys_error _ -> None
+  try Some (Secure.open_in @@ search_in_lang_path (Filename.concat "etc" (Filename.basename fname ^ ".txt")))
+  with Sys_error _ -> None
 
-let open_hed_trl conf fname =
-  try Some (Secure.open_in (etc_file_name conf fname)) with
-    Sys_error _ -> None
+let open_hed_trl _conf fname = open_etc_file fname
 
 let open_templ_fname conf fname =
   try
     let fname = etc_file_name conf fname in
-    Some (Secure.open_in fname, fname) with
-    Sys_error _ ->
-      let std_fname =
-        search_in_lang_path (Filename.concat "etc" (fname ^ ".txt"))
-      in
-      try Some (Secure.open_in std_fname, std_fname) with Sys_error _ -> None
+    Some (Secure.open_in fname, fname)
+  with Sys_error _ -> None
 
 let open_templ conf fname = Opt.map fst (open_templ_fname conf fname)
 
 let image_prefix conf = conf.image_prefix
 
-(*
-   On cherche le fichier dans cet ordre :
-    - dans la base (bases/etc/name.txt)
-    - dans le répertoire des programmes (gw/etc/name.txt)
-*)
 let find_misc_file name =
-  let base_tpl_dir = Filename.concat (base_path ["etc"] "") name in
   let etc_tpl_dir = Filename.concat (search_in_lang_path "etc") name in
-  if Sys.file_exists base_tpl_dir then base_tpl_dir
-  else if Sys.file_exists etc_tpl_dir then etc_tpl_dir
+  if Sys.file_exists etc_tpl_dir then etc_tpl_dir
   else ""
-
-(* Code mort. Géré par le css
-value default_background conf =
-  Printf.sprintf "background:url('%s/gwback.jpg')" (image_prefix conf)
-;
-
-value default_body_prop conf =
-  let style =
-    match p_getenv conf.env "size" with
-    [ Some v -> "font-size:" ^ v ^ "&"
-    | None -> "" ]
-  in
-  let style = Printf.sprintf "%s%s" style (default_background conf) in
-  " style=\"" ^ style ^ "\""
-;
-   Code mort. Géré par le css *)
 
 let body_prop conf =
   try
