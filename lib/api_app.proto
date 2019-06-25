@@ -169,7 +169,6 @@ enum EventName {
 enum WitnessType {
   WITNESS = 0;
   WITNESS_GODPARENT = 1;
-  WITNESS_OFFICER = 2;
 }
 
 message WitnessEvent {

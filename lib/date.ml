@@ -220,14 +220,10 @@ let string_of_prec_dmy conf s s2 d =
   | Before -> transl_decline conf "before (date)" s
   | After -> transl_decline conf "after (date)" s
   | Maybe -> transl_decline conf "possibly (date)" s
-  | OrYear _ ->
-      "<span class=\"text-nowrap\">" ^ s ^ "</span>" ^ " " ^
-      "<span class=\"text-nowrap\">" ^ transl conf "or" ^ " " ^
-      Mutil.nominative s2 ^ "</span>"
+  | OrYear _ -> s ^ " " ^ transl conf "or" ^ " " ^ Mutil.nominative s2
   | YearInt _ ->
-      "<span class=\"text-nowrap\">" ^ transl conf "between (date)" ^ " " ^
-      s ^ "</span>" ^ " " ^ "<span class=\"text-nowrap\">" ^
-      transl_nth conf "and" 0 ^ " " ^ Mutil.nominative s2 ^ "</span>"
+    transl conf "between (date)" ^ " " ^ s ^ " " ^
+    transl_nth conf "and" 0 ^ " " ^ Mutil.nominative s2
 
 let string_of_dmy_aux fn conf d =
   let sy = code_dmy conf d in
