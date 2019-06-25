@@ -2,6 +2,8 @@
 
 open Config
 
+let up_fname _conf = "up.png"
+
 let commd_no_params conf =
   conf.command ^ "?" ^
   List.fold_left
@@ -21,22 +23,27 @@ let link_to_referer conf =
   else ""
 
 let gen_print_link_to_welcome f conf right_aligned =
-  if conf.cancel_links then ()
-  else
-    begin
-      if right_aligned then
-        Wserver.printf "<div class=\"btn-group float-%s mt-2\">\n" conf.right
-      else Wserver.printf "<p>\n";
-      f ();
-      let str = link_to_referer conf in
-      if str = "" then () else Wserver.printf "%s" str;
-      Wserver.printf "<a href=\"%s\">\
-         <span class=\"fa fa-home fa-lg ml-1 px-0\" title=\"%s\"></span>\
-       </a>\n"
-        (commd_no_params conf) (Util.capitale (Util.transl conf "home"));
-      if right_aligned then Wserver.printf "</div>\n"
-      else Wserver.printf "</p>\n"
-    end
+  if not conf.cancel_links then begin
+    let fname = up_fname conf in
+    let wid_hei =
+      match Util.image_size (Util.image_file_name fname) with
+      | Some (wid, hei) ->
+        " width=\"" ^ string_of_int wid ^ "\" height=\"" ^ string_of_int hei ^ "\""
+      | None -> ""
+    in
+    if right_aligned then
+      Wserver.printf "<div style=\"float:%s\">\n" conf.right
+    else Wserver.printf "<p>\n";
+    f ();
+    let str = link_to_referer conf in
+    if str = "" then () else Wserver.printf "%s" str;
+    Wserver.printf "<a href=\"%s\">\
+                    <img src=\"%s/%s\"%s alt=\"^^\" title=\"^^\"%s>\
+                    </a>\n"
+      (commd_no_params conf) (Util.image_prefix conf) fname wid_hei conf.xhs;
+    if right_aligned then Wserver.printf "</div>\n"
+    else Wserver.printf "</p>\n"
+  end
 
 let print_link_to_welcome = gen_print_link_to_welcome (fun () -> ())
 
@@ -67,13 +74,12 @@ let header_without_http conf title =
       Not_found -> ""
   in
   let s = s ^ Util.body_prop conf in
-  Wserver.printf "<body%s>\n" s; Util.message_to_wizard conf
+  Wserver.printf "<body%s>\n" s;
+  Util.message_to_wizard conf
 
 let header_without_page_title conf title =
   Util.html conf;
-  header_without_http conf title;
-  (* balancing </div> in gen_trailer *)
-  Wserver.printf "<div class=\"container\">"
+  header_without_http conf title
 
 let header_link_welcome conf title =
   header_without_page_title conf title;
@@ -96,8 +102,6 @@ let header conf title =
 
 let header_fluid conf title =
   header_without_http conf title;
-  (* balancing </div> in gen_trailer *)
-  Wserver.printf "<div class=\"container-fluid\">";
   Wserver.printf "\n<h1>";
   title false;
   Wserver.printf "</h1>\n"
