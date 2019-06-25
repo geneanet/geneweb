@@ -198,7 +198,7 @@ let print_aux conf title fn =
 
 let print_all_places_surnames_short conf base ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage =
   let inverted =
-    try List.assoc "places_inverted" conf.base_env = "yes"
+    try List.assoc "places_inverted" conf.base_env <> "yes"
     with Not_found -> false
   in
   let array =
@@ -230,7 +230,7 @@ let print_all_places_surnames_short conf base ~add_birth ~add_baptism ~add_death
 let print_all_places_surnames_long conf base ini ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage max_length =
   let filter = if ini = "" then fun _ -> true else fun x -> List.hd x = ini in
   let inverted =
-    try List.assoc "places_inverted" conf.base_env = "yes"
+    try List.assoc "places_inverted" conf.base_env <> "yes"
     with Not_found -> false
   in
   let array =
