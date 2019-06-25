@@ -163,8 +163,7 @@ let split_sname s =
   done;
   sub s 0 !j :: !r
 
-let split_fname =
-  String.split_on_char ' '
+let split_fname = split_sname
 
 let tr c1 c2 s =
   match String.rindex_opt s c1 with
