@@ -331,10 +331,20 @@ let treat_connection tmout callback addr fd =
       begin let spid = Unix.fork () in
         if spid > 0 then
           begin
-            ignore @@ Sys.signal Sys.sigalrm (Sys.Signal_handle (timeout tmout spid)) ;
+            let extratime = ref false in
+            ignore @@ Sys.signal Sys.sigusr1 (Sys.Signal_handle (fun _ -> extratime := true)) ;
+            ignore @@ Sys.signal Sys.sigalrm (Sys.Signal_handle (fun x ->
+                if !extratime then begin
+                  ignore @@ Sys.signal Sys.sigalrm (Sys.Signal_handle (timeout (tmout * 2) spid)) ;
+                  ignore @@ Unix.alarm tmout ;
+                end else timeout tmout spid x)) ;
             ignore @@ Unix.alarm tmout ;
-            ignore @@ Unix.waitpid [] spid ;
+            let rec loop () =
+              try ignore @@ Unix.waitpid [] spid
+              with Unix.Unix_error (Unix.EINTR, _, _) -> loop ()
+            in loop () ;
             ignore @@ Sys.signal Sys.sigalrm Sys.Signal_default ;
+            ignore @@ Sys.signal Sys.sigusr1 Sys.Signal_default ;
             exit 0
           end
       end;
