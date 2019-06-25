@@ -1430,7 +1430,6 @@ let find_event_witness gen tag ip r =
             match find_field "RELA" r.rsons with
               Some rr ->
                 if rr.rval = "GODP" then Witness_GodParent
-                else if rr.rval = "officer" then Witness_Officer
                 else Witness
             | _ -> Witness
           in
@@ -1441,7 +1440,6 @@ let find_event_witness gen tag ip r =
             match find_field "RELA" r.rsons with
               Some rr ->
                 if rr.rval = "GODP" then Witness_GodParent
-                else if rr.rval = "officer" then Witness_Officer
                 else Witness
             | _ -> Witness
           in
@@ -1465,7 +1463,6 @@ let find_fevent_witness gen tag ifath r =
             match find_field "RELA" r.rsons with
               Some rr ->
                 if rr.rval = "GODP" then Witness_GodParent
-                else if rr.rval = "officer" then Witness_Officer
                 else Witness
             | _ -> Witness
           in
@@ -1476,7 +1473,6 @@ let find_fevent_witness gen tag ifath r =
             match find_field "RELA" r.rsons with
               Some rr ->
                 if rr.rval = "GODP" then Witness_GodParent
-                else if rr.rval = "officer" then Witness_Officer
                 else Witness
             | _ -> Witness
           in
