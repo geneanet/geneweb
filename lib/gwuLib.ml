@@ -652,7 +652,6 @@ module Make (Select : Select) =
              Printf.fprintf oc ": ";
              begin match wk with
                Witness_GodParent -> Printf.fprintf oc "#godp "
-             | Witness_Officer -> Printf.fprintf oc "#offi "
              | _ -> ()
              end;
              print_witness oc base gen p;
@@ -759,7 +758,6 @@ module Make (Select : Select) =
              Printf.fprintf oc ": ";
              begin match wk with
                Witness_GodParent -> Printf.fprintf oc "#godp "
-             | Witness_Officer -> Printf.fprintf oc "#offi "
              | _ -> ()
              end;
              print_witness oc base gen p;
@@ -990,7 +988,6 @@ module Make (Select : Select) =
              Printf.fprintf oc ": ";
              begin match wk with
                Witness_GodParent -> Printf.fprintf oc "#godp "
-             | Witness_Officer -> Printf.fprintf oc "#offi "
              | _ -> ()
              end;
              print_witness oc base gen p;
