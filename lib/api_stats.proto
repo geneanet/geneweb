@@ -1,6 +1,6 @@
 syntax = "proto2" ;
 
-package geneweb.api.stats.object;
+package Geneanet.Geneweb.Api.Proto.Stats.Model;
 
 enum Title {
   ST_IND_LONGEVITY = 0;
