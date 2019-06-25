@@ -1355,8 +1355,7 @@ let find_fevent_witness gen tag ifath r =
             match find_field "RELA" r.rsons with
               Some rr ->
                 if rr.rval = "GODP" then Witness_GodParent
-                else if rr.rval = "officer" then Witness_Officer
-               else Witness
+                else Witness
             | _ -> Witness
           in
           (witness, witness_kind) :: find_witnesses asso_l
@@ -1366,7 +1365,6 @@ let find_fevent_witness gen tag ifath r =
             match find_field "RELA" r.rsons with
               Some rr ->
                 if rr.rval = "GODP" then Witness_GodParent
-                else if rr.rval = "officer" then Witness_Officer
                 else Witness
             | _ -> Witness
           in

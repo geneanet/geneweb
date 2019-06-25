@@ -856,7 +856,6 @@ let fill_events conf base p base_prefix p_auth pers_to_piqi_callback witness_con
                  match wk with
                  | Witness -> `witness
                  | Witness_GodParent -> `witness_godparent
-                 | Witness_Officer -> `witness_officer
                in
                let witness = poi base ip in
                let witness = pers_to_piqi_callback conf base witness base_prefix in
