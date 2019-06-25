@@ -340,7 +340,8 @@ let string_of_modify_link conf cnt empty =
         let mode_pref = if can_edit then "MOD" else "VIEW" in
         Printf.sprintf "%s(<a href=\"%sm=%s_%s&v=%d%s\">%s</a>)%s\n"
           (if empty then "<p>"
-           else Printf.sprintf "<div class=\"small float-%s\">" conf.right)
+           else Printf.sprintf "<div style=\"font-size:80%%;float:%s;margin-%s:3em\">"
+               conf.right conf.left)
           (commd conf) mode_pref mode cnt
           (if sfn = "" then "" else "&f=" ^ sfn)
           (if can_edit then transl_decline conf "modify" ""
@@ -570,7 +571,8 @@ let html_with_summary_of_tlsw conf wi edit_opt s =
          (lines_before_summary @ summary @ lines_after_summary))
   in
   if lines_before_summary <> [] || lines = [] then
-    let s2 = string_of_modify_link conf 0 (s = "") edit_opt in s2 ^ s
+    let s2 = string_of_modify_link conf 0 (s = "") edit_opt in
+    s2 ^ "<p><br" ^ conf.xhs ^ "></p>\n" ^ s
   else s
 
 let rev_extract_sub_part s v =
@@ -599,21 +601,19 @@ let print_sub_part_links conf edit_mode sfn cnt0 is_empty =
   Wserver.printf "<p>\n";
   if cnt0 >= first_cnt then
     begin
-      Wserver.printf "<a href=\"%sm=%s%s&v=%d\">" (commd conf) edit_mode sfn
-        (cnt0 - 1);
       Wserver.printf
-        "<span class=\"fa fa-arrow-left fa-lg\" title=\"<<\"></span>";
+        "<a href=\"%sm=%s%s&v=%d\">" (commd conf) edit_mode sfn (cnt0 - 1);
+      Wserver.printf "&lt;&lt;" ;
       Wserver.printf "</a>\n"
     end;
   Wserver.printf "<a href=\"%sm=%s%s\">" (commd conf) edit_mode sfn;
-  Wserver.printf "<span class=\"fa fa-arrow-up fa-lg\" title=\"^^\"></span>";
+  Wserver.printf "^^";
   Wserver.printf "</a>\n";
   if not is_empty then
     begin
-      Wserver.printf "<a href=\"%sm=%s%s&v=%d\">" (commd conf) edit_mode sfn
-        (cnt0 + 1);
       Wserver.printf
-        "<span class=\"fa fa-arrow-right fa-lg\" title=\">>\"></span>";
+        "<a href=\"%sm=%s%s&v=%d\">" (commd conf) edit_mode sfn (cnt0 + 1);
+      Wserver.printf "&gt;&gt;" ;
       Wserver.printf "</a>\n"
     end;
   Wserver.printf "</p>\n"

@@ -23,7 +23,6 @@ enum Calendar {
 enum WitnessType {
   WITNESS = 0;
   WITNESS_GODPARENT = 1;
-  WITNESS_OFFICER = 2;
 }
 
 enum Precision {
@@ -81,9 +80,6 @@ message PersonSearch {
   optional string image = 6;
   required Sosa sosa = 7;
   required string family = 8;
-  required string n = 9;
-  required string p = 10;
-  required int32 oc = 11;
 }
 
 message SimplePerson {
