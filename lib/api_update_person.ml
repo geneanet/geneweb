@@ -244,7 +244,6 @@ let reconstitute_person conf base mod_p : ('a, string * string * int * Update.cr
                     match witness.Mwrite.Witness.witness_type with
                     | `witness -> Witness
                     | `witness_godparent -> Witness_GodParent
-                    | `witness_officer -> Witness_Officer
                   in
                   let wit = (reconstitute_somebody base person, wk) in
                   wit :: accu
