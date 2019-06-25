@@ -430,6 +430,7 @@ let treat_request conf base =
 let treat_request_on_possibly_locked_base conf bfile =
   match try Left (Gwdb.open_base bfile) with e -> Right e with
     Left base ->
+      if Gwdb.nb_of_persons base > 500000 then Unix.kill (Unix.getppid ()) Sys.sigusr1 ;
       (try treat_request conf base with exc -> close_base base; raise exc);
       close_base base
   | Right e ->
