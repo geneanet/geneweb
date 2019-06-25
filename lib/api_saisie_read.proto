@@ -1,6 +1,6 @@
 syntax = "proto2" ;
 
-package geneweb.api.saisie_read.object;
+package Geneanet.Geneweb.Api.Proto.SaisieRead.Model;
 
 enum Sosa {
   NO_SOSA = 2;
@@ -97,7 +97,6 @@ enum RelationType {
 enum WitnessType {
   WITNESS = 0;
   WITNESS_GODPARENT = 1;
-  WITNESS_OFFICER = 2;
 }
 
 enum EventType {
