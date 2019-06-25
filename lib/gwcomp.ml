@@ -588,7 +588,6 @@ let get_optional_event_date l =
 let get_event_witness_kind l =
   match l with
     "#godp" :: l' -> Witness_GodParent, l'
-  | "#offi" :: l' -> Witness_Officer, l'
   | _ -> Witness, l
 
 let get_mar_date str =
