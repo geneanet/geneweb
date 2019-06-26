@@ -316,75 +316,12 @@ let convert_wiki_notes_to_html_notes conf base env wiki_notes separator_string =
 (* ************************************************************************** *)
 let event_to_piqi_event pevt_name fevt_name =
   match pevt_name with
-  (* Évènements personnels *)
-  | Some Epers_Birth -> `epers_birth
-  | Some Epers_Baptism -> `epers_baptism
-  | Some Epers_Death -> `epers_death
-  | Some Epers_Burial -> `epers_burial
-  | Some Epers_Cremation -> `epers_cremation
-  | Some Epers_Accomplishment -> `epers_accomplishment
-  | Some Epers_Acquisition -> `epers_acquisition
-  | Some Epers_Adhesion -> `epers_adhesion
-  | Some Epers_BaptismLDS -> `epers_baptismlds
-  | Some Epers_BarMitzvah -> `epers_barmitzvah
-  | Some Epers_BatMitzvah -> `epers_batmitzvah
-  | Some Epers_Benediction -> `epers_benediction
-  | Some Epers_ChangeName -> `epers_changename
-  | Some Epers_Circumcision-> `epers_circumcision
-  | Some Epers_Confirmation -> `epers_confirmation
-  | Some Epers_ConfirmationLDS -> `epers_confirmationlds
-  | Some Epers_Decoration -> `epers_decoration
-  | Some Epers_DemobilisationMilitaire -> `epers_demobilisationmilitaire
-  | Some Epers_Diploma -> `epers_diploma
-  | Some Epers_Distinction -> `epers_distinction
-  | Some Epers_Dotation -> `epers_dotation
-  | Some Epers_DotationLDS -> `epers_dotationlds
-  | Some Epers_Education -> `epers_education
-  | Some Epers_Election -> `epers_election
-  | Some Epers_Emigration -> `epers_emigration
-  | Some Epers_Excommunication -> `epers_excommunication
-  | Some Epers_FamilyLinkLDS -> `epers_familylinklds
-  | Some Epers_FirstCommunion -> `epers_firstcommunion
-  | Some Epers_Funeral -> `epers_funeral
-  | Some Epers_Graduate -> `epers_graduate
-  | Some Epers_Hospitalisation -> `epers_hospitalisation
-  | Some Epers_Illness -> `epers_illness
-  | Some Epers_Immigration-> `epers_immigration
-  | Some Epers_ListePassenger -> `epers_listepassenger
-  | Some Epers_MilitaryDistinction -> `epers_militarydistinction
-  | Some Epers_MilitaryPromotion -> `epers_militarypromotion
-  | Some Epers_MilitaryService -> `epers_militaryservice
-  | Some Epers_MobilisationMilitaire -> `epers_mobilisationmilitaire
-  | Some Epers_Naturalisation -> `epers_naturalisation
-  | Some Epers_Occupation -> `epers_occupation
-  | Some Epers_Ordination -> `epers_ordination
-  | Some Epers_Property -> `epers_property
-  | Some Epers_Recensement -> `epers_recensement
-  | Some Epers_Residence -> `epers_residence
-  | Some Epers_Retired -> `epers_retired
-  | Some Epers_ScellentChildLDS -> `epers_scellentchildlds
-  | Some Epers_ScellentParentLDS -> `epers_scellentparentlds
-  | Some Epers_ScellentSpouseLDS -> `epers_scellentspouselds
-  | Some Epers_VenteBien -> `epers_ventebien
-  | Some Epers_Will -> `epers_will
-  | Some _ -> `epers_custom
-  | None ->
-  match fevt_name with
-  (* Évènements familiaux *)
-  | Some Efam_Marriage -> `efam_marriage
-  | Some Efam_NoMarriage -> `efam_no_marriage
-  | Some Efam_NoMention -> `efam_no_mention
-  | Some Efam_Engage -> `efam_engage
-  | Some Efam_Divorce -> `efam_divorce
-  | Some Efam_Separated -> `efam_separated
-  | Some Efam_Annulation -> `efam_annulation
-  | Some Efam_MarriageBann -> `efam_marriage_bann
-  | Some Efam_MarriageContract -> `efam_marriage_contract
-  | Some Efam_MarriageLicense -> `efam_marriage_license
-  | Some Efam_PACS -> `efam_pacs
-  | Some Efam_Residence -> `efam_residence
-  | Some _ -> `efam_custom
-  | None -> failwith "event_to_piqi_event"
+  | Some (Epers_Name _) -> `epers_custom
+  | Some pevt -> Api_util.piqi_pevent_name_of_pevent_name pevt
+  | None -> match fevt_name with
+    | Some (Efam_Name _) -> `efam_custom
+    | Some fevt -> piqi_fevent_name_of_fevent_name fevt
+    | None -> failwith "event_to_piqi_event"
 
 (* ************************************************************************** *)
 (*  [Fonc] pers_to_piqi_person_tree :
