@@ -36,8 +36,9 @@
         <ul class="nav nav-tabs">
           %( personnal modules selection menu %)
           <li class="nav-item dropdown">
-            <a id="load_once_p_mod" class="nav-link dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+            <a id="load_once_p_mod" class="nav-link dropdown-toggle text-secondary dropdown-toggle-split" data-toggle="dropdown"
               href="#" role="button" aria-haspopup="true" aria-expanded="false" title="[*module]1"%( data-offset="10,20"%)>
+              <span class="fas fa-address-card fa-fw" aria-hidden="true"></span>
               <span class="sr-only">[*module]1</span>%nn;
             </a>
             <div class="dropdown-menu">
@@ -107,19 +108,19 @@ fr: Sélectionnez les modules en cliquant sur le bouton correspondant (max 15).
           %if;has_sosa;
             %if;(sosa_prev.index!="")
               <li class="nav-item">
-                <a class="nav-link" href="%prefix_base_password;%if;(bvar.access_by_key="yes")%sosa_prev.access;%else;i=%sosa_prev.index;%end;;%nn;
+                <a class="nav-link text-secondary" href="%prefix_base_password;%if;(bvar.access_by_key="yes")%sosa_prev.access;%else;i=%sosa_prev.index;%end;;%nn;
                   %foreach;env_binding;%if;(env.key!="p" and env.key!="n" and env.key!="oc" and env.key!="i")%env.key=%env.val;;%end;%end;"
                   title="[Sosa] %sosa_prev.sosa;[:] %sosa_prev;"><span class="fa fa-chevron-left" aria-hidden="true"></span><span class="sr-only">&lt;</span></a>%nn;
               </li>
             %end;
             %if(sosa_next.index!="")
-              %(%if;(sosa_prev.index="")
-                <li class="nav-item">
-                  <a class="nav-link"><i class="far fa-dot-circle fa-fw %sexcolor; disabled" aria-hidden="true" title="Sosa 1"><span class="sr-only">·</span></i></a>%nn;
+              %if;(sosa_prev.index="")
+                <li class="nav-item" title="Sosa 1[:] %self; ">
+                  <a class="nav-link disabled"href="#" tabindex="-1" aria-disabled="true"><span class="far fa-dot-circle" aria-hidden="true"></span><span class="sr-only">·</span></a>%nn;
                 </li>
-              %end;%)
+              %end;
               <li class="nav-item">
-                <a class="nav-link" href="%prefix_base_password;%if;(bvar.access_by_key="yes")%sosa_next.access;%else;i=%sosa_next.index;%end;;%nn;
+                <a class="nav-link text-secondary" href="%prefix_base_password;%if;(bvar.access_by_key="yes")%sosa_next.access;%else;i=%sosa_next.index;%end;;%nn;
                   %foreach;env_binding;%if;(env.key!="p" and env.key!="n" and env.key!="oc" and env.key!="i")%env.key=%env.val;;%end;%end;"
                   title="[Sosa] %sosa_next.sosa;[:] %sosa_next;"><span class="fa fa-chevron-right" aria-hidden="true"></span><span class="sr-only">></span></a>
               </li>
@@ -153,8 +154,8 @@ fr: Sélectionnez les modules en cliquant sur le bouton correspondant (max 15).
             </li>
           %end;
           <li class="nav-item dropdown">
-            <a id="load_once_copylink" class="nav-link dropdown-toggle %if;(evar.m="CHG_EVT_IND_ORD" or evar.m="SND_IMAGE" or evar.m="MRG" or evar.m="DEL_IND")active%end;"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="[*tools] [person/persons]0">%nn;
+            <a id="load_once_copylink" class="nav-link dropdown-toggle text-secondary %if;(evar.m="CHG_EVT_IND_ORD" or evar.m="SND_IMAGE" or evar.m="MRG" or evar.m="DEL_IND")active%end;"
+               data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true" title="[*tools] [person/persons]0">%nn;
               <span class="fa fa-user-cog" aria-hidden="true"></span>%nn;
               <span class="sr-only">[*tools] [person/persons]0</span>%nn;
             </a>
@@ -241,10 +242,10 @@ fr: Sélectionnez les modules en cliquant sur le bouton correspondant (max 15).
                 </li>
               %end;
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle
+                <a class="nav-link dropdown-toggle text-secondary 
                    %if;(evar.m="ADD_FAM" or evar.m="CHG_EVT_FAM_ORD" or evar.m="DEL_FAM"
                    or evar.m="MRG_FAM" or evar.m="INV_FAM" or evar.m="CHG_CHN")active%end;"
-                   data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"
+                   data-toggle="dropdown" role="button" href="#" aria-haspopup="true" aria-expanded="false"
                    title="[*tools] %if;(nb_families>1)[family/families]1%else;[family/families]0%end;">%nn;
                    <span class="fa fa-user-plus" aria-hidden="true"></span>%nn;
                    <span class="fa fa-user-cog" aria-hidden="true"></span>%nn;
@@ -287,7 +288,7 @@ fr: Sélectionnez les modules en cliquant sur le bouton correspondant (max 15).
           %end;
           %if;has_parents;
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle %if;(evar.m="A")active%end;" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="fa fa-sitemap fa-fw fa-rotate-180" title="[*ancestors]"></span></a>
+              <a class="nav-link dropdown-toggle text-secondary %if;(evar.m="A")active%end;" data-toggle="dropdown" role="button" href="#" aria-haspopup="true" aria-expanded="false"><span class="fa fa-sitemap fa-fw fa-rotate-180" title="[*ancestors]"></span></a>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="%prefix;%access;;m=A;"><span class="fa fa-cog fa-fw mr-2"></span>[*ancestors]</a>
                 <div class="dropdown-divider"></div>
@@ -305,7 +306,7 @@ fr: Sélectionnez les modules en cliquant sur le bouton correspondant (max 15).
           %end;
           %if;has_children;
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle %if;(evar.m="D")active%end;" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="fa fa-sitemap fa-fw" title="[*descendants]"></span></a>
+              <a class="nav-link dropdown-toggle text-secondary %if;(evar.m="D")active%end;" data-toggle="dropdown" role="button" href="#" aria-haspopup="true" aria-expanded="false"><span class="fa fa-sitemap fa-fw" title="[*descendants]"></span></a>
               <div class="dropdown-menu">
                 <a class="dropdown-item" href="%prefix;m=D;%access;;"><span class="fa fa-cog fa-fw mr-2"></span>[*descendants]</a>
                 <div class="dropdown-divider"></div>
@@ -321,7 +322,7 @@ fr: Sélectionnez les modules en cliquant sur le bouton correspondant (max 15).
             </li>
           %end;
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle %if;(evar.m="R" or evar.m="F" or (evar.m="C" and evar.t="AN"))active%end;" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="[*relationship]"><span class="fa fa-user-friends"></span></a>
+            <a class="nav-link dropdown-toggle text-secondary %if;(evar.m="R" or evar.m="F" or (evar.m="C" and evar.t="AN"))active%end;" data-toggle="dropdown" role="button" href="#" aria-haspopup="true" aria-expanded="false" title="[*relationship]"><span class="fa fa-user-friends"></span></a>
             <div class="dropdown-menu">
               <a class="dropdown-item" href="%prefix;m=R;%access;" %laR;><span class="fa fa-cog fa-fw"></span> [*relationship computing]</a>
               <div class="dropdown-divider"></div>
