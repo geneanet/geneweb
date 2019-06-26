@@ -739,8 +739,8 @@ message EventsQueryParams {
 }
 
 message EventQueryResult {
-  required ReferencePerson p = 1 ;
-  optional ReferencePerson sp = 2 ;
+  required Person p = 1 ;
+  optional Person sp = 2 ;
   optional PeventName pevent_name = 3 ;
   optional FeventName fevent_name = 4 ;
   required Date date = 5;
