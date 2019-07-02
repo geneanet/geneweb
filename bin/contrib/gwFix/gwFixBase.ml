@@ -43,8 +43,7 @@ let check_keys ~verbosity1 ~verbosity2 base nb_ind fix =
   done;
   if verbosity1 then ProgrBar.finish ()
 
-let check_families_parents ~verbosity1 ~verbosity2 base nb_fam =
-  let dummy_iper = Adef.iper_of_int (-1) in
+let check_families_parents ~verbosity1 ~verbosity2 base nb_fam fix =
   if verbosity1 then begin
     Printf.printf "Check families' parents\n";
     flush stdout;
@@ -55,24 +54,16 @@ let check_families_parents ~verbosity1 ~verbosity2 base nb_fam =
     let ifam = Adef.ifam_of_int i in
     let fam = foi base ifam in
     if not @@ is_deleted_family fam then begin
-      let a = get_parent_array fam in
-      for j = 0 to Array.length a - 1 do
-        let ip = a.(j) in
-        if ip = dummy_iper then begin (* FIXME *)
-          if verbosity2 then begin
-            suspend_with (fun () ->
-                Printf.printf "\tdummy parent in family %d\n" (Adef.int_of_ifam ifam) ) ;
-            flush stdout ;
-            ProgrBar.restart i nb_fam
-          end ;
-        end else if not @@ Array.mem ifam (get_family (poi base ip)) then
+      Array.iter begin fun ip ->
+        let unions = get_family (poi base ip) in
+        if not @@ Array.mem ifam unions then
           begin
-            suspend_with (fun () ->
-                Printf.printf "\tno family for : %s\n" (string_of_p base ip) ) ;
-            flush stdout ;
-            ProgrBar.restart i nb_fam
+            if verbosity2 then suspend_with (fun () -> Printf.printf "\tNo family for: %s\n" (string_of_p base ip) ) ;
+            patch_union base ip { family = Array.append unions [|ifam|] } ;
+            incr fix ;
+            if verbosity2 then restart_with_fixed i nb_fam ;
           end
-      done
+      end (get_parent_array fam)
     end
   done;
   ProgrBar.finish ()
@@ -353,7 +344,7 @@ let check
   let nb_ind = nb_of_persons base in
   if fast then begin load_strings_array base ; load_persons_array base end ;
   if !keys then check_keys ~verbosity1 ~verbosity2 base nb_ind fix;
-  if !f_parents then check_families_parents ~verbosity1 ~verbosity2 base nb_fam;
+  if !f_parents then check_families_parents ~verbosity1 ~verbosity2 base nb_fam fix;
   if !f_children then check_families_children ~verbosity1 ~verbosity2 base nb_fam fix;
   if !p_parents then check_persons_parents ~verbosity1 ~verbosity2 base nb_ind fix;
   if !p_families then check_persons_families ~verbosity1 ~verbosity2 base nb_ind fix;
