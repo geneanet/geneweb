@@ -630,7 +630,8 @@ and family2_dat =
     mutable des2 : iper gen_descend option option }
 
 type ('f, 'c, 'd) family_fun =
-  { get_comment : 'f -> istr;
+  { get_ifam : 'f -> ifam;
+    get_comment : 'f -> istr;
     get_divorce : 'f -> Def.divorce;
     get_fsources : 'f -> istr;
     get_fevents : 'f -> fam_event list;
@@ -653,7 +654,8 @@ type ('f, 'c, 'd) family_fun =
 (* Families - implementation database 1 *)
 
 let family1_fun =
-  {get_comment = (fun f -> Istr f.Def.comment);
+  {get_ifam = (fun f -> f.Def.fam_index);
+   get_comment = (fun f -> Istr f.Def.comment);
    get_divorce = (fun f -> f.Def.divorce);
    get_fsources = (fun f -> Istr f.Def.fsources);
    get_fevents =
@@ -681,7 +683,8 @@ let family1_fun =
 
 let family2_fun =
   let rec self =
-    {get_comment = (fun (db2, i) -> make_istr2 db2 ("family", "comment") i);
+    {get_ifam = (fun _ -> assert false);
+     get_comment = (fun (db2, i) -> make_istr2 db2 ("family", "comment") i);
      get_divorce = (fun (db2, i) -> get_field db2 i ("family", "divorce"));
      get_fsources = (fun (db2, i) -> make_istr2 db2 ("family", "fsources") i);
      get_fevents =
@@ -747,7 +750,8 @@ let family2_fun =
   self
 
 let family2gen_fun =
-  {get_comment = (fun (db2, f) -> Istr2New (db2, f.Def.comment));
+  {get_ifam = (fun _ -> assert false);
+   get_comment = (fun (db2, f) -> Istr2New (db2, f.Def.comment));
    get_divorce = (fun (_db2, f) -> f.Def.divorce);
    get_fsources = (fun (db2, f) -> Istr2New (db2, f.Def.fsources));
    get_fevents =
@@ -827,6 +831,7 @@ let wrap_des f g h =
         Some des -> h family2gen_fun (db2, des)
       | None -> g family2_fun (db2, i)
 
+let get_ifam fam = let f pf = pf.get_ifam in wrap_fam f f f fam
 let get_comment fam = let f pf = pf.get_comment in wrap_fam f f f fam
 let get_divorce fam = let f pf = pf.get_divorce in wrap_fam f f f fam
 let get_fsources fam = let f pf = pf.get_fsources in wrap_fam f f f fam

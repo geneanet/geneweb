@@ -129,77 +129,6 @@ let print_person_search_info conf base =
 
 (**/**) (* Configuration pour la saisie. *)
 
-let piqi_event_of_fevent evt_name =
-  match evt_name with
-  | Efam_Marriage -> `efam_marriage
-  | Efam_NoMarriage -> `efam_no_marriage
-  | Efam_NoMention -> `efam_no_mention
-  | Efam_Engage -> `efam_engage
-  | Efam_Divorce -> `efam_divorce
-  | Efam_Separated -> `efam_separated
-  | Efam_Annulation -> `efam_annulation
-  | Efam_MarriageBann -> `efam_marriage_bann
-  | Efam_MarriageContract -> `efam_marriage_contract
-  | Efam_MarriageLicense -> `efam_marriage_license
-  | Efam_PACS -> `efam_pacs
-  | Efam_Residence -> `efam_residence
-  | _ -> failwith "print_config"
-
-let piqi_event_of_pevent evt_name =
-  match evt_name with
-  | Epers_Birth -> `epers_birth
-  | Epers_Baptism -> `epers_baptism
-  | Epers_Death -> `epers_death
-  | Epers_Burial -> `epers_burial
-  | Epers_Cremation -> `epers_cremation
-  | Epers_Accomplishment -> `epers_accomplishment
-  | Epers_Acquisition -> `epers_acquisition
-  | Epers_Adhesion -> `epers_adhesion
-  | Epers_BaptismLDS -> `epers_baptismlds
-  | Epers_BarMitzvah -> `epers_barmitzvah
-  | Epers_BatMitzvah -> `epers_batmitzvah
-  | Epers_Benediction -> `epers_benediction
-  | Epers_ChangeName -> `epers_changename
-  | Epers_Circumcision-> `epers_circumcision
-  | Epers_Confirmation -> `epers_confirmation
-  | Epers_ConfirmationLDS -> `epers_confirmationlds
-  | Epers_Decoration -> `epers_decoration
-  | Epers_DemobilisationMilitaire -> `epers_demobilisationmilitaire
-  | Epers_Diploma -> `epers_diploma
-  | Epers_Distinction -> `epers_distinction
-  | Epers_Dotation -> `epers_dotation
-  | Epers_DotationLDS -> `epers_dotationlds
-  | Epers_Education -> `epers_education
-  | Epers_Election -> `epers_election
-  | Epers_Emigration -> `epers_emigration
-  | Epers_Excommunication -> `epers_excommunication
-  | Epers_FamilyLinkLDS -> `epers_familylinklds
-  | Epers_FirstCommunion -> `epers_firstcommunion
-  | Epers_Funeral -> `epers_funeral
-  | Epers_Graduate -> `epers_graduate
-  | Epers_Hospitalisation -> `epers_hospitalisation
-  | Epers_Illness -> `epers_illness
-  | Epers_Immigration-> `epers_immigration
-  | Epers_ListePassenger -> `epers_listepassenger
-  | Epers_MilitaryDistinction -> `epers_militarydistinction
-  | Epers_MilitaryPromotion -> `epers_militarypromotion
-  | Epers_MilitaryService -> `epers_militaryservice
-  | Epers_MobilisationMilitaire -> `epers_mobilisationmilitaire
-  | Epers_Naturalisation -> `epers_naturalisation
-  | Epers_Occupation -> `epers_occupation
-  | Epers_Ordination -> `epers_ordination
-  | Epers_Property -> `epers_property
-  | Epers_Recensement -> `epers_recensement
-  | Epers_Residence -> `epers_residence
-  | Epers_Retired -> `epers_retired
-  | Epers_ScellentChildLDS -> `epers_scellentchildlds
-  | Epers_ScellentParentLDS -> `epers_scellentparentlds
-  | Epers_ScellentSpouseLDS -> `epers_scellentspouselds
-  | Epers_VenteBien -> `epers_ventebien
-  | Epers_Will -> `epers_will
-  | _ -> failwith "print_config"
-
-
 (* ************************************************************************ *)
 (*  [Fonc] print_config : config -> base -> Config                          *)
 (** [Description] : Renvoi un message contenant la configuration, i.e. la
@@ -319,7 +248,7 @@ let print_config conf base =
     List.map
       (fun evt ->
         let (pos, sval) =
-          (piqi_event_of_fevent evt, Util.string_of_fevent_name conf base evt)
+          (piqi_fevent_name_of_fevent_name evt, Util.string_of_fevent_name conf base evt)
         in
         Mwrite.Transl_fevent_name.({
           pos = pos;
@@ -339,7 +268,7 @@ let print_config conf base =
     List.map
       (fun evt ->
         let (pos, sval) =
-          (piqi_event_of_pevent evt, Util.string_of_pevent_name conf base evt)
+          (piqi_pevent_name_of_pevent_name evt, Util.string_of_pevent_name conf base evt)
         in
         Mwrite.Transl_pevent_name.({
           pos = pos;
@@ -351,7 +280,7 @@ let print_config conf base =
     List.map
       (fun evt ->
         let (pos, sval) =
-          (piqi_event_of_pevent evt, Util.string_of_pevent_name conf base evt)
+          (piqi_pevent_name_of_pevent_name evt, Util.string_of_pevent_name conf base evt)
         in
         Mwrite.Transl_pevent_name.({
           pos = pos;
@@ -382,7 +311,7 @@ let print_config conf base =
     List.map
       (fun evt ->
         let (pos, sval) =
-          (piqi_event_of_pevent evt, Util.string_of_pevent_name conf base evt)
+          (piqi_pevent_name_of_pevent_name evt, Util.string_of_pevent_name conf base evt)
         in
         Mwrite.Transl_pevent_name.({
           pos = pos;

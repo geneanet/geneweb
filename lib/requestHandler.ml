@@ -445,6 +445,7 @@ and handler =
   ; api_link_tree : handler_base
   ; api_stats : handler_base
   ; api_add_first_fam : handler_nobase
+  ; api_select_events : handler_base
 #endif
   ; fallback : string -> handler_base
   }
@@ -623,6 +624,7 @@ let dummyHandler =
   ; api_link_tree = dummy_base
   ; api_stats = dummy_base
   ; api_add_first_fam = dummy_nobase
+  ; api_select_events = dummy_base
 #endif
   ; fallback = dummy_base
   }
@@ -1478,6 +1480,10 @@ let defaultHandler : handler =
 
   ; api_stats = begin fun _self conf base ->
       Api_stats.print_stats conf base
+    end
+
+  ; api_select_events = begin fun _self conf base ->
+      Api_graph.print_select_events conf base
     end
 
   ; api_add_first_fam = begin fun _self conf ->

@@ -205,18 +205,27 @@ let date_of_string s = Gwcomp.date_of_string s 0
 
 (**/**) (* Convertion d'une date. *)
 
-(* ********************************************************************* *)
-(*  [Fonc] piqi_date_of_date : Def.date -> Mapp.date                     *)
-(** [Description] : Converti une date GeneWeb en date piqi.
-    [Args] :
-      - date : date GeneWeb à convertir
-    [Retour] :
-      - piqi date : renvoie une date piqi.
-    [Rem] : Non exporté en clair hors de ce module.                      *)
-(* ********************************************************************* *)
-let piqi_date_of_date date =
-  match date with
-  | Dgreg (dmy, cal) ->
+module Date_converter
+    (M : sig
+       module Dmy : sig
+         type t = { mutable day : int32
+                  ; mutable month : int32
+                  ; mutable year : int32
+                  ; mutable delta : int32
+                  }
+       end
+       module Date : sig
+         type t = { mutable cal : [ `gregorian | `julian | `french | `hebrew ] option
+                  ; mutable prec : [ `sure | `about | `maybe | `before | `after | `oryear | `yearint ] option
+                  ; mutable dmy : Dmy.t option
+                  ; mutable dmy2 : Dmy.t option
+                  ; mutable text : string option
+                  }
+       end
+     end) =
+struct
+  let piqi_date_of_date = function
+    | Dgreg (dmy, cal) ->
       let cal =
         match cal with
         | Dgregorian -> `gregorian
@@ -229,7 +238,7 @@ let piqi_date_of_date date =
           (Int32.of_int dmy.day, Int32.of_int dmy.month,
            Int32.of_int dmy.year, Int32.of_int dmy.delta)
         in
-        let dmy1 = {Mapp.Dmy.day = d; month = m; year = y; delta = delta;} in
+        let dmy1 = {M.Dmy.day = d; month = m; year = y; delta = delta;} in
         let (prec, dmy2) =
           match dmy.prec with
           | Sure -> (`sure, None)
@@ -238,100 +247,93 @@ let piqi_date_of_date date =
           | Before -> (`before, None)
           | After -> (`after, None)
           | OrYear d2 ->
-              let dmy2 =
-                {
-                  Mapp.Dmy.day = Int32.of_int 0;
-                  month = Int32.of_int 0;
-                  year = Int32.of_int d2.year2;
-                  delta = Int32.of_int 0;
-                }
-              in
-              (`oryear, Some dmy2)
+            let dmy2 =
+              {
+                M.Dmy.day = Int32.of_int 0;
+                month = Int32.of_int 0;
+                year = Int32.of_int d2.year2;
+                delta = Int32.of_int 0;
+              }
+            in
+            (`oryear, Some dmy2)
           | YearInt d2 ->
-              let dmy2 =
-                {
-                  Mapp.Dmy.day = Int32.of_int 0;
-                  month = Int32.of_int 0;
-                  year = Int32.of_int d2.year2;
-                  delta = Int32.of_int 0;
-                }
-              in
-              (`yearint, Some dmy2)
+            let dmy2 =
+              {
+                M.Dmy.day = Int32.of_int 0;
+                month = Int32.of_int 0;
+                year = Int32.of_int d2.year2;
+                delta = Int32.of_int 0;
+              }
+            in
+            (`yearint, Some dmy2)
         in
         (prec, dmy1, dmy2)
       in
       {
-        Mapp.Date.cal = Some cal;
+        M.Date.cal = Some cal;
         prec = Some prec;
         dmy = Some dmy;
         dmy2 = dmy2;
         text = None;
       }
-  | Dtext txt ->
+    | Dtext txt ->
       {
-        Mapp.Date.cal = None;
+        M.Date.cal = None;
         prec = None;
         dmy = None;
         dmy2 = None;
         text = Some (Util.safe_html txt);
       }
 
-
-(* ********************************************************************* *)
-(*  [Fonc] date_of_piqi_date : Mapp.date -> Def.date                     *)
-(** [Description] : Converti une date piqi en date GeneWeb.
-    [Args] :
-      - date : date piqi à convertir
-    [Retour] :
-      - Def.date : renvoie une date GeneWeb.
-    [Rem] : Non exporté en clair hors de ce module.                      *)
-(* ********************************************************************* *)
-let date_of_piqi_date date =
-  match date.Mapp.Date.text with
-  | Some txt -> Dtext (Util.safe_html txt)
-  | _ ->
+  let date_of_piqi_date date =
+    match date.M.Date.text with
+    | Some txt -> Dtext (Util.safe_html txt)
+    | _ ->
       let cal =
-        match date.Mapp.Date.cal with
+        match date.M.Date.cal with
         | Some `julian -> Djulian
         | Some `french -> Dfrench
         | Some `hebrew -> Dhebrew
         | _ -> Dgregorian
       in
       let prec =
-        match date.Mapp.Date.prec with
+        match date.M.Date.prec with
         | Some `about -> About
         | Some `maybe -> Maybe
         | Some `before -> Before
         | Some `after -> After
         | Some `oryear ->
-            (match date.Mapp.Date.dmy2 with
-            | Some dmy ->
-                let y = Int32.to_int dmy.Mapp.Dmy.year in
-                let dmy2 = {day2 = 0; month2 = 0; year2 = y; delta2 = 0} in
-                OrYear dmy2
-            | None -> OrYear {day2 = 0; month2 = 0; year2 = 0; delta2 = 0} (* erreur*))
+          (match date.M.Date.dmy2 with
+           | Some dmy ->
+             let y = Int32.to_int dmy.M.Dmy.year in
+             let dmy2 = {day2 = 0; month2 = 0; year2 = y; delta2 = 0} in
+             OrYear dmy2
+           | None -> OrYear {day2 = 0; month2 = 0; year2 = 0; delta2 = 0} (* erreur*))
         | Some `yearint ->
-            (match date.Mapp.Date.dmy2 with
-            | Some dmy ->
-                let y = Int32.to_int dmy.Mapp.Dmy.year in
-                let dmy2 = {day2 = 0; month2 = 0; year2 = y; delta2 = 0} in
-                YearInt dmy2
-            | None -> YearInt {day2 = 0; month2 = 0; year2 = 0; delta2 = 0} (* erreur*))
+          (match date.M.Date.dmy2 with
+           | Some dmy ->
+             let y = Int32.to_int dmy.M.Dmy.year in
+             let dmy2 = {day2 = 0; month2 = 0; year2 = y; delta2 = 0} in
+             YearInt dmy2
+           | None -> YearInt {day2 = 0; month2 = 0; year2 = 0; delta2 = 0} (* erreur*))
         | _ -> Sure
       in
       let dmy =
-        match date.Mapp.Date.dmy with
+        match date.M.Date.dmy with
         | Some dmy ->
-            let day = Int32.to_int dmy.Mapp.Dmy.day in
-            let month = Int32.to_int dmy.Mapp.Dmy.month in
-            let year = Int32.to_int dmy.Mapp.Dmy.year in
-            let delta = Int32.to_int dmy.Mapp.Dmy.delta in
-            {day = day; month = month; year = year; prec = prec; delta = delta}
+          let day = Int32.to_int dmy.M.Dmy.day in
+          let month = Int32.to_int dmy.M.Dmy.month in
+          let year = Int32.to_int dmy.M.Dmy.year in
+          let delta = Int32.to_int dmy.M.Dmy.delta in
+          {day = day; month = month; year = year; prec = prec; delta = delta}
         | None -> (* erreur*)
-            {day = 0; month = 0; year = 0; prec = Sure; delta = 0}
+          {day = 0; month = 0; year = 0; prec = Sure; delta = 0}
       in
       Dgreg (dmy, cal)
 
+end
+
+include Date_converter (M)
 
 let p_publicname base p =
   let public_name = Mutil.nominative (sou base (get_public_name p)) in
@@ -1601,11 +1603,9 @@ let fam_to_piqi_family_link base (ifath, imoth) ifam fam =
     index = index;
   }
 
-
 (**/**) (* Fonctions de transformation person <=> piqi person pour l'app *)
 
-let piqi_event_of_fevent evt_name =
-  match evt_name with
+let piqi_fevent_name_of_fevent_name = function
   | Efam_Marriage -> `efam_marriage
   | Efam_NoMarriage -> `efam_no_marriage
   | Efam_NoMention -> `efam_no_mention
@@ -1618,10 +1618,9 @@ let piqi_event_of_fevent evt_name =
   | Efam_MarriageLicense -> `efam_marriage_license
   | Efam_PACS -> `efam_pacs
   | Efam_Residence -> `efam_residence
-  | _ -> failwith "piqi_event_of_fevent api_util.ml"
+  | _ -> failwith __LOC__
 
-let piqi_event_of_pevent evt_name =
-  match evt_name with
+let piqi_pevent_name_of_pevent_name = function
   | Epers_Birth -> `epers_birth
   | Epers_Baptism -> `epers_baptism
   | Epers_Death -> `epers_death
@@ -1672,7 +1671,75 @@ let piqi_event_of_pevent evt_name =
   | Epers_ScellentSpouseLDS -> `epers_scellentspouselds
   | Epers_VenteBien -> `epers_ventebien
   | Epers_Will -> `epers_will
-  | _ -> failwith "piqi_event_of_pevent api_util.ml"
+  | _ -> failwith __LOC__
+
+let pevent_name_of_piqi_pevent_name = function
+  | `epers_birth -> Epers_Birth
+  | `epers_baptism -> Epers_Baptism
+  | `epers_death -> Epers_Death
+  | `epers_burial -> Epers_Burial
+  | `epers_cremation -> Epers_Cremation
+  | `epers_accomplishment -> Epers_Accomplishment
+  | `epers_acquisition -> Epers_Acquisition
+  | `epers_adhesion -> Epers_Adhesion
+  | `epers_baptismlds -> Epers_BaptismLDS
+  | `epers_barmitzvah -> Epers_BarMitzvah
+  | `epers_batmitzvah -> Epers_BatMitzvah
+  | `epers_benediction -> Epers_Benediction
+  | `epers_changename -> Epers_ChangeName
+  | `epers_circumcision -> Epers_Circumcision
+  | `epers_confirmation -> Epers_Confirmation
+  | `epers_confirmationlds -> Epers_ConfirmationLDS
+  | `epers_decoration -> Epers_Decoration
+  | `epers_demobilisationmilitaire -> Epers_DemobilisationMilitaire
+  | `epers_diploma -> Epers_Diploma
+  | `epers_distinction -> Epers_Distinction
+  | `epers_dotation -> Epers_Dotation
+  | `epers_dotationlds -> Epers_DotationLDS
+  | `epers_education -> Epers_Education
+  | `epers_election -> Epers_Election
+  | `epers_emigration -> Epers_Emigration
+  | `epers_excommunication -> Epers_Excommunication
+  | `epers_familylinklds -> Epers_FamilyLinkLDS
+  | `epers_firstcommunion -> Epers_FirstCommunion
+  | `epers_funeral -> Epers_Funeral
+  | `epers_graduate -> Epers_Graduate
+  | `epers_hospitalisation -> Epers_Hospitalisation
+  | `epers_illness -> Epers_Illness
+  | `epers_immigration -> Epers_Immigration
+  | `epers_listepassenger -> Epers_ListePassenger
+  | `epers_militarydistinction -> Epers_MilitaryDistinction
+  | `epers_militarypromotion -> Epers_MilitaryPromotion
+  | `epers_militaryservice -> Epers_MilitaryService
+  | `epers_mobilisationmilitaire -> Epers_MobilisationMilitaire
+  | `epers_naturalisation -> Epers_Naturalisation
+  | `epers_occupation -> Epers_Occupation
+  | `epers_ordination -> Epers_Ordination
+  | `epers_property -> Epers_Property
+  | `epers_recensement -> Epers_Recensement
+  | `epers_residence -> Epers_Residence
+  | `epers_retired -> Epers_Retired
+  | `epers_scellentchildlds -> Epers_ScellentChildLDS
+  | `epers_scellentparentlds -> Epers_ScellentParentLDS
+  | `epers_scellentspouselds -> Epers_ScellentSpouseLDS
+  | `epers_ventebien -> Epers_VenteBien
+  | `epers_will -> Epers_Will
+
+let fevent_name_of_piqi_fevent_name = function
+  | `efam_marriage -> Efam_Marriage
+  | `efam_no_marriage -> Efam_NoMarriage
+  | `efam_no_mention -> Efam_NoMention
+  | `efam_engage -> Efam_Engage
+  | `efam_divorce -> Efam_Divorce
+  | `efam_separated -> Efam_Separated
+  | `efam_annulation -> Efam_Annulation
+  | `efam_marriage_bann -> Efam_MarriageBann
+  | `efam_marriage_contract -> Efam_MarriageContract
+  | `efam_marriage_license -> Efam_MarriageLicense
+  | `efam_pacs -> Efam_PACS
+  | `efam_residence -> Efam_Residence
+
+module App_date_converter = Date_converter (Mapp)
 
 (* ************************************************************************** *)
 (*  [Fonc] pers_to_piqi_app_person : config -> base -> person -> Person       *)
@@ -1712,14 +1779,14 @@ let pers_to_piqi_app_person conf base p =
   in
   let birth =
     match Adef.od_of_cdate gen_p.birth with
-    | Some d -> Some (piqi_date_of_date d)
+    | Some d -> Some (App_date_converter.piqi_date_of_date d)
     | _ -> None
   in
   let birth_place = gen_p.birth_place in
   let birth_src = gen_p.birth_src in
   let baptism =
     match Adef.od_of_cdate gen_p.baptism with
-    | Some d -> Some (piqi_date_of_date d)
+    | Some d -> Some (App_date_converter.piqi_date_of_date d)
     | _ -> None
   in
   let baptism_place = gen_p.baptism_place in
@@ -1729,7 +1796,7 @@ let pers_to_piqi_app_person conf base p =
     | NotDead -> (`not_dead, None)
     | Death (_, cd) ->
         let d = Adef.date_of_cdate cd in
-        (`dead, Some (piqi_date_of_date d))
+        (`dead, Some (App_date_converter.piqi_date_of_date d))
     | DeadYoung -> (`dead_young, None)
     | DeadDontKnowWhen -> (`dead_dont_know_when, None)
     | DontKnowIfDead -> (`dont_know_if_dead, None)
@@ -1741,7 +1808,7 @@ let pers_to_piqi_app_person conf base p =
     match gen_p.burial with
     | Buried cod | Cremated cod ->
         (match Adef.od_of_cdate cod with
-        | Some d -> Some (piqi_date_of_date d)
+        | Some d -> Some (App_date_converter.piqi_date_of_date d)
         | _ -> None)
     | _ -> None
   in
@@ -1762,12 +1829,12 @@ let pers_to_piqi_app_person conf base p =
         let fief = t.t_place in
         let date_begin =
           match Adef.od_of_cdate t.t_date_start with
-          | Some d -> Some (piqi_date_of_date d)
+          | Some d -> Some (App_date_converter.piqi_date_of_date d)
           | None -> None
         in
         let date_end =
           match Adef.od_of_cdate t.t_date_end with
-          | Some d -> Some (piqi_date_of_date d)
+          | Some d -> Some (App_date_converter.piqi_date_of_date d)
           | None -> None
         in
         let nth = Some (Int32.of_int t.t_nth) in
@@ -1841,15 +1908,15 @@ let pers_to_piqi_app_person conf base p =
           | Perso.Pevent name ->
               (match name with
               | Epers_Name s -> (None, Some (sou base s))
-              | name -> (Some (piqi_event_of_pevent name), None))
+              | name -> (Some (piqi_pevent_name_of_pevent_name name), None))
           | Perso.Fevent name ->
               (match name with
               | Efam_Name s -> (None, Some (sou base s))
-              | name -> (Some (piqi_event_of_fevent name), None))
+              | name -> (Some (piqi_fevent_name_of_fevent_name name), None))
         in
         let date =
           match Adef.od_of_cdate date with
-          | Some d -> Some (piqi_date_of_date d)
+          | Some d -> Some (App_date_converter.piqi_date_of_date d)
           | _ -> None
         in
         let place = sou base place in
@@ -1945,7 +2012,7 @@ let fam_to_piqi_app_family base ifam =
   let index = Int32.of_int (Adef.int_of_ifam gen_f.fam_index) in
   let marriage =
     match Adef.od_of_cdate gen_f.marriage with
-    | Some d -> Some (piqi_date_of_date d)
+    | Some d -> Some (App_date_converter.piqi_date_of_date d)
     | _ -> None
   in
   let marriage_place = gen_f.marriage_place in
@@ -1969,7 +2036,7 @@ let fam_to_piqi_app_family base ifam =
     | NotDivorced -> (`not_divorced, None)
     | Divorced cod ->
         (match Adef.od_of_cdate cod with
-         | Some d -> (`divorced, Some (piqi_date_of_date d))
+         | Some d -> (`divorced, Some (App_date_converter.piqi_date_of_date d))
          | _ -> (`divorced, None))
     | Separated -> (`separated, None)
   in
@@ -2001,9 +2068,7 @@ let fam_to_piqi_app_family base ifam =
     children = children;
   }
 
-
 (**/**) (* Fonctions de conversion *)
-
 
 let data_person p =
   match p with

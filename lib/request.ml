@@ -246,6 +246,7 @@ let family_m conf base =
           | "API_DEL_PERSON_OK" -> handler.api_del_person_ok
           | "API_LINK_TREE" -> handler.api_link_tree
           | "API_STATS" -> handler.api_stats
+          | "API_SELECT_EVENTS" -> handler.api_select_events
           | _ -> handler.incorrect_request
         end
 #endif

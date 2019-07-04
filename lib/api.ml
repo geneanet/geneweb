@@ -2352,17 +2352,6 @@ let print_export conf base =
 
 (**/**) (* API_NOTIFICATION_BIRTHDAY *)
 
-(* !!! Repris de api_graph !!! *)
-
-module Iper3 =
-  struct
-    type t = (Adef.iper * int * M.relation_type)
-    let compare (i1, _, _) (i2, _, _) =
-      Stdlib.compare (Adef.int_of_iper i1) (Adef.int_of_iper i2)
-  end
-
-module IperSet3 = Set.Make(Iper3) ;;
-
 let print_notification_birthday conf base =
   let params = get_params conf Mext.parse_notification_birthday_params in
   let ref_p = params.M.Notification_birthday_params.person in
@@ -2383,7 +2372,16 @@ let print_notification_birthday conf base =
       (fun acc f -> (Gutil.spouse ip_proprio (foi base f), nb_asc_sp) :: acc)
       [] (get_family @@ pget conf base ip_proprio)
   in
-  let list = Api_graph.close_person_relation conf base ips nb_desc in
+  let list =
+    Api_graph.close_person_relation conf base ips nb_desc
+      { Api_def.only_sosa = false
+      ; only_recent = false
+      ; filter_sex = None
+      ; nb_results = false
+      ; date_birth = None
+      ; date_death = None
+      }
+  in
   (* On filtre la liste par rapport aux anniversaires. *)
   let list =
     match

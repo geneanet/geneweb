@@ -68,6 +68,7 @@ val get_family : person -> ifam array
 
 val gen_person_of_person : person -> (iper, istr) Def.gen_person
 
+val get_ifam : family -> ifam
 val get_comment : family -> istr
 val get_divorce : family -> Def.divorce
 val get_fevents : family -> fam_event list

@@ -13,7 +13,7 @@ open Util
 open Api_def
 open Api_util
 
-let close_person_relation conf base ips gen_desc =
+let close_person_relation conf base ips gen_desc filters =
   (* First, build the list of oldest ancestors of each branch *)
   let asc = Hashtbl.create 32 in
   (* Make sure that ref personne is first element of the list (because of implex) *)
@@ -46,92 +46,185 @@ let close_person_relation conf base ips gen_desc =
     end
   in
   Hashtbl.iter (fun ip (gen, _p) -> loop_desc gen ip) asc ;
-  Hashtbl.fold (fun _k v acc -> v :: acc) desc []
+  Hashtbl.fold
+    (fun _k v acc ->
+       if apply_filters_p conf filters Perso.get_sosa_person v
+       then v :: acc
+       else acc)
+    desc []
 
-let print_close_person_relations conf base =
-  let cpp = get_params conf Mext.parse_close_persons_params in
-  let filters = get_filters conf in
-  let base_loop = has_base_loop conf base in
-  let ref_person = cpp.M.Close_persons_params.person in
-  let sn = ref_person.M.Reference_person.n in
-  let fn = ref_person.M.Reference_person.p in
-  let occ = ref_person.M.Reference_person.oc in
+let print_close_person_aux conf base filters cpp =
+  let fn = cpp.M.Close_persons_params.person.M.Reference_person.p in
+  let sn = cpp.M.Close_persons_params.person.M.Reference_person.n in
+  let occ = cpp.M.Close_persons_params.person.M.Reference_person.oc in
   let asc =
-    match cpp.M.Close_persons_params.nb_gen_asc with
-    | Some n -> max 1 (Int32.to_int n)
-    | None -> 2
+    Opt.map_default 2 (fun n -> max 1 (Int32.to_int n)) cpp.M.Close_persons_params.nb_gen_asc
   in
   let desc =
-    match cpp.M.Close_persons_params.nb_gen_asc with
-    | Some n -> (- (max 1 (Int32.to_int n)))
-    | None -> (-3)
+    Opt.map_default (-3) (fun n -> - (max 1 (Int32.to_int n))) cpp.M.Close_persons_params.nb_gen_desc
   in
-  let list =
-    match Gwdb.person_of_key base fn sn (Int32.to_int occ) with
-    | Some ip ->
-      let ips =
-        let sp_lvl =
-          if cpp.M.Close_persons_params.spouse_ascend
-          then asc else 1
-        in
-        (ip, asc)
-        :: Array.fold_left
-          (fun acc f -> (Gutil.spouse ip (foi base f), sp_lvl) :: acc)
-          [] (get_family @@ pget conf base ip)
-      in
-      close_person_relation conf base ips desc
-    | None -> []
-  in
-  let () = Perso.build_sosa_ht conf base in
-  let () = load_image_ht conf in
-  if p_getenvbin conf.env "full_infos" = Some "1" then
-    begin
-      let list =
-        List.fold_left
-          (fun accu p ->
-            if apply_filters_p conf filters Perso.get_sosa_person p then
-              let p = pers_to_piqi_person_full conf base p base_loop Perso.get_sosa_person true in
-              p :: accu
-            else accu)
-          [] list
-      in
-      let data =
-        if filters.nb_results then
-          let len = M.Internal_int32.({value = Int32.of_int (List.length list)}) in
-          Mext.gen_internal_int32 len
-        else
-          begin
-            let list = M.List_full_persons.({persons = list}) in
-            Mext.gen_list_full_persons list
-          end
-      in
-      print_result conf data
-    end
-  else
-    begin
-      let list =
-        List.fold_left
-          (fun accu p ->
-            if apply_filters_p conf filters Perso.get_sosa_person p then
-              let p = pers_to_piqi_person_light conf base p base_loop Perso.get_sosa_person true in
-              p :: accu
-            else accu )
-          [] list
-      in
-      let data =
-        if filters.nb_results then
-          let len = M.Internal_int32.({value = Int32.of_int (List.length list)}) in
-          Mext.gen_internal_int32 len
-        else
-          begin
-            let list = M.List_persons.({list_persons = list}) in
-            Mext.gen_list_persons list
-          end
-      in
-      print_result conf data
-    end
-;;
+  let sp = cpp.M.Close_persons_params.spouse_ascend in
+  match Gwdb.person_of_key base fn sn (Int32.to_int occ) with
+  | Some ip ->
+    let ips =
+      let sp_lvl = if sp then asc else 1 in
+      (ip, asc)
+      :: Array.fold_left
+        (fun acc f -> (Gutil.spouse ip (foi base f), sp_lvl) :: acc)
+        [] (get_family @@ pget conf base ip)
+    in
+    close_person_relation conf base ips desc filters
+  | None -> []
 
+let print_close_person_relations conf base =
+  let filters = get_filters conf in
+  let params = get_params conf Mext.parse_close_persons_params in
+  let list = print_close_person_aux conf base filters params in
+  print_result conf @@
+  Api_util.conv_data_list_person conf base filters list
+
+let pevents_aux base filter acc p =
+  List.fold_left
+    begin fun acc e ->
+      if filter e
+      then
+        let p =
+          { M.Reference_person.n = sou base @@ get_surname p
+          ; p = sou base @@ get_first_name p
+          ; oc = Int32.of_int @@ get_occ p
+          }
+        in
+        { M.Event_query_result.p
+        ; sp = None
+        ; pevent_name = Some (piqi_pevent_name_of_pevent_name e.epers_name)
+        ; fevent_name = None
+        ; date = piqi_date_of_date @@ Adef.date_of_cdate e.epers_date
+        ; place = sou base e.epers_place
+        ; note = sou base e.epers_note
+        ; src = sou base e.epers_src
+        } :: acc
+      else acc
+    end acc (get_pevents p)
+
+let fevents_aux base filter acc f =
+  List.fold_left
+    begin fun acc e ->
+      if filter e
+      then
+        let p =
+          let p = poi base @@ Gwdb.get_father f in
+          { M.Reference_person.n = sou base @@ get_surname p
+          ; p = sou base @@ get_first_name p
+          ; oc = Int32.of_int @@ get_occ p
+          }
+        in
+        let sp =
+          let p = poi base @@ Gwdb.get_mother f in
+          { M.Reference_person.n = sou base @@ get_surname p
+          ; p = sou base @@ get_first_name p
+          ; oc = Int32.of_int @@ get_occ p
+          }
+        in
+        { M.Event_query_result.p
+        ; sp = Some sp
+        ; pevent_name = None
+        ; fevent_name = Some (piqi_fevent_name_of_fevent_name e.efam_name)
+        ; date = piqi_date_of_date @@ Adef.date_of_cdate e.efam_date
+        ; place = sou base e.efam_place
+        ; note = sou base e.efam_note
+        ; src = sou base e.efam_src
+        } :: acc
+      else acc
+    end acc (get_fevents f)
+
+let events_filters_aux params =
+  let filter_pevents = List.map pevent_name_of_piqi_pevent_name params.M.Events_query_params.pevents in
+  let filter_fevents = List.map fevent_name_of_piqi_fevent_name params.M.Events_query_params.fevents in
+  let filter_start_date =
+    match params.M.Events_query_params.start_date with
+    | Some b -> let b = date_of_piqi_date b in fun d -> Date.compare_date d b >= 0
+    | None -> fun _ -> true
+  in
+  let filter_stop_date =
+    match params.M.Events_query_params.stop_date with
+    | Some b -> let b = date_of_piqi_date b in fun d -> Date.compare_date d b <= 0
+    | None -> fun _ -> true
+  in
+  ( (fun e ->
+        List.mem e.epers_name filter_pevents
+        && filter_start_date @@ Adef.date_of_cdate e.epers_date
+        && filter_stop_date @@ Adef.date_of_cdate e.epers_date)
+  , (fun e ->
+       List.mem e.efam_name filter_fevents
+       && filter_start_date @@ Adef.date_of_cdate e.efam_date
+       && filter_stop_date @@ Adef.date_of_cdate e.efam_date)
+  )
+
+let print_close_person_events conf base params close_persons_params =
+  let filters =
+    { Api_def.only_sosa = false
+    ; only_recent = false
+    ; filter_sex = None
+    ; nb_results = false
+    ; date_birth = None
+    ; date_death = None
+    }
+  in
+  let persons =
+    print_close_person_aux conf base filters close_persons_params
+  in
+  let families =
+    List.fold_left
+      begin fun acc p ->
+        Array.fold_left
+          begin fun acc ifam ->
+            if List.exists (fun f -> (get_ifam f) = ifam) acc then acc
+            else foi base ifam :: acc
+          end
+          acc (get_family p)
+      end
+      [] persons
+  in
+  let filter_p, filter_f = events_filters_aux params in
+  List.fold_left
+    (fevents_aux base filter_f)
+    (List.fold_left (pevents_aux base filter_p) [] persons)
+    families
+
+let print_select_events conf base =
+  let params = get_params conf Mext.parse_events_query_params in
+  let events =
+    match params.M.Events_query_params.close_persons_params with
+    | Some close_persons_params ->
+      print_close_person_events conf base params close_persons_params
+    | None ->
+      let filter_p, filter_f = events_filters_aux params in
+      let loop get fn len acc =
+        let rec loop acc i =
+          if i = len then acc
+          else match get i with
+            | Some x -> loop (fn acc x) (i + 1)
+            | None -> loop acc (i + 1)
+        in
+        loop acc 0
+      in
+      loop
+        (fun i ->
+           let f = foi base @@ Adef.ifam_of_int i in
+           if Gwdb.is_deleted_family f then None else Some f)
+        (fevents_aux base filter_f)
+        (Gwdb.nb_of_families base)
+      @@
+      (loop
+         (fun i ->
+            let p = poi base @@ Adef.iper_of_int i in
+            if Util.know base p then Some p else None)
+         (pevents_aux base filter_p)
+         (Gwdb.nb_of_persons base)
+         [])
+  in
+  print_result conf @@
+  Mext.gen_event_query_result_list { M.Event_query_result_list.events }
 
 (* Graphe d'ascendance *)
 

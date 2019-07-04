@@ -265,62 +265,6 @@ message ClosePersonsParams {
   optional bool only_recent = 5 [default = false];
 }
 
-enum RelationType {
-  SELF = 0;
-  SPOUSE = 1;
-  SIBLING = 2;
-  STEP_BROTHER = 3;
-
-  PARENT = 4;
-  STEP_PARENT = 5;
-
-  GRAND_PARENT = 6;
-
-  UNCLE = 7;
-  UNCLE_SPOUSE = 8;
-  COUSIN = 9;
-  COUSIN_SPOUSE = 10;
-
-  CHILD = 11;
-  STEP_CHILD = 12;
-  GRAND_CHILD = 13;
-  GRAND_CHILD_SPOUSE = 14;
-  GREAT_GRAND_CHILD = 15;
-  GREAT_GRAND_CHILD_SPOUSE = 16;
-
-  CHILD_COUSIN = 17;
-  CHILD_COUSIN_SPOUSE = 18;
-  GRAND_CHILD_COUSIN = 19;
-  GRAND_CHILD_COUSIN_SPOUSE = 20;
-  GREAT_GRAND_CHILD_COUSIN = 21;
-  GREAT_GRAND_CHILD_COUSIN_SPOUSE = 22;
-
-  NEPHEW = 23;
-  NEPHEW_SPOUSE = 24;
-  NEPHEW_SPOUSE_SPOUSE = 25;
-  GRAND_NEPHEW = 26;
-  GRAND_NEPHEW_SPOUSE = 27;
-  GRAND_NEPHEW_SPOUSE_SPOUSE = 28;
-  GREAT_GRAND_NEPHEW = 29;
-  GREAT_GRAND_NEPHEW_SPOUSE = 30;
-  GREAT_GRAND_NEPHEW_SPOUSE_SPOUSE = 31;
-
-  ADOPTIVE_PARENT = 32;
-  ADOPTIVE_CHILD = 33;
-  RECOGNIZED_PARENT = 34;
-  RECOGNIZED_CHILD = 35;
-  CANDIDATE_PARENT = 36;
-  CANDIDATE_CHILD = 37;
-  GOD_PARENT = 38;
-  GOD_CHILD = 39;
-  FOSTER_PARENT = 40;
-  FOSTER_CHILD = 41;
-
-  WITNESS = 42;
-
-  NO_RELATION = 43;
-}
-
 message AnniversaryParams {
   optional int32 month = 1;
 }
@@ -658,4 +602,153 @@ message LastModifications {
 // ***************************************************************************
 message LastVisits {
   required string user = 1;
+}
+
+enum WitnessType {
+  WITNESS = 0;
+  WITNESS_GODPARENT = 1;
+}
+
+enum Calendar {
+  GREGORIAN = 0;
+  JULIAN = 1;
+  FRENCH = 2;
+  HEBREW = 3;
+}
+
+enum Precision {
+  SURE = 0;
+  ABOUT = 1;
+  MAYBE = 2;
+  BEFORE = 3;
+  AFTER = 4;
+  ORYEAR = 5;
+  YEARINT = 6;
+}
+
+message Dmy {
+  required int32 day = 1;
+  required int32 month = 2;
+  required sint32 year = 3;
+  required int32 delta = 4;
+}
+
+message Date {
+  optional Calendar cal = 1;
+  optional Precision prec = 2;
+  optional Dmy dmy = 3;
+  optional Dmy dmy2 = 4;
+  optional string text = 5;
+}
+
+enum CreateOrLink {
+  CREATE = 0;
+  LINK = 1;
+  CREATE_DEFAULT_OCC = 2;
+}
+
+message PersonLink {
+  required CreateOrLink create_link = 1;
+  required int32 index = 2;
+  required Sex sex = 3;
+  required string lastname = 4;
+  required string firstname = 5;
+  optional int32 occ = 6;
+  optional string dates = 7;
+}
+
+message Witness {
+  required WitnessType witness_type = 1;
+  optional PersonLink person = 2;
+}
+
+enum PeventName {
+  EPERS_BIRTH = 0;
+  EPERS_BAPTISM = 1;
+  EPERS_DEATH = 2;
+  EPERS_BURIAL = 3;
+  EPERS_CREMATION = 4;
+  EPERS_ACCOMPLISHMENT = 5;
+  EPERS_ACQUISITION = 6;
+  EPERS_ADHESION = 7;
+  EPERS_BAPTISMLDS = 8;
+  EPERS_BARMITZVAH = 9;
+  EPERS_BATMITZVAH = 10;
+  EPERS_BENEDICTION = 11;
+  EPERS_CHANGENAME = 12;
+  EPERS_CIRCUMCISION = 13;
+  EPERS_CONFIRMATION = 14;
+  EPERS_CONFIRMATIONLDS = 15;
+  EPERS_DECORATION = 16;
+  EPERS_DEMOBILISATIONMILITAIRE = 17;
+  EPERS_DIPLOMA = 18;
+  EPERS_DISTINCTION = 19;
+  EPERS_DOTATION = 20;
+  EPERS_DOTATIONLDS = 21;
+  EPERS_EDUCATION = 22;
+  EPERS_ELECTION = 23;
+  EPERS_EMIGRATION = 24;
+  EPERS_EXCOMMUNICATION = 25;
+  EPERS_FAMILYLINKLDS = 26;
+  EPERS_FIRSTCOMMUNION = 27;
+  EPERS_FUNERAL = 28;
+  EPERS_GRADUATE = 29;
+  EPERS_HOSPITALISATION = 30;
+  EPERS_ILLNESS = 31;
+  EPERS_IMMIGRATION = 32;
+  EPERS_LISTEPASSENGER = 33;
+  EPERS_MILITARYDISTINCTION = 34;
+  EPERS_MILITARYPROMOTION = 35;
+  EPERS_MILITARYSERVICE = 36;
+  EPERS_MOBILISATIONMILITAIRE = 37;
+  EPERS_NATURALISATION = 38;
+  EPERS_OCCUPATION = 39;
+  EPERS_ORDINATION = 40;
+  EPERS_PROPERTY = 41;
+  EPERS_RECENSEMENT = 42;
+  EPERS_RESIDENCE = 43;
+  EPERS_RETIRED = 44;
+  EPERS_SCELLENTCHILDLDS = 45;
+  EPERS_SCELLENTPARENTLDS = 46;
+  EPERS_SCELLENTSPOUSELDS = 47;
+  EPERS_VENTEBIEN = 48;
+  EPERS_WILL = 49;
+}
+
+enum FeventName {
+  EFAM_MARRIAGE = 0;
+  EFAM_NO_MARRIAGE = 1;
+  EFAM_NO_MENTION = 2;
+  EFAM_ENGAGE = 3;
+  EFAM_DIVORCE = 4;
+  EFAM_SEPARATED = 5;
+  EFAM_ANNULATION = 6;
+  EFAM_MARRIAGE_BANN = 7;
+  EFAM_MARRIAGE_CONTRACT = 8;
+  EFAM_MARRIAGE_LICENSE = 9;
+  EFAM_PACS = 10;
+  EFAM_RESIDENCE = 11;
+}
+
+message EventsQueryParams {
+  optional ClosePersonsParams closePersonsParams = 1;
+  optional Date startDate = 2;
+  optional Date stopDate = 3;
+  repeated PeventName pevents = 4 ;
+  repeated FeventName fevents = 5 ;
+}
+
+message EventQueryResult {
+  required ReferencePerson p = 1 ;
+  optional ReferencePerson sp = 2 ;
+  optional PeventName pevent_name = 3 ;
+  optional FeventName fevent_name = 4 ;
+  required Date date = 5;
+  required string place = 6;
+  required string note = 7;
+  required string src = 8;
+}
+
+message EventQueryResultList {
+  repeated EventQueryResult events = 1 ;
 }
