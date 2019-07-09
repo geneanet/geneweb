@@ -149,12 +149,14 @@ let events_filters_aux params =
   in
   ( (fun e ->
         List.mem e.epers_name filter_pevents
-        && filter_start_date @@ Adef.date_of_cdate e.epers_date
-        && filter_stop_date @@ Adef.date_of_cdate e.epers_date)
+        && match Adef.od_of_cdate e.epers_date with
+        | Some d -> filter_start_date d && filter_stop_date d
+        | None -> false)
   , (fun e ->
        List.mem e.efam_name filter_fevents
-       && filter_start_date @@ Adef.date_of_cdate e.efam_date
-       && filter_stop_date @@ Adef.date_of_cdate e.efam_date)
+       && match Adef.od_of_cdate e.efam_date with
+        | Some d -> filter_start_date d && filter_stop_date d
+        | None -> false)
   )
 
 let print_close_person_events conf base params close_persons_params =
