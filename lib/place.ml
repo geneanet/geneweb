@@ -68,24 +68,28 @@ let fold_place_short s =
     | _ -> default ()
   else default ()
 
+exception List_too_long
+
 let get_all =
-  fun conf base ~add_birth ~add_baptism ~add_death ~add_burial
+  fun conf base ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage
     (dummy_key : 'a)
     (dummy_value : 'c)
     (fold_place : string -> 'a)
     (filter : 'a -> bool)
     (mk_value : 'b option -> person -> 'b)
-    (fn : 'b -> 'c) :
+    (fn : 'b -> 'c)
+    (max_length : int) :
     ('a * 'c) array ->
-  let add_marriage = p_getenv conf.env "ma" = Some "on" in
   let ht_size = 2048 in (* FIXME: find the good heuristic *)
   let ht : ('a, 'b) Hashtbl.t = Hashtbl.create ht_size in
   let ht_add istr p =
     let key : 'a = sou base istr |> normalize |> fold_place in
-    if filter key then
+    if filter key then begin
       match Hashtbl.find_opt ht key with
       | Some _ as prev -> Hashtbl.replace ht key (mk_value prev p)
       | None -> Hashtbl.add ht key (mk_value None p)
+    end ;
+    if Hashtbl.length ht > max_length then raise List_too_long
   in
   if add_birth || add_death || add_baptism || add_burial then begin
     let len = nb_of_persons base in
@@ -185,57 +189,53 @@ let print_html_places_surnames conf base (array : (string list * (string * Adef.
   loop [] list;
   Wserver.printf "</ul>\n"
 
-let print_all_places_surnames_short conf base ~add_birth ~add_baptism ~add_death ~add_burial =
-  let array =
-    get_all
-      conf base ~add_birth ~add_baptism ~add_death ~add_burial
-      "" 0
-      fold_place_short
-      (fun _ -> true)
-      (fun prev _ -> match prev with Some n -> n + 1 | None -> 1)
-      (fun x -> x)
-  in
-  let title _ = Wserver.printf "%s" (capitale (transl conf "place")) in
-  Array.sort (fun (s1, _) (s2, _) -> Gutil.alphabetic_order s2 s1) array ;
-  let list = Array.to_list array in
-  let add_birth = p_getenv conf.env "bi" = Some "on" in
-  let add_baptism = p_getenv conf.env "bp" = Some "on" in
-  let add_death = p_getenv conf.env "de" = Some "on" in
-  let add_burial = p_getenv conf.env "bu" = Some "on" in
-  let add_marriage = p_getenv conf.env "ma" = Some "on" in
-  let opt =
+let print_aux_opt ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage =
     (if add_birth then "&bi=on" else "") ^
     (if add_baptism then "&bp=on" else "") ^
     (if add_death then "&de=on" else "") ^
     (if add_burial then "&bu=on" else "") ^
     (if add_marriage then "&ma=on" else "")
-  in
+
+let print_aux conf title fn =
   Hutil.header conf title;
   Hutil.print_link_to_welcome conf true;
-  Wserver.printf "<p>\n";
-  Wserver.printf "<a href=\"%sm=PS%s&k=\">" (commd conf) opt;
-  Wserver.printf "%s" (transl conf "long display");
-  Wserver.printf "</a>";
-  Wserver.printf "</p>\n";
-  Wserver.printf "<p>\n";
-  List.iter
-    (fun (s, x) ->
-       Wserver.printf "<a href=\"%sm=PS%s&k=%s\">" (commd conf) opt
-         (Util.code_varenv s);
-       Wserver.printf "%s" s;
-       Wserver.printf "</a>";
-       Wserver.printf " (%d),\n" x)
-    list;
-  Wserver.printf "</p>\n";
+  fn () ;
   Hutil.trailer conf
 
-let print_all_places_surnames_long conf base filter ~add_birth ~add_baptism ~add_death ~add_burial =
+let print_all_places_surnames_short conf base ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage =
+  let array =
+    get_all
+      conf base ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage
+      "" 0
+      fold_place_short
+      (fun _ -> true)
+      (fun prev _ -> match prev with Some n -> n + 1 | None -> 1)
+      (fun x -> x)
+      max_int
+  in
+  Array.sort (fun (s1, _) (s2, _) -> Gutil.alphabetic_order s2 s1) array ;
+  let title _ = Wserver.printf "%s" (capitale (transl conf "place")) in
+  print_aux conf title begin fun () ->
+    let opt = print_aux_opt ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage in
+    Wserver.printf
+      "<p><a href=\"%sm=PS%s&display=long\">%s</a></p><p>"
+      (commd conf) opt (transl conf "long display") ;
+    Array.iter
+      (fun (s, x) ->
+         Wserver.printf "<a href=\"%sm=PS%s&k=%s\">%s</a> (%d),\n"
+           (commd conf) opt (Util.code_varenv s) s x)
+      array ;
+    Wserver.printf "</p>\n"
+  end
+
+let print_all_places_surnames_long conf base ini ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage max_length =
+  let filter = if ini = "" then fun _ -> true else fun x -> List.hd x = ini in
   let inverted =
     try List.assoc "places_inverted" conf.base_env = "yes"
     with Not_found -> false
   in
   let array =
-    get_all conf base ~add_birth ~add_baptism ~add_death ~add_burial
+    get_all conf base ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage
       [] [] (fold_place_long inverted) filter
       (fun prev p ->
          let value = (get_surname p, get_key_index p) in
@@ -250,37 +250,46 @@ let print_all_places_surnames_long conf base filter ~add_birth ~add_baptism ~add
              loop ((sou base sn, [iper]) :: acc) tl_list
          in
          loop [] v)
+      max_length
   in
   let rec sort_place_utf8 pl1 pl2 =
     match pl1, pl2 with
       _, [] -> 1
     | [], _ -> -1
     | s1 :: pl11, s2 :: pl22 ->
-        if Gutil.alphabetic_order s1 s2 = 0 then sort_place_utf8 pl11 pl22
-        else Gutil.alphabetic_order s1 s2
+      if Gutil.alphabetic_order s1 s2 = 0 then sort_place_utf8 pl11 pl22
+      else Gutil.alphabetic_order s1 s2
   in
   Array.sort (fun (pl1, _) (pl2, _) -> sort_place_utf8 pl1 pl2) array ;
   let title _ =
     Wserver.printf "%s / %s" (capitale (transl conf "place"))
       (capitale (transl_nth conf "surname/surnames" 0))
   in
-  Hutil.header conf title;
-  Hutil.print_link_to_welcome conf true;
-  if array <> [||] then print_html_places_surnames conf base array;
-  Hutil.trailer conf
+  print_aux conf title begin fun () ->
+    if ini = ""
+    then
+      Wserver.printf "<p><a href=\"%sm=PS%s&display=short\">%s</a></p><p>"
+        (commd conf)
+        (print_aux_opt ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage)
+        (transl conf "short display") ;
+    if array <> [||] then print_html_places_surnames conf base array;
+  end
 
 let print_all_places_surnames conf base =
+  let add_marriage = p_getenv conf.env "ma" = Some "on" in
   let add_birth = p_getenv conf.env "bi" = Some "on" in
   let add_baptism = p_getenv conf.env "bp" = Some "on" in
   let add_death = p_getenv conf.env "de" = Some "on" in
   let add_burial = p_getenv conf.env "bu" = Some "on" in
   match p_getenv conf.env "k" with
   | Some ini ->
-    print_all_places_surnames_long conf base ~add_birth ~add_baptism ~add_death ~add_burial
-      (if ini = "" then fun _ -> true else fun x -> List.hd x = ini)
+    print_all_places_surnames_long conf base ini ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage max_int
   | None ->
-    if nb_of_persons base > 1000000 && add_birth && add_baptism && add_death && add_burial
-    then print_all_places_surnames_short conf base ~add_birth ~add_baptism ~add_death ~add_burial
-    else print_all_places_surnames_long conf base ~add_birth ~add_baptism ~add_death ~add_burial (fun _ -> true)
-
-
+    match p_getenv conf.env "display" with
+    | Some "long" ->
+      print_all_places_surnames_long conf base "" ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage max_int
+    | Some "short" -> print_all_places_surnames_short conf base ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage
+    | Some _ -> assert false
+    | None ->
+      try print_all_places_surnames_long conf base "" ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage 500
+      with List_too_long -> print_all_places_surnames_short conf base ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage
