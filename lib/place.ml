@@ -213,7 +213,7 @@ let print_all_places_surnames_short conf base ~add_birth ~add_baptism ~add_death
       (fun x -> x)
       max_int
   in
-  Array.sort (fun (s1, _) (s2, _) -> Gutil.alphabetic_order s2 s1) array ;
+  Array.sort (fun (s1, _) (s2, _) -> Gutil.alphabetic_order s1 s2) array ;
   let title _ = Wserver.printf "%s" (capitale (transl conf "place")) in
   print_aux conf title begin fun () ->
     let opt = print_aux_opt ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage in
