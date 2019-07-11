@@ -220,10 +220,11 @@ let print_all_places_surnames_short conf base ~add_birth ~add_baptism ~add_death
     Wserver.printf
       "<p><a href=\"%sm=PS%s&display=long\">%s</a></p><p>"
       (commd conf) opt (transl conf "long display") ;
-    Array.iter
-      (fun (s, x) ->
-         Wserver.printf "<a href=\"%sm=PS%s&k=%s\">%s</a> (%d),\n"
-           (commd conf) opt (Util.code_varenv s) s x)
+    let last = Array.length array - 1 in
+    Array.iteri
+      (fun i (s, x) ->
+         Wserver.printf "<a href=\"%sm=PS%s&k=%s\">%s</a> (%d)%s"
+           (commd conf) opt (Util.code_varenv s) s x (if i = last then "" else ",\n"))
       array ;
     Wserver.printf "</p>\n"
   end
