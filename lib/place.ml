@@ -292,5 +292,7 @@ let print_all_places_surnames conf base =
     | Some "short" -> print_all_places_surnames_short conf base ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage
     | Some _ -> assert false
     | None ->
-      try print_all_places_surnames_long conf base "" ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage 500
+      try
+        let lim = try int_of_string @@ List.assoc "short_place_threshold" conf.base_env with _ -> 500 in
+        print_all_places_surnames_long conf base "" ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage lim
       with List_too_long -> print_all_places_surnames_short conf base ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage
