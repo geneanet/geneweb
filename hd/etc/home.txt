@@ -6,7 +6,7 @@
         <i class="fa fa-home fa-fw" title="[*home]" aria-hidden="true"></i>%nn;
         <i class="sr-only">[*home]</i>%nn;
       </a>
-      <a role="button" class="btn btn-link  text-primary ml-0 p-0" data-toggle="modal" data-target="#searchmodal">%nn;
+      <a role="button" class="btn btn-link text-primary ml-0 p-0" data-toggle="modal" data-target="#searchmodal" accesskey="S">%nn;
         <i class="fa fa-search fa-fw" title="[*search/case sensitive]0" aria-hidden="true"></i>%nn;
         <span class="sr-only">[*search/case sensitive]0</span>%nn;
       </a>
@@ -32,9 +32,9 @@
                 <input type="search" id="n" class="form-control form-control-lg" name="n" placeholder="[*surname/surnames]0, [public name], [alias]"
                   autofocus>
                 <label class="sr-only" for="p">Search firstname</label>
-                <input type="search" id="p" class="form-control form-control-lg" name="p" placeholder="[*first name/first names]0">
+                <input type="search" id="p" class="form-control form-control-lg mt-2" name="p" placeholder="[*first name/first names]0">
               </div>
-              <button class="btn btn-outline-primary" type="submit" title="[*search/case sensitive]0"><i class="fa fa-search"></i></button>
+              <button class="btn btn-outline-primary" type="submit" title="[*search/case sensitive]0"><i class="fa fa-search fa-lg mx-2"></i> [*search/case sensitive]0</button>
             </div>
           </form>
         </div>

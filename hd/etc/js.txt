@@ -70,3 +70,8 @@
    %end;
   <script>autosize(document.querySelectorAll('textarea'));</script>
 %end;
+<script><!-- focus on found autofocus input in opening BS modal -->
+$('.modal').on('shown.bs.modal', function() {
+  $(this).find('[autofocus]').focus();
+});
+</script>
