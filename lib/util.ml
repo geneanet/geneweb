@@ -329,11 +329,6 @@ let month_txt =
   in
   fun i -> let i = if i < 0 || i >= Array.length txt then 0 else i in txt.(i)
 
-(* Returns true if sub is a substring of str or false otherwise. *)
-let string_exists str sub =
-  let re = Str.regexp_string sub in
-  try ignore (Str.search_forward re str 0); true with Not_found -> false
-
 let string_of_ctime conf =
   let lt = Unix.gmtime conf.ctime in
   Printf.sprintf "%s, %d %s %d %02d:%02d:%02d GMT" (week_day_txt lt.Unix.tm_wday)
@@ -1782,48 +1777,6 @@ let string_with_macros conf env s =
   in
   loop Out 0
 
-let place_of_string conf place =
-  match p_getenv conf.base_env "place" with
-  | Some gwf_place ->
-      let list = String.split_on_char ',' gwf_place in
-      let list = List.map String.trim list in
-      let list_p = String.split_on_char ',' place in
-      let list_p = List.map String.trim list_p in
-      let place =
-        {other = ""; town = ""; township = ""; canton = ""; district = "";
-         county = ""; region = ""; country = ""}
-      in
-      let place =
-        let rec loop list list_p place =
-          match list_p with
-            [] -> place
-          | x :: list_p ->
-              match list with
-                [] ->
-                  let other = String.concat ", " (x :: list_p) in
-                  let other = place.other ^ " " ^ other in
-                  {place with other = other}
-              | t :: list ->
-                  let place =
-                    match t with
-                      "town" -> {place with town = x}
-                    | "township" -> {place with township = x}
-                    | "canton" -> {place with canton = x}
-                    | "district" -> {place with district = x}
-                    | "county" -> {place with county = x}
-                    | "region" -> {place with region = x}
-                    | "country" -> {place with country = x}
-                    | _ ->
-                        let other = place.other ^ " " ^ x in
-                        {place with other = other}
-                  in
-                  loop list list_p place
-        in
-        loop list list_p place
-      in
-      Some place
-  | None -> None
-
 (* ********************************************************************** *)
 (*  [Fonc] string_of_place : config -> string -> string                   *)
 (** [Description] : Astuce temporaire pour supprimer les crochets dans
@@ -2764,6 +2717,11 @@ let image_and_size conf base p image_size =
               else None
         else None
   else None
+
+(* Returns true if sub is a substring of str or false otherwise. *)
+let string_exists str sub =
+  let re = Str.regexp_string sub in
+  try ignore (Str.search_forward re str 0); true with Not_found -> false
 
 (* ********************************************************************** *)
 (*  [Fonc] has_image : config -> base -> person -> bool                   *)

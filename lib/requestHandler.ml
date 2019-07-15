@@ -1127,7 +1127,7 @@ let defaultHandler : handler =
     end
 
   ; ps = begin fun _self conf base ->
-      Place.print_all_places_surnames conf base
+      PlaceDisplay.print_all_places_surnames conf base
     end
 
   ; r = begin fun self conf base ->
@@ -1479,8 +1479,70 @@ let defaultHandler : handler =
 
 #endif
 
-  ; fallback = begin fun _mode self conf base ->
-      self.incorrect_request self conf base
+  ; fallback = begin fun mode self conf base ->
+      match mode with "FOO" ->
+        Gwdb.load_persons_array base ;
+        Gwdb.load_families_array base ;
+        Gwdb.load_strings_array base ;
+        begin
+          let list =
+            UpdateData.get_all_data conf base
+            |> List.sort_uniq (fun (a, _, _) (b, _, _) -> compare a b)
+            |> List.rev_map (fun (i,_,_) -> Place.place_of_string conf @@ sou base i)
+          in
+          let aux = function "" -> "_" | x -> x in
+          let maybe list fn = if List.length list > 1 || fst @@ List.hd list <> "_" then fn () in
+          let toc list fn =
+            if List.length list > 1 then begin
+              Wserver.printf "<p>";
+              List.iter (fun (k, _) -> Wserver.printf " <a href=\"#%s\">%s</a> " (fn k) k) list ;
+              Wserver.printf "<p>"
+            end
+          in
+          Wserver.printf "<html><head><meta charset=\"utf-8\"></head><body><ul>" ;
+          Util.groupby ~key:(fun x -> aux x.place_country) ~value:(fun x -> x) list
+          |> List.sort (fun (a, _) (b, _) -> Gutil.alphabetic_order a b)
+          |> fun list' ->
+          toc list' (fun k -> k) ;
+          list'
+          |> List.iter begin fun (k1, list) ->
+            Util.groupby ~key:(fun x -> aux x.place_region) ~value:(fun x -> x) list
+            |> List.sort (fun (a, _) (b, _) -> Gutil.alphabetic_order a b)
+            |> fun list ->
+            maybe list' (fun () -> Wserver.printf "<li id=\"%s\">%s:<ul>" k1 k1) ;
+            toc list (fun k -> k1 ^ "__" ^ k) ;
+            list
+            |> List.iter begin fun (k, list) ->
+              Util.groupby ~key:(fun x -> aux x.place_subregion) ~value:(fun x -> x) list
+              |> List.sort (fun (a, _) (b, _) -> Gutil.alphabetic_order a b)
+              |> fun list ->
+              maybe list (fun () -> Wserver.printf "<li id=\"%s__%s\">Region %s:<ul>" k1 k k) ;
+              list |> List.iter begin fun (k, list) ->
+                Wserver.printf "<li>%s:<ul>" k ;
+                Util.groupby ~key:(fun x -> Name.lower x.place_city) ~value:(fun x -> x) list
+                |> List.sort (fun (a, _) (b, _) -> Gutil.alphabetic_order a b)
+                |> List.iter begin fun (k, list) ->
+                  Wserver.printf "<li><b>%s</b>:" k ;
+                  begin match list with
+                    | [ { place_street = "" ; place_raw ; _ } ] -> Wserver.printf " <i>%s</i>" place_raw
+                    | list ->
+                      Wserver.printf "<ul>" ;
+                      List.iter
+                        (fun p -> Wserver.printf "<li>%s <i>(%s)</i></li>" p.place_street p.place_raw)
+                        list ;
+                      Wserver.printf "</ul>"
+                  end ;
+                  Wserver.printf "</li>" ;
+                end ;
+                Wserver.printf "</ul></li>" ;
+              end ;
+              maybe list (fun () -> Wserver.printf "</ul></li>") ;
+            end ;
+            maybe list' (fun () -> Wserver.printf "</ul>") ;
+          end ;
+          Wserver.printf "</ul></body>" ;
+        end ;
+                    | _ -> self.incorrect_request self conf base
     end
 
   }

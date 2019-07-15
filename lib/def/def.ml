@@ -26,6 +26,16 @@ and precision =
     | OrYear of dmy2
     | YearInt of dmy2
 
+type ('street, 'city, 'subregion, 'region, 'country, 'raw, 'lieu_dit) gen_place =
+  { place_street : 'street
+  ; place_city : 'city
+  ; place_subregion : 'subregion
+  ; place_region : 'region
+  ; place_country : 'country
+  ; place_raw : 'raw
+  ; place_lieu_dit : 'lieu_dit
+  }
+
 type f_relation_kind =
   | Married
   | NotMarried
@@ -171,16 +181,6 @@ type ('person, 'string) gen_relation =
     r_sources : 'string }
 
 type sex = Male | Female | Neuter
-
-type place =
-  { other : string;
-    town : string;
-    township : string;
-    canton : string;
-    district : string;
-    county : string;
-    region : string;
-    country : string }
 
 (* person *)
 

@@ -116,7 +116,7 @@ val open_templ_fname : config -> string -> (in_channel * string) option
 val string_with_macros :
   config -> (char * (unit -> string)) list -> string -> string
 val string_of_place : config -> string -> string
-val place_of_string : config -> string -> place option
+
 val filter_html_tags : string -> string
 val allowed_tags_file : string ref
 val body_prop : config -> string

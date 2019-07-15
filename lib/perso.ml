@@ -3291,52 +3291,6 @@ and eval_date_field_var conf d =
       end
   | [] -> VVstring (DateDisplay.string_of_date_sep conf "&#010;  " d)
   | _ -> raise Not_found
-and _eval_place_field_var conf place =
-  function
-    [] ->
-      (* Compatibility before eval_place_field_var *)
-      VVstring place
-  | ["other"] ->
-      begin match place_of_string conf place with
-        Some p -> VVstring p.other
-      | None -> VVstring ""
-      end
-  | ["town"] ->
-      begin match place_of_string conf place with
-        Some p -> VVstring p.town
-      | None -> VVstring ""
-      end
-  | ["township"] ->
-      begin match place_of_string conf place with
-        Some p -> VVstring p.township
-      | None -> VVstring ""
-      end
-  | ["canton"] ->
-      begin match place_of_string conf place with
-        Some p -> VVstring p.canton
-      | None -> VVstring ""
-      end
-  | ["district"] ->
-      begin match place_of_string conf place with
-        Some p -> VVstring p.district
-      | None -> VVstring ""
-      end
-  | ["county"] ->
-      begin match place_of_string conf place with
-        Some p -> VVstring p.county
-      | None -> VVstring ""
-      end
-  | ["region"] ->
-      begin match place_of_string conf place with
-        Some p -> VVstring p.region
-      | None -> VVstring ""
-      end
-  | ["country"] ->
-      begin match place_of_string conf place with
-        Some p -> VVstring p.country
-      | None -> VVstring ""
-      end
-  | _ -> raise Not_found
 and eval_nobility_title_field_var (id, pl) =
   function
     ["ident_key"] -> VVstring (code_varenv id)

@@ -13,7 +13,7 @@ let () =
 ; bench "Sosa.to_string" 1000000L (List.map Sosa.to_string) [ sosa_list ]
 ; bench "Sosa.of_string" 1000000L (List.map Sosa.of_string) [ List.map string_of_int list ]
 ; bench "Sosa.branches" 1000000L (List.map Sosa.branches) [ sosa_list ]
-; bench "Place.normalize" 10000000L Geneweb.Place.normalize
+; bench "PlaceDisplay.normalize" 10000000L Geneweb.PlaceDisplay.normalize
     [ "[foo-bar] - boobar (baz)" ; "[foo-bar] – boobar (baz)" ; "[foo-bar] — boobar (baz)" ]
 ; bench "Mutil.unsafe_tr" 100000000L (fun s -> Mutil.unsafe_tr 'a' 'b' @@ "a" ^ s)
     [ "aaaaaaaaaa" ; "bbbbbbbbbb" ; "abbbbbbbb" ; "bbbbbbbbba" ; "ababababab" ]

@@ -1,0 +1,42 @@
+(rule
+ (targets place_name.ml)
+ (action  (copy# ../util/name.ml place_name.ml))
+)
+
+(library
+ (name place_aux)
+ (public_name geneweb.place_aux)
+ (wrapped false)
+ (synopsis "GeneWeb place library")
+ (libraries str geneweb.def ppx_deriving.show)
+ (preprocess (pps ppx_deriving.show))
+ (modules place_name place_types)
+)
+
+(library
+ (name place_data)
+ (libraries place_aux)
+ (modules place_data)
+)
+
+(executable
+  (name gen_place_match)
+  (libraries str geneweb.def ppx_deriving.show place_aux place_data)
+  (preprocess (pps ppx_deriving.show))
+  (modules gen_place_match)
+)
+
+(rule
+ (targets place_match.ml)
+ (deps    (:gen gen_place_match.exe place_name.ml))
+ (action  (run %{gen} > %{targets}))
+)
+
+(library
+ (name place)
+ (public_name geneweb.place)
+ (synopsis "GeneWeb place library")
+ (libraries str geneweb.def ppx_deriving.show place_aux)
+ (preprocess (pps ppx_deriving.show))
+ (modules place place_match)
+)

@@ -12,6 +12,7 @@
             stdlib-shims
             camlp5
             camlp5.gramlib
+            geneweb.place
             geneweb.gwdb.mli
             geneweb.def
             geneweb.util
