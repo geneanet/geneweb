@@ -255,11 +255,12 @@ let print_all_places_surnames_long conf base ini ~add_birth ~add_baptism ~add_de
   in
   let rec sort_place_utf8 pl1 pl2 =
     match pl1, pl2 with
-      _, [] -> 1
+    | _, [] -> 1
     | [], _ -> -1
     | s1 :: pl11, s2 :: pl22 ->
-      if Gutil.alphabetic_order s1 s2 = 0 then sort_place_utf8 pl11 pl22
-      else Gutil.alphabetic_order s1 s2
+      match Gutil.alphabetic_order s1 s2 with
+      | 0 -> sort_place_utf8 pl11 pl22
+      | x -> x
   in
   Array.sort (fun (pl1, _) (pl2, _) -> sort_place_utf8 pl1 pl2) array ;
   let title _ =
