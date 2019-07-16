@@ -200,14 +200,14 @@ let compatible_divorces d1 d2 = d1 = d2
 let compatible_relation_kinds rk1 rk2 = rk1 = rk2
 
 let compatible_titles t1 t2 =
-  List.for_all2 (Futil.eq_titles eq_istr) t1 t2 || t2 = []
+  Futil.eq_lists (Futil.eq_titles eq_istr) t1 t2 || t2 = []
 
 let compatible_pevents pevt1 pevt2 = pevt1 = [] && pevt2 = []
 
 let compatible_fevents fevt1 fevt2 = fevt1 = [] && fevt2 = []
 
 let compatible_strings_lists sl1 sl2 =
-  sl2 = [] || List.for_all2 eq_istr sl1 sl2
+  sl2 = [] || Futil.eq_lists eq_istr sl1 sl2
 
 let compatible_notes base s1 s2 =
   compatible_strings s1 s2 || sou base s1 = sou base s2

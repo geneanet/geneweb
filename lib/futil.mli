@@ -21,6 +21,7 @@ val map_family_ps :
 val map_couple_p : bool -> ('a -> 'b) -> 'a gen_couple -> 'b gen_couple
 val map_descend_p : ('a -> 'b) -> 'a gen_descend -> 'b gen_descend
 
+val eq_lists : ('a -> 'b -> bool) -> 'a list -> 'b list -> bool
 val eq_titles : ('a -> 'b -> bool) -> 'a gen_title -> 'b gen_title -> bool
 val eq_title_names :
   ('a -> 'b -> bool) -> 'a gen_title_name -> 'b gen_title_name -> bool
