@@ -3043,9 +3043,7 @@ and eval_num conf n =
   | ["octal"] -> Printf.sprintf "0x%o" @@ int_of_string (Sosa.to_string n)
   | ["lvl"] -> string_of_int @@ Sosa.gen n
   | ["v"] -> Sosa.to_string n
-  | [] -> Mutil.string_of_int_sep
-            (transl conf "(thousand separator)")
-            (int_of_string @@ Sosa.to_string n)
+  | [] -> Sosa.to_string_sep (transl conf "(thousand separator)") n
   | _ -> raise Not_found
 and eval_person_field_var conf base env (p, p_auth as ep) loc =
   function
