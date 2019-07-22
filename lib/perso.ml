@@ -1022,11 +1022,11 @@ let tree_generation_list conf base gv p =
                  let cpl = foi base ifam in
                  let fath =
                    let p = pget conf base (get_father cpl) in
-                   if know base p then Some p else None
+                   if not @@ is_empty_name p then Some p else None
                  in
                  let moth =
                    let p = pget conf base (get_mother cpl) in
-                   if know base p then Some p else None
+                   if not @@ is_empty_name p then Some p else None
                  in
                  let fo = Some ifam in
                  let base_prefix = conf.bname in
@@ -1062,13 +1062,13 @@ let tree_generation_list conf base gv p =
                            Perso_link.make_ep_link base fath
                          in
                          let fath =
-                           if know base fath then Some fath else None
+                           if not @@ is_empty_name fath then Some fath else None
                          in
                          let (moth, _) =
                            Perso_link.make_ep_link base moth
                          in
                          let moth =
-                           if know base moth then Some moth else None
+                           if not @@ is_empty_name moth then Some moth else None
                          in
                          let fo = Some ifam in
                          let base_prefix = family.MLink.Family.baseprefix in
@@ -1087,7 +1087,7 @@ let tree_generation_list conf base gv p =
                            Perso_link.make_ep_link base fath
                          in
                          let fath =
-                           if know base fath then Some fath else None
+                           if not @@ is_empty_name fath then Some fath else None
                          in
                          let fo = Some ifam in
                          let base_prefix = family.MLink.Family.baseprefix in
@@ -1101,7 +1101,7 @@ let tree_generation_list conf base gv p =
                            Perso_link.make_ep_link base moth
                          in
                          let moth =
-                           if know base moth then Some moth else None
+                           if not @@ is_empty_name moth then Some moth else None
                          in
                          let fo = Some ifam in
                          let base_prefix = family.MLink.Family.baseprefix in

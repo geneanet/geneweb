@@ -724,8 +724,11 @@ let string_gen_family base fam =
 
 let is_hidden p = is_empty_string (get_surname p)
 
-let know base p =
-  sou base (get_first_name p) <> "?" || sou base (get_surname p) <> "?"
+let is_empty_name p =
+  (Gwdb.is_empty_string (Gwdb.get_surname p) ||
+   Gwdb.is_quest_string (Gwdb.get_surname p)) &&
+  (Gwdb.is_empty_string (Gwdb.get_first_name p) ||
+   Gwdb.is_quest_string (Gwdb.get_first_name p))
 
 let is_public conf base p =
   get_access p = Public ||
@@ -2187,7 +2190,7 @@ let husband_wife conf base p all =
         let fam = foi base (get_family p).(i) in
         let conjoint = Gutil.spouse (get_iper p) fam in
         let conjoint = pget conf base conjoint in
-        if know base conjoint
+        if not @@ is_empty_name conjoint
         then
           translate_eval (Printf.sprintf (relation_txt conf (get_sex p) fam) (fun () -> ""))
         else loop (i + 1)
@@ -2201,7 +2204,7 @@ let husband_wife conf base p all =
         let fam = foi base (get_family p).(i) in
         let conjoint = Gutil.spouse (get_iper p) fam in
         let conjoint = pget conf base conjoint in
-        if know base conjoint
+        if not @@ is_empty_name conjoint
         then
           if all then
             loop (i + 1) (res ^ translate_eval (" " ^
@@ -3549,7 +3552,7 @@ let init_cache_info conf base =
   (* Reset le nombre réel de personnes d'une base. *)
   let nb_real_persons =
     Gwdb.Collection.fold
-      (fun i p -> if know base p then i + 1 else i) 0 (Gwdb.persons base)
+      (fun i p -> if not @@ is_empty_name p then i + 1 else i) 0 (Gwdb.persons base)
   in
   let () =
     Hashtbl.add
@@ -3667,12 +3670,6 @@ let init_cache_info bname base =
   | (_, _, _, None) ->
     begin
       (* Reset le nombre réel de personnes d'une base. *)
-      let is_empty_name p =
-        (Gwdb.is_empty_string (Gwdb.get_surname p) ||
-         Gwdb.is_quest_string (Gwdb.get_surname p)) &&
-        (Gwdb.is_empty_string (Gwdb.get_first_name p) ||
-         Gwdb.is_quest_string (Gwdb.get_first_name p))
-      in
       let nb_real_persons =
         Gwdb.Collection.fold begin fun acc p ->
           if is_empty_name p then acc else acc + 1
