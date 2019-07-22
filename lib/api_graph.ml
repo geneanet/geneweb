@@ -217,7 +217,7 @@ let print_select_events conf base =
       (loop
          (fun i ->
             let p = poi base @@ Adef.iper_of_int i in
-            if Util.know base p then Some p else None)
+            if Util.is_empty_name p then None else Some p)
          (pevents_aux conf base filter_p)
          (Gwdb.nb_of_persons base)
          [])

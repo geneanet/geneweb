@@ -52,7 +52,7 @@ val is_old_person : config -> (iper, istr) gen_person -> bool
 val fast_auth_age : config -> person -> bool
 
 val start_with_vowel : string -> bool
-val know : base -> person -> bool
+
 val acces_n : config -> base -> string -> person -> string
 val acces : config -> base -> person -> string
 val wprint_hidden_person : config -> base -> string -> person -> unit
@@ -408,6 +408,11 @@ val escape_html : string -> string
    Text is escaped using [escape_html].
  *)
 val safe_html : string -> string
+
+(** [is_empty_name p]
+    [false] if we knwon the first name or the last name of [p].
+*)
+val is_empty_name : person -> bool
 
 (**/**)
 val init_cache_info : string -> Gwdb.base -> unit

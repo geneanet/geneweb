@@ -735,8 +735,11 @@ let string_gen_family base fam =
 
 let is_hidden p = is_empty_string (get_surname p)
 
-let know base p =
-  sou base (get_first_name p) <> "?" || sou base (get_surname p) <> "?"
+let is_empty_name p =
+  (Gwdb.is_empty_string (Gwdb.get_surname p) ||
+   Gwdb.is_quest_string (Gwdb.get_surname p)) &&
+  (Gwdb.is_empty_string (Gwdb.get_first_name p) ||
+   Gwdb.is_quest_string (Gwdb.get_first_name p))
 
 let is_public conf base p =
   get_access p = Public ||
@@ -2202,7 +2205,7 @@ let husband_wife conf base p all =
         let fam = foi base (get_family p).(i) in
         let conjoint = Gutil.spouse (get_key_index p) fam in
         let conjoint = pget conf base conjoint in
-        if know base conjoint
+        if not @@ is_empty_name conjoint
         then
           translate_eval (Printf.sprintf (relation_txt conf (get_sex p) fam) (fun () -> ""))
         else loop (i + 1)
@@ -2216,7 +2219,7 @@ let husband_wife conf base p all =
         let fam = foi base (get_family p).(i) in
         let conjoint = Gutil.spouse (get_key_index p) fam in
         let conjoint = pget conf base conjoint in
-        if know base conjoint
+        if not @@ is_empty_name conjoint
         then
           if all then
             loop (i + 1) (res ^ translate_eval (" " ^
@@ -3644,7 +3647,7 @@ let init_cache_info conf base =
   for i = 0 to nb_ind - 1 do
     let ip = Adef.iper_of_int i in
     let p = poi base ip in
-    if know base p then incr nb_real_persons else ()
+    if not @@ is_empty_name p then incr nb_real_persons else ()
   done;
   let () =
     Hashtbl.add ht_cache_info cache_nb_base_persons
@@ -3764,12 +3767,6 @@ let init_cache_info bname base =
       (* Reset le nombre réel de personnes d'une base. *)
       let nb_real_persons = ref 0 in
       let nb_ind = Gwdb.nb_of_persons base in
-      let is_empty_name p =
-        (Gwdb.is_empty_string (Gwdb.get_surname p) ||
-         Gwdb.is_quest_string (Gwdb.get_surname p)) &&
-        (Gwdb.is_empty_string (Gwdb.get_first_name p) ||
-         Gwdb.is_quest_string (Gwdb.get_first_name p))
-      in
       for i = 0 to nb_ind - 1 do
         let ip = Adef.iper_of_int i in
         let p = Gwdb.poi base ip in
