@@ -32,7 +32,7 @@ let fold_place_long inverted s =
       in
       loop iend list (i + 1) ibeg
   in
-  let (iend, rest) =
+  let list =
     if String.unsafe_get s (len - 1) = ')'
     then match String.rindex_opt s '(' with
       | Some i when i < len - 2 ->
@@ -42,11 +42,10 @@ let fold_place_long inverted s =
           in
           loop (i - 1)
         in
-        j, [ String.sub s (i + 1) (len - i - 2) ]
-      | _ -> len, []
-    else len, []
+        String.sub s (i + 1) (len - i - 2) :: loop j [] 0 0
+      | _ -> loop len [] 0 0
+    else loop len [] 0 0
   in
-  let list = List.rev_append rest @@ loop iend [] 0 0 in
   if inverted then List.rev list else list
 
 let fold_place_short inverted s =
