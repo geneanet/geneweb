@@ -49,24 +49,30 @@ let fold_place_long inverted s =
   let list = List.rev_append rest @@ loop iend [] 0 0 in
   if inverted then List.rev list else list
 
-let fold_place_short s =
-  let len = String.length s in
-  let default () =
-    let i =
-      match String.rindex_opt s ',' with
-      | Some i ->
-        let rec l i = if i < len && String.unsafe_get s i = ' ' then l (i + 1) else i in l (i + 1)
-      | None -> 0
+let fold_place_short inverted s =
+  if inverted
+  then match String.index_opt s ',' with
+    | Some i -> String.sub s 0 i
+    | None -> s
+  else begin
+    let len = String.length s in
+    let default () =
+      let i =
+        match String.rindex_opt s ',' with
+        | Some i ->
+          let rec l i = if i < len && String.unsafe_get s i = ' ' then l (i + 1) else i in l (i + 1)
+        | None -> 0
+      in
+      let i = if i = len then 0 else i in
+      String.sub s i (len - i)
     in
-    let i = if i = len then 0 else i in
-    String.sub s i (len - i)
-  in
-  if String.unsafe_get s (len - 1) = ')'
-  then match String.rindex_opt s '(' with
-    | Some i when i < len - 2 ->
-      String.sub s (i + 1) (len - i - 2)
-    | _ -> default ()
-  else default ()
+    if String.unsafe_get s (len - 1) = ')'
+    then match String.rindex_opt s '(' with
+      | Some i when i < len - 2 ->
+        String.sub s (i + 1) (len - i - 2)
+      | _ -> default ()
+    else default ()
+  end
 
 exception List_too_long
 
@@ -205,11 +211,15 @@ let print_aux conf title fn =
   Hutil.trailer conf
 
 let print_all_places_surnames_short conf base ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage =
+  let inverted =
+    try List.assoc "places_inverted" conf.base_env = "yes"
+    with Not_found -> false
+  in
   let array =
     get_all
       conf base ~add_birth ~add_baptism ~add_death ~add_burial ~add_marriage
       "" 0
-      fold_place_short
+      (fold_place_short inverted)
       (fun _ -> true)
       (fun prev _ -> match prev with Some n -> n + 1 | None -> 1)
       (fun x -> x)
