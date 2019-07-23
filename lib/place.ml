@@ -85,11 +85,13 @@ let get_all =
   let ht_add istr p =
     let key : 'a = sou base istr |> normalize |> fold_place in
     if filter key then begin
-      match Hashtbl.find_opt ht key with
+      begin match Hashtbl.find_opt ht key with
       | Some _ as prev -> Hashtbl.replace ht key (mk_value prev p)
-      | None -> Hashtbl.add ht key (mk_value None p)
-    end ;
-    if Hashtbl.length ht > max_length then raise List_too_long
+      | None ->
+        Hashtbl.add ht key (mk_value None p) ;
+        if Hashtbl.length ht > max_length then raise List_too_long
+      end
+    end
   in
   if add_birth || add_death || add_baptism || add_burial then begin
     let len = nb_of_persons base in
