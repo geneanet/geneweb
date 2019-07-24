@@ -84,8 +84,6 @@ let print_close_person_relations conf base =
   Api_util.conv_data_list_person conf base filters list
 
 let event_aux_pers_to_piqi_person conf base =
-  Perso.build_sosa_ht conf base ;
-  load_image_ht conf ;
   fun p ->
     let base_loop = has_base_loop conf base in
     Api_util.pers_to_piqi_person_light conf base p base_loop Perso.get_sosa_person false
@@ -191,6 +189,8 @@ let print_close_person_events conf base params close_persons_params =
     families
 
 let print_select_events conf base =
+  Perso.build_sosa_ht conf base ;
+  load_image_ht conf ;
   let params = get_params conf Mext.parse_events_query_params in
   let events =
     match params.M.Events_query_params.close_persons_params with
