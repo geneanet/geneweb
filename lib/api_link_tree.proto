@@ -101,17 +101,17 @@ message Connection {
 
 message FamilyLink {
   required string baseprefix = 1;
-  required int32 ifam = 2;
+  required string ifam = 2;
 }
 
 message PersonLink {
   required string baseprefix = 1;
-  required int32 ip = 2;
+  required string ip = 2;
 }
 
 message Person {
   required string baseprefix = 1;
-  required int32 ip = 2;
+  required string ip = 2;
   required string n = 3;
   required string p = 4;
   required int32 oc = 5;
@@ -138,9 +138,9 @@ message Person {
 
 message Family {
   required string baseprefix = 1;
-  required int32 ifam = 2;
-  required int32 ifath = 3;
-  required int32 imoth = 4;
+  required string ifam = 2;
+  required string ifath = 3;
+  required string imoth = 4;
   required MarriageType marriage_type = 5;
   optional Date marriage_date = 6;
   optional string marriage_place = 7;
@@ -157,7 +157,7 @@ message LinkTree {
 
 message LinkTreeParams {
   required string basename = 1;
-  optional int32 ip = 2;
+  optional string ip = 2;
   optional string ref_person = 3;
   optional string ref_person2 = 4;
   required int32 nb_asc = 5;

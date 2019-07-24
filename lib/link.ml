@@ -72,7 +72,7 @@ let chop_base_prefix base_prefix =
     [Rem] : Exporté en clair hors de ce module.                               *)
 (* ************************************************************************** *)
 let init_cache conf base request base_prefix ip nb_asc from_gen_desc nb_desc =
-  let index = Some (Int32.of_string @@ Gwdb.string_of_iper ip) in
+  let index = Some (Gwdb.string_of_iper ip) in
   let base_prefix = chop_base_prefix base_prefix in
   let data =
     MLink.Link_tree_params.({
@@ -142,13 +142,13 @@ let init_cache conf base request base_prefix ip nb_asc from_gen_desc nb_desc =
     (fun fam ->
        let base_prefix = fam.MLink.Family.baseprefix in
        let base_prefix = chop_base_prefix base_prefix in
-       let ifam = Gwdb.ifam_of_string @@ Int32.to_string fam.MLink.Family.ifam in
+       let ifam = Gwdb.ifam_of_string fam.MLink.Family.ifam in
        Hashtbl.add ht_family_cache (base_prefix, ifam) fam;
        List.iter
          (fun c ->
            let base_prefix = c.MLink.Person_link.baseprefix in
            let base_prefix = chop_base_prefix base_prefix in
-           let ic = Gwdb.iper_of_string @@ Int32.to_string c.MLink.Person_link.ip in
+           let ic = Gwdb.iper_of_string c.MLink.Person_link.ip in
            Hashtbl.add ht_parents_cache (base_prefix, ic) fam)
          fam.MLink.Family.children)
     families.MLink.Link_tree.families;
@@ -158,7 +158,7 @@ let init_cache conf base request base_prefix ip nb_asc from_gen_desc nb_desc =
     (fun p ->
        let base_prefix = p.MLink.Person.baseprefix in
        let base_prefix = chop_base_prefix base_prefix in
-       let ip = Gwdb.iper_of_string @@ Int32.to_string p.MLink.Person.ip in
+       let ip = Gwdb.iper_of_string p.MLink.Person.ip in
        Hashtbl.add ht_person_cache (base_prefix, ip) p;
        let faml_cache =
          try Hashtbl.find ht_families_cache (base_prefix, ip) with

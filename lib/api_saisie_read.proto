@@ -220,7 +220,7 @@ message FicheEvent {
 }
 
 message PersonTree {
-  required int32 index = 1;
+  required string index = 1;
   required Sex sex = 2;
   required string lastname = 3;
   required string firstname = 4;
@@ -235,7 +235,7 @@ message PersonTree {
 }
 
 message SimplePerson {
-  required int32 index = 1;
+  required string index = 1;
   required Sex sex = 2;
   required string lastname = 3;
   required string firstname = 4;
@@ -290,7 +290,7 @@ message Person {
 
   required Type type = 1;
 
-  required int32 index = 2;
+  required string index = 2;
   required Sex sex = 3;
   required string lastname = 4;
   required string firstname = 5;
@@ -359,7 +359,7 @@ message FichePerson {
   optional string sosa_nb = 12;
   required bool has_history = 13;
   required bool has_possible_duplications = 14;
-  optional int32 ref_index = 15;
+  optional string ref_index = 15;
   optional Person ref_person = 16;
   required string linked_page_biblio = 17;
   required string linked_page_bnote = 18;
@@ -377,7 +377,7 @@ message FichePerson {
 }
 
 message Family {
-  required int32 index = 1;
+  required string index = 1;
   required SimplePerson spouse = 2;
   optional string marriage_date = 3;
   optional string marriage_date_long = 4;
@@ -403,7 +403,7 @@ message Family {
 }
 
 message FicheFamily {
-  required int32 index = 1;
+  required string index = 1;
   required Person spouse = 2;
   optional string marriage_date = 3;
   optional string marriage_date_long = 4;
@@ -429,19 +429,19 @@ message FicheFamily {
 }
 
 message IndexPerson {
-  required int32 index = 1;
-  optional int32 indexz = 2;
+  required string index = 1;
+  optional string indexz = 2;
 }
 
 message Node {
-  required int64 id = 1;
+  required string id = 1;
   required PersonTree person = 2;
-  optional int64 ifam = 3;
+  optional string ifam = 3;
 }
 
 message Edge {
-  required int64 from_node = 1;
-  required int64 to_node = 2;
+  required string from_node = 1;
+  required string to_node = 2;
 }
 
 message GraphTree {
@@ -466,7 +466,7 @@ message GraphTreeParams {
   required IdentifierPerson identifier_person = 1;
   optional int32 nb_asc = 2;
   optional int32 nb_desc = 3;
-  optional int32 indexz = 4;
+  optional string indexz = 4;
 }
 
 // ***************************************************************************
@@ -491,7 +491,7 @@ message Title {
 }
 
 message PersonTreeFull {
-  required int32 index = 1;
+  required string index = 1;
   required Sex sex = 2;
   required string lastname = 3;
   required string firstname = 4;
@@ -534,13 +534,13 @@ message FamilyTreeFull {
   required MarriageType marriage_type = 5;
   required DivorceType divorce_type = 6;
   optional string divorce_date = 7;
-  required int32 index = 8;
+  required string index = 8;
 }
 
 message NodeFull {
   required int64 id = 1;
   required PersonTreeFull person = 2;
-  optional int64 ifam = 3;
+  optional string ifam = 3;
 }
 
 message GraphTreeFull {
@@ -556,7 +556,7 @@ message GraphTreeFull {
 }
 
 message IdentifierPerson {
-  optional int32 index = 1;
+  optional string index = 1;
   optional string n = 2;
   optional string p = 3;
   optional int32 oc = 4;

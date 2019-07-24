@@ -71,7 +71,7 @@ let print_info_base conf base =
       nb_persons = Int64.of_int (Gwdb.nb_of_persons base);
       nb_families = Int64.of_int (Gwdb.nb_of_families base);
       sosa = sosa;
-      last_modified_person = Opt.map Int64.of_string last_modified_person;
+      last_modified_person = last_modified_person;
       real_nb_persons = Some (Int64.of_int (Util.real_nb_of_persons conf base));
     })
   in
@@ -196,7 +196,7 @@ let print_list_ref_person conf base =
 (* ******************************************************************** *)
 let print_ref_person_from_ip conf base =
   let id = get_params conf Mext.parse_index in
-  let ip = Gwdb.iper_of_string @@ Int32.to_string id.M.Index.index in
+  let ip = Gwdb.iper_of_string id.M.Index.index in
   let p = poi base ip in
   let fn = Name.lower (sou base (get_first_name p)) in
   let sn = Name.lower (sou base (get_surname p)) in
@@ -693,7 +693,7 @@ let print_img_all conf base =
 
 let print_img_person conf base =
   let id = get_params conf Mext.parse_index in
-  let ip = Gwdb.iper_of_string @@ Int32.to_string id.M.Index.index in
+  let ip = Gwdb.iper_of_string id.M.Index.index in
   let p = poi base ip in
   let img_addr =
     match sou base (get_image p) with

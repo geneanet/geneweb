@@ -126,5 +126,5 @@ message Stats {
 }
 
 message StatsParams {
-  optional int32 i = 1;
+  optional string i = 1;
 }

@@ -168,7 +168,7 @@ let make_ep_link base p_link =
   let surname = Gwdb.insert_string base p_link.MLink.Person.lastname in
   let first_name = Gwdb.insert_string base p_link.MLink.Person.firstname in
   let occ = Int32.to_int p_link.MLink.Person.oc in
-  let key_index = Gwdb.iper_of_string @@ Int32.to_string p_link.MLink.Person.ip in
+  let key_index = Gwdb.iper_of_string p_link.MLink.Person.ip in
   let image =
     match p_link.MLink.Person.image with
       Some s -> Gwdb.insert_string base s
@@ -264,12 +264,12 @@ let make_ep_link base p_link =
 let make_efam_link conf base fam_link =
   let empty_string = Gwdb.insert_string base "" in
   let children =
-    List.map (fun p -> Gwdb.iper_of_string @@ Int32.to_string p.MLink.Person_link.ip)
+    List.map (fun p -> Gwdb.iper_of_string p.MLink.Person_link.ip)
       fam_link.MLink.Family.children
   in
   let des = {children = Array.of_list children} in
-  let ifath = Gwdb.iper_of_string @@ Int32.to_string fam_link.MLink.Family.ifath in
-  let imoth = Gwdb.iper_of_string @@ Int32.to_string fam_link.MLink.Family.imoth in
+  let ifath = Gwdb.iper_of_string fam_link.MLink.Family.ifath in
+  let imoth = Gwdb.iper_of_string fam_link.MLink.Family.imoth in
   let cpl = Futil.parent conf.multi_parents [| ifath; imoth |] in
   let marriage =
     match fam_link.MLink.Family.marriage_date with
@@ -305,7 +305,7 @@ let make_efam_link conf base fam_link =
         end
     | `separated -> Separated
   in
-  let index = Gwdb.ifam_of_string @@ Int32.to_string fam_link.MLink.Family.ifam in
+  let index = Gwdb.ifam_of_string fam_link.MLink.Family.ifam in
   let gen_f =
     {marriage = marriage; marriage_place = marriage_place;
      marriage_note = empty_string; marriage_src = empty_string;
@@ -446,7 +446,7 @@ let get_father_link base_prefix ip =
   match get_parents_link base_prefix ip with
     Some family ->
       let base_prefix = family.MLink.Family.baseprefix in
-      let ifath = Gwdb.iper_of_string @@ Int32.to_string family.MLink.Family.ifath in
+      let ifath = Gwdb.iper_of_string family.MLink.Family.ifath in
       get_person_link base_prefix ifath
   | None -> None
 
@@ -466,7 +466,7 @@ let get_mother_link base_prefix ip =
   match get_parents_link base_prefix ip with
     Some family ->
       let base_prefix = family.MLink.Family.baseprefix in
-      let imoth = Gwdb.iper_of_string @@ Int32.to_string family.MLink.Family.imoth in
+      let imoth = Gwdb.iper_of_string family.MLink.Family.imoth in
       get_person_link base_prefix imoth
   | None -> None
 
@@ -513,7 +513,7 @@ let get_family_link base_prefix ip =
       (fun fam accu ->
          let (base_prefix, ifam) =
            fam.MLink.Family_link.baseprefix,
-           Gwdb.ifam_of_string @@ Int32.to_string fam.MLink.Family_link.ifam
+           Gwdb.ifam_of_string fam.MLink.Family_link.ifam
          in
          let base_prefix = Link.chop_base_prefix base_prefix in
          try
@@ -540,15 +540,15 @@ let get_families_of_parents base_prefix ip isp =
   List.fold_left
     (fun accu p ->
        let base_prefix = p.MLink.Person.baseprefix in
-       let ip = Gwdb.iper_of_string @@ Int32.to_string p.MLink.Person.ip in
+       let ip = Gwdb.iper_of_string p.MLink.Person.ip in
        let faml = get_family_link base_prefix ip in
        List.fold_left
          (fun accu fam ->
-            let ifath = Gwdb.iper_of_string @@ Int32.to_string fam.MLink.Family.ifath in
-            let imoth = Gwdb.iper_of_string @@ Int32.to_string fam.MLink.Family.imoth in
+            let ifath = Gwdb.iper_of_string fam.MLink.Family.ifath in
+            let imoth = Gwdb.iper_of_string fam.MLink.Family.imoth in
             List.fold_left
               (fun accu sp ->
-                 let isp = Gwdb.iper_of_string @@ Int32.to_string sp.MLink.Person.ip in
+                 let isp = Gwdb.iper_of_string sp.MLink.Person.ip in
                  if ip = ifath && isp = imoth || isp = ifath && ip = imoth
                  then
                    fam :: accu
@@ -576,7 +576,7 @@ let get_children_of_fam base_prefix ifam =
       (fun c accu ->
          let (base_prefix, ip) =
            c.MLink.Person_link.baseprefix,
-           Gwdb.iper_of_string @@ Int32.to_string c.MLink.Person_link.ip
+           Gwdb.iper_of_string c.MLink.Person_link.ip
          in
          match get_person_link base_prefix ip with
            Some p -> p :: accu
@@ -602,13 +602,13 @@ let get_children_of_parents base_prefix ifam ifath imoth =
   let base_prefix = Link.chop_base_prefix base_prefix in
   try
     let fam = Hashtbl.find Link.ht_family_cache (base_prefix, ifam) in
-    if ifath = Gwdb.iper_of_string @@ Int32.to_string fam.MLink.Family.ifath &&
-       imoth = Gwdb.iper_of_string @@ Int32.to_string fam.MLink.Family.imoth
+    if ifath = Gwdb.iper_of_string fam.MLink.Family.ifath &&
+       imoth = Gwdb.iper_of_string fam.MLink.Family.imoth
     then
       List.fold_right
         (fun c accu ->
            let base_prefix = c.MLink.Person_link.baseprefix in
-           let ip = Gwdb.iper_of_string @@ Int32.to_string c.MLink.Person_link.ip in
+           let ip = Gwdb.iper_of_string c.MLink.Person_link.ip in
            match get_person_link base_prefix ip with
              Some p -> p :: accu
            | None -> accu)
@@ -667,7 +667,7 @@ let can_merge_family base_prefix ip fam fam_link (_, _, isp) =
 (* ************************************************************************** *)
 let can_merge_child base_prefix children c_link =
   let from_baseprefix = Link.chop_base_prefix base_prefix in
-  let ip = Gwdb.iper_of_string @@ Int32.to_string c_link.MLink.Person.ip in
+  let ip = Gwdb.iper_of_string c_link.MLink.Person.ip in
   let base_prefix = Link.chop_base_prefix c_link.MLink.Person.baseprefix in
   let rec loop children =
     match children with
@@ -740,7 +740,7 @@ let max_interlinks_descendancy_level conf base ip max_lev =
                 (* Prend le nom de l'arbre de la famille en cours. *)
                 let baseprefix = child_link.MLink.Person_link.baseprefix in
                 (* Prend l'index de l'enfant. *)
-                let ip_child = Gwdb.iper_of_string @@ Int32.to_string child_link.MLink.Person_link.ip in
+                let ip_child = Gwdb.iper_of_string child_link.MLink.Person_link.ip in
                 (* Recherche à nouveau des descendants sur l'enfant en incrémentant le niveau de descendance. *)
                 loop (succ level) (ip_child, baseprefix))
              family_link.MLink.Family.children)

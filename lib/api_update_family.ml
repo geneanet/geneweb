@@ -17,7 +17,7 @@ let reconstitute_family conf base mod_f =
   let witnesses =
     List.map
       (fun ip ->
-        let p = poi base (Gwdb.iper_of_string @@ Int32.to_string ip) in
+        let p = poi base (Gwdb.iper_of_string ip) in
         let fn = sou base (get_first_name p) in
         let sn = sou base (get_surname p) in
         let occ =
@@ -113,7 +113,7 @@ let reconstitute_family conf base mod_f =
     | Some s -> s
     | None -> ""
   in
-  let fam_index = Gwdb.ifam_of_string @@ Int32.to_string mod_f.Mwrite.Family.index in
+  let fam_index = Gwdb.ifam_of_string mod_f.Mwrite.Family.index in
   let parents =
     let father = mod_f.Mwrite.Family.father in
     let sex =
@@ -145,7 +145,7 @@ let reconstitute_family conf base mod_f =
           in
           (fn, sn, occ, Update.Create (sex, None), "", true)
       | `link ->
-          let ip = Gwdb.iper_of_string @@ Int32.to_string father.Mwrite.Person.index in
+          let ip = Gwdb.iper_of_string father.Mwrite.Person.index in
           let p = poi base ip in
           let fn = sou base (get_first_name p) in
           let sn = sou base (get_surname p) in
@@ -186,7 +186,7 @@ let reconstitute_family conf base mod_f =
           in
           (fn, sn, occ, Update.Create (sex, None), "", true)
       | `link ->
-          let ip = Gwdb.iper_of_string @@ Int32.to_string mother.Mwrite.Person.index in
+          let ip = Gwdb.iper_of_string mother.Mwrite.Person.index in
           let p = poi base ip in
           let fn = sou base (get_first_name p) in
           let sn = sou base (get_surname p) in
@@ -236,7 +236,7 @@ let reconstitute_family conf base mod_f =
              in
              (fn, sn, occ, Update.Create (sex, None), "", true)
          | `link ->
-             let ip = Gwdb.iper_of_string @@ Int32.to_string child.Mwrite.Person_link.index in
+             let ip = Gwdb.iper_of_string child.Mwrite.Person_link.index in
              let p = poi base ip in
              let fn = sou base (get_first_name p) in
              let sn = sou base (get_surname p) in
@@ -347,12 +347,12 @@ let print_add conf base mod_f mod_fath mod_moth =
               let imoth = get_mother fam in
               let father = poi base ifath in
               let mother = poi base imoth in
-              mod_f.Mwrite.Family.index <- Int32.of_string @@ Gwdb.string_of_ifam ifam;
-              mod_fath.Mwrite.Person.index <- Int32.of_string @@ Gwdb.string_of_iper ifath;
+              mod_f.Mwrite.Family.index <- Gwdb.string_of_ifam ifam;
+              mod_fath.Mwrite.Person.index <- Gwdb.string_of_iper ifath;
               let fath_occ = get_occ father in
               mod_fath.Mwrite.Person.occ <-
                 if fath_occ = 0 then None else Some (Int32.of_int fath_occ);
-              mod_moth.Mwrite.Person.index <- Int32.of_string @@ Gwdb.string_of_iper imoth;
+              mod_moth.Mwrite.Person.index <- Gwdb.string_of_iper imoth;
               let moth_occ = get_occ mother in
               mod_moth.Mwrite.Person.occ <-
                 if moth_occ = 0 then None else Some (Int32.of_int moth_occ);
@@ -456,7 +456,7 @@ let print_mod_aux conf base mod_f callback =
 
 
 let print_mod conf base ip mod_f =
-  let ifam = Gwdb.ifam_of_string @@ Int32.to_string mod_f.Mwrite.Family.index in
+  let ifam = Gwdb.ifam_of_string mod_f.Mwrite.Family.index in
   let o_f =
     Util.string_gen_family
       base (gen_family_of_family (foi base ifam))

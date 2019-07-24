@@ -6,7 +6,7 @@ message InfosBase {
   required int64 nb_persons = 1;
   required int64 nb_families = 2;
   optional ReferencePerson sosa = 3;
-  optional int64 last_modified_person = 4;
+  optional string last_modified_person = 4;
   optional int64 real_nb_persons = 5;
 }
 
@@ -64,8 +64,8 @@ enum RelationParentType {
 }
 
 message RelationParent {
-  optional int32 father = 1;
-  optional int32 mother = 2;
+  optional string father = 1;
+  optional string mother = 2;
   optional string source = 3;
   required RelationParentType rpt_type = 4;
 }
@@ -143,7 +143,7 @@ message FullPerson {
   required string n = 2;
   required string p = 3;
   required int32 oc = 4;
-  required int32 index = 5;
+  required string index = 5;
   required Sex sex = 6;
   required string lastname = 7;
   required string firstname = 8;
@@ -169,11 +169,11 @@ message FullPerson {
   optional string occupation = 30;
   optional string psources = 31;
   repeated Title titles = 32;
-  repeated int32 related = 33;
+  repeated string related = 33;
   repeated RelationParent rparents = 34;
   required bool visible_for_visitors = 35;
-  optional int32 parents = 36;
-  repeated int32 families = 37;
+  optional string parents = 36;
+  repeated string families = 37;
   required string baseprefix = 38;
 }
 
@@ -185,11 +185,11 @@ message FullFamily {
   required MarriageType marriage_type = 5;
   required DivorceType divorce_type = 6;
   optional string divorce_date = 7;
-  repeated int32 witnesses = 8;
-  required int32 father = 9;
-  required int32 mother = 10;
-  repeated int32 children = 11;
-  required int32 index = 12;
+  repeated string witnesses = 8;
+  required string father = 9;
+  required string mother = 10;
+  repeated string children = 11;
+  required string index = 12;
 }
 
 message InternalInt32 {
@@ -251,7 +251,7 @@ message ListPersImg {
 }
 
 message Index {
-  required int32 index = 1;
+  required string index = 1;
 }
 
 message ImageAddress {
@@ -286,18 +286,18 @@ message CplRelParams {
 }
 
 message Node {
-  required int64 id = 1;
+  required string id = 1;
   required Person person = 2;
 }
 
 message FullNode {
-  required int64 id = 1;
+  required string id = 1;
   required FullPerson person = 2;
 }
 
 message Edge {
-  required int64 from_node = 1;
-  required int64 to_node = 2;
+  required string from_node = 1;
+  required string to_node = 2;
 }
 
 message Graph {
@@ -537,7 +537,7 @@ message Filters {
 message ModificationStatus {
   required bool status = 1;
   required BaseWarnings base_warnings = 2;
-  optional int32 index = 3;
+  optional string index = 3;
 }
 
 enum NotifBirthdayParams {

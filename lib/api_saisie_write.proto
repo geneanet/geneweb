@@ -73,7 +73,7 @@ enum DeathType {
 // ***************************************************************************
 
 message PersonSearch {
-  required int32 index = 1;
+  required string index = 1;
   required Sex sex = 2;
   required string lastname = 3;
   required string firstname = 4;
@@ -87,7 +87,7 @@ message PersonSearch {
 }
 
 message SimplePerson {
-  required int32 index = 1;
+  required string index = 1;
   required Sex sex = 2;
   required string lastname = 3;
   required string firstname = 4;
@@ -141,7 +141,7 @@ message WasWitness {
 }
 
 message PersonSearchInfo {
-  required int32 index = 1;
+  required string index = 1;
   required Sex sex = 2;
   required string lastname = 3;
   required string firstname = 4;
@@ -176,7 +176,7 @@ enum CreateOrLink {
 
 message PersonLink {
   required CreateOrLink create_link = 1;
-  required int32 index = 2;
+  required string index = 2;
   required Sex sex = 3;
   required string lastname = 4;
   required string firstname = 5;
@@ -316,7 +316,7 @@ enum Access {
 message Person {
   required string digest = 1;
   required CreateOrLink create_link = 2;
-  required int32 index = 3;
+  required string index = 3;
   required Sex sex = 4;
   required string lastname = 5;
   required string firstname = 6;
@@ -333,16 +333,16 @@ message Person {
   optional string notes = 17;
   repeated Title titles = 18;
   repeated Pevent pevents = 19;
-  repeated int32 related = 20;
+  repeated string related = 20;
   repeated RelationParent rparents = 21;
   optional Access access = 22 [default = ACCESS_IFTITLES];
-  optional int32 parents = 23;
-  repeated int32 families = 24;
+  optional string parents = 23;
+  repeated string families = 24;
 }
 
 message Family {
   required string digest = 1;
-  required int32 index = 2;
+  required string index = 2;
   repeated Fevent fevents = 3;
   optional string fsources = 4;
   optional string origin_file = 5;
@@ -350,7 +350,7 @@ message Family {
   required Person father = 7;
   required Person mother = 8;
   repeated PersonLink children = 9;
-  repeated int32 old_witnesses = 10;
+  repeated string old_witnesses = 10;
 }
 
 
@@ -389,11 +389,11 @@ message ModificationStatus {
   required bool is_base_updated = 1;
   repeated string base_warnings = 2;
   repeated string base_miscs = 13;
-  optional int32 index_person = 3;
+  optional string index_person = 3;
   required string lastname = 4;
   required string firstname = 5;
   optional int32 occ = 6;
-  optional int32 index_family = 7;
+  optional string index_family = 7;
   optional CreateConflict conflict = 8;
   optional string lastname_str = 9;
   optional string firstname_str = 10;
@@ -407,21 +407,21 @@ message ModificationStatus {
 // ***************************************************************************
 
 message IndexPerson {
-  required int32 index = 1;
+  required string index = 1;
 }
 
 message IndexFamily {
-  required int32 index = 1;
+  required string index = 1;
 }
 
 message IndexPersonAndFamily {
-  required int32 index_person = 1;
-  required int32 index_family = 2;
+  required string index_person = 1;
+  required string index_family = 2;
 }
 
 message FamilySpouse {
-  required int32 index_family = 1;
-  required int32 index_person = 2;
+  required string index_family = 1;
+  required string index_person = 2;
   required Sex sex = 3;
   required string lastname = 4;
   required string firstname = 5;
@@ -431,8 +431,8 @@ message FamilySpouse {
 }
 
 message AddChildRequest {
-  required int32 index = 1;
-  optional int32 index_family = 2;
+  required string index = 1;
+  optional string index_family = 2;
   optional Sex sex = 3;
 }
 
@@ -444,8 +444,8 @@ message AddChild {
 }
 
 message AddChildOk {
-  required int32 index_person = 1;
-  required int32 index_family = 2;
+  required string index_person = 1;
+  required string index_family = 2;
   required bool new_family = 3;
   required Person child = 4;
 }
@@ -457,7 +457,7 @@ message AddParents {
 }
 
 message AddParentsOk {
-  required int32 index_person = 1;
+  required string index_person = 1;
   required Family family = 2;
 }
 
@@ -468,7 +468,7 @@ message AddFamily {
 }
 
 message AddFamilyOk {
-  required int32 index_person = 1;
+  required string index_person = 1;
   required Family family = 2;
 }
 
@@ -484,12 +484,12 @@ message EditFamily {
 }
 
 message EditFamilyOk {
-  required int32 index_person = 1;
+  required string index_person = 1;
   required Family family = 2;
 }
 
 message AddSiblingRequest {
-  required int32 index = 1;
+  required string index = 1;
   optional Sex sex = 2;
 }
 
@@ -500,7 +500,7 @@ message AddSibling {
 }
 
 message AddSiblingOk {
-  required int32 index_person = 1;
+  required string index_person = 1;
   required Person sibling = 2;
 }
 

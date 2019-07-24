@@ -9,7 +9,7 @@ open Util
 open Api_update_util
 
 let reconstitute_person conf base mod_p : ('a, string * string * int * Update.create * string, string) gen_person =
-  let key_index = Gwdb.iper_of_string @@ Int32.to_string mod_p.Mwrite.Person.index in
+  let key_index = Gwdb.iper_of_string mod_p.Mwrite.Person.index in
   let first_name = no_html_tags (only_printable mod_p.Mwrite.Person.firstname) in
   let surname = no_html_tags (only_printable mod_p.Mwrite.Person.lastname) in
   (* S'il y a des caractères interdits, on les supprime *)
@@ -401,7 +401,7 @@ let print_mod_aux conf base mod_p callback =
 
 
 let print_mod conf base mod_p =
-  let ip = Gwdb.iper_of_string @@ Int32.to_string mod_p.Mwrite.Person.index in
+  let ip = Gwdb.iper_of_string mod_p.Mwrite.Person.index in
   let o_p =
     Util.string_gen_person base (gen_person_of_person (poi base ip))
   in
@@ -471,7 +471,7 @@ let find_free_occ_nobase fn sn =
 
 
 let reconstitute_person_nobase conf mod_p =
-  let key_index = Gwdb.iper_of_string @@ Int32.to_string mod_p.Mwrite.Person.index in
+  let key_index = Gwdb.iper_of_string mod_p.Mwrite.Person.index in
   let first_name = no_html_tags (only_printable mod_p.Mwrite.Person.firstname) in
   let surname = no_html_tags (only_printable mod_p.Mwrite.Person.lastname) in
   (* S'il y a des caractères interdits, on les supprime *)
