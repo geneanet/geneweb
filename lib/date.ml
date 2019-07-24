@@ -97,17 +97,17 @@ let rec compare_dmy dmy1 dmy2 =
 and compare_month dmy1 dmy2 = match dmy1.month, dmy2.month with
   | 0, 0 -> cmp_prec dmy1 dmy2
   | 0, _ ->
-    if dmy1.prec = After then 1 else cmp_prec dmy1 dmy2
+    if dmy1.prec = After then 1 else -1
   | _, 0 ->
-    if dmy2.prec = After then -1 else cmp_prec dmy1 dmy2
+    if dmy2.prec = After then -1 else 1
   | m1, m2 -> match compare m1 m2 with
     | 0 -> compare_day dmy1 dmy2
     | x -> x
 and compare_day dmy1 dmy2 = match dmy1.day, dmy2.day with
   | 0, 0 -> cmp_prec dmy1 dmy2
-  | 0, _ -> if dmy1.prec = After then 1 else cmp_prec dmy1 dmy2
+  | 0, _ -> if dmy1.prec = After then 1 else -1
   | _, 0 ->
-    if dmy2.prec = After then -1 else cmp_prec dmy1 dmy2
+    if dmy2.prec = After then -1 else 1
   | d1, d2 -> match compare d1 d2 with
     | 0 -> cmp_prec dmy1 dmy2
     | x -> x
