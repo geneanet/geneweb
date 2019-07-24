@@ -20,11 +20,7 @@ let reconstitute_family conf base mod_f =
         let p = poi base (Gwdb.iper_of_string ip) in
         let fn = sou base (get_first_name p) in
         let sn = sou base (get_surname p) in
-        let occ =
-          if fn = "?" || sn = "?"
-          then int_of_string @@ Gwdb.string_of_iper (get_iper p)
-          else get_occ p
-        in
+        let occ = get_occ p in
         (fn, sn, occ, Update.Link, "", false))
       mod_f.Mwrite.Family.old_witnesses
   in
@@ -149,11 +145,7 @@ let reconstitute_family conf base mod_f =
           let p = poi base ip in
           let fn = sou base (get_first_name p) in
           let sn = sou base (get_surname p) in
-          let occ =
-            if fn = "?" || sn = "?"
-            then int_of_string @@ Gwdb.string_of_iper (get_iper p)
-            else get_occ p
-          in
+          let occ = get_occ p in
           (fn, sn, occ, Update.Link, "", false)
     in
     let mother = mod_f.Mwrite.Family.mother in
@@ -191,8 +183,7 @@ let reconstitute_family conf base mod_f =
           let fn = sou base (get_first_name p) in
           let sn = sou base (get_surname p) in
           let occ =
-            if fn = "?" || sn = "?"
-            then int_of_string @@ Gwdb.string_of_iper (get_iper p)
+            if fn = "?" || sn = "?" then -1
             else get_occ p
           in
           (fn, sn, occ, Update.Link, "", false)
@@ -240,11 +231,7 @@ let reconstitute_family conf base mod_f =
              let p = poi base ip in
              let fn = sou base (get_first_name p) in
              let sn = sou base (get_surname p) in
-             let occ =
-               if fn = "?" || sn = "?"
-               then int_of_string @@ Gwdb.string_of_iper (get_iper p)
-               else get_occ p
-             in
+             let occ = get_occ p in
              (fn, sn, occ, Update.Link, "", false))
       mod_f.Mwrite.Family.children
   in
