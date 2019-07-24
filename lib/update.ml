@@ -1135,15 +1135,15 @@ let insert_person conf base src new_persons (f, s, o, create, var) =
   match create with
     Create (sex, info) ->
       begin try
-        if f = "?" || s = "?" then
-          if o <= 0 || o >= nb_of_persons base then raise Not_found
-          else
-            (* FIXME: this would fail if internal repr of iper is not int *)
-            let ip = Gwdb.iper_of_string @@ string_of_int o in
-            let p = poi base ip in
-            if p_first_name base p = f && p_surname base p = s then ip
-            else raise Not_found
-        else
+          (* FIXMEEEEEEEEEEEEEEEEEe *)
+        (* if f = "?" || s = "?" then
+         *   if o <= 0 || o >= nb_of_persons base then raise Not_found
+         *   else
+         *     let ip = o in
+         *     let p = poi base ip in
+         *     if p_first_name base p = f && p_surname base p = s then ip
+         *     else raise Not_found
+         * else *)
           match person_of_key base f s o with
             Some ip -> print_create_conflict conf base (poi base ip) var
           | None -> raise Not_found
@@ -1217,19 +1217,19 @@ let insert_person conf base src new_persons (f, s, o, create, var) =
         ip
       end
   | Link ->
-    if f = "?" || s = "?" then
-      if o < 0 || o >= nb_of_persons base then
-        print_err_unknown conf base (f, s, o)
-      else
-        (* FIXME: this would fail if internal repr of iper is not int *)
-        let ip = Gwdb.iper_of_string @@ string_of_int o in
-        let p = poi base ip in
-        if p_first_name base p = f && p_surname base p = s then ip
-        else print_err_unknown conf base (f, s, o)
-    else
-      match person_of_key base f s o with
-        Some ip -> ip
-      | None -> print_err_unknown conf base (f, s, o)
+    (* FIXME !!!!!!! *)
+      (* if f = "?" || s = "?" then
+       *   if o < 0 || o >= nb_of_persons base then
+       *     print_err_unknown conf base (f, s, o)
+       *   else
+       *     let ip = Adef.iper_of_int o in
+       *     let p = poi base ip in
+       *     if p_first_name base p = f && p_surname base p = s then ip
+       *     else print_err_unknown conf base (f, s, o)
+       * else *)
+        match person_of_key base f s o with
+          Some ip -> ip
+        | None -> print_err_unknown conf base (f, s, o)
 
 let rec update_conf_env field p occ o_env n_env =
   match o_env with
