@@ -436,22 +436,26 @@ let next_chars_if_equiv s i t j =
     if s1 = t1 then Some (i1, j1) else None
 
 let lower s =
-  let rec copy special i len =
-    if i = String.length s then Buff.get len
+  let buf = Buffer.create (String.length s) in
+  let rec copy special i =
+    if i = String.length s then Buffer.contents buf
     else if Char.code s.[i] < 0x80 then
       match s.[i] with
       (*'a'..'z' | 'A'..'Z' | 'à'..'ÿ' | 'À'..'Ý' | *)
         'a'..'z' | 'A'..'Z' | '\xE0'..'\xFD' | '\xC0'..'\xDD' |
         '0'..'9' | '.' as c ->
-          let len = if special then Buff.store len ' ' else len in
-          let c = unaccent_iso_8859_1 (Char.lowercase_ascii c) in
-          copy false (i + 1) (Buff.store len c)
-      | _ -> copy (len <> 0) (i + 1) len
-    else
-      let len = if special then Buff.store len ' ' else len in
-      let (t, j) = unaccent_utf_8 true s i in copy false j (Buff.mstore len t)
+          if special then Buffer.add_char buf ' ' ;
+          Buffer.add_char buf @@ unaccent_iso_8859_1 (Char.lowercase_ascii c) ;
+          copy false (i + 1)
+      | _ -> copy (Buffer.length buf <> 0) (i + 1)
+    else begin
+      if special then Buffer.add_char buf ' ' ;
+      let (t, j) = unaccent_utf_8 true s i in
+      Buffer.add_string buf t ;
+      copy false j
+    end
   in
-  copy false 0 0
+  copy false 0
 
 (* Name.abbrev *)
 
@@ -475,30 +479,35 @@ let rec search_abbrev s i =
   | [] -> None
 
 let abbrev s =
-  let rec copy can_start_abbrev i len =
-    if i >= String.length s then Buff.get len
+  let buf = Buffer.create (String.length s) in
+  let rec copy can_start_abbrev i =
+    if i >= String.length s then Buffer.contents buf
     else
       match s.[i] with
-        ' ' -> copy true (i + 1) (Buff.store len ' ')
+      | ' ' -> Buffer.add_char buf ' ' ; copy true (i + 1)
       | c ->
           if can_start_abbrev then
             match search_abbrev s i abbrev_list with
-              None -> copy false (i + 1) (Buff.store len c)
-            | Some (n, Some a) -> copy false (i + n) (Buff.mstore len a)
-            | Some (n, None) -> copy true (i + n + 1) len
-          else copy false (i + 1) (Buff.store len c)
+            | None -> Buffer.add_char buf c ; copy false (i + 1)
+            | Some (n, Some a) -> Buffer.add_string buf a ; copy false (i + n)
+            | Some (n, None) -> copy true (i + n + 1)
+          else begin
+            Buffer.add_char buf c ;
+            copy false (i + 1)
+          end
   in
-  copy true 0 0
+  copy true 0
 
 (* Name.strip *)
 
 let strip_c s c =
-  let rec copy i len =
-    if i = String.length s then Buff.get len
-    else if s.[i] = c then copy (i + 1) len
-    else copy (i + 1) (Buff.store len s.[i])
+  let buf = Buffer.create (String.length s) in
+  let rec copy i =
+    if i = String.length s then Buffer.contents buf
+    else if s.[i] = c then copy (i + 1)
+    else (Buffer.add_char buf s.[i] ; copy (i + 1))
   in
-  copy 0 0
+  copy 0
 
 let strip s = strip_c s ' '
 
@@ -531,55 +540,54 @@ let roman_number s i =
   if i = 0 || s.[i-1] = ' ' then loop i else None
 
 let crush s =
-  let rec copy i len first_vowel =
-    if i = String.length s then Buff.get len
-    else if s.[i] = ' ' then copy (i + 1) len true
+  let buf = Buffer.create (String.length s) in
+  let rec copy i first_vowel =
+    if i = String.length s then Buffer.contents buf
+    else if s.[i] = ' ' then copy (i + 1) true
     else
       match roman_number s i with
-        Some j ->
-          let rec loop i len =
-            if i = j then copy j len true
-            else loop (i + 1) (Buff.store len s.[i])
-          in
-          loop i len
+      | Some j ->
+        let rec loop i =
+          if i = j then copy j true
+          else (Buffer.add_char buf s.[i] ; loop (i + 1))
+        in
+        loop i
       | _ ->
-          match s.[i] with
-            'a' | 'e' | 'i' | 'o' | 'u' | 'y' ->
-              let len = if first_vowel then Buff.store len 'e' else len in
-              copy (i + 1) len false
-          | 'h' ->
-              let len =
-                if i > 0 && s.[i-1] = 'p' then Buff.store (len - 1) 'f'
-                else len
-              in
-              copy (i + 1) len first_vowel
-          | 's' | 'z'
-            when (i = String.length s - 1 || s.[i+1] = ' ') ->
-              let len =
-                let rec loop i len =
-                  if i > 0 && len > 0 && s.[i] = Bytes.get !(Buff.buff) len &&
-                     (s.[i] = 's' || s.[i] = 'z')
-                  then
-                    loop (i - 1) (len - 1)
-                  else len + 1
-                in
-                loop (i - 1) (len - 1)
-              in
-              copy (i + 1) len false
-          | 's' when i = String.length s - 1 || s.[i+1] = ' ' ->
-              copy (i + 1) len false
-          | c ->
-              if i > 0 && s.[i-1] = c then copy (i + 1) len false
-              else
-                let c =
-                  match c with
-                    'k' | 'q' -> 'c'
+        match s.[i] with
+        | 'a' | 'e' | 'i' | 'o' | 'u' | 'y' ->
+          if first_vowel then Buffer.add_char buf 'e' ;
+          copy (i + 1) false
+        | 'h' ->
+          if i > 0 && s.[i-1] = 'p' then Buffer.add_char buf 'f' ;
+          copy (i + 1) first_vowel
+        | 's' | 'z'
+          when (i = String.length s - 1 || s.[i+1] = ' ') ->
+          let rec loop i len =
+            if i > 0
+            && len > 0
+            && s.[i] = Buffer.nth buf (len - 1)
+            && (s.[i] = 's' || s.[i] = 'z')
+            then
+              ( Buffer.truncate buf (len - 1)
+              ; loop  (i - 1) (len - 1) )
+          in
+          loop (i - 1) (Buffer.length buf) ; (* FIXME? *)
+          copy (i + 1) false
+        | 's' when i = String.length s - 1 || s.[i+1] = ' ' ->
+          copy (i + 1) false
+        | c ->
+          if i > 0 && s.[i-1] = c then copy (i + 1) false
+          else
+            let c =
+              match c with
+              'k' | 'q' -> 'c'
                   | 'z' -> 's'
                   | c -> c
-                in
-                copy (i + 1) (Buff.store len c) false
+            in
+            ( Buffer.add_char buf c
+            ; copy (i + 1) false )
   in
-  copy 0 0 true
+  copy 0 true
 
 (* strip_lower *)
 
