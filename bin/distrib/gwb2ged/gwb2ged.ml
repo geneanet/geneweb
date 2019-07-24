@@ -225,7 +225,7 @@ let string_of_list =
   loop ""
 
 let ged_index oc per =
-  Printf.fprintf oc "1 _GWID %d\n" (int_of_iper (get_iper per))
+  Printf.fprintf oc "1 _GWID %s\n" (Gwdb.string_of_iper (get_iper per))
 
 let ged_name base oc per =
   Printf.fprintf oc "1 NAME %s /%s/\n"
