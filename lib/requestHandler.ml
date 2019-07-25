@@ -1321,7 +1321,8 @@ let defaultHandler : handler =
       Api.print_export_search conf base
     end
 
-  ; api_print_synchro = begin fun _self _conf _base -> ()
+  ; api_print_synchro = begin fun _self conf base ->
+      Api.print_synchro_patch_mobile conf base
     end
 
   ; api_ref_person_from_id = begin fun _self conf base ->
