@@ -14,6 +14,7 @@ open Api_util
 
 (**/**) (* Services disponibles. *)
 
+let int_of_iper x = int_of_string @@ Gwdb.string_of_iper x
 
 (* ******************************************************************** *)
 (*  [Fonc] print_info_base : config -> base -> InfosBase                *)
@@ -962,10 +963,11 @@ let print_export_info conf export_directory =
       let sosa_ref =
         match Util.find_sosa_ref conf base with
         | Some p ->
-            (output_char oc '\001'; get_iper p)
-        | None -> (output_char oc '\000'; Gwdb.dummy_iper) (* FIXME??? *)
+            ( output_char oc '\001'
+            ; int_of_iper @@ get_iper p)
+        | None -> (output_char oc '\000'; 0)
       in
-      output_string oc (Gwdb.string_of_iper sosa_ref);
+      output_binary_int oc sosa_ref;
       let timestamp = string_of_float (Unix.time ()) in
       let timestamp = String.sub timestamp 0 (String.index timestamp '.') in
       output_binary_int oc (String.length timestamp);
@@ -1204,15 +1206,14 @@ let build_relative_name base p =
   List.rev list
 
 
-let iperSetTab = ref (Hashtbl.create 0)
+let intSetTab = ref (Array.make 1 0)
 
 module IntSet =
   Set.Make
     (struct
-      type t = iper
-      let compare x y = compare (Hashtbl.find !iperSetTab x) (Hashtbl.find !iperSetTab y)
-    end)
-
+      type t = int
+      let compare x y = compare !intSetTab.(x) !intSetTab.(y)
+     end)
 
 let print_index_search conf export_directory =
   let bname = Util.base_path [] (conf.bname ^ ".gwb") in
@@ -1275,15 +1276,15 @@ let print_index_search conf export_directory =
           end
       end (Gwdb.persons base) ;
 
-      iperSetTab := Hashtbl.create (nb_of_persons base) ;
+      intSetTab := Array.make (nb_of_persons base) 0;
       let nb_tab = ref 0 in
 
       let oc_name_inx = open_out_bin fname_inx in
       List.iter
         (fun (i, _, _, _, _) ->
-          output_string oc_name_inx @@ Gwdb.string_of_iper i;
+          output_binary_int oc_name_inx @@ int_of_iper i;
           incr nb_tab;
-          Hashtbl.add !iperSetTab i !nb_tab)
+          Array.set !intSetTab (int_of_iper i) !nb_tab)
         (NameSort.elements !list_inx);
       close_out oc_name_inx;
 
@@ -1309,10 +1310,11 @@ let print_index_search conf export_directory =
             IntSet.elements
               (List.fold_left
                  (fun accu i -> IntSet.add i accu)
-                 IntSet.empty v)
+                 IntSet.empty
+                 (List.map (fun x -> int_of_iper x) v))
           in
           output_binary_int oc_name_i (List.length vv);
-          List.iter (fun i -> output_string oc_name_i @@ Gwdb.string_of_iper i) vv;
+          List.iter (output_binary_int oc_name_i) vv;
 
           offset_i := !offset_i + 4 + (4 * (List.length vv)))
         !list_map;
@@ -1384,8 +1386,8 @@ let print_ascends_index conf export_directory =
           let father = get_father cpl in
           let mother = get_mother cpl in
           output_char oc '\001';
-          output_string oc (Gwdb.string_of_iper father);
-          output_string oc (Gwdb.string_of_iper mother);
+          output_binary_int oc (int_of_iper father);
+          output_binary_int oc (int_of_iper mother);
         end
       | None ->
         begin
@@ -1647,7 +1649,7 @@ let print_synchro_patch_mobile conf base =
               match Util.find_sosa_ref conf base with
               | Some p ->
                 output_char oc '\001';
-                int_of_string @@ Gwdb.string_of_iper (get_iper p)
+                int_of_iper (get_iper p)
               | None -> (output_char oc '\000'; 0)
             in
             output_binary_int oc sosa_ref;
@@ -1734,8 +1736,8 @@ let print_synchro_patch_mobile conf base =
                       let father = get_father cpl in
                       let mother = get_mother cpl in
                       output_char oc '\001';
-                      output_binary_int oc (int_of_string @@ Gwdb.string_of_iper father);
-                      output_binary_int oc (int_of_string @@ Gwdb.string_of_iper  mother);
+                      output_binary_int oc (int_of_iper father);
+                      output_binary_int oc (int_of_iper mother);
                     end
                 | None ->
                     begin
