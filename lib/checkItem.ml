@@ -22,6 +22,24 @@ let lim_date_marriage = 1850
 let min_age_marriage = 13
 let average_marriage_age = 20
 
+let strictly_before d1 d2 =
+  match d1, d2 with
+  | Dgreg (d1, _), Dgreg (d2, _) ->
+    begin
+      try Date.compare_dmy ~strict:true d1 d2 < 0
+      with Date.Not_comparable -> false
+    end
+  | _ -> false
+
+let strictly_after d1 d2 =
+  match d1, d2 with
+  | Dgreg (d1, _), Dgreg (d2, _) ->
+    begin
+      try Date.compare_dmy ~strict:true d1 d2 > 0
+      with Date.Not_comparable -> false
+    end
+  | _ -> false
+
 type 'string event_name =
     Psort of 'string gen_pers_event_name
   | Fsort of 'string gen_fam_event_name
@@ -128,18 +146,18 @@ let titles_after_birth warning p t =
   let t_date_start = Adef.od_of_cdate t.t_date_start in
   let t_date_end = Adef.od_of_cdate t.t_date_end in
   begin match t_date_start, t_date_end with
-    | Some d1, Some d2 ->
-      if Date.compare_date d1 d2 >= 0 then warning (TitleDatesError (p, t))
-    | _ -> ()
+    Some d1, Some d2 ->
+      if strictly_after d1 d2 then warning (TitleDatesError (p, t))
+  | _ -> ()
   end;
   match Adef.od_of_cdate (get_birth p) with
     Some d1 ->
       begin match t_date_start with
-        Some d -> if Date.compare_date d1 d >= 0 then warning (TitleDatesError (p, t))
+        Some d -> if strictly_after d1 d then warning (TitleDatesError (p, t))
       | None -> ()
       end;
       begin match t_date_end with
-        Some d -> if Date.compare_date d1 d >= 0 then warning (TitleDatesError (p, t))
+        Some d -> if strictly_after d1 d then warning (TitleDatesError (p, t))
       | None -> ()
       end;
       ()
@@ -308,7 +326,7 @@ let check_normal_marriage_date_for_someone base warning witn fam ip =
     Some (Dgreg (g2, _) as d2) ->
       begin match Adef.od_of_cdate (get_birth p) with
         Some (Dgreg (g1, _) as d1) ->
-          if Date.compare_date d2 d1 < 0 then
+          if strictly_before d2 d1 then
             if witn then warning (WitnessDateBeforeBirth p)
             else warning (MarriageDateBeforeBirth p)
           else if
@@ -321,7 +339,7 @@ let check_normal_marriage_date_for_someone base warning witn fam ip =
       begin match get_death p with
         Death (_, d3) ->
           let d3 = Adef.date_of_cdate d3 in
-          if Date.compare_date d2 d3 > 0 then
+          if strictly_after d2 d3 then
             if witn then warning (WitnessDateAfterDeath p)
             else warning (MarriageDateAfterDeath p)
       | _ -> ()
@@ -467,9 +485,9 @@ let semi_sort base a before comp di =
 
 let sort_children base children =
   let before = ref None in
-  semi_sort base children before (fun a b -> Date.compare_date a b < 0) 1 1;
-  semi_sort base children before (fun a b -> Date.compare_date a b > 0) (~-1) 1;
-  semi_sort base children before (fun a b -> Date.compare_date a b < 0) 1 1;
+  semi_sort base children before strictly_before 1 1;
+  semi_sort base children before strictly_after (~-1) 1;
+  semi_sort base children before strictly_before 1 1;
   match !before with
     Some b -> Some (b, children)
   | None -> None
@@ -554,11 +572,11 @@ let born_after_his_elder_sibling warning x np ifam des =
   match np, Adef.od_of_cdate (get_birth x), get_death x with
     None, _, _ -> ()
   | Some (elder, d1), Some d2, _ ->
-      if Date.compare_date d1 d2 > 0 then
+      if strictly_after d1 d2 then
         warning (ChildrenNotInOrder (ifam, des, elder, x))
   | Some (elder, d1), _, Death (_, d2) ->
       let d2 = Adef.date_of_cdate d2 in
-      if Date.compare_date d1 d2 > 0 then
+      if strictly_after d1 d2 then
         warning (ChildrenNotInOrder (ifam, des, elder, x))
   | _ -> ()
 
@@ -569,7 +587,7 @@ let child_born_after_his_parent base warning x iparent =
     Date.date_of_death (get_death x)
   with
     Some (Dgreg (g1, _) as d1), Some (Dgreg (g2, _) as d2), _ ->
-      if Date.compare_date d1 d2 > 0 then warning (ParentBornAfterChild (parent, x))
+      if strictly_after d1 d2 then warning (ParentBornAfterChild (parent, x))
       else
         let a = Date.time_elapsed g1 g2 in
         if year_of a < min_parent_age then
@@ -580,7 +598,7 @@ let child_born_after_his_parent base warning x iparent =
         then
           warning (ParentTooOld (parent, a))
   | Some (Dgreg (g1, _) as d1), _, Some (Dgreg (g2, _) as d2) ->
-      if Date.compare_date d1 d2 > 0 then warning (ParentBornAfterChild (parent, x))
+      if strictly_after d1 d2 then warning (ParentBornAfterChild (parent, x))
       else
         let a = Date.time_elapsed g1 g2 in
         if year_of a < min_parent_age then
@@ -592,7 +610,7 @@ let child_born_before_mother_death base warning x imoth =
   match Adef.od_of_cdate (get_birth x), get_death mother with
     Some d1, Death (_, d2) ->
       let d2 = Adef.date_of_cdate d2 in
-      if Date.compare_date d1 d2 > 0 then
+      if strictly_after d1 d2 then
         warning (MotherDeadAfterChildBirth (mother, x))
   | _ -> ()
 
@@ -644,14 +662,14 @@ let check_witness_pevents base warning p =
                 let p = poi base iw in
                 begin match Adef.od_of_cdate (get_birth p) with
                   Some (Dgreg (_, _) as d1) ->
-                    if Date.compare_date d2 d1 < 0 then
+                    if strictly_before d2 d1 then
                       warning (PWitnessEventBeforeBirth (p, evt))
                 | _ -> ()
                 end;
                 match get_death p with
                   Death (_, d3) ->
                     let d3 = Adef.date_of_cdate d3 in
-                    if Date.compare_date d2 d3 > 0 then
+                    if strictly_after d2 d3 then
                       warning (PWitnessEventAfterDeath (p, evt))
                 | _ -> ())
              evt.epers_witnesses
@@ -753,14 +771,14 @@ let check_witness_fevents base warning (_ifam, fam) =
                 let p = poi base iw in
                 begin match Adef.od_of_cdate (get_birth p) with
                   Some (Dgreg (_, _) as d1) ->
-                    if Date.compare_date d2 d1 < 0 then
+                    if strictly_before d2 d1 then
                       warning (FWitnessEventBeforeBirth (p, evt))
                 | _ -> ()
                 end;
                 match get_death p with
                   Death (_, d3) ->
                     let d3 = Adef.date_of_cdate d3 in
-                    if Date.compare_date d2 d3 > 0 then
+                    if strictly_after d2 d3 then
                       warning (FWitnessEventAfterDeath (p, evt))
                 | _ -> ())
              evt.efam_witnesses
