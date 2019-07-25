@@ -137,12 +137,24 @@ let events_filters_aux params =
   let filter_fevents = List.map fevent_name_of_piqi_fevent_name params.M.Events_query_params.fevents in
   let filter_start_date =
     match params.M.Events_query_params.start_date with
-    | Some b -> let b = date_of_piqi_date b in fun d -> Date.compare_date d b >= 0
+    | Some b ->
+      let b = date_of_piqi_date b in
+      fun d ->
+        begin
+          try Date.compare_date ~strict:true d b >= 0
+          with Date.Not_comparable -> false
+        end
     | None -> fun _ -> true
   in
   let filter_stop_date =
     match params.M.Events_query_params.stop_date with
-    | Some b -> let b = date_of_piqi_date b in fun d -> Date.compare_date d b <= 0
+    | Some b ->
+      let b = date_of_piqi_date b in
+      fun d ->
+        begin
+          try Date.compare_date ~strict:true d b <= 0
+          with Date.Not_comparable -> false
+        end
     | None -> fun _ -> true
   in
   ( (fun e ->
