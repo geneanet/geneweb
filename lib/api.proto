@@ -574,15 +574,6 @@ message PersonStart {
 }
 
 // ***************************************************************************
-// Synchro mobile
-// ***************************************************************************
-
-message SynchroParams {
-  required string export_directory = 1;
-  required string timestamp = 2;
-}
-
-// ***************************************************************************
 // Dernières modifications, historique
 // ***************************************************************************
 message LastModifications {

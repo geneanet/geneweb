@@ -210,9 +210,6 @@ let family_m conf base =
           | "API_MAX_ANCESTORS" -> handler.api_max_ancestors
           | "API_NB_ANCESTORS" -> handler.api_nb_ancestors
           | "API_NOTIFICATION_BIRTHDAY" -> handler.api_notification_birthday
-          | "API_PRINT_EXPORT" -> handler.api_print_export
-          | "API_PRINT_EXPORT_SEARCH" -> handler.api_print_export_search
-          | "API_PRINT_SYNCHRO" -> handler.api_print_synchro
           | "API_REF_PERSON_FROM_ID" -> handler.api_ref_person_from_id
           | "API_REMOVE_IMAGE_EXT" -> handler.api_remove_image_ext
           | "API_REMOVE_IMAGE_EXT_ALL" -> handler.api_remove_image_ext_all
