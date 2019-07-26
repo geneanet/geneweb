@@ -242,7 +242,7 @@ let family_m conf base =
           | "API_LINK_TREE" -> handler.api_link_tree
           | "API_STATS" -> handler.api_stats
           | "API_SELECT_EVENTS" -> handler.api_select_events
-          | _ -> handler.incorrect_request
+          | unknown -> handler.fallback unknown
         end
 #endif
       | unknown -> handler.fallback unknown
