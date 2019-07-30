@@ -300,13 +300,18 @@ let advanced_search conf base max_answers =
   in
   let match_person ((list, len) as acc) p search_type =
     if search_type <> "OR"
-    && (match_civil_status p && match_baptism_date p true
-        && match_baptism_place p true && match_birth_date p true
-        && match_birth_place p true && match_burial_date p true
-        && match_burial_place p true && match_death_date p true
-        && match_death_place p true
-        && match_marriage p marriage_date_field_name marriage_place_field_name true)
-    then (p :: list, len +1)
+    then if match_civil_status p
+         && match_baptism_date p true
+         && match_baptism_place p true
+         && match_birth_date p true
+         && match_birth_place p true
+         && match_burial_date p true
+         && match_burial_place p true
+         && match_death_date p true
+         && match_death_place p true
+         && match_marriage p marriage_date_field_name marriage_place_field_name true
+      then (p :: list, len +1)
+      else acc
     else if
       match_civil_status p
       && (gets "place" = "" && gets "date2_yyyy" = ""
