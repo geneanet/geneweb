@@ -105,28 +105,25 @@ let advanced_search conf base max_answers =
           in
           Hashtbl.add hd x v; v
     in
-    match d1, d2 with
-      Some d1, Some d2 ->
+    authorized_age conf base p
+    && match d1, d2 with
+      | Some (Dgreg (d1, _)), Some (Dgreg (d2, _)) ->
         begin match df () with
-          Some (Dgreg (_, _) as d) when authorized_age conf base p ->
-            if Date.compare_date d d1 < 0 then false
-            else if Date.compare_date d2 d < 0 then false
-            else true
-        | _ -> false
+          | Some (Dgreg (d, _)) ->
+            Date.compare_dmy d d1 >= 0 && Date.compare_dmy d d2 <= 0
+          | _ -> false
         end
-    | Some d1, _ ->
+      | Some (Dgreg (d1, _)), _ ->
         begin match df () with
-          Some (Dgreg (_, _) as d) when authorized_age conf base p ->
-            if Date.compare_date d d1 < 0 then false else true
-        | _ -> false
+          | Some (Dgreg (d, _)) -> Date.compare_dmy d d1 >= 0
+          | _ -> false
         end
-    | _, Some d2 ->
+      | _, Some (Dgreg (d2, _)) ->
         begin match df () with
-          Some (Dgreg (_, _) as d) when authorized_age conf base p ->
-            if Date.compare_date d d2 > 0 then false else true
-        | _ -> false
+          | Some (Dgreg (d, _)) -> Date.compare_dmy d d2 <= 0
+          | _ -> false
         end
-    | _ -> empty_default_value
+      | _ -> empty_default_value
   in
   let match_sex p empty_default_value =
     apply_to_field_value p "sex"
