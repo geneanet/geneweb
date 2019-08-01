@@ -333,7 +333,7 @@ $(document).ready(function(){
 %end;
 
 %define;selector_fevent(xcnt)
-  <select class="form-control custom-select font-weight-bold" id="fevent_selectxcnt" onchange="show_fevent_label($('#e_namexcnt').prop('defaultValue'), 'xcnt')">
+  <select class="form-control custom-select font-weight-bold" id="fevent_selectxcnt" onchange="show_fevent_label(xcnt)">
     <option value="">[*custom event]</option>
     <option disabled>──────────</option>
     <option value="#marr" %if;(event.e_name = "#marr" or event.e_name="") selected %end;>[*marriage event]</option>
@@ -351,99 +351,93 @@ $(document).ready(function(){
   </select>
 %end;
 
-%define;insert_fevent(xcnt)
-  <div class="row mt-2">
-    <label for="ins_eventxcnt_n" class="col-form-label col-2">[*insert]</label>
-    <div class="form-inline col-10 ml-auto">
-      <div class="input-group">
-        <select class="custom-select form-control" id="ins_eventxcnt_n" name="ins_eventxcnt_n">
-          %for;i;1;11;<option>%i;</option> %end;
+
+%define;delete_witness(xcnt, wcnt)
+  <button class="btn btn-outline-danger" type="button"
+          onclick="(function(){
+                   var root = document.querySelector('#excnt_witnwcnt') ;
+                   root.style.display='none';
+                   root.querySelectorAll('input').forEach(function(x){x.value='';});
+                   root.querySelectorAll('select').forEach(function(x){x.value='';});
+                   return false;})()">
+    <i class="far fa-minus-square"></i>
+    [*witness/witness/witnesses]0
+  </button>
+%end;
+
+%define;one_witness(xcnt, wcnt, w_create, w_kind, w_firstname, w_occ, w_surname, w_sex)
+<div class="card witness_wrapper mt-3" id="excnt_witnwcnt">
+  <div class="card-body">
+    <div class="row">
+      <h5 class="col-md-2 col-form-label">%apply;delete_witness(xcnt, wcnt)</h5>
+      <div class="col-md-2">
+        <select class="form-control" name="excnt_witnwcnt_p">
+          <option value="link"%if;("w_create" = "link") selected%end;>[*link]0</option>
+          <option value="create"%if;("w_create" = "create") selected%end;>[*create]0</option>
         </select>
-        <div class="input-group-append">
-          <label class="btn btn-outline-secondary"> [event/events]0/[event/events]1
-            <input class="ml-1" type="checkbox" name="ins_eventxcnt" value="on">
+      </div>
+      <div class="col-md-3">
+        <select class="form-control" name="excnt_witnwcnt_kind">
+          <option value="offi" %if;("w_kind" = "offi") selected %end;>[*officer/officer/officers]0</option>
+          <option value=""     %if;("w_kind" = "")     selected %end;>[*witness/witness/witnesses]0</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <label for="excnt_witnwcnt_fn" class="col-sm-2 col-form-label">[*first name/first names]0</label>
+      <div class="col-sm-5">
+        <input type="text" class="form-control" name="excnt_witnwcnt_fn" value="w_firstname" id="excnt_witnwcnt_fn" placeholder="[*first name/first names]0">
+      </div>
+      <label for="excnt_witnwcnt_occ" class="col-sm-auto col-form-label">[*number]0</label>
+      <div class="col-sm-auto">
+        <input type="number" class="form-control" name="excnt_witnwcnt_occ" min="0"  value="%if;("w_occ"="")0%else;w_occ;%end;" id="excnt_witnwcnt_occ">
+      </div>
+    </div>
+    <div class="row">
+      <label for="excnt_witnwcnt_sn" class="col-sm-2 col-form-label">[*surname/surnames]0</label>
+      <div class="col-sm-5">
+        <input type="text" class="form-control" name="excnt_witnwcnt_sn" maxlength="200" value="w_surname" id="excnt_witnwcnt_sn" placeholder="[*surname/surnames]0">
+      </div>
+      <span class="col-sm-auto col-form-label">[*sex]</span>
+      <div class="col-sm-auto mt-2">
+        <div class="form-check form-check-inline">
+          <label class="form-check-label">
+            <input class="form-check-input" type="radio" name="excnt_witnwcnt_sex" value="M" %if;("w_sex"="male")checked%end;%/> [M/F]0
           </label>
-          <button type="submit" class="btn btn-outline-secondary" title="[*insert::event/events]0/[event/events]1">OK</button>
+        </div>
+        <div class="form-check form-check-inline">
+          <label class="form-check-label">
+            <input class="form-check-input" type="radio" name="excnt_witnwcnt_sex" value="N" %if;("w_sex"="neuter")checked%end;%/> ?
+          </label>
+        </div>
+        <div class="form-check form-check-inline">
+          <label class="form-check-label">
+            <input class="form-check-input" type="radio" name="excnt_witnwcnt_sex" value="F" %if;("w_sex"="female")checked%end;%/> [M/F]1
+          </label>
         </div>
       </div>
     </div>
   </div>
+</div>
 %end;
 
-%define;insert_witness(xcnt, wcnt)
-  <div class="row mt-3 mb-1">
-    <label for="excnt_ins_witnwcnt_n" class="col-form-label col-2">[*insert]</label>
-    <div class="form-inline col-10 ml-auto">
-      <div class="input-group">
-        <select class="form-control" id="excnt_ins_witnwcnt_n" name="excnt_ins_witnwcnt_n" >
-          %for;i;1;11;<option>%i;</option> %end;
-        </select>
-        <div class="input-group-append">
-          <label class="btn btn-outline-secondary"> [witness/witness/witnesses]0/[witness/witness/witnesses]2
-            <input class="ml-1" type="checkbox" name="excnt_ins_witnwcnt" value="on">
-          </label>
-        <button type="submit" class="btn btn-outline-secondary" title="[*insert::witness/witness/witnesses]0/[witness/witness/witnesses]2">OK</button>
-        </div>
-      </div>
-    </div>
-  </div>
-%end;
-
-%define;one_witness(xcnt, wcnt)
-  <div class="row mt-3">
-    <h5 class="col-md-2 col-form-label">[*witness/witness/witnesses]0 wcnt</h5>
-    <div class="col-md-2">
-      <select class="form-control" name="excnt_witnwcnt_p">
-       <option value="link"%if;(fwitness.create = "link") selected%end;>[*link]0</option>
-       <option value="create"%if;(fwitness.create = "create") selected%end;>[*create]0</option>
-     </select>
-    </div>
-    <div class="col-md-3">
-      <select class="form-control" name="excnt_witnwcnt_kind">
-        <option value="offi" %if;(fwitness_kind = "offi") selected %end;>[*officer/officer/officers]0</option>
-        <option value=""     %if;(fwitness_kind = "")     selected %end;>[*witness/witness/witnesses]0</option>
-      </select>
-    </div>
-  </div>
-  <div class="row">
-    <label for="excnt_witnwcnt_fn" class="col-sm-2 col-form-label">[*first name/first names]0</label>
-    <div class="col-sm-5">
-      <input type="text" class="form-control" name="excnt_witnwcnt_fn" value="%fwitness.first_name;" id="excnt_witnwcnt_fn" placeholder="[*first name/first names]0">
-    </div>
-    <label for="excnt_witnwcnt_occ" class="col-sm-auto col-form-label">[*number]0</label>
-    <div class="col-sm-auto">
-      <input type="number" class="form-control" name="excnt_witnwcnt_occ" min="0"  value="%if;(fwitness.occ="")0%else;%fwitness.occ;%end;" id="excnt_witnwcnt_occ">
-    </div>
-  </div>
-  <div class="row">
-    <label for="excnt_witnwcnt_sn" class="col-sm-2 col-form-label">[*surname/surnames]0</label>
-    <div class="col-sm-5">
-      <input type="text" class="form-control" name="excnt_witnwcnt_sn" maxlength="200" value="%fwitness.surname;" id="excnt_witnwcnt_sn" placeholder="[*surname/surnames]0">
-    </div>
-    <span class="col-sm-auto col-form-label">[*sex]</span>
-    <div class="col-sm-auto mt-2">
-      <div class="form-check form-check-inline">
-        <label class="form-check-label">
-          <input class="form-check-input" type="radio" name="excnt_witnwcnt_sex" value="M" %if;(witness.create.sex="male")checked%end;%/> [M/F]0
-        </label>
-      </div>
-      <div class="form-check form-check-inline">
-        <label class="form-check-label">
-          <input class="form-check-input" type="radio" name="excnt_witnwcnt_sex" value="N" %if;(witness.create.sex="neuter")checked%end;%/> ?
-        </label>
-      </div>
-      <div class="form-check form-check-inline">
-        <label class="form-check-label">
-          <input class="form-check-input" type="radio" name="excnt_witnwcnt_sex" value="F" %if;(witness.create.sex="female")checked%end;%/> [M/F]1
-        </label>
-      </div>
-    </div>
-  </div>
+%define;delete_fevent(xcnt)
+  <button class="btn btn-outline-danger" type="button"
+          onclick="(function(){
+                   document.querySelector('#fevent_wrapperxcnt').style.display='none';
+                   document.querySelector('#fevent_selectxcnt').value='';
+                   document.querySelector('#e_namexcnt').value='';
+                   return false;})()">
+    <i class="far fa-minus-square"></i>
+    [*event/events]0
+  </button>
 %end;
 
 %define;one_fevent(xcnt, has_fevents)
+<div class="fevent_wrapper card mb-2 mt-2" id="fevent_wrapperxcnt">
+  <div class="card-body">
   <div class="row">
-    <h5 class="col-form-label col-sm-2 mb-1 text-uppercase"><label for="e_namexcnt" class="mb-0">[*event/events]0 xcnt</label></h5>
+    <h5 class="col-form-label col-sm-2 mb-1 text-uppercase">%apply;delete_fevent(xcnt)</h5>
     <div class="col-sm-3">
       %apply;selector_fevent(xcnt)
     </div>
@@ -476,21 +470,37 @@ $(document).ready(function(){
       %end;
     </div>
   </div>
-  <div class="row">
-    %if;(has_fevents and has_fwitness)
-      %foreach;fwitness;
-      <div class="col-12">
-        %apply;one_witness(xcnt, wcnt)
-        %if;is_last;%apply;insert_witness(xcnt, wcnt)%end;
-      </div>
-      %end;
-    %else;
-      <div class="col-12">
-      %apply;insert_witness(xcnt, "0")
-      </div>
-    %end;
-  </div>
   <hr class="w-100">
+  <div class="row">
+    <div class="col-12">
+      <div class="row">
+        <label for="e_srcxcnt" class="col-sm-2 col-form-label">[*witness/witnesses]1</label>
+      </div>
+      %if;(has_fevents and has_fwitness)
+      %foreach;fwitness;
+      %apply;one_witness(xcnt, wcnt, fwitness.create, fwitness_kind, fwitness.first_name, fwitness.occ, fwitness.surname, witness.create.sex)
+      %end;
+      %end;
+      <div style="display:none" id="excnt_witn_anchor"></div>
+    </div>
+  </div>
+  <button class="btn btn-outline-success mt-3" type="button"
+          onclick="(function(){
+                   var anchor = document.querySelector('#excnt_witn_anchor') ;
+                   var nodes = document.querySelectorAll('#fevent_wrapperxcnt .witness_wrapper') ;
+                   var j = nodes && nodes.length > 0 ? parseInt((nodes [nodes.length - 1]).id.substring('excnt_witn'.length)) + 1 + '' : '1' ;
+                   var s = document.querySelector('#ghost_witness').innerHTML ;
+                   s = s.replace(/e0_witn0/g,'excnt_witn'+j) ;
+                   var n = document.createElement('div') ;
+                   n.innerHTML = s ;
+                   anchor.parentNode.insertBefore(n.firstChild, anchor);
+                   return false;})()">
+    <i class="far fa-plus-square"></i>
+    [*witness/witness/witnesses]0
+  </button>
+  </div>
+</div>
+<hr class="w-100">
 %end
 
 %define;card_header(xx,yy)
@@ -570,20 +580,42 @@ $(document).ready(function(){
     </div>
   </div>
 
-  <div class="card">
+  <div class="card" id="fevents">
     %apply;card_header("events","event/events")
     <div class="card-body">
       %if;has_fevents;
         %foreach;fevent;
           %apply;one_fevent(cnt, has_fevents)
-          %if;is_last;
-            %apply;insert_fevent(cnt)
-          %end;
         %end;
-      %else;
-        %apply;one_fevent("1", has_fevents)
-        %apply;insert_fevent("1")
       %end;
+      <div style="display:none" id="new_fevent_anchor"></div>
+      <button class="btn btn-outline-success mt-3" type="button"
+              onclick="(function(){
+                     var anchor = document.querySelector('#new_fevent_anchor') ;
+                     var nodes = document.querySelectorAll('#fevents .fevent_wrapper') ;
+                     var j = nodes && nodes.length > 0 ? parseInt((nodes [nodes.length - 1]).id.substring('fevent_wrapper'.length)) + 1 + '' : '1' ;
+                       var s = document.querySelector('#ghost_fevent').innerHTML ;
+                       s =
+                       s
+                       .replace(/fevent_wrapper0/g,'fevent_wrapper'+j)
+                       .replace(/fevent_select0/g,'fevent_select'+j)
+                       .replace(/show_fevent_label(0)/g, 'show_fevent_label('+j+')')
+                       .replace(/fevent_label_selector0/g,'fevent_label_selector'+j)
+                       .replace(/e_name0/g,'e_name'+j)
+                       .replace(/e_place0/g,'e_place'+j)
+                       .replace(/e_date0/g,'e_date'+j)
+                       .replace(/e_note0/g,'e_note'+j)
+                       .replace(/e_src0/g,'e_src'+j) ;
+                       var n = document.createElement('div') ;
+                       n.innerHTML = s ;
+                       n = n.firstChild ;
+                       n.querySelector('#fevent_select'+j).value='';
+                       anchor.parentNode.insertBefore(n, anchor);
+                       show_fevent_label(j);
+                       return false;})()">
+        <i class="far fa-plus-square"></i>
+        [*event/events]0
+      </button>
     </div>
   </div>
 
@@ -877,7 +909,8 @@ function changeCalendar(e,v,m,c) {
 -->
 </script>
 <script>
-  function show_fevent_label(xxname, xcnt) {
+  function show_fevent_label(xcnt) {
+    var xxname = $('#e_name'+xcnt).prop('defaultValue') ;
     var selector = document.getElementById('fevent_select' + xcnt);
     var label = document.getElementById('fevent_label_selector' + xcnt);
     var input = document.getElementById('e_name' + xcnt);
@@ -918,5 +951,7 @@ function changeCalendar(e,v,m,c) {
   %apply;ch_hide_script(cnt)
 %end;
 </script>
+<div id="ghost_fevent" style="display:none">%apply;one_fevent("0", "false")</div>
+<div id="ghost_witness" style="display:none">%apply;one_witness("0", "0", "", "", "", "", "", "")</div>
 </body>
 </html>
