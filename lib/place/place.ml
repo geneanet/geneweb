@@ -111,15 +111,15 @@ let guess_place _conf str =
   let list = split_place str in
   let place_country, list =
     match List.rev list with
-    | [] -> France, []
+    | [] -> (France, ""), []
     | (main, comment) :: tl ->
-      try country main, List.rev tl
+      try (country main, main), List.rev tl
       with Not_found ->
         if comment = ""
-        then France, list
+        then (France, ""), list
         else
-          try country comment, List.rev @@ (main, "") :: tl
-          with Not_found -> France, list
+          try (country comment, comment), List.rev @@ (main, "") :: tl
+          with Not_found -> (France, ""), list
   in
   let p = empty_place str place_country in
   let rec loop i p = function
@@ -129,10 +129,12 @@ let guess_place _conf str =
       && p.place_city = ""
       && p.place_region = None
       then
-        try finalize
-              { p with place_street = ""
-                     ; place_subregion = Some (subregion p.place_country p.place_street) }
-        with Not_found -> finalize p
+        let p =
+          try
+            let sub = subregion (fst p.place_country) p.place_street in
+            { p with place_street = "" ; place_subregion = Some (sub, p.place_street) }
+          with Not_found -> p
+        in finalize p
       else finalize p
     | (main, comment) :: tl ->
       loop (i + 1)
@@ -157,9 +159,9 @@ let guess_place _conf str =
           then { p with place_street = main ^ if comment = "" then "" else "(" ^ comment ^ ")" }
           else
             let aux s =
-              try `Subregion (subregion p.place_country s)
+              try `Subregion (subregion (fst p.place_country) s, s)
               with Not_found ->
-              try `Region (region p.place_country s)
+              try `Region (region (fst p.place_country) s, s)
               with Not_found -> `None s
             in
             match aux main, aux comment with
@@ -172,18 +174,16 @@ let guess_place _conf str =
                 | _ -> p
               end
 
-            | (`Subregion b, `Subregion _b') ->
-              (* if b <> b'
-               * then print_endline @@ Printf.sprintf "%s: %s <> %s (%s)" __LOC__ b b' str ;
-               * if p.place_subregion <> None && p.place_subregion <> b
-               * then print_endline @@ Printf.sprintf "%s: %s <> %s (%s)" __LOC__ (showp.place_subregion b str ; *)
+            | (`Subregion b, `Subregion b') ->
+              if fst b <> fst b' then print_endline __LOC__ ;
+              if p.place_subregion <> None && p.place_subregion <> Some b then print_endline __LOC__ ;
               { p with place_subregion = Some b }
 
             | (`None s, `Subregion b) | (`Subregion b, `None s) ->
-              if s = "" then
-                ((* if p.place_subregion <> None && key p.place_subregion <> key b
-                  * then print_endline @@ Printf.sprintf "%s: %s <> %s (%s)" __LOC__ p.place_subregion b str ; *)
-                  { p with place_subregion = Some b } )
+              if s = "" then begin
+                (match p.place_subregion with Some (p, _) when p <> fst b -> print_endline __LOC__ | _ -> () ) ;
+                { p with place_subregion = Some b }
+              end
               else if p.place_city = "" then { (place_city p s) with place_subregion = Some b }
               else p (* !!! *)
 
@@ -200,7 +200,9 @@ let guess_place _conf str =
                 { p with place_street = p.place_street ^ main }
               else if p.place_street = ""
                    && is_num (String.unsafe_get main 0)
-                   && match String.index_opt main ' ' with Some i -> String.index_from_opt main (i + 1) ' ' <> None | _ -> false
+                   && match String.index_opt main ' ' with
+                      |  Some i -> String.index_from_opt main (i + 1) ' ' <> None
+                      | _ -> false
               then
                 { p with place_street = main }
               else if p.place_city = "" then place_city p (s1 ^ s2) (* !!! *)

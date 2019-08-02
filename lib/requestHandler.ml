@@ -1490,7 +1490,6 @@ let defaultHandler : handler =
             |> List.sort_uniq (fun (a, _, _) (b, _, _) -> compare a b)
             |> List.rev_map (fun (i,_,_) -> Place.place_of_string conf @@ sou base i)
           in
-          let aux show = function None -> "_" | Some x -> show x in
           let maybe list fn = if List.length list > 1 || fst @@ List.hd list <> "_" then fn () in
           let toc list fn =
             if List.length list > 1 then begin
@@ -1500,23 +1499,44 @@ let defaultHandler : handler =
             end
           in
           Wserver.printf "<html><head><meta charset=\"utf-8\"></head><body><ul>" ;
-          Util.groupby ~key:(fun x -> Place_types.show_country x.place_country) ~value:(fun x -> x) list
+          Util.groupby ~key:(fun x -> fst x.place_country) ~value:(fun x -> x) list
+          |> List.map (fun (k, v) -> Place_types.show_country k, v)
           |> List.sort (fun (a, _) (b, _) -> Gutil.alphabetic_order a b)
           |> fun list' ->
           toc list' (fun k -> k) ;
           list'
           |> List.iter begin fun (k1, list) ->
-            Util.groupby ~key:(fun x -> aux Place_types.show_region x.place_region) ~value:(fun x -> x) list
+            Util.groupby ~key:(fun x -> Opt.map fst x.place_region) ~value:(fun x -> x) list
+            |> List.map begin fun (_, v) ->
+              v
+              |> Util.filter_map
+                (fun x -> match x.place_region with | Some (_, "") | None -> None | Some (_, x) -> Some x)
+              |> Mutil.count (fun x -> x)
+              |> begin function
+                | [] -> "_"
+                | list -> fst @@ List.hd @@ List.sort (fun (_, a) (_, b) -> compare b a) list
+              end, v
+            end
             |> List.sort (fun (a, _) (b, _) -> Gutil.alphabetic_order a b)
             |> fun list ->
             maybe list' (fun () -> Wserver.printf "<li id=\"%s\">%s:<ul>" k1 k1) ;
             toc list (fun k -> k1 ^ "__" ^ k) ;
             list
             |> List.iter begin fun (k, list) ->
-              Util.groupby ~key:(fun x -> aux Place_types.show_subregion x.place_subregion) ~value:(fun x -> x) list
+              Util.groupby ~key:(fun x -> Opt.map fst x.place_subregion) ~value:(fun x -> x) list
+              |> List.map begin fun (_, v) ->
+                v
+                |> Util.filter_map
+                  (fun x -> match x.place_subregion with | Some (_, "") | None -> None | Some (_, x) -> Some x)
+                |> Mutil.count (fun x -> x)
+                |> begin function
+                  | [] -> "_"
+                  | list -> fst @@ List.hd @@ List.sort (fun (_, a) (_, b) -> compare b a) list
+                end, v
+              end
               |> List.sort (fun (a, _) (b, _) -> Gutil.alphabetic_order a b)
               |> fun list ->
-              maybe list (fun () -> Wserver.printf "<li id=\"%s__%s\">Region %s:<ul>" k1 k k) ;
+              maybe list (fun () -> Wserver.printf "<li id=\"%s__%s\">%s:<ul>" k1 k k) ;
               list |> List.iter begin fun (k, list) ->
                 Wserver.printf "<li>%s:<ul>" k ;
                 Util.groupby ~key:(fun x -> Name.lower x.place_city) ~value:(fun x -> x) list
