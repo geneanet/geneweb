@@ -408,6 +408,26 @@ type region =
   | ES_Ceuta
   | ES_Melilla
 
+  | IT_Abruzzo
+  | IT_Basilicata
+  | IT_Calabria
+  | IT_CampaniaCampanie
+  | IT_Emilia_Romagna
+  | IT_Friuli_Venezia_Giulia
+  | IT_Lazio
+  | IT_Liguria
+  | IT_Lombardia
+  | IT_Marche
+  | IT_Molise
+  | IT_Umbria
+  | IT_Piemonte
+  | IT_Puglia
+  | IT_Sardegna
+  | IT_Sicilia
+  | IT_Toscana
+  | IT_Trentino_Alto_Adige
+  | IT_Veneto
+
 [@@deriving show { with_path = false }]
 
 type subregion =

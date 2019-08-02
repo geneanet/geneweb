@@ -538,6 +538,28 @@ let germany_region =
    ;DE_Thuringen,[|"Thuringe";"Thüringen";"Thuringia"|]
   |]
 
+let italy_region =
+  [|IT_Abruzzo,[|"Abruzzes";"Abruzzo"|]
+   ;IT_Basilicata,[|"Basilicate";"Basilicata"|]
+   ;IT_Calabria,[|"Calabre";"Calabria"|]
+   ;IT_CampaniaCampanie,[|"Campanie";"Campania"|]
+   ;IT_Emilia_Romagna,[|"Émilie-Romagne";"Emilia-Romagna"|]
+   ;IT_Friuli_Venezia_Giulia,[|"Frioul-Vénétie julienne";"Friuli-Venezia Giulia"|]
+   ;IT_Lazio,[|"Latium";"Lazio"|]
+   ;IT_Liguria,[|"Ligurie";"Liguria"|]
+   ;IT_Lombardia,[|"Lombardie";"Lombardia"|]
+   ;IT_Marche,[|"Marches";"Marche"|]
+   ;IT_Molise,[|"Molise"|]
+   ;IT_Umbria,[|"Ombrie";"Umbria"|]
+   ;IT_Piemonte,[|"Piémont";"Piemonte"|]
+   ;IT_Puglia,[|"Pouilles";"Puglia"|]
+   ;IT_Sardegna,[|"Sardaigne";"Sardegna"|]
+   ;IT_Sicilia,[|"Sicile";"Sicilia"|]
+   ;IT_Toscana,[|"Toscane";"Toscana"|]
+   ;IT_Trentino_Alto_Adige,[|"Trentin-Haut-Adige";"Trentino-Alto Adige"|]
+   ;IT_Veneto,[|"Vénétie";"Veneto"|]
+  |]
+
 let regions =
   [|Algeria,algeria_region
    ;Australia,australia_region
@@ -546,6 +568,7 @@ let regions =
    ;Canada,canada_region
    ;France,france_region
    ;Germany,germany_region
+   ;Italy,italy_region
    ;South_Africa,south_africa_region
    ;Spain,spain_region
    ;United_States,united_states_region
