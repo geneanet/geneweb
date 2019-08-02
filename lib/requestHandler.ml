@@ -1500,7 +1500,16 @@ let defaultHandler : handler =
           in
           Wserver.printf "<html><head><meta charset=\"utf-8\"></head><body><ul>" ;
           Util.groupby ~key:(fun x -> fst x.place_country) ~value:(fun x -> x) list
-          |> List.map (fun (k, v) -> Place_types.show_country k, v)
+          |> List.map begin fun (_, v) ->
+            v
+            |> Util.filter_map
+              (fun x -> match x.place_country with (_, "") -> None | (_, x) -> Some x)
+            |> Mutil.count (fun x -> x)
+            |> begin function
+              | [] -> "_"
+              | list -> String.concat ", " @@ List.map fst @@ List.sort (fun (_, a) (_, b) -> compare b a) list
+            end, v
+          end
           |> List.sort (fun (a, _) (b, _) -> Gutil.alphabetic_order a b)
           |> fun list' ->
           toc list' (fun k -> k) ;
