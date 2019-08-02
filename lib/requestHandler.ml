@@ -1514,7 +1514,7 @@ let defaultHandler : handler =
               |> Mutil.count (fun x -> x)
               |> begin function
                 | [] -> "_"
-                | list -> fst @@ List.hd @@ List.sort (fun (_, a) (_, b) -> compare b a) list
+                | list -> String.concat ", " @@ List.map fst @@ List.sort (fun (_, a) (_, b) -> compare b a) list
               end, v
             end
             |> List.sort (fun (a, _) (b, _) -> Gutil.alphabetic_order a b)
@@ -1531,7 +1531,7 @@ let defaultHandler : handler =
                 |> Mutil.count (fun x -> x)
                 |> begin function
                   | [] -> "_"
-                  | list -> fst @@ List.hd @@ List.sort (fun (_, a) (_, b) -> compare b a) list
+                  | list -> String.concat ", " @@ List.map fst @@ List.sort (fun (_, a) (_, b) -> compare b a) list
                 end, v
               end
               |> List.sort (fun (a, _) (b, _) -> Gutil.alphabetic_order a b)
