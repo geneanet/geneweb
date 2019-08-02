@@ -1,6 +1,6 @@
 (executable
   (name bench)
-  (libraries unix geneweb.wserver %%%SOSA_PKG%%% %%%GWDB_PKG%%% geneweb benchmark)
+  (libraries unix geneweb.wserver %%%SOSA_PKG%%% %%%GWDB_PKG%%% geneweb place place_data benchmark)
 )
 
 (alias (name runbench) (action (run ./bench.exe) ) )

@@ -19,3 +19,31 @@ let () =
     [ "aaaaaaaaaa" ; "bbbbbbbbbb" ; "abbbbbbbb" ; "bbbbbbbbba" ; "ababababab" ]
 ; bench "Mutil.tr" 100000000L (fun s -> Mutil.tr 'a' 'b' @@ "a" ^ s)
     [ "aaaaaaaaaa" ; "bbbbbbbbbb" ; "abbbbbbbb" ; "bbbbbbbbba" ; "ababababab" ]
+; bench "Place.country" 10000L Place.country
+    (List.flatten @@ Array.to_list @@ Array.map (fun (_, x) -> Array.to_list x) Place_data.countries)
+; begin
+  let open Place_data in
+  let open Place_types in
+  let aux x = List.flatten @@ Array.to_list @@ Array.map (fun (_, x) -> Array.to_list x) x in
+  bench "Place.region" 10000L (fun (c, a) -> List.map (Place.region c) a)
+    [ Algeria, aux algeria_region
+    ; Spain, aux spain_region
+    ; France, aux france_region
+    ; South_Africa, aux south_africa_region
+    ; United_States, aux united_states_region
+    ; Canada, aux canada_region
+    ; Belgium, aux belgium_region
+    ; Austria, aux austria_region
+    ; Australia, aux australia_region
+    ; Germany, aux germany_region
+    ]
+end
+; begin
+  let open Place_data in
+  let open Place_types in
+  let aux x = List.flatten @@ Array.to_list @@ Array.map (fun (_, x) -> Array.to_list x) x in
+  bench "Place.subregion" 10000L (fun (c, a) -> List.map (Place.subregion c) a)
+    [ France, aux france_subregion
+    ; Belgium, aux belgium_subregion
+    ]
+end
