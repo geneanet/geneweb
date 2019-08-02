@@ -20,15 +20,15 @@
 )
 
 (executable
-  (name gen_place_match)
+  (name gen_place_match_ht)
   (libraries str geneweb.def ppx_deriving.show place_aux place_data)
   (preprocess (pps ppx_deriving.show))
-  (modules gen_place_match)
+  (modules gen_place_match_ht)
 )
 
 (rule
  (targets place_match.ml)
- (deps    (:gen gen_place_match.exe place_name.ml))
+ (deps    (:gen gen_place_match_ht.exe place_name.ml))
  (action  (run %{gen} > %{targets}))
 )
 

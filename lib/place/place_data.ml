@@ -537,3 +537,25 @@ let germany_region =
    ;DE_Schleswig_Holstein,[|"Schleswig-Holstein"|]
    ;DE_Thuringen,[|"Thuringe";"Thüringen";"Thuringia"|]
   |]
+
+let regions =
+  [|Algeria,algeria_region
+   ;Australia,australia_region
+   ;Austria,austria_region
+   ;Belgium,belgium_region
+   ;Canada,canada_region
+   ;France,france_region
+   ;Germany,germany_region
+   ;South_Africa,south_africa_region
+   ;Spain,spain_region
+   ;United_States,united_states_region
+  |]
+
+let subregions =
+  [|Belgium,belgium_subregion
+   ;France,france_subregion
+  |]
+
+let gen_region_variable_name country = "region_" ^ (show_country country)
+let gen_subregion_variable_name country = "subregion_" ^ (show_country country)
+let gen_not_found oc = Printf.fprintf oc "| _ -> raise Not_found\n"

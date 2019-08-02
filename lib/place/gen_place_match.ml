@@ -3,8 +3,6 @@ open Place_data
 
 let key = Place_types.key
 
-let gen_not_found oc = Printf.fprintf oc "| _ -> raise Not_found\n"
-
 let gen_country oc =
   Printf.fprintf oc "let country s : country = match key s with\n" ;
   Array.iter
@@ -18,23 +16,8 @@ let gen_country oc =
     countries ;
   gen_not_found oc
 
-let gen_region_variable_name country = "region_" ^ (show_country country)
-let gen_subregion_variable_name country = "subregion_" ^ (show_country country)
-
 let gen_region oc =
-  let data =
-    [|Algeria,algeria_region
-     ;France,france_region
-     ;South_Africa,south_africa_region
-     ;United_States,united_states_region
-     ;Canada,canada_region
-     ;Belgium,belgium_region
-     ;Australia,australia_region
-     ;Austria,austria_region
-     ;Germany,germany_region
-     ;Spain,spain_region
-    |]
-  in
+  let data = regions in
   Array.iter
     begin fun (country, regions) ->
       Printf.fprintf oc
@@ -61,11 +44,7 @@ let gen_region oc =
   gen_not_found oc
 
 let gen_subregion oc =
-  let data =
-    [|France,france_subregion
-     ;Belgium,belgium_subregion
-    |]
-  in
+  let data = subregions in
   Array.iter
     begin fun (country, subregions) ->
       Printf.fprintf oc
