@@ -90,3 +90,8 @@ val rm : string -> unit
 (** [string_of_int_sep "," 1000000] is ["1,000,000"]
 *)
 val string_of_int_sep : string -> int -> string
+
+(** [count getter list]
+    Count the number of occurence of each element in [List.map getter list].
+*)
+val count : ('a -> 'b) -> 'a list -> ('b * int) list

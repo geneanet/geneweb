@@ -425,3 +425,11 @@ let string_of_int_sep sep x =
       (0, 0) digits
   in
   Bytes.unsafe_to_string s
+
+let count get list =
+  let ht = Hashtbl.create 16 in
+  List.iter begin fun x ->
+    let v = get x in
+    Hashtbl.replace ht v (try Hashtbl.find ht v + 1 with Not_found -> 1)
+  end list ;
+  Hashtbl.fold (fun k v acc -> (k, v) :: acc) ht []

@@ -77,6 +77,13 @@ let mutil_string_of_int_sep _ =
   test "," "100,000" 100000 ;
   test "," "1,000,000" 1000000
 
+let mutil_count _ =
+  let test e t = assert_equal e (List.sort compare @@ Mutil.count (fun x -> x) t) in
+  test [(1,6);(2,3)] [1;1;1;2;2;2;1;1;1] ;
+  test [] [] ;
+  test [(1, 1)] [1] ;
+  test [("1",6);("2",3)] ["1";"1";"1";"2";"2";"2";"1";"1";"1"]
+
 let util_str_sub _ =
   let test ?pad e s i j =
     let i = Util.str_nth_pos s i in
@@ -110,6 +117,7 @@ let suite =
     ; "mutil_arabian_romian" >:: mutil_arabian_romian
     ; "mutil_compare_after_particle" >:: mutil_compare_after_particle
     ; "mutil_string_of_int_sep" >:: mutil_string_of_int_sep
+    ; "mutil_count" >:: mutil_count
     ]
   ; "Util" >:::
     [ "util_str_sub" >:: util_str_sub
