@@ -8,16 +8,16 @@ let sosa_list =
   List.map Sosa.of_int list
 
 let () =
-  bench "Sosa.gen" 1000000L (List.map Sosa.gen) [ sosa_list ]
+  bench "Sosa.gen" 10000000L (List.map Sosa.gen) [ sosa_list ]
 ; bench "Sosa.to_string_sep" 1000000L (List.map @@ Sosa.to_string_sep ",") [ sosa_list ]
 ; bench "Sosa.to_string" 1000000L (List.map Sosa.to_string) [ sosa_list ]
-; bench "Sosa.of_string" 1000000L (List.map Sosa.of_string) [ List.map string_of_int list ]
+; bench "Sosa.of_string" 10000000L (List.map Sosa.of_string) [ List.map string_of_int list ]
 ; bench "Sosa.branches" 1000000L (List.map Sosa.branches) [ sosa_list ]
 ; bench "PlaceDisplay.normalize" 10000000L Geneweb.PlaceDisplay.normalize
     [ "[foo-bar] - boobar (baz)" ; "[foo-bar] – boobar (baz)" ; "[foo-bar] — boobar (baz)" ]
-; bench "Mutil.unsafe_tr" 100000000L (fun s -> Mutil.unsafe_tr 'a' 'b' @@ "a" ^ s)
+; bench "Mutil.unsafe_tr" 10000000L (fun s -> Mutil.unsafe_tr 'a' 'b' @@ "a" ^ s)
     [ "aaaaaaaaaa" ; "bbbbbbbbbb" ; "abbbbbbbb" ; "bbbbbbbbba" ; "ababababab" ]
-; bench "Mutil.tr" 100000000L (fun s -> Mutil.tr 'a' 'b' @@ "a" ^ s)
+; bench "Mutil.tr" 10000000L (fun s -> Mutil.tr 'a' 'b' @@ "a" ^ s)
     [ "aaaaaaaaaa" ; "bbbbbbbbbb" ; "abbbbbbbb" ; "bbbbbbbbba" ; "ababababab" ]
 ; bench "Place.country" 10000L Place.country
     (List.flatten @@ Array.to_list @@ Array.map (fun (_, x) -> Array.to_list x) Place_data.countries)
