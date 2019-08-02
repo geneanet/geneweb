@@ -63,12 +63,12 @@ let subregion c s =
 
 let finalize p = p
 
-let empty_place place_raw =
+let empty_place place_raw place_country =
   { Def.place_street = ""
   ; place_city = ""
-  ; place_subregion = ""
-  ; place_region = ""
-  ; place_country = ""
+  ; place_subregion = None
+  ; place_region = None
+  ; place_country
   ; place_lieu_dit = ""
   ; place_raw
   }
@@ -111,26 +111,27 @@ let guess_place _conf str =
   let list = split_place str in
   let place_country, list =
     match List.rev list with
-    | [] -> "", []
+    | [] -> France, []
     | (main, comment) :: tl ->
-      try show_country @@ country main, List.rev tl
+      try country main, List.rev tl
       with Not_found ->
         if comment = ""
-        then show_country France, list
+        then France, list
         else
-          try show_country (country comment), List.rev @@ (main, "") :: tl
-          with Not_found -> show_country France, list
+          try country comment, List.rev @@ (main, "") :: tl
+          with Not_found -> France, list
   in
-  let p = { (empty_place str) with Def.place_country } in
+  let p = empty_place str place_country in
   let rec loop i p = function
     | [] ->
       if p.place_street <> ""
       && string_forall p.place_street is_num
-      && p.place_city = "" && p.place_region = ""
+      && p.place_city = ""
+      && p.place_region = None
       then
         try finalize
               { p with place_street = ""
-                     ; place_subregion = show_subregion @@ subregion (country p.place_country) p.place_street }
+                     ; place_subregion = Some (subregion p.place_country p.place_street) }
         with Not_found -> finalize p
       else finalize p
     | (main, comment) :: tl ->
@@ -156,39 +157,42 @@ let guess_place _conf str =
           then { p with place_street = main ^ if comment = "" then "" else "(" ^ comment ^ ")" }
           else
             let aux s =
-              try `Subregion (show_subregion @@ subregion (country p.place_country) s)
+              try `Subregion (subregion p.place_country s)
               with Not_found ->
-              try `Region (show_region @@ region (country p.place_country) s)
+              try `Region (region p.place_country s)
               with Not_found -> `None s
             in
             match aux main, aux comment with
 
             | (`Region a, `Region b) ->
               assert (a = b) ;
-              if p.place_region = "" then { p with place_region = a }
-              else if key p.place_region <> key a then { p with place_region = "" } (* FIXME *)
-              else p
+              begin match p.place_region with
+                | None -> { p with place_region = Some a }
+                | Some r when r <> a -> { p with place_region = None } (* FIXME *)
+                | _ -> p
+              end
 
-            | (`Subregion b, `Subregion b') ->
-              if key b <> key b'
-              then print_endline @@ Printf.sprintf "%s: %s <> %s (%s)" __LOC__ b b' str ;
-              if p.place_subregion <> "" && key p.place_subregion <> key b
-              then print_endline @@ Printf.sprintf "%s: %s <> %s (%s)" __LOC__ p.place_subregion b str ;
-              { p with place_subregion = b }
+            | (`Subregion b, `Subregion _b') ->
+              (* if b <> b'
+               * then print_endline @@ Printf.sprintf "%s: %s <> %s (%s)" __LOC__ b b' str ;
+               * if p.place_subregion <> None && p.place_subregion <> b
+               * then print_endline @@ Printf.sprintf "%s: %s <> %s (%s)" __LOC__ (showp.place_subregion b str ; *)
+              { p with place_subregion = Some b }
 
             | (`None s, `Subregion b) | (`Subregion b, `None s) ->
-              if s = "" then (if p.place_subregion <> "" && key p.place_subregion <> key b
-                              then print_endline @@ Printf.sprintf "%s: %s <> %s (%s)" __LOC__ p.place_subregion b str ;
-                              { p with place_subregion = b } )
-              else if p.place_city = "" then { (place_city p s) with place_subregion = b }
+              if s = "" then
+                ((* if p.place_subregion <> None && key p.place_subregion <> key b
+                  * then print_endline @@ Printf.sprintf "%s: %s <> %s (%s)" __LOC__ p.place_subregion b str ; *)
+                  { p with place_subregion = Some b } )
+              else if p.place_city = "" then { (place_city p s) with place_subregion = Some b }
               else p (* !!! *)
 
             | (`Region a, `Subregion b) | (`Subregion b, `Region a) ->
-              { p with place_region = a ; place_subregion = b }
+              { p with place_region = Some a ; place_subregion = Some b }
 
             | (`Region a, `None s) | (`None s, `Region a) ->
-              if p.place_city = "" && s <> "" then { (place_city p s) with place_region = a }
-              else if s = "" then { p with place_region = a }
+              if p.place_city = "" && s <> "" then { (place_city p s) with place_region = Some a }
+              else if s = "" then { p with place_region = Some a }
               else p (* !!! *)
 
             | (`None s1, `None s2) ->
@@ -200,7 +204,7 @@ let guess_place _conf str =
               then
                 { p with place_street = main }
               else if p.place_city = "" then place_city p (s1 ^ s2) (* !!! *)
-              else if p.place_street = "" && p.place_region = ""
+              else if p.place_street = "" && p.place_region = None
               then { p with place_street = p.place_city ; place_city = main }
               else p
         end
