@@ -73,7 +73,6 @@ let empty_place place_raw place_country =
   ; place_raw
   }
 
-(* TODO: start with num + alphanumspace uniquement: street *)
 let split_place str =
   let len = String.length str in
   let pick i j =
@@ -107,7 +106,7 @@ let split_place str =
   in
   loop "" [] (len - 1) (len - 1)
 
-let guess_place _conf str =
+let place_of_string _conf str =
   let list = split_place str in
   let place_country, list =
     match List.rev list with
@@ -155,7 +154,9 @@ let guess_place _conf str =
             in
             { p with place_city ; place_lieu_dit }
           in
-          if i = 0 && string_exists main is_num && string_forall main is_alphanum
+          if i = 0
+          && string_exists main is_num
+          && string_forall main (function ' ' -> true | c -> is_alphanum c)
           then { p with place_street = main ^ if comment = "" then "" else "(" ^ comment ^ ")" }
           else
             let aux s =
@@ -212,6 +213,3 @@ let guess_place _conf str =
         end
         tl
   in loop 0 p list
-
-let place_of_string conf place =
-  guess_place conf place

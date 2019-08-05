@@ -1,5 +1,12 @@
-open Place_types
 open Place_data
+
+type country = [%import: Place_types.country] [@@deriving show { with_path = false }]
+type region = [%import: Place_types.region] [@@deriving show { with_path = false }]
+type subregion = [%import: Place_types.subregion] [@@deriving show { with_path = false }]
+
+let gen_region_variable_name country = "region_" ^ (show_country country)
+let gen_subregion_variable_name country = "subregion_" ^ (show_country country)
+let gen_not_found oc = Printf.fprintf oc "| _ -> raise Not_found\n"
 
 let key = Place_types.key
 

@@ -641,7 +641,3 @@ let subregions =
    ;Canada,canada_subregion
    ;Switzerland,switzerland_subregion
   |]
-
-let gen_region_variable_name country = "region_" ^ (show_country country)
-let gen_subregion_variable_name country = "subregion_" ^ (show_country country)
-let gen_not_found oc = Printf.fprintf oc "| _ -> raise Not_found\n"
