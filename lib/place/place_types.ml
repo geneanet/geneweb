@@ -203,7 +203,6 @@ type country =
   | Yemen
   | Zambia
   | Zimbabwe
-[@@deriving show { with_path = false }]
 
 type region =
 
@@ -428,7 +427,13 @@ type region =
   | IT_Trentino_Alto_Adige
   | IT_Veneto
 
-[@@deriving show { with_path = false }]
+  | CH_Region_lemanique
+  | CH_Espace_Mittelland
+  | CH_Suisse_du_Nord_Ouest
+  | CH_Zurich
+  | CH_Suisse_orientale
+  | CH_Suisse_centrale
+  | CH_Tessin
 
 type subregion =
 
@@ -546,4 +551,48 @@ type subregion =
   | BE_Limbourg
   | BE_Luxembourg
   | BE_Namur
-[@@deriving show { with_path = false }]
+
+  | CA_Abitibi_Temiscamingue
+  | CA_Bas_Saint_Laurent
+  | CA_Capitale_Nationale
+  | CA_Centre_du_Quebec
+  | CA_Chaudiere_Appalaches
+  | CA_Cote_Nord
+  | CA_Estrie
+  | CA_Gaspesie_Iles_de_la_Madeleine
+  | CA_Lanaudiere
+  | CA_Laurentides
+  | CA_Laval
+  | CA_Mauricie
+  | CA_Monteregie
+  | CA_Montreal
+  | CA_Nord_du_Quebec
+  | CA_Outaouais
+  | CA_Saguenay_Lac_Saint_Jean
+
+  | CH_Geneve
+  | CH_Valais
+  | CH_Vaud
+  | CH_Berne
+  | CH_Fribourg
+  | CH_Jura
+  | CH_Neuchatel
+  | CH_Soleure
+  | CH_Argovie
+  | CH_Bale_Campagne
+  | CH_Bale_Ville
+  | CH_Zurich
+  | CH_Appenzell_Rhodes_Exterieures
+  | CH_Appenzell_Rhodes_Interieures
+  | CH_Glaris
+  | CH_Grisons
+  | CH_Saint_Gall
+  | CH_Schaffhouse
+  | CH_Thurgovie
+  | CH_Lucerne
+  | CH_Nidwald
+  | CH_Obwald
+  | CH_Schwytz
+  | CH_Uri
+  | CH_Zoug
+  | CH_Tessin

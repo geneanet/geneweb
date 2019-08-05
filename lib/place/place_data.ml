@@ -373,6 +373,66 @@ let canada_region =
    ;CA_Yukon,[|"Yukon";"Yukon"|]
   |]
 
+let canada_subregion =
+  [|CA_Bas_Saint_Laurent,[|"Bas-Saint-Laurent"|]
+   ;CA_Abitibi_Temiscamingue,[|"Abitibi-Témiscamingue"|]
+   ;CA_Capitale_Nationale,[|"Capitale-Nationale"|]
+   ;CA_Centre_du_Quebec,[|"Centre-du-Québec"|]
+   ;CA_Chaudiere_Appalaches,[|"Chaudière-Appalaches"|]
+   ;CA_Cote_Nord,[|"Côte-Nord"|]
+   ;CA_Estrie,[|"Estrie"|]
+   ;CA_Gaspesie_Iles_de_la_Madeleine,[|"Gaspésie–Îles-de-la-Madeleine"|]
+   ;CA_Lanaudiere,[|"Lanaudière"|]
+   ;CA_Laurentides,[|"Laurentides"|]
+   ;CA_Laval,[|"Laval"|]
+   ;CA_Mauricie,[|"Mauricie"|]
+   ;CA_Monteregie,[|"Montérégie"|]
+   ;CA_Montreal,[|"Montréal"|]
+   ;CA_Nord_du_Quebec,[|"Nord-du-Québec"|]
+   ;CA_Outaouais,[|"Outaouais"|]
+   ;CA_Saguenay_Lac_Saint_Jean,[|"Saguenay–Lac-Saint-Jean"|]
+  |]
+
+
+let [@warning "-42"] switzerland_region : (region * _) array =
+  [|CH_Espace_Mittelland,[|"Espace Mittelland"|]
+   ;CH_Region_lemanique,[|"Région lémanique"|]
+   ;CH_Suisse_centrale,[|"Suisse centrale"|]
+   ;CH_Suisse_du_Nord_Ouest,[|"Suisse du Nord-Ouest"|]
+   ;CH_Suisse_orientale,[|"Suisse orientale"|]
+   ;CH_Tessin,[|"Tessin"|]
+   ;CH_Zurich,[|"Zurich"|]
+  |]
+
+let switzerland_subregion : (subregion * _) array =
+  [|CH_Geneve,[|"Genève"|]
+   ;CH_Valais,[|"Valais"|]
+   ;CH_Vaud,[|"Vaud"|]
+   ;CH_Berne,[|"Berne"|]
+   ;CH_Fribourg,[|"Fribourg"|]
+   ;CH_Jura,[|"Jura"|]
+   ;CH_Neuchatel,[|"Neuchâtel"|]
+   ;CH_Soleure,[|"Soleure"|]
+   ;CH_Argovie,[|"Argovie"|]
+   ;CH_Bale_Campagne,[|"Bâle-Campagne"|]
+   ;CH_Bale_Ville,[|"Bâle-Ville"|]
+   ;CH_Zurich,[|"Zurich"|]
+   ;CH_Appenzell_Rhodes_Exterieures,[|"Appenzell Rhodes-Extérieures"|]
+   ;CH_Appenzell_Rhodes_Interieures,[|"Appenzell Rhodes-Intérieures"|]
+   ;CH_Glaris,[|"Glaris"|]
+   ;CH_Grisons,[|"Grisons"|]
+   ;CH_Saint_Gall,[|"Saint-Gall"|]
+   ;CH_Schaffhouse,[|"Schaffhouse"|]
+   ;CH_Thurgovie,[|"Thurgovie"|]
+   ;CH_Lucerne,[|"Lucerne"|]
+   ;CH_Nidwald,[|"Nidwald"|]
+   ;CH_Obwald,[|"Obwald"|]
+   ;CH_Schwytz,[|"Schwytz"|]
+   ;CH_Uri,[|"Uri"|]
+   ;CH_Zoug,[|"Zoug"|]
+   ;CH_Tessin,[|"Tessin"|]
+  |]
+
 let [@warning "-42"] belgium_region : (region * _) array =
   [|BE_Bruxelles_Capitale,[|"Bruxelles-Capitale";"Région bruxelloise";"Région de Bruxelles-Capitale";"Brussels Hoofdstedelijk Gewest"|]
    ;BE_Flandre,[|"Flandre";"Région flamande";"Vlaams Gewest";"Flämische Region"|]
@@ -572,11 +632,14 @@ let regions =
    ;South_Africa,south_africa_region
    ;Spain,spain_region
    ;United_States,united_states_region
+   ;Switzerland,switzerland_region
   |]
 
 let subregions =
   [|Belgium,belgium_subregion
    ;France,france_subregion
+   ;Canada,canada_subregion
+   ;Switzerland,switzerland_subregion
   |]
 
 let gen_region_variable_name country = "region_" ^ (show_country country)
