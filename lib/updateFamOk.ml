@@ -165,31 +165,6 @@ let insert_parent conf (parents, ext) i =
       new_parent :: parents, true
   | _ -> parents, ext
 
-let reconstitute_insert_event conf ext cnt el =
-  let var = "ins_event" ^ string_of_int cnt in
-  let n =
-    match p_getenv conf.env var, p_getint conf.env (var ^ "_n") with
-      _, Some n when n > 1 -> n
-    | Some "on", _ -> 1
-    | _ -> 0
-  in
-  if n > 0 then
-    let el =
-      let rec loop el n =
-        if n > 0 then
-          let e1 =
-            {efam_name = Efam_Name ""; efam_date = Adef.cdate_None;
-             efam_place = ""; efam_reason = ""; efam_note = ""; efam_src = "";
-             efam_witnesses = [| |]}
-          in
-          loop (e1 :: el) (n - 1)
-        else el
-      in
-      loop el n
-    in
-    el, true
-  else el, ext
-
 let rec reconstitute_events conf ext cnt =
   match get_nth conf "e_name" cnt with
     Some efam_name ->
@@ -248,64 +223,10 @@ let rec reconstitute_events conf ext cnt =
                 | Some "offi" -> c, Witness_Officer
                 | _ -> c, Witness
               in
-              begin match
-                p_getenv conf.env
-                  ("e" ^ string_of_int cnt ^ "_ins_witn" ^ string_of_int i)
-              with
-                Some "on" ->
-                  let ins_witn_n =
-                    "e" ^ string_of_int cnt ^ "_ins_witn" ^ string_of_int i ^
-                    "_n"
-                  in
-                  begin match p_getint conf.env ins_witn_n with
-                    Some n when n > 1 ->
-                      let rec loop_witn n witnesses =
-                        if n = 0 then c :: witnesses, true
-                        else
-                          let new_witn =
-                            ("", "", 0, Update.Create (Neuter, None), ""),
-                            Witness
-                          in
-                          let witnesses = new_witn :: witnesses in
-                          loop_witn (n - 1) witnesses
-                      in
-                      loop_witn n witnesses
-                  | _ ->
-                      let new_witn =
-                        ("", "", 0, Update.Create (Neuter, None), ""), Witness
-                      in
-                      c :: new_witn :: witnesses, true
-                  end
-              | _ -> c :: witnesses, ext
-              end
+              c :: witnesses, ext
           | None -> [], ext
         in
         loop 1 ext
-      in
-      let (witnesses, ext) =
-        let evt_ins = "e" ^ string_of_int cnt ^ "_ins_witn0" in
-        match p_getenv conf.env evt_ins with
-          Some "on" ->
-            let ins_witn_n = "e" ^ string_of_int cnt ^ "_ins_witn0_n" in
-            begin match p_getint conf.env ins_witn_n with
-              Some n when n > 1 ->
-                let rec loop_witn n witnesses =
-                  if n = 0 then witnesses, true
-                  else
-                    let new_witn =
-                      ("", "", 0, Update.Create (Neuter, None), ""), Witness
-                    in
-                    let witnesses = new_witn :: witnesses in
-                    loop_witn (n - 1) witnesses
-                in
-                loop_witn n witnesses
-            | _ ->
-                let new_witn =
-                  ("", "", 0, Update.Create (Neuter, None), ""), Witness
-                in
-                new_witn :: witnesses, true
-            end
-        | _ -> witnesses, ext
       in
       let e =
         {efam_name = efam_name; efam_date = Adef.cdate_of_od efam_date;
@@ -313,7 +234,6 @@ let rec reconstitute_events conf ext cnt =
          efam_src = efam_src; efam_witnesses = Array.of_list witnesses}
       in
       let (el, ext) = reconstitute_events conf ext (cnt + 1) in
-      let (el, ext) = reconstitute_insert_event conf ext cnt el in
       e :: el, ext
   | _ -> [], ext
 
@@ -391,7 +311,6 @@ let reconstitute_from_fevents nsck empty_string fevents =
 
 let reconstitute_family conf base =
   let (events, ext) = reconstitute_events conf false 1 in
-  let (events, ext) = reconstitute_insert_event conf ext 0 events in
   let surname = getn conf "pa1" "sn" in
   let (children, ext) =
     let rec loop i ext =
@@ -460,8 +379,6 @@ let reconstitute_family conf base =
   (* Attention, surtout pas les witnesses, parce que si on en créé un, *)
   (* on le créé aussi dans witness et on ne pourra jamais valider.     *)
   let (marr, div, _) =
-    (* FIXME: Use witnesses (and Array.map fst witnesses)
-       when witnesses will be added inplace *)
     reconstitute_from_fevents (p_getenv conf.env "nsck" = Some "on") "" events
   in
   let (relation, marriage, marriage_place, marriage_note, marriage_src) =
