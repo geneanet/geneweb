@@ -413,12 +413,14 @@ module Collection = struct
   let iteri fn { get ; length } =
     for i = 0 to length - 1 do match get i with Some x -> fn i x | None -> () done
 
-  let fold fn acc { get ; length } =
+  let fold ?from ?until fn acc { get ; length } =
+    let from = match from with Some x -> x | None -> 0 in
+    let until = match until with Some x -> x + 1 | None -> length in
     let rec loop acc i =
-      if i = length then acc
+      if i = until then acc
       else loop (match get i with Some x -> fn acc x | None -> acc) (i + 1)
     in
-    loop acc 0
+    loop acc from
 
   let fold_until continue fn acc { get ; length } =
     let rec loop acc i =

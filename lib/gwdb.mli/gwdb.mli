@@ -261,8 +261,9 @@ module Collection : sig
       [fn] first argument is the result computed so far as we traverse the
       collection, and second element is the current element being combined.
       [acc] is the starting combined value.
+      Start at [from]-nth and finish with [until]-nth element (included).
   *)
-  val fold : ('a -> 'b -> 'a) -> 'a -> 'b t -> 'a
+  val fold : ?from:int -> ?until:int -> ('a -> 'b -> 'a) -> 'a -> 'b t -> 'a
 
   (** [fold_until continue fn acc c]
       Same as [fold fn acc c], but computation stops as soon as [continue]

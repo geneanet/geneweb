@@ -840,26 +840,17 @@ let print_base_warnings conf base =
 let print_all_persons conf base =
   let params = get_params conf Mext.parse_all_persons_params in
   let filters = get_filters conf in
-  let from = params.M.All_persons_params.from in
-  let limit = params.M.All_persons_params.limit in
-  let (from, limit) =
-    match (from, limit) with
-    | (Some f, Some l) -> (Int32.to_int f, Int32.to_int f + Int32.to_int l)
-    | (Some f, None) -> (Int32.to_int f, nb_of_persons base)
+  let (from, until) =
+    match (params.M.All_persons_params.from, params.M.All_persons_params.limit) with
+    | (Some f, Some l) -> (Int32.to_int f, min (nb_of_persons base - 1) (Int32.to_int f + Int32.to_int l))
+    | (Some f, None) -> (Int32.to_int f, nb_of_persons base - 1)
     | (None, Some l) -> (0, Int32.to_int l)
-    | (None, None) -> (0, nb_of_persons base)
+    | (None, None) -> (0, nb_of_persons base - 1)
   in
   let () = Perso.build_sosa_ht conf base in
-  let len = limit - from in
   let list =
-    Gwdb.Collection.fold_until
-      (fun (_, n) -> n < len)
-      begin fun ((list, n) as acc) i ->
-        if n < from then acc
-        else (i :: list, n + 1)
-      end ([], 0) (Gwdb.ipers base)
+    Gwdb.Collection.fold ~from ~until (fun acc i -> i :: acc) [] (Gwdb.persons base)
   in
-  let list = Gwdb.poi_batch base (List.rev @@ fst list) in
   let list = List.filter (apply_filters_p conf filters Perso.get_sosa_person) list in
   let data = conv_data_list_person conf base filters list in
   print_result conf data
