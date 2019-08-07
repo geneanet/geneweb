@@ -352,6 +352,8 @@ let reconstitute_from_fevents nsck empty_string fevents =
   (* Marriage is more important than any other relation.
      For other cases, latest event is the most important,
      except for NotMention and Residence. *)
+  (* FIXME: For now, we ignore Annulation since it gives a wrong date
+     (relation on [annulation date] makes no sense) *)
   let rec loop = function
     | [] -> ()
     | evt :: l -> match evt.efam_name with
@@ -361,12 +363,12 @@ let reconstitute_from_fevents nsck empty_string fevents =
       | Efam_NoMention -> mk_marr evt NoMention ; loop l
       | Efam_MarriageBann -> mk_marr evt MarriageBann ; loop l
       | Efam_MarriageLicense -> mk_marr evt MarriageLicense ; loop l
-      | Efam_Annulation -> mk_marr evt NotMarried
       | Efam_PACS -> mk_marr evt Pacs ; loop l
       | Efam_Residence -> mk_marr evt Residence ; loop l
       | Efam_NoMarriage -> mk_marr evt NotMarried ; loop l
       | Efam_Divorce -> mk_div (Divorced evt.efam_date) ; loop l
       | Efam_Separated -> mk_div Separated ; loop l
+      | Efam_Annulation -> loop l
       | Efam_Name _ -> loop l
   in
   loop (List.rev fevents) ;
