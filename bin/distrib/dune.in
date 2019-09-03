@@ -1,5 +1,16 @@
 (env (dev (flags (-w -33) ) ) )
 
+#ifdef API
+(executable
+  (name marshal_dico_place)
+  (public_name marshal_dico_place)
+  (libraries unix %%%GWDB_PKG%%% geneweb geneweb.wserver)
+  (modules marshal_dico_place)
+)
+#else
+(dirs :standard \ dico_place)
+#endif
+
 (include_subdirs unqualified)
 
 (executables
