@@ -646,7 +646,7 @@ let search_auto_complete conf base mode place_mode max_res n =
   let aux data =
     let conf = { conf with env = ("data", data) :: conf.env } in
     UpdateData.get_all_data conf base
-    |> List.rev_map (fun istr -> sou base istr)
+    |> List.rev_map (sou base)
   in
   match mode with
 
@@ -678,7 +678,7 @@ let search_auto_complete conf base mode place_mode max_res n =
         else acc
       end [] list
     in
-    let reduce_dico list =
+    let reduce_dico ignored list =
       let rec loop acc = function
         | [] -> acc
         | hd :: tl ->
@@ -706,18 +706,19 @@ let search_auto_complete conf base mode place_mode max_res n =
                 else
                   hd
               in
-              incr nb_res ;
-              hd :: acc
-            end else acc
+              if List.mem hd ignored then acc
+              else begin incr nb_res ; hd :: acc end
+            end
+            else acc
           in
           if !nb_res < max_res then loop acc tl else acc
       in loop [] list
     in
 
-    let base_place = reduce_perso list in
+    let base_place : string list = reduce_perso list in
     begin match place_mode with
       | Some pl_mode when !nb_res < max_res ->
-        let dico_place = reduce_dico (load_dico_lieu conf pl_mode) in
+        let dico_place = reduce_dico base_place (load_dico_lieu conf pl_mode) in
         List.rev_append
           (List.sort (fun a b -> Gutil.alphabetic_order b a) base_place)
           (List.sort Gutil.alphabetic_order dico_place)
