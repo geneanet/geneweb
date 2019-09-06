@@ -639,7 +639,7 @@ let print_err_parents conf base p =
     err
     (capitale (transl conf "first free number"))
     (Util.transl conf ":")
-    (Gutil.find_free_occ base (p_first_name base p) (p_surname base p) 0);
+    (Gutil.find_free_occ base (p_first_name base p) (p_surname base p));
   Update.print_return conf;
   Hutil.trailer conf;
 #ifdef API

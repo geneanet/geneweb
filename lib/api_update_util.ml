@@ -58,7 +58,7 @@ let api_find_free_occ base fn sn =
   with Not_found ->
     begin
       (* On regarde dans la base quelle est le occ dispo. *)
-      let free_occ = Gutil.find_free_occ base fn sn 0 in
+      let free_occ = Gutil.find_free_occ base fn sn in
       Hashtbl.add ht_free_occ key free_occ;
       free_occ
     end

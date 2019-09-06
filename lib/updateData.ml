@@ -267,9 +267,9 @@ let update_person conf base old new_input p =
         if new_input_lower = s_first_name_lower then
           new_istr, get_occ p
         else if old = s_first_name then
-          new_istr,
-          Gutil.find_free_occ base (sou base new_istr)
-            (sou base (get_surname p)) 0
+          ( new_istr
+          , Gutil.find_free_occ
+              base (sou base new_istr) (sou base (get_surname p)) )
         else first_name, get_occ p
       in
       let first_names_aliases = get_first_names_aliases p in
@@ -298,9 +298,9 @@ let update_person conf base old new_input p =
         if new_input_lower = s_surname_lower then
           new_istr, get_occ p
         else if old = s_surname then
-          new_istr,
-          Gutil.find_free_occ base (sou base (get_first_name p))
-            (sou base new_istr) 0
+          ( new_istr
+          , Gutil.find_free_occ
+              base (sou base (get_first_name p)) (sou base new_istr) )
         else surname, get_occ p
       in
       let surnames_aliases = get_surnames_aliases p in

@@ -1074,7 +1074,7 @@ let print_create_conflict conf base p var =
   Hutil.rheader conf title;
   Wserver.printf "%s" err ;
   let free_n =
-    Gutil.find_free_occ base (p_first_name base p) (p_surname base p) 0
+    Gutil.find_free_occ base (p_first_name base p) (p_surname base p)
   in
   Wserver.printf "<form method=\"post\" action=\"%s\">\n" conf.command;
   List.iter
