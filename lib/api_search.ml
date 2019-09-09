@@ -10,6 +10,8 @@ open Util
 open Api_def
 open Api_util
 
+module StrSet = Mutil.StrSet
+
 let string_start_with ini s = Mutil.start_with ~wildcard:true ini 0 s
 
 (* Algo de Knuth-Morris-Pratt *)
@@ -383,14 +385,6 @@ let print_search conf base =
 
 (**/**) (* Recherche utilisée pour l'auto-completion ou relier personne. *)
 
-
-module StrSetAutoComplete =
-  Set.Make
-    (struct
-      type t = string
-      let compare = compare
-     end)
-
 let rec skip_spaces x i =
   if i = String.length x then i
   else if String.unsafe_get x i = ' ' then skip_spaces x (i + 1)
@@ -478,7 +472,6 @@ let select_start_with_person base get_field ini =
       else list
   end [] (Gwdb.persons base)
 
-
 let select_start_with_auto_complete base mode max_res ini =
   let need_whole_list = true in
   let name =
@@ -488,7 +481,7 @@ let select_start_with_auto_complete base mode max_res ini =
     | `place -> failwith "cannot use select_start_with_auto_complete"
     | `source -> failwith "cannot use select_start_with_auto_complete"
   in
-  let string_set = ref StrSetAutoComplete.empty in
+  let string_set = ref StrSet.empty in
   let nb_res = ref 0 in
   (* Si la base est grosse > 100 000, on fait un vrai start_with. *)
   if Gwdb.nb_of_persons base > 100000 then
@@ -510,7 +503,7 @@ let select_start_with_auto_complete base mode max_res ini =
             let k = Util.name_key base s in
             if string_start_with (Name.lower ini) (Name.lower k) then
               begin
-                string_set := StrSetAutoComplete.add s !string_set;
+                string_set := StrSet.add s !string_set;
                 incr nb_res;
                 match spi_next name istr need_whole_list with
                 | (istr, _) when !nb_res < max_res && (String.sub k 0 1) = letter -> loop istr
@@ -542,7 +535,7 @@ let select_start_with_auto_complete base mode max_res ini =
               let k = Util.name_key base s in
               if string_start_with (Name.lower ini) (Name.lower k) then
                 begin
-                  string_set := StrSetAutoComplete.add s !string_set;
+                  string_set := StrSet.add s !string_set;
                   incr nb_res;
                   match spi_next name istr need_whole_list with
                   | exception Not_found -> ()
@@ -570,7 +563,7 @@ let select_start_with_auto_complete base mode max_res ini =
             let k = Util.name_key base s in
             if string_incl_start_with (Name.lower ini) (Name.lower k) then
               begin
-                string_set := StrSetAutoComplete.add (sou base istr) !string_set;
+                string_set := StrSet.add (sou base istr) !string_set;
                 incr nb_res;
                 match spi_next name istr need_whole_list with
                 | exception Not_found -> ()
@@ -584,7 +577,7 @@ let select_start_with_auto_complete base mode max_res ini =
               | _ -> ()
           in loop istr []
     end;
-  List.sort Gutil.alphabetic_order (StrSetAutoComplete.elements !string_set)
+  List.sort Gutil.alphabetic_order (StrSet.elements !string_set)
 
 
 let select_all_auto_complete _ base get_field max_res ini =
@@ -602,17 +595,17 @@ let select_all_auto_complete _ base get_field max_res ini =
     in
     loop ini []
   in
-  let string_set = ref StrSetAutoComplete.empty in
+  let string_set = ref StrSet.empty in
   let nb_res = ref 0 in
   Gwdb.Collection.fold_until (fun () -> !nb_res < max_res) begin fun () p ->
       if List.for_all (fun s -> find p s) ini
       then
         begin
-        string_set := StrSetAutoComplete.add (sou base (get_field p)) !string_set;
+        string_set := StrSet.add (sou base (get_field p)) !string_set;
         incr nb_res;
         end
   end () (Gwdb.persons base) ;
-  List.sort Gutil.alphabetic_order (StrSetAutoComplete.elements !string_set)
+  List.sort Gutil.alphabetic_order (StrSet.elements !string_set)
 
 
 let load_dico_lieu conf pl_mode =
