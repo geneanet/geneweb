@@ -628,14 +628,71 @@ let load_dico_lieu conf pl_mode =
       list
     with Sys_error _ -> []
 
-
 let get_field mode =
   match mode with
   | `lastname -> get_surname
   | `firstname -> get_first_name
   | _ -> failwith "get_field"
 
-let search_auto_complete conf base mode place_mode max_res n =
+(** [ini] must be in the form of [Name.lower @@ Mutil.tr '_' ' ' ini] *)
+let complete_with_dico conf nb max mode ini list =
+  let reduce_dico mode ignored format list =
+    let rec loop acc = function
+      | [] -> acc
+      | hd :: tl ->
+        let acc =
+          let k =  Mutil.tr '_' ' ' hd in
+          let k = if mode <> `subdivision then UpdateData.remove_suburb k else k in
+          if string_start_with ini (Name.lower k) then begin
+            let hd =
+              if format <> []
+              then
+                let expl_hd = String.split_on_char ',' hd in
+                String.concat ", " @@
+                Util.filter_map begin function
+                  | `town -> List.nth_opt expl_hd 0
+                  | `area_code -> List.nth_opt expl_hd 1
+                  | `county -> List.nth_opt expl_hd 2
+                  | `region -> List.nth_opt expl_hd 3
+                  | `country -> List.nth_opt expl_hd 4
+                  | _ -> None
+                end
+                  format
+              else
+                hd
+            in
+            if List.mem hd ignored then acc
+            else begin incr nb ; hd :: acc end
+          end
+          else acc
+        in
+        if !nb < max then loop acc tl else acc
+    in loop [] list
+  in
+  match mode with
+  | Some mode when !nb < max ->
+    let format =
+      match p_getenv conf.base_env "places_format" with
+      | None -> []
+      | Some s ->
+        List.map begin function
+          | "Subdivision" -> `subdivision
+          | "Town" -> `town
+          | "Area code" -> `area_code
+          | "County" -> `county
+          | "Region" -> `region
+          | "Country" -> `country
+          | _ -> raise Not_found
+        end
+          (String.split_on_char ',' s)
+    in
+    let dico_place = reduce_dico mode list format (load_dico_lieu conf mode) in
+    List.rev_append
+      (List.sort (fun a b -> Gutil.alphabetic_order b a) list)
+      (List.sort Gutil.alphabetic_order dico_place)
+  | _ -> List.sort Gutil.alphabetic_order list
+
+let search_auto_complete conf base mode place_mode max n =
   let aux data =
     let conf = { conf with env = ("data", data) :: conf.env } in
     UpdateData.get_all_data conf base
@@ -645,87 +702,31 @@ let search_auto_complete conf base mode place_mode max_res n =
 
   | `place ->
     let list = aux "place" in
-    let nb_res = ref 0 in
+    let nb = ref 0 in
     let ini = Name.lower @@ Mutil.tr '_' ' ' n in
-    let place_format =
-      match p_getenv conf.base_env "places_format" with
-      | None -> []
-      | Some s ->
-        try
-          List.map
-            (function
-              | "Subdivision" -> `subdivision
-              | "Town" -> `town
-              | "Area code" -> `area_code
-              | "County" -> `county
-              | "Region" -> `region
-              | "Country" -> `country
-              | _ -> raise Not_found)
-            (String.split_on_char ',' s)
-        with Not_found -> []
-    in
     let reduce_perso list =
-      List.fold_left begin fun acc str ->
-        let str' =
-          if place_mode <> Some `subdivision
-          then UpdateData.remove_suburb str
-          else str
-        in
-        if Mutil.start_with ~wildcard:true ini 0 @@ Name.lower @@ Mutil.tr '_' ' ' str'
-        then str :: acc
-        else acc
-      end [] list
-    in
-    let reduce_dico ignored list =
       let rec loop acc = function
         | [] -> acc
         | hd :: tl ->
+          let hd' =
+            if place_mode <> Some `subdivision
+            then UpdateData.remove_suburb hd
+            else hd
+          in
           let acc =
-            let k =  Mutil.tr '_' ' ' hd in
-            let k =
-              if place_mode <> Some `subdivision
-              then UpdateData.remove_suburb k
-              else k
-            in
-            if string_start_with ini (Name.lower k) then begin
-              let hd =
-                if place_format <> [] then
-                  let expl_hd = String.split_on_char ',' hd in
-                  String.concat ", " @@
-                  Util.filter_map begin function
-                    | `town -> List.nth_opt expl_hd 0
-                    | `area_code -> List.nth_opt expl_hd 1
-                    | `county -> List.nth_opt expl_hd 2
-                    | `region -> List.nth_opt expl_hd 3
-                    | `country -> List.nth_opt expl_hd 4
-                    | _ -> None
-                  end
-                    place_format
-                else
-                  hd
-              in
-              if List.mem hd ignored then acc
-              else begin incr nb_res ; hd :: acc end
-            end
+            if Mutil.start_with ~wildcard:true ini 0 @@ Name.lower @@ Mutil.tr '_' ' ' hd'
+            then (incr nb ; hd :: acc)
             else acc
           in
-          if !nb_res < max_res then loop acc tl else acc
-      in loop [] list
+          if !nb < max then loop acc tl else acc
+      in
+      loop [] list
     in
-
-    let base_place : string list = reduce_perso list in
-    begin match place_mode with
-      | Some pl_mode when !nb_res < max_res ->
-        let dico_place = reduce_dico base_place (load_dico_lieu conf pl_mode) in
-        List.rev_append
-          (List.sort (fun a b -> Gutil.alphabetic_order b a) base_place)
-          (List.sort Gutil.alphabetic_order dico_place)
-      | _ -> List.sort Gutil.alphabetic_order base_place
-    end
+    complete_with_dico conf nb max place_mode ini (reduce_perso list)
 
   | `source ->
     let list = aux "src" in
-    let nb_res = ref 0 in
+    let nb = ref 0 in
     let ini = Name.lower @@ Mutil.tr '_' ' ' n in
     let rec reduce acc = function
       | [] -> acc
@@ -733,10 +734,10 @@ let search_auto_complete conf base mode place_mode max_res n =
         let k =  Mutil.tr '_' ' ' hd in
         let acc =
           if string_start_with ini (Name.lower k)
-            then (incr nb_res ; hd :: acc)
+            then (incr nb ; hd :: acc)
             else acc
         in
-        if !nb_res < max_res then reduce acc tl
+        if !nb < max then reduce acc tl
         else acc
     in
     List.sort Gutil.alphabetic_order (reduce [] list)
@@ -744,7 +745,7 @@ let search_auto_complete conf base mode place_mode max_res n =
   | _ ->
     if Name.lower n = "" then []
     else ( load_strings_array base
-         ; select_start_with_auto_complete base mode max_res n )
+         ; select_start_with_auto_complete base mode max n )
 
 let select_both_link_person base ini_n ini_p max_res =
   let find_sn p x = kmp x (sou base (get_surname p)) in

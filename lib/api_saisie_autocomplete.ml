@@ -10,7 +10,7 @@ open Util
 module IstrSet = Set.Make (struct type t = Gwdb.istr let compare = compare end)
 
 (** Create cache files  used by autocomplete *)
-let create_cache conf base mode place_mode cache_file =
+let create_cache base mode cache_file =
   let add acc x = if not (is_empty_string x) then IstrSet.add x acc else acc in
   let cache =
     match mode with
@@ -51,15 +51,12 @@ let create_cache conf base mode place_mode cache_file =
         (Gwdb.families base)
   in
   let cache = List.rev_map (sou base) (IstrSet.elements cache) in
-  let cache =
-    Opt.map_default cache (fun m -> List.rev_append (Api_search.load_dico_lieu conf m) cache) place_mode
-  in
   let cache = List.sort Gutil.alphabetic_order cache in
   let oc = Secure.open_out_bin cache_file in
   Marshal.to_channel oc cache [ Marshal.No_sharing ] ;
   close_out oc
 
-let rec get_list_from_cache ?(retry = true) conf base mode place_mode max_res s =
+let rec get_list_from_cache ?(retry = true) conf base mode max_res s =
   let bfile = base_path [] (conf.bname ^ ".gwb") in
   let cache_file =
     match mode with
@@ -72,7 +69,7 @@ let rec get_list_from_cache ?(retry = true) conf base mode place_mode max_res s 
     let stats = Unix.stat cache_file in
     let last_mod = conf.ctime -. stats.Unix.st_mtime in
     if stats.Unix.st_size = 0 || last_mod > 3600.
-    then create_cache conf base mode place_mode cache_file ;
+    then create_cache base mode cache_file ;
     let ic = Secure.open_in_bin cache_file in
     try
       let cache : string list = Marshal.from_channel ic in
@@ -96,7 +93,7 @@ let rec get_list_from_cache ?(retry = true) conf base mode place_mode max_res s 
     |  _ when retry ->
       close_in ic ;
       Sys.remove cache_file ;
-      get_list_from_cache ~retry:false conf base mode place_mode max_res s ;
+      get_list_from_cache ~retry:false conf base mode max_res s ;
     | e ->
       close_in ic ;
       raise e
