@@ -673,7 +673,12 @@ let search_auto_complete conf base mode place_mode max_res n =
     in
     let reduce_perso list =
       List.fold_left begin fun acc str ->
-        if Mutil.start_with ~wildcard:true ini 0 @@ Name.lower @@ Mutil.tr '_' ' ' str
+        let str' =
+          if place_mode <> Some `subdivision
+          then UpdateData.remove_suburb str
+          else str
+        in
+        if Mutil.start_with ~wildcard:true ini 0 @@ Name.lower @@ Mutil.tr '_' ' ' str'
         then str :: acc
         else acc
       end [] list
