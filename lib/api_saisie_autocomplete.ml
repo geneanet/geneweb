@@ -59,17 +59,6 @@ let create_cache conf base mode place_mode cache_file =
   Marshal.to_channel oc cache [ Marshal.No_sharing ] ;
   close_out oc
 
-let string_start_with ini s =
-  let rec loop i1 i2 =
-    if i1 = String.length ini then true
-    else if i2 = String.length s then
-      if ini.[i1] = '_' then loop (i1 + 1) i2 else false
-    else if s.[i2] = ini.[i1] || s.[i2] = ' ' && ini.[i1] = '_' then
-      loop (i1 + 1) (i2 + 1)
-    else false
-  in
-  loop 0 0
-
 let rec get_list_from_cache ?(retry = true) conf base mode place_mode max_res s =
   let bfile = base_path [] (conf.bname ^ ".gwb") in
   let cache_file =
