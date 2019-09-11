@@ -150,9 +150,18 @@ let input_particles fname =
     loop [] 0
   with Sys_error _ -> []
 
-let split_sname =
-  let r = Str.regexp "[ -]" in
-  Str.split r
+(* Copy/paste from String.split_on_char adapted to our needs *)
+let split_sname s =
+  let open String in
+  let r = ref [] in
+  let j = ref (length s) in
+  for i = length s - 1 downto 0 do
+    if match unsafe_get s i with ' ' | '-' -> true | _ -> false then begin
+      r := sub s (i + 1) (!j - i - 1) :: !r;
+      j := i
+    end
+  done;
+  sub s 0 !j :: !r
 
 let split_fname =
   String.split_on_char ' '
