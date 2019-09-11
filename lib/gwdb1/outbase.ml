@@ -265,14 +265,13 @@ let gen_output no_patches bname base =
   if not no_patches then
     begin
       (* prepare name indices strings *)
-      let r = Str.regexp "[ -]" in
       for i = 0 to base.data.persons.len - 1 do
         let p = Dutil.poi base (Type.iper_of_int i) in
         base.data.strings.get p.surname
-        |> Str.split r
+        |> Mutil.split_sname
         |> List.iter (fun s -> ignore @@ base.func.insert_string s) ;
         base.data.strings.get p.first_name
-        |> String.split_on_char ' '
+        |> Mutil.split_fname
         |> List.iter (fun s -> ignore @@ base.func.insert_string s) ;
       done ;
       load_ascends_array base;
