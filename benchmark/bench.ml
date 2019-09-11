@@ -21,6 +21,8 @@ let () =
     [ "aaaaaaaaaa" ; "bbbbbbbbbb" ; "abbbbbbbb" ; "bbbbbbbbba" ; "ababababab" ]
 ; bench "Mutil.tr" 10000000L (fun s -> Mutil.tr 'a' 'b' @@ "a" ^ s)
     [ "aaaaaaaaaa" ; "bbbbbbbbbb" ; "abbbbbbbb" ; "bbbbbbbbba" ; "ababababab" ]
+; bench "Mutil.split_fname" 10000000L Mutil.split_fname
+    [ "Jean-Baptiste Emmanuel" ; "Jean Baptiste Emmanuel" ]
 
 ; begin match Sys.getenv "BENCH_BASE" with
   | exception Not_found -> ()
