@@ -264,15 +264,25 @@ let gen_output no_patches bname base =
   let tmp_notes_d = Filename.concat bname "1notes_d" in
   if not no_patches then
     begin
+      (* Specialised versions of Database.insert_string
+         for performance reasons. *)
+      let rev = Hashtbl.create base.data.strings.len in
+      for i = 0 to base.data.strings.len - 1 do
+        Hashtbl.add rev (base.data.strings.get i) i
+      done ;
+      let insert_string s =
+        if not @@ Hashtbl.mem rev s
+        then Hashtbl.add rev s (base.func.insert_string s)
+      in
       (* prepare name indices strings *)
       for i = 0 to base.data.persons.len - 1 do
         let p = Dutil.poi base (Type.iper_of_int i) in
         base.data.strings.get p.surname
         |> Mutil.split_sname
-        |> List.iter (fun s -> ignore @@ base.func.insert_string s) ;
+        |> List.iter insert_string ;
         base.data.strings.get p.first_name
         |> Mutil.split_fname
-        |> List.iter (fun s -> ignore @@ base.func.insert_string s) ;
+        |> List.iter insert_string ;
       done ;
       load_ascends_array base;
       load_unions_array base;
