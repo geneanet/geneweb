@@ -45,3 +45,6 @@ val unaccent_utf_8 : bool -> string -> int -> string * int
 val nbc : char -> int
 
 val forbidden_char : char list
+
+(** [concat fn sn] is [fn ^ " " ^ sn] but faster. *)
+val concat : string -> string -> string

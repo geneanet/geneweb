@@ -23,6 +23,10 @@ let () =
     [ "aaaaaaaaaa" ; "bbbbbbbbbb" ; "abbbbbbbb" ; "bbbbbbbbba" ; "ababababab" ]
 ; bench "Mutil.split_fname" 10000000L Mutil.split_fname
     [ "Jean-Baptiste Emmanuel" ; "Jean Baptiste Emmanuel" ]
+; bench "Name.concat" 100000000L (fun (a, b) -> Name.concat a b)
+    [ ("foo", "bar")
+    ; ( "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      , "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb") ]
 
 ; begin match Sys.getenv "BENCH_BASE" with
   | exception Not_found -> ()

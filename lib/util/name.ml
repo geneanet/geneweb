@@ -588,3 +588,13 @@ let strip_lower s = strip (lower s)
 (* crush_lower *)
 
 let crush_lower s = crush (abbrev (lower s))
+
+let concat_aux fn l1 sn l2 =
+  let b = Bytes.create (succ @@ l1 + l2) in
+  Bytes.blit_string fn 0 b 0 l1 ;
+  Bytes.blit_string sn 0 b (succ l1) l2 ;
+  Bytes.unsafe_set b l1 ' ' ;
+  Bytes.unsafe_to_string b
+
+let concat fn sn =
+  concat_aux fn (String.length fn) sn (String.length sn)
