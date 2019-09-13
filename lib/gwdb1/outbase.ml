@@ -10,7 +10,6 @@ let load_unions_array base = base.data.unions.load_array ()
 let load_couples_array base = base.data.couples.load_array ()
 let load_descends_array base = base.data.descends.load_array ()
 let load_strings_array base = base.data.strings.load_array ()
-let close_base base = base.func.cleanup ()
 
 let save_mem = ref false
 let verbose = Mutil.verbose
@@ -130,28 +129,47 @@ let create_name_index oc_inx oc_inx_acc base =
   in
   if epos <> pos_out oc_inx then count_error epos (pos_out oc_inx)
 
-let add_name t key valu =
-  let key = Name.crush_lower key in
-  let i = Hashtbl.hash key mod Array.length t in
-  if Array.mem valu t.(i) then () else t.(i) <- Array.append [| valu |] t.(i)
+let add_name t key value =
+  let i = name_index_key key in
+  if not @@ Array.mem value @@ Array.unsafe_get t i
+  then Array.unsafe_set t i @@ Array.append [| value |] @@ Array.unsafe_get t i
+
+(* let add_name t key valu =
+ *   let key = Name.crush_lower key in
+ *   let i = Hashtbl.hash key mod Array.length t in
+ *   if Array.mem valu t.(i) then () else t.(i) <- Array.append [| valu |] t.(i) *)
 
 let make_strings_of_fsname base =
+  (* Specialised versions of Database.insert_string
+     for performance reasons. *)
+  let rev = Hashtbl.create base.data.strings.len in
+  base.data.persons.load_array ();
+  base.data.strings.load_array () ;
+  for i = 0 to base.data.strings.len - 1 do
+    Hashtbl.add rev (base.data.strings.get i) i
+  done ;
+  let insert_string s =
+    match Hashtbl.find_opt rev s with
+    | Some i -> i
+    | None ->
+      let i = base.func.insert_string s in
+      Hashtbl.add rev s i ;
+      i
+  in
   let t = Array.make Dutil.table_size [| |] in
   for i = 0 to base.data.persons.len - 1 do
-    let p = Dutil.poi base (Type.iper_of_int i) in
-    let first_name = Dutil.p_first_name base p in
-    let surname = Dutil.p_surname base p in
-    if first_name <> "?" then
-      List.iter (fun (s, i) -> add_name t s i) @@
-      (first_name, p.first_name)
-      :: List.map (fun s -> (s, base.func.insert_string s)) (split_fname base p.first_name) ;
-    if surname <> "?" then
-      begin
-        List.iter (fun (s, i) -> add_name t s i) @@
-        (surname, p.surname)
-        :: List.map (fun s -> (s, base.func.insert_string s)) (split_sname base p.surname)
-      end
-  done;
+    let p = base.data.persons.get i in
+    if p.first_name <> 1 then begin
+      let fn = base.data.strings.get p.first_name in
+      add_name t fn p.first_name ;
+      List.iter (fun s -> add_name t s @@ insert_string s) (split_fname base p.first_name) ;
+    end ;
+    if p.surname <> 1 then begin
+      let sn = base.data.strings.get p.surname in
+      add_name t sn p.surname ;
+      List.iter (fun s -> add_name t s @@ insert_string s) (split_sname base p.surname) ;
+    end
+  done ;
   t
 
 let create_strings_of_fsname oc_inx oc_inx_acc base =
@@ -186,10 +204,11 @@ let output_strings_hash oc2 base =
     tabl.(i) <- taba.(ia); taba.(ia) <- i
   done;
   output_binary_int oc2 (Array.length taba);
-  output_binary_int oc2 0;
-  output_binary_int oc2 0;
+  output_binary_int oc2 0; (* legacy *)
+  output_binary_int oc2 0; (* legacy *)
   for i = 0 to Array.length taba - 1 do output_binary_int oc2 taba.(i) done;
-  for i = 0 to Array.length tabl - 1 do output_binary_int oc2 tabl.(i) done
+  for i = 0 to Array.length tabl - 1 do output_binary_int oc2 tabl.(i) done;
+  base.data.strings.clear_array ()
 
 let output_name_index_aux fn oc2 base inx dat =
   let module IstrTree =
@@ -416,7 +435,8 @@ let gen_output no_patches bname base =
       end;
     raise e
   end;
-  close_base base;
+
+  base.func.cleanup () ;
   Mutil.remove_file (Filename.concat bname "base");
   Sys.rename tmp_base (Filename.concat bname "base");
   Mutil.remove_file (Filename.concat bname "base.acc");
