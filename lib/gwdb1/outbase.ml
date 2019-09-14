@@ -1,15 +1,8 @@
-(* $Id: outbase.ml,v 5.21 2007-01-19 01:53:16 ddr Exp $ *)
 (* Copyright (c) 2006-2007 INRIA *)
 
 open Dbdisk
 open Def
 open Type
-
-let load_ascends_array base = base.data.ascends.load_array ()
-let load_unions_array base = base.data.unions.load_array ()
-let load_couples_array base = base.data.couples.load_array ()
-let load_descends_array base = base.data.descends.load_array ()
-let load_strings_array base = base.data.strings.load_array ()
 
 let save_mem = ref false
 let verbose = Mutil.verbose
@@ -95,39 +88,41 @@ let split_fname base i = Mutil.split_fname @@ base.data.strings.get i
 let name_index_key s =
   Hashtbl.hash (Name.crush_lower (Name.abbrev s)) mod Dutil.table_size
 
-let make_name_index base =
-  let t = Array.make Dutil.table_size [| |] in
-  let add_name key value =
-    let i = name_index_key key in
-    if not @@ Array.mem value t.(i)
-    then t.(i) <- Array.append [| value |] t.(i)
-  in
-  for i = 0 to base.data.persons.len - 1 do
-    let p = base.data.persons.get i in
-    let first_name = Dutil.p_first_name base p in
-    let surname = Dutil.p_surname base p in
-    if first_name <> "?" && surname <> "?" then begin
-      let names =
-        Name.lower (first_name ^ " " ^ surname)
-        :: List.map Name.lower (split_fname base p.first_name)
-        @ List.map Name.lower (split_sname base p.surname)
-        @ Dutil.dsk_person_misc_names base p (fun p -> p.titles)
-      in
-      List.iter (fun i -> add_name i p.key_index) names
-    end
-  done;
-  (* Array.iter (fun i -> print_endline @@ base.data.strings.get i) t.(i) ; *)
-  t
+(* let make_name_index base =
+ *   let t = Array.make Dutil.table_size [| |] in
+ *   let add_name key value =
+ *     let i = name_index_key key in
+ *     if not @@ Array.mem value t.(i)
+ *     then t.(i) <- Array.append [| value |] t.(i)
+ *   in
+ *   for i = 0 to base.data.persons.len - 1 do
+ *     let p = base.data.persons.get i in
+ *     let first_name = Dutil.p_first_name base p in
+ *     let surname = Dutil.p_surname base p in
+ *     if first_name <> "?" && surname <> "?" then begin
+ *       let names =
+ *         Name.lower (first_name ^ " " ^ surname)
+ *         :: List.map Name.lower (split_fname base p.first_name)
+ *         @ List.map Name.lower (split_sname base p.surname)
+ *         @ Dutil.dsk_person_misc_names base p (fun p -> p.titles)
+ *       in
+ *       List.iter (fun i -> add_name i p.key_index) names
+ *     end
+ *   done;
+ *   (\* Array.iter (fun i -> print_endline @@ base.data.strings.get i) t.(i) ; *\)
+ *   t *)
 
-let create_name_index oc_inx oc_inx_acc base =
-  let ni = make_name_index base in
-  let bpos = pos_out oc_inx in
-  Mutil.output_value_no_sharing oc_inx (ni : Dutil.name_index_data);
-  let epos =
-    Iovalue.output_array_access oc_inx_acc (Array.get ni) (Array.length ni)
-      bpos
-  in
-  if epos <> pos_out oc_inx then count_error epos (pos_out oc_inx)
+(* let create_name_index oc_inx oc_inx_acc base =
+ *   let ni = make_name_index base in
+ *   let bpos = pos_out oc_inx in
+ *   Mutil.output_value_no_sharing oc_inx (ni : Dutil.name_index_data);
+ *   let epos =
+ *     Iovalue.output_array_access oc_inx_acc (Array.get ni) (Array.length ni)
+ *       bpos
+ *   in
+ *   if epos <> pos_out oc_inx then count_error epos (pos_out oc_inx) *)
+
+let create_name_index _oc_inx _oc_inx_acc _base = ()
 
 let add_name t key value =
   let i = name_index_key key in
@@ -139,23 +134,7 @@ let add_name t key value =
  *   let i = Hashtbl.hash key mod Array.length t in
  *   if Array.mem valu t.(i) then () else t.(i) <- Array.append [| valu |] t.(i) *)
 
-let make_strings_of_fsname base =
-  (* Specialised versions of Database.insert_string
-     for performance reasons. *)
-  let rev = Hashtbl.create base.data.strings.len in
-  base.data.persons.load_array ();
-  base.data.strings.load_array () ;
-  for i = 0 to base.data.strings.len - 1 do
-    Hashtbl.add rev (base.data.strings.get i) i
-  done ;
-  let insert_string s =
-    match Hashtbl.find_opt rev s with
-    | Some i -> i
-    | None ->
-      let i = base.func.insert_string s in
-      Hashtbl.add rev s i ;
-      i
-  in
+let make_strings_of_fsname insert_string base =
   let t = Array.make Dutil.table_size [| |] in
   for i = 0 to base.data.persons.len - 1 do
     let p = base.data.persons.get i in
@@ -172,8 +151,8 @@ let make_strings_of_fsname base =
   done ;
   t
 
-let create_strings_of_fsname oc_inx oc_inx_acc base =
-  let t = make_strings_of_fsname base in
+let create_strings_of_fsname oc_inx oc_inx_acc insert_string base =
+  let t = make_strings_of_fsname insert_string base in
   let bpos = pos_out oc_inx in
   Mutil.output_value_no_sharing oc_inx (t : Dutil.strings_of_fsname);
   let epos =
@@ -210,60 +189,64 @@ let output_strings_hash oc2 base =
   for i = 0 to Array.length tabl - 1 do output_binary_int oc2 tabl.(i) done;
   base.data.strings.clear_array ()
 
-let output_name_index_aux fn oc2 base inx dat =
+let output_name_index_aux fn base inx dat =
   let module IstrTree =
-    Btree.Make
-      (struct
-        type t = istr
-        let compare = Dutil.compare_istr_fun base.data
-      end)
+    Btree.Make (struct type t = istr let compare = Dutil.compare_istr_fun base.data end)
   in
-  let bt = ref IstrTree.empty in
-  for i = 0 to base.data.persons.len - 1 do
-    let p = Dutil.poi base (Type.iper_of_int i) in
-    List.iter begin fun k ->
-      let a = try IstrTree.find k !bt with Not_found -> [] in
-      bt := IstrTree.add k (p.key_index :: a) !bt
-    end (fn p)
-  done;
-  (* obsolete table: saved by compatibility with GeneWeb versions <= 4.09,
-     i.e. the created database can be still read by these versions but this
-     table will not be used in versions >= 4.10 *)
-  Mutil.output_value_no_sharing oc2 (!bt : iper list IstrTree.t);
-  (* new table created from version >= 4.10 *)
+  base.data.strings.load_array () ;
+  base.data.persons.load_array () ;
+  let rec loop tree i =
+    if i = base.data.persons.len then tree
+    else
+      let p = base.data.persons.get i in
+      let tree =
+        List.fold_left begin fun tree k ->
+          match IstrTree.find_opt k tree with
+          | Some acc -> IstrTree.add k (p.key_index :: acc) tree
+          | None -> IstrTree.add k [ p.key_index ] tree
+        end tree (fn p)
+      in
+      loop tree (succ i)
+  in
+  let bt = loop IstrTree.empty 0 in
+  base.data.strings.clear_array () ;
+  base.data.persons.clear_array () ;
+  let () = print_endline @@ Printf.sprintf "%s:" __LOC__ in
   let oc_dat = Secure.open_out_bin dat in
   let bt2 =
-    IstrTree.map
-      (fun ipl ->
-         let i = pos_out oc_dat in
-         output_binary_int oc_dat (List.length ipl);
-         List.iter
-           (fun ip -> output_binary_int oc_dat (Type.int_of_iper ip)) ipl;
-         i)
-      !bt
+    IstrTree.map begin fun ipl ->
+      let i = pos_out oc_dat in
+      output_binary_int oc_dat (List.length ipl);
+      List.iter (output_binary_int oc_dat) ipl;
+      i
+    end bt
   in
   close_out oc_dat;
   let oc_inx = Secure.open_out_bin inx in
   Mutil.output_value_no_sharing oc_inx (bt2 : int IstrTree.t);
   close_out oc_inx
 
-let output_surname_index oc2 base =
+let output_surname_index base string_index =
   output_name_index_aux
     begin fun p ->
-      split_sname base p.surname
-      |> List.map base.func.insert_string
-      |> List.cons p.surname
+      if p.surname = 1 then []
+      else
+        split_sname base p.surname
+        |> List.map string_index
+        |> List.cons p.surname
     end
- oc2 base
+    base
 
-let output_first_name_index oc2 base =
+let output_first_name_index base string_index =
   output_name_index_aux
     begin fun p ->
-      split_fname base p.first_name
-      |> List.map base.func.insert_string
-      |> List.cons p.first_name
+      if p.first_name = 1 then []
+      else
+        split_fname base p.first_name
+        |> List.map string_index
+        |> List.cons p.first_name
     end
-    oc2 base
+    base
 
 let gen_output no_patches bname base =
   let bname =
@@ -281,34 +264,36 @@ let gen_output no_patches bname base =
   let tmp_strings_inx = Filename.concat bname "1strings.inx" in
   let tmp_notes = Filename.concat bname "1notes" in
   let tmp_notes_d = Filename.concat bname "1notes_d" in
-  if not no_patches then
-    begin
-      (* Specialised versions of Database.insert_string
-         for performance reasons. *)
+  let insert_string =
+    if no_patches then base.func.insert_string
+    else begin
       let rev = Hashtbl.create base.data.strings.len in
       for i = 0 to base.data.strings.len - 1 do
         Hashtbl.add rev (base.data.strings.get i) i
       done ;
-      let insert_string s =
-        if not @@ Hashtbl.mem rev s
-        then Hashtbl.add rev s (base.func.insert_string s)
-      in
-      (* prepare name indices strings *)
-      for i = 0 to base.data.persons.len - 1 do
-        let p = Dutil.poi base (Type.iper_of_int i) in
-        base.data.strings.get p.surname
-        |> Mutil.split_sname
-        |> List.iter insert_string ;
-        base.data.strings.get p.first_name
-        |> Mutil.split_fname
-        |> List.iter insert_string ;
-      done ;
-      load_ascends_array base;
-      load_unions_array base;
-      load_couples_array base;
-      load_descends_array base;
-      load_strings_array base
-    end;
+      fun s ->
+        match Hashtbl.find_opt rev s with
+        | Some i -> i
+        | None ->
+          let i = base.func.insert_string s in
+          Hashtbl.add rev s i ;
+          i
+    end
+  in
+  (* if not no_patches then begin
+   *   (\* FIXME: use magic number to determine if this step is needed *\)
+   *   let () = print_endline @@ Printf.sprintf "%s:" __LOC__ in
+   *   for i = 0 to base.data.persons.len - 1 do
+   *     let p = base.data.persons.get i in
+   *     base.data.strings.get p.surname
+   *     |> Mutil.split_sname
+   *     |> List.iter (fun s -> ignore @@ insert_string s) ;
+   *     base.data.strings.get p.first_name
+   *     |> Mutil.split_fname
+   *     |> List.iter (fun s -> ignore @@ insert_string s) ;
+   *   done ;
+   *   let () = print_endline @@ Printf.sprintf "%s:" __LOC__ in () *)
+  (* end ; *)
   let oc = Secure.open_out_bin tmp_base in
   let oc_acc = Secure.open_out_bin tmp_base_acc in
   let output_array arrname arr =
@@ -381,7 +366,7 @@ let gen_output no_patches bname base =
           if !save_mem then begin trace "compacting"; Gc.compact () end;
           let surname_or_first_name_pos = pos_out oc_inx in
           trace "create strings of fsname";
-          create_strings_of_fsname oc_inx oc_inx_acc base;
+          create_strings_of_fsname oc_inx oc_inx_acc insert_string base;
           seek_out oc_inx 0;
           output_binary_int oc_inx surname_or_first_name_pos;
           close_out oc_inx;
@@ -392,11 +377,11 @@ let gen_output no_patches bname base =
           if !save_mem then begin trace "compacting"; Gc.compact () end;
           let surname_pos = pos_out oc2 in
           trace "create surname index";
-          output_surname_index oc2 base tmp_snames_inx tmp_snames_dat;
+          output_surname_index base insert_string tmp_snames_inx tmp_snames_dat;
           if !save_mem then begin trace "compacting"; Gc.compact () end;
           let first_name_pos = pos_out oc2 in
           trace "create first name index";
-          output_first_name_index oc2 base tmp_fnames_inx tmp_fnames_dat;
+          output_first_name_index base insert_string tmp_fnames_inx tmp_fnames_dat;
           seek_out oc2 Mutil.int_size;
           output_binary_int oc2 surname_pos;
           output_binary_int oc2 first_name_pos;
