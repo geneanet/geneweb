@@ -121,3 +121,32 @@ let death_date p =
   match get_death p with
     Death (_, cd) -> Some (Adef.date_of_cdate cd)
   | _ -> None
+
+let make_population_pyramid ~nb_intervals ~interval ~limit ~at_date conf base =
+  let men = Array.make (nb_intervals + 1) 0 in
+  let wom = Array.make (nb_intervals + 1) 0 in
+  (* TODO? Load person array *)
+  Gwdb.Collection.iter (fun i ->
+      let p = pget conf base i in
+      let sex = get_sex p in
+      let dea = get_death p in
+      if sex <> Neuter then
+        match Adef.od_of_cdate (get_birth p) with
+        | Some (Dgreg (dmy, _)) ->
+          if Date.compare_dmy dmy at_date <= 0 then
+            let a = Date.time_elapsed dmy at_date in
+            let j = min nb_intervals (a.year / interval) in
+            if (dea = NotDead || dea = DontKnowIfDead && a.year < limit)
+            || match dea with
+            | Death (_, cd) ->
+              begin match Adef.date_of_cdate cd with
+                | Dgreg (d, _) -> Date.compare_dmy d at_date > 0
+                | _ -> false
+              end
+            | _ -> false
+            then
+              if sex = Male then men.(j) <- men.(j) + 1
+              else wom.(j) <- wom.(j) + 1
+        | Some (Dtext _) | None -> ()
+    ) (Gwdb.ipers base) ;
+  (men, wom)
