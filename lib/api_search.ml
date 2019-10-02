@@ -634,7 +634,9 @@ let get_field mode =
   | `firstname -> get_first_name
   | _ -> failwith "get_field"
 
-(** [ini] must be in the form of [Name.lower @@ Mutil.tr '_' ' ' ini] *)
+(** [ini] must be in the form of [Name.lower @@ Mutil.tr '_' ' ' ini]
+    Assume that [list] is already sorted.
+*)
 let complete_with_dico conf nb max mode ini list =
   let reduce_dico mode ignored format list =
     let rec loop acc = function
@@ -687,16 +689,15 @@ let complete_with_dico conf nb max mode ini list =
           (String.split_on_char ',' s)
     in
     let dico_place = reduce_dico mode list format (load_dico_lieu conf mode) in
-    List.rev_append
-      (List.sort (fun a b -> Gutil.alphabetic_order b a) list)
-      (List.sort Gutil.alphabetic_order dico_place)
-  | _ -> List.sort Gutil.alphabetic_order list
+    List.append list (List.sort Gutil.alphabetic_order dico_place)
+  | _ -> list
 
 let search_auto_complete conf base mode place_mode max n =
   let aux data =
     let conf = { conf with env = ("data", data) :: conf.env } in
     UpdateData.get_all_data conf base
     |> List.rev_map (sou base)
+    |> List.sort Gutil.alphabetic_order
   in
   match mode with
 
@@ -706,7 +707,7 @@ let search_auto_complete conf base mode place_mode max n =
     let ini = Name.lower @@ Mutil.tr '_' ' ' n in
     let reduce_perso list =
       let rec loop acc = function
-        | [] -> acc
+        | [] -> List.rev acc
         | hd :: tl ->
           let hd' =
             if place_mode <> Some `subdivision
@@ -729,7 +730,7 @@ let search_auto_complete conf base mode place_mode max n =
     let nb = ref 0 in
     let ini = Name.lower @@ Mutil.tr '_' ' ' n in
     let rec reduce acc = function
-      | [] -> acc
+      | [] -> List.rev acc
       | hd :: tl ->
         let k =  Mutil.tr '_' ' ' hd in
         let acc =
@@ -740,7 +741,7 @@ let search_auto_complete conf base mode place_mode max n =
         if !nb < max then reduce acc tl
         else acc
     in
-    List.sort Gutil.alphabetic_order (reduce [] list)
+    reduce [] list
 
   | _ ->
     if Name.lower n = "" then []
