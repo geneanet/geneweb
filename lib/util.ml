@@ -2564,7 +2564,7 @@ let create_topological_sort conf base =
       let () = load_ascends_array base in
       let () = load_couples_array base in
       Consang.topological_sort base (pget conf)
-  | Some "no_tstab" -> Gwdb.iper_marker (Gwdb.ipers base) 0
+  | Some "no_tstab" -> Marker.make (nb_of_persons base) 0
   | _ ->
       let bfile = base_path [] (conf.bname ^ ".gwb") in
       Lock.control (Mutil.lock_file bfile) false
@@ -3668,26 +3668,26 @@ let rm_rf dir =
   List.iter Unix.unlink files ;
   List.iter Unix.rmdir directories
 
-let init_cache_info bname base =
-  match Gwdb.ascends_array base with
-  | (_, _, _, None) ->
-    begin
-      (* Reset le nombre réel de personnes d'une base. *)
-      let nb_real_persons =
-        Gwdb.Collection.fold begin fun acc p ->
-          if is_empty_name p then acc else acc + 1
-        end 0 (Gwdb.persons base)
-      in
-      let ht = Hashtbl.create 1 in
-      let () =
-        Hashtbl.add ht cache_nb_base_persons (string_of_int nb_real_persons)
-      in
-      let bdir =
-        if Filename.check_suffix bname ".gwb" then bname else bname ^ ".gwb"
-      in
-      let fname = Filename.concat bdir "cache_info" in
-      match try Some (Secure.open_out_bin fname) with Sys_error _ -> None with
-        Some oc -> output_value oc ht; close_out oc
-      | None -> ()
-    end
-  | _ -> ()
+let init_cache_info _bname _base = ()
+  (* match Gwdb.ascends_array base with
+   * | (_, _, _, None) ->
+   *   begin
+   *     (\* Reset le nombre réel de personnes d'une base. *\)
+   *     let nb_real_persons =
+   *       Gwdb.Collection.fold begin fun acc p ->
+   *         if is_empty_name p then acc else acc + 1
+   *       end 0 (Gwdb.persons base)
+   *     in
+   *     let ht = Hashtbl.create 1 in
+   *     let () =
+   *       Hashtbl.add ht cache_nb_base_persons (string_of_int nb_real_persons)
+   *     in
+   *     let bdir =
+   *       if Filename.check_suffix bname ".gwb" then bname else bname ^ ".gwb"
+   *     in
+   *     let fname = Filename.concat bdir "cache_info" in
+   *     match try Some (Secure.open_out_bin fname) with Sys_error _ -> None with
+   *       Some oc -> output_value oc ht; close_out oc
+   *     | None -> ()
+   *   end
+   * | _ -> () *)

@@ -1202,11 +1202,9 @@ let insert_person conf base src new_persons (f, s, o, create, var) =
            psources = Gwdb.insert_string base (only_printable src);
            key_index = Gwdb.dummy_iper}
         in
-        let a = {parents = None; consang = Adef.fix (-1)} in
-        let u = {family = [| |]} in
-        let ip =
-          insert_person base @@ Gwdb.person_of_gen_person base (p, a, u)
-        in
+        let a = no_ascend in
+        let u = no_union in
+        let ip = insert_person base p a u in
         let p = { p with key_index = ip } in
         if f <> "?" && s <> "?" then
         begin
@@ -1282,7 +1280,7 @@ let update_conf conf =
 
 let rec list_except x =
   function
-    y :: l -> if x = y then l else y :: list_except x l
+  | y :: l -> if x = y then l else y :: list_except x l
   | [] -> invalid_arg "list_except"
 
 let update_related_pointers base pi ol nl =

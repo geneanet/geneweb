@@ -1050,7 +1050,7 @@ let effective_mod conf base sfam scpl sdes =
   Update.update_related_pointers base pi ol nl; fi, nfam, ncpl, ndes
 
 let effective_add conf base sfam scpl sdes =
-  let fi = insert_family base (empty_family base dummy_ifam) in
+  let fi = insert_family base (no_family dummy_ifam) no_couple no_descend in
   let created_p = ref [] in
   let psrc =
     match p_getenv conf.env "psrc" with
@@ -1154,22 +1154,7 @@ let effective_chg_order base ip u ifam n =
   let fam = UpdateFam.change_order u ifam n in
   let u = {family = Array.of_list fam} in patch_union base ip u
 
-let kill_family base ifam1 ip =
-  let u = poi base ip in
-  let l =
-    Array.fold_right
-      (fun ifam ifaml -> if ifam = ifam1 then ifaml else ifam :: ifaml)
-      (get_family u) []
-  in
-  let u = {family = Array.of_list l} in patch_union base ip u
-
-let kill_parents base ip =
-  let a = {parents = None; consang = Adef.fix (-1)} in patch_ascend base ip a
-
-let effective_del base ifam fam =
-  kill_family base ifam (get_father fam);
-  kill_family base ifam (get_mother fam);
-  Array.iter (kill_parents base) (get_children fam);
+let effective_del base ifam =
   delete_family base ifam
 
 let array_forall2 f a1 a2 =
@@ -1443,7 +1428,7 @@ let print_del conf base =
     Some i ->
       let ifam = ifam_of_string i in
       let fam = foi base ifam in
-      effective_del base ifam fam;
+      effective_del base ifam ;
       Util.commit_patches conf base;
       let changed =
         let gen_p =

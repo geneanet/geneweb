@@ -90,8 +90,8 @@ let reparent_ind base (warning : CheckItem.base_warning -> unit) ip1 ip2 =
   let a1 = poi base ip1 in
   let a2 = poi base ip2 in
   match get_parents a1, get_parents a2 with
-    None, Some ifam ->
-      let des = gen_descend_of_descend (foi base ifam) in
+  | None, Some ifam ->
+      let des = gen_descend_of_family (foi base ifam) in
       let rec replace i =
         if des.children.(i) = ip2 then des.children.(i) <- ip1
         else replace (i + 1)
@@ -104,7 +104,7 @@ let reparent_ind base (warning : CheckItem.base_warning -> unit) ip1 ip2 =
       let children = get_children fam in
       begin match CheckItem.sort_children base children with
         Some (b, a) ->
-          let des = gen_descend_of_descend fam in
+          let des = gen_descend_of_family fam in
           patch_descend base ifam des;
           warning (ChangedOrderOfChildren (ifam, fam, b, a))
       | None -> ()
@@ -157,8 +157,7 @@ let effective_merge_ind conf base (warning : CheckItem.base_warning -> unit) p1 
   in
   patch_person base p1.key_index p1;
   reparent_ind base warning p1.key_index (get_iper p2);
-  let p2 = UpdateIndOk.effective_del base warning p2 in
-  patch_person base p2.key_index p2;
+  UpdateIndOk.effective_del base p2 ;
   let s =
     let sl =
       [p1.notes; p1.occupation; p1.birth_note; p1.birth_src; p1.baptism_note;
@@ -180,7 +179,7 @@ let effective_merge_ind conf base (warning : CheckItem.base_warning -> unit) p1 
 let is_ancestor base p1 p2 =
   let ip1 = get_iper p1 in
   let ip2 = get_iper p2 in
-  let visited = Gwdb.iper_marker (Gwdb.ipers base) false in
+  let visited = Marker.make (nb_of_persons base) false in
   let rec loop ip =
     if Gwdb.Marker.get visited ip then false
     else if ip = ip1 then true
@@ -240,7 +239,7 @@ let effective_merge_fam base ifam1 fam1 ifam2 fam2 =
     let _ = (CheckItem.sort_children base children : _ option) in
     {children = children}
   in
-  UpdateFamOk.effective_del base ifam2 fam2;
+  UpdateFamOk.effective_del base ifam2;
   for i = 0 to Array.length (get_children des2) - 1 do
     let ip = (get_children des2).(i) in
     let a = {parents = Some ifam1; consang = Adef.fix (-1)} in
@@ -327,12 +326,11 @@ let rec kill_ancestors conf base included_self p nb_ind nb_fam =
       let cpl = foi base ifam in
       kill_ancestors conf base true (poi base (get_father cpl)) nb_ind nb_fam;
       kill_ancestors conf base true (poi base (get_mother cpl)) nb_ind nb_fam;
-      UpdateFamOk.effective_del base ifam (foi base ifam);
+      UpdateFamOk.effective_del base ifam ;
       incr nb_fam
   | None -> ()
   end;
-  if included_self then
-    let ip = get_iper p in
-    let warning _ = () in
-    let p = UpdateIndOk.effective_del base warning p in
-    patch_person base ip p; incr nb_ind
+  if included_self then begin
+    UpdateIndOk.effective_del base p ;
+    incr nb_ind
+  end

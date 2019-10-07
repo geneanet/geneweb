@@ -961,7 +961,6 @@ let effective_mod conf base sp =
   let pi = np.key_index in Update.update_related_pointers base pi ol nl; np
 
 let effective_add conf base sp =
-  let pi = Gwdb.insert_person base (Gwdb.empty_person base Gwdb.dummy_iper) in
   let fn = Util.translate_eval sp.first_name in
   let sn = Util.translate_eval sp.surname in
   let key = fn ^ " " ^ sn in
@@ -970,26 +969,19 @@ let effective_add conf base sp =
   patch_cache_info conf Util.cache_nb_base_persons
     (fun v -> let v = int_of_string v + 1 in string_of_int v);
   let created_p = ref [] in
+  let pi =
+    insert_person base (no_person dummy_iper) no_ascend no_union
+  in
   let np =
-    Futil.map_person_ps (Update.insert_person conf base "" created_p)
-      (Gwdb.insert_string base) {sp with key_index = pi}
+    Futil.map_person_ps
+      (Update.insert_person conf base "" created_p)
+      (Gwdb.insert_string base)
+      { sp with key_index = pi }
   in
-  patch_person base pi np;
-  let na = {parents = None; consang = Adef.fix (-1)} in
-  patch_ascend base pi na;
-  let nu = {family = [| |]} in
-  patch_union base pi nu;
-  np, na
-
-let array_except v a =
-  let rec loop i =
-    if i = Array.length a then a
-    else if a.(i) = v then
-      Array.append (Array.sub a 0 i)
-        (Array.sub a (i + 1) (Array.length a - i - 1))
-    else loop (i + 1)
-  in
-  loop 0
+  patch_person base pi np ;
+  patch_ascend base pi no_ascend ;
+  patch_union base pi no_union ;
+  np, no_ascend
 
 let update_relations_of_related base ip old_related =
   List.iter
@@ -1028,15 +1020,15 @@ let update_relations_of_related base ip old_related =
            (get_pevents p1) ([], false)
        in
        if rparents_are_different || pevents_are_different then
-         begin let p = gen_person_of_person p1 in
+         begin
+           let p = gen_person_of_person p1 in
            let rparents =
              if rparents_are_different then rparents else p.rparents
            in
            let pevents =
              if pevents_are_different then pevents else p.pevents
            in
-           patch_person base ip1
-             {p with rparents = rparents; pevents = pevents}
+           patch_person base ip1 {p with rparents ; pevents }
          end;
        let families = get_family p1 in
        for i = 0 to Array.length families - 1 do
@@ -1067,46 +1059,17 @@ let update_relations_of_related base ip old_related =
            let fevents =
              if fevents_are_different then fevents else fam.fevents
            in
-           patch_family base ifam
-             {fam with witnesses = witnesses; fevents = fevents}
+           patch_family base ifam { fam with witnesses ; fevents }
        done)
     old_related
 
-let effective_del base warning p =
-  let none = Gwdb.insert_string base "?" in
-  let empty = Gwdb.insert_string base "" in
+let effective_del base p =
   let ip = get_iper p in
-  begin match get_parents p with
-    Some ifam ->
-      let des = foi base ifam in
-      let des =
-        let children = array_except ip (get_children des) in
-        begin match CheckItem.sort_children base children with
-          Some (b, a) -> warning (ChangedOrderOfChildren (ifam, des, b, a))
-        | None -> ()
-        end;
-        {children = children}
-      in
-      patch_descend base ifam des;
-      let asc = {parents = None; consang = Adef.fix (-1)} in
-      patch_ascend base ip asc
-  | None -> ()
-  end;
   let old_rparents = rparents_of (get_rparents p) in
   let old_pevents = pwitnesses_of (get_pevents p) in
   let old = List.append old_rparents old_pevents in
   Update.update_related_pointers base ip old [];
-  {first_name = none; surname = none; occ = 0; image = empty;
-   public_name = empty; qualifiers = []; aliases = []; sex = get_sex p;
-   first_names_aliases = []; surnames_aliases = []; titles = [];
-   rparents = []; related = []; occupation = empty; access = IfTitles;
-   birth = Adef.cdate_None; birth_place = empty; birth_note = empty;
-   birth_src = empty; baptism = Adef.cdate_None; baptism_place = empty;
-   baptism_note = empty; baptism_src = empty; death = DontKnowIfDead;
-   death_place = empty; death_note = empty; death_src = empty;
-   burial = UnknownBurial; burial_place = empty; burial_note = empty;
-   burial_src = empty; pevents = []; notes = empty; psources = empty;
-   key_index = ip}
+  delete_person base ip
 
 let print_mod_ok conf base wl pgl p ofn osn oocc =
   let title _ =
@@ -1216,11 +1179,11 @@ let all_checks_person base p a u =
   let wl = List.sort_uniq compare !wl in
   List.iter
     (function
-       ChangedOrderOfChildren (ifam, _, _, after) ->
-         patch_descend base ifam {children = after}
-     | ChangedOrderOfPersonEvents (_, _, after) ->
-         patch_person base p.key_index {p with pevents = after}
-     | _ -> ())
+      | ChangedOrderOfChildren (ifam, _, _, after) ->
+        patch_descend base ifam { children = after }
+      | ChangedOrderOfPersonEvents (_, _, after) ->
+        patch_person base p.key_index { p with pevents = after }
+      | _ -> ())
     wl;
   wl
 
@@ -1307,13 +1270,11 @@ let print_del conf base =
       let old_related = get_related p in
       let op = Util.string_gen_person base (gen_person_of_person p) in
       update_relations_of_related base ip old_related;
-      let warning _ = () in
-      let p = effective_del base warning p in
-      patch_person base ip p;
+      effective_del base p ;
       if fn <> "?" && sn <> "?" then
         patch_cache_info conf Util.cache_nb_base_persons
           (fun v -> let v = int_of_string v - 1 in string_of_int v);
-      Notes.update_notes_links_db conf (NotesLinks.PgInd p.key_index) "";
+      Notes.update_notes_links_db conf (NotesLinks.PgInd (get_iper p)) "";
       Util.commit_patches conf base;
       let changed = U_Delete_person op in
       History.record conf base changed "dp";

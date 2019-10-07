@@ -8,7 +8,6 @@
     database
     dbdisk
     dutil
-    gwdb1
     gwdb1_internal
     outbase
     type
@@ -20,5 +19,5 @@
  (public_name geneweb.gwdb1)
  (libraries gwdb1_internal)
  (implements geneweb.gwdb.mli)
- (modules gwdb)
+ (modules gwdb_driver)
 )

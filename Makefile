@@ -90,7 +90,6 @@ GENERATED_FILES_DEP = \
 	benchmark/dune \
 	bin/distrib/dune \
 	lib/dune \
-	test/dune \
 
 ifdef API_D
 piqi:

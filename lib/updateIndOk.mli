@@ -4,9 +4,7 @@ open Config
 open Def
 open Gwdb
 
-val effective_del :
-  base -> (CheckItem.base_warning -> unit) -> person ->
-    (iper, iper, istr) gen_person
+val effective_del : base -> person -> unit
 val effective_mod :
   config -> base -> (iper, Update.key, string) gen_person -> (iper, iper, istr) gen_person
 val all_checks_person :

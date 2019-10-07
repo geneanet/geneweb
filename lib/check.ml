@@ -314,7 +314,7 @@ let check_base_aux base error warning changed_p =
   Printf.eprintf "check persons\n";
   let persons = Gwdb.ipers base in
   let len = Gwdb.Collection.length persons in
-  let year_tab = Gwdb.iper_marker persons (max_int, false) in
+  let year_tab = Marker.make (nb_of_persons base) (max_int, false) in
   ProgrBar.start ();
   Gwdb.Collection.iteri (fun i ip ->
     ProgrBar.run i len ;

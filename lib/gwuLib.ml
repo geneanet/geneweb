@@ -48,8 +48,7 @@ module Make (Select : Select) =
        * let fn = "?" in
        * let key = Name.lower fn ^ " #@# " ^ Name.lower sn in
        * Hashtbl.add ht_orig_occ key [0]; *)
-      let ipers = Gwdb.ipers base in
-      Gwdb.Collection.iter (fun ip ->
+      Gwdb.Collection.iter begin fun ip ->
         let p = poi base ip in
         let sn = sou base (get_surname p) in
         let fn = sou base (get_first_name p) in
@@ -65,8 +64,7 @@ module Make (Select : Select) =
               if List.mem occ l then Hashtbl.add ht_dup_occ ip occ
               else Hashtbl.replace ht_orig_occ key (occ :: l)
             with Not_found -> Hashtbl.add ht_orig_occ key [occ]
-        )
-        ipers ;
+        end (Gwdb.ipers base) ;
       Hashtbl.iter
         (fun key l -> Hashtbl.replace ht_orig_occ key (List.sort compare l))
         ht_orig_occ;
@@ -1553,7 +1551,7 @@ module Make (Select : Select) =
       | [] -> (fun _ -> false)
       | list ->
         let ifams = Gwdb.ifams base in
-        let mark = Gwdb.ifam_marker ifams NotScanned in
+        let mark = Marker.make (nb_of_families base) NotScanned in
         List.iter (mark_someone base mark) list;
         add_small_connex_components base mark;
         let len =
@@ -1623,14 +1621,13 @@ module Make (Select : Select) =
               x
       in
       let gen =
-        let ipers = Gwdb.ipers base in
-        let mark = Gwdb.iper_marker ipers false in
-        let mark_rel = Gwdb.iper_marker ipers false in
+        let mark = Marker.make (nb_of_persons base) false in
+        let mark_rel = Marker.make (nb_of_persons base) false in
         let (per_sel, fam_sel) =
           Select.functions base anc desc !surnames ancdesc !no_spouses_parents
             !censor !with_siblings !maxlev
         in
-        let fam_done = Gwdb.ifam_marker (Gwdb.ifams base) false in
+        let fam_done = Marker.make (nb_of_families base) false in
         {mark = mark; mark_rel = mark_rel; per_sel = per_sel;
          fam_sel = fam_sel; fam_done = fam_done; notes_pl_p = [];
          ext_files = []; notes_alias = notes_aliases in_dir;

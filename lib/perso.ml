@@ -172,8 +172,7 @@ let init_sosa_t conf base sosa_ref =
         let title _ = Wserver.printf "%s" (capitale (transl conf "error")) in
         Hutil.rheader conf title; print_base_loop conf base p
   in
-  let persons = Gwdb.ipers base in
-  let mark = Gwdb.iper_marker persons false in
+  let mark = Marker.make (nb_of_persons base) false in
   let last_zil = [get_iper sosa_ref, Sosa.one] in
   let sosa_ht = Hashtbl.create 5003 in
   let () =
@@ -286,8 +285,7 @@ let build_sosa_tree_ht conf base person =
   let () = load_ascends_array base in
   let () = load_couples_array base in
   let nb_persons = nb_of_persons base in
-  let ipers = Gwdb.ipers base in
-  let mark = Gwdb.iper_marker ipers false in
+  let mark = Marker.make (nb_of_persons base) false in
   (* Tableau qui va socker au fur et à mesure les ancêtres du person. *)
   (* Attention, on créé un tableau de la longueur de la base + 1 car on *)
   (* commence à l'indice 1 !                                            *)
@@ -693,7 +691,7 @@ let get_cremation_text conf p p_auth =
 
 let max_ancestor_level conf base ip max_lev =
   let x = ref 0 in
-  let mark = Gwdb.iper_marker (Gwdb.ipers base) false in
+  let mark = Marker.make (nb_of_persons base) false in
 #ifdef API
   (* Charge le cache des LIA. *)
   (* On limite à 10 le nombre de générations ascendantes à charger pour les LIA. *)
@@ -765,8 +763,8 @@ let make_desc_level_table conf base max_level p =
   in
   (* the table 'levt' may be not necessary, since I added 'flevt'; kept
      because '%max_desc_level;' is still used... *)
-  let levt = Gwdb.iper_marker (Gwdb.ipers base) infinite in
-  let flevt = Gwdb.ifam_marker (Gwdb.ifams base) infinite in
+  let levt = Marker.make (nb_of_persons base) infinite in
+  let flevt = Marker.make (nb_of_families base) infinite in
   let get = pget conf base in
   let ini_ip = get_iper p in
   let rec fill lev =
@@ -937,7 +935,7 @@ let get_all_generations conf base p =
       Some v -> v
     | None -> 0
   in
-  let mark = Gwdb.iper_marker (Gwdb.ipers base) Sosa.zero in
+  let mark = Marker.make (nb_of_persons base) Sosa.zero in
   let rec get_generations level gpll gpl =
     let gpll = gpl :: gpll in
     if level < max_level then
@@ -1318,7 +1316,7 @@ let build_surnames_list conf base v p =
       try int_of_string (List.assoc "max_ancestor_implex" conf.base_env)
       with _ -> 5
     in
-    Gwdb.iper_marker (Gwdb.ipers base) n
+    Marker.make (nb_of_persons base) n
   in
   let auth = conf.wizard || conf.friend in
   let add_surname sosa p surn dp =
@@ -1394,7 +1392,7 @@ let build_surnames_list conf base v p =
 (* ************************************************************************* *)
 let build_list_eclair conf base v p =
   let ht = Hashtbl.create 701 in
-  let mark = Gwdb.iper_marker (Gwdb.ipers base) false in
+  let mark = Marker.make (nb_of_persons base) false in
   (* Fonction d'ajout dans la Hashtbl. A la clé (surname, place) on associe *)
   (* la personne (pour l'interprétation dans le template), la possible date *)
   (* de début, la possible date de fin, la liste des personnes/évènements.  *)
@@ -4058,7 +4056,7 @@ and eval_str_person_field conf base env (p, p_auth as ep) =
   | "mark_descendants" ->
       begin match get_env "desc_mark" env with
         Vdmark r ->
-          let tab = Gwdb.iper_marker (Gwdb.ipers base) false in
+          let tab = Marker.make (nb_of_persons base) false in
           let rec mark_descendants len p =
             let i = (get_iper p) in
             if Gwdb.Marker.get tab i then ()
@@ -4825,7 +4823,7 @@ let print_foreach conf base print_ast eval_expr =
           end
       | _ -> raise Not_found
     in
-    let mark = Gwdb.iper_marker (Gwdb.ipers base) Sosa.zero in
+    let mark = Marker.make (nb_of_persons base) Sosa.zero in
     let rec loop gpl i n =
       if i > max_level then ()
       else
@@ -4851,7 +4849,7 @@ let print_foreach conf base print_ast eval_expr =
         Vint n -> n
       | _ -> 0
     in
-    let mark = Gwdb.iper_marker (Gwdb.ipers base) Sosa.zero in
+    let mark = Marker.make (nb_of_persons base) Sosa.zero in
     let rec loop gpl i =
       if i > max_level then ()
       else

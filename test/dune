@@ -2,12 +2,12 @@
  (name dummy_gwdb)
  (libraries geneweb.def)
  (implements geneweb.gwdb.mli)
- (modules gwdb)
+ (modules gwdb_driver)
 )
 
 (executable
   (name test)
-  (libraries %%%SOSA_PKG%%% dummy_gwdb geneweb.wserver geneweb oUnit)
+  (libraries geneweb.sosa-zarith dummy_gwdb geneweb.wserver geneweb oUnit)
   (modules test test_place test_sosa test_utils)
 )
 

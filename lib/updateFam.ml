@@ -39,10 +39,10 @@ let string_family_of conf base ifam =
   in
   let scpl =
     Futil.map_couple_p conf.multi_parents (person_key base)
-      (gen_couple_of_couple fam)
+      (gen_couple_of_family fam)
   in
   let sdes =
-    Futil.map_descend_p (person_key base) (gen_descend_of_descend fam)
+    Futil.map_descend_p (person_key base) (gen_descend_of_family fam)
   in
   sfam, scpl, sdes
 

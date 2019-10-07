@@ -153,8 +153,8 @@ type node =
 
 (* FIXME: remove all these Aray.to_list *)
 let get_shortest_path_relation conf base ip1 ip2 (excl_faml : ifam list) =
-  let mark_per = Gwdb.iper_marker (Gwdb.ipers base) NotVisited in
-  let mark_fam = Gwdb.ifam_marker (Gwdb.ifams base) false in
+  let mark_per = Marker.make (nb_of_persons base) NotVisited in
+  let mark_fam = Marker.make (nb_of_families base) false in
   List.iter
     (fun i -> Gwdb.Marker.set mark_fam i true)
     excl_faml;

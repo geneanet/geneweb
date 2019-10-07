@@ -90,3 +90,9 @@ val rm : string -> unit
 (** [string_of_int_sep "," 1000000] is ["1,000,000"]
 *)
 val string_of_int_sep : string -> int -> string
+
+(** [array_except value array]
+    Return a new array containing all the elements
+    from [array] except the first occurence of [value]
+ *)
+val array_except : 'a -> 'a array -> 'a array

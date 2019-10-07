@@ -47,7 +47,7 @@ let make_dist_tab conf base ia maxlev =
         (struct type t = iper let leq x y = not (tsort_leq tstab x y) end)
     in
     let default = {dmin = infinity; dmax = 0; mark = false} in
-    let dist = Gwdb.iper_marker (Gwdb.ipers base) default in
+    let dist = Marker.make (Gwdb.nb_of_persons base) default in
     let q = ref Pq.empty in
     let add_children ip =
       let u = pget conf base ip in

@@ -189,7 +189,7 @@ let select_ancestors base per_tab fam_tab with_siblings flag iper =
 
 let select_descendants base per_tab fam_tab no_spouses_parents flag iper
     maxlev =
-  let mark = Gwdb.ifam_marker (Gwdb.ifams base) false in
+  let mark = Marker.make (nb_of_families base) false in
   let select_family ifam cpl =
     Gwdb.Marker.set fam_tab ifam (Gwdb.Marker.get fam_tab ifam lor flag) ;
     let i = get_father cpl in
@@ -221,7 +221,7 @@ let select_descendants base per_tab fam_tab no_spouses_parents flag iper
 
 let select_descendants_ancestors base per_tab fam_tab ip =
   let new_mark = let r = ref 0 in fun () -> incr r; !r in
-  let tab = Gwdb.iper_marker (Gwdb.ipers base) (new_mark ()) in
+  let tab = Marker.make (nb_of_persons base) (new_mark ()) in
   let anc_mark = new_mark () in
   let anclist =
     let rec loop list ip =
@@ -302,8 +302,8 @@ let select_ancestors_descendants base anc desc ancdesc no_spouses_parents
   match anc, desc, ancdesc with
     None, None, None ->
       if censor <> 0 || censor = -1 then
-        let per_tab = Gwdb.iper_marker (Gwdb.ipers base) 0 in
-        let fam_tab = Gwdb.ifam_marker (Gwdb.ifams base) 0 in
+        let per_tab = Marker.make (nb_of_persons base) 0 in
+        let fam_tab = Marker.make (nb_of_families base) 0 in
         let _ =
           if censor = -1 then restrict_base base per_tab fam_tab 1
           else censor_base base per_tab fam_tab 1 threshold
@@ -312,8 +312,8 @@ let select_ancestors_descendants base anc desc ancdesc no_spouses_parents
         (fun i -> Gwdb.Marker.get fam_tab i = 0)
       else (fun _ -> true), (fun _ -> true)
   | None, None, Some iadper ->
-      let per_tab = Gwdb.iper_marker (Gwdb.ipers base) 0 in
-      let fam_tab = Gwdb.ifam_marker (Gwdb.ifams base) 0 in
+      let per_tab = Marker.make (nb_of_persons base) 0 in
+      let fam_tab = Marker.make (nb_of_families base) 0 in
       let _ =
         if censor = -1 then restrict_base base per_tab fam_tab 4
         else if censor <> 0 then censor_base base per_tab fam_tab 4 threshold
@@ -322,8 +322,8 @@ let select_ancestors_descendants base anc desc ancdesc no_spouses_parents
       (fun i -> let fl = Gwdb.Marker.get per_tab i in fl < 4 && fl > 0),
       (fun i -> let fl = Gwdb.Marker.get fam_tab i in fl < 4 && fl > 0)
   | _ ->
-      let per_tab = Gwdb.iper_marker (Gwdb.ipers base) 0 in
-      let fam_tab = Gwdb.ifam_marker (Gwdb.ifams base) 0 in
+      let per_tab = Marker.make (nb_of_persons base) 0 in
+      let fam_tab = Marker.make (nb_of_families base) 0 in
       let _ =
         if censor = -1 then restrict_base base per_tab fam_tab 4
         else if censor <> 0 then censor_base base per_tab fam_tab 4 threshold
@@ -349,8 +349,8 @@ let select_ancestors_descendants base anc desc ancdesc no_spouses_parents
 let select_surnames base surnames no_spouses_parents
   : (iper -> bool) * (ifam -> bool)
  =
-  let per_tab = Gwdb.iper_marker (Gwdb.ipers base) false in
-  let fam_tab = Gwdb.ifam_marker (Gwdb.ifams base) false in
+  let per_tab = Marker.make (nb_of_persons base) false in
+  let fam_tab = Marker.make (nb_of_families base) false in
   List.iter (select_surname base per_tab fam_tab no_spouses_parents) surnames;
   (fun i -> Gwdb.Marker.get per_tab i),
   (fun i -> Gwdb.Marker.get fam_tab i)

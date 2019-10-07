@@ -3,5 +3,5 @@
  (public_name geneweb.gwdb.mli)
  (wrapped false)
  (libraries geneweb.def)
- (virtual_modules gwdb)
+ (virtual_modules gwdb_driver)
 )
