@@ -425,3 +425,14 @@ let string_of_int_sep sep x =
       (0, 0) digits
   in
   Bytes.unsafe_to_string s
+
+let rec list_compare cmp l1 l2 =
+  match l1, l2 with
+  | x1 :: l1, x2 :: l2 -> begin
+      match cmp x1 x2 with
+      | 0 -> list_compare cmp l1 l2
+      | x -> x
+    end
+  | [], [] -> 0
+  | [], _ -> -1
+  | _, [] -> 1

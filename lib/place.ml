@@ -3,14 +3,13 @@
 open Gwdb
 open Util
 
-(** Transform ["[foo-bar] - boobar (baz)"] into ["foo-bar, boobar (baz)"] *)
-let normalize s =
+let suburb_aux sub nosub s =
   let len = String.length s in
-  if len = 0 then ""
+  if len = 0 then nosub ""
   else begin
     if String.unsafe_get s 0 = '[' then begin
       match String.index_opt s ']' with
-      | None -> s
+      | None -> nosub s
       | Some i ->
         match
           let rec loop b i =
@@ -21,16 +20,55 @@ let normalize s =
               | _ -> if b then Some i else None
           in loop false (i + 1)
         with
-        | None -> s
-        | Some j ->
-          let b = Bytes.create (len - j + i + 1) in
-          Bytes.blit_string s 1 b 0 (i - 1) ;
-          Bytes.unsafe_set b (i - 1) ',' ;
-          Bytes.unsafe_set b i ' ' ;
-          Bytes.blit_string s j b (i + 1) (len - j) ;
-          Bytes.unsafe_to_string b
-    end else s
+        | None -> nosub s
+        | Some j -> sub s len i j
+    end else nosub s
   end
+
+(** [split_suburb "[foo-bar] - boobar (baz)"] is [9"foo-bar", "boobar (baz)")] *)
+let split_suburb =
+  suburb_aux
+    begin fun s len i j -> String.sub s 1 (i - 1), String.sub s j (len - j) end
+    begin fun s -> "", s end
+
+(** [only_suburb "[foo-bar] - boobar (baz)"] is ["foo-bar"]
+    [only_suburb "boobar (baz)"] is [""] *)
+let only_suburb =
+  suburb_aux
+    begin fun s _len i _j -> String.sub s 1 (i - 1) end
+    begin fun _ -> "" end
+
+(** [without_suburb "[foo-bar] - boobar (baz)"] is ["boobar (baz)"]
+    [without_suburb "boobar (baz)"] is ["boobar (baz)"] *)
+let without_suburb =
+  suburb_aux
+    begin fun s len _i j -> String.sub s j (len - j) end
+    begin fun s -> s end
+
+(** Transform ["[foo-bar] - boobar (baz)"] into ["foo-bar, boobar (baz)"] *)
+let normalize =
+  suburb_aux
+    begin fun s len i j ->
+      let b = Bytes.create (len - j + i + 1) in
+      Bytes.blit_string s 1 b 0 (i - 1) ;
+      Bytes.unsafe_set b (i - 1) ',' ;
+      Bytes.unsafe_set b i ' ' ;
+      Bytes.blit_string s j b (i + 1) (len - j) ;
+      Bytes.unsafe_to_string b
+    end
+    begin fun s -> s end
+
+let compare_places s1 s2 =
+  let ss1, s1 = split_suburb s1 in
+  let ss2, s2 = split_suburb s2 in
+  match
+    Mutil.list_compare
+      Gutil.alphabetic_order
+      (String.split_on_char ',' s1)
+      (String.split_on_char ',' s2)
+  with
+  | 0 -> Gutil.alphabetic_order ss1 ss2
+  | x -> x
 
 (* [String.length s > 0] is always true because we already tested [is_empty_string].
    If it is not true, then the base should be cleaned. *)

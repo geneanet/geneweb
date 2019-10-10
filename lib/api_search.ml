@@ -635,7 +635,7 @@ let get_field mode =
   | _ -> failwith "get_field"
 
 (** [ini] must be in the form of [Name.lower @@ Mutil.tr '_' ' ' ini]
-    Assume that [list] is already sorted.
+    Assume that [list] is already sorted, but reversed.
 *)
 let complete_with_dico conf nb max mode ini list =
   let reduce_dico mode ignored format list =
@@ -644,7 +644,7 @@ let complete_with_dico conf nb max mode ini list =
       | hd :: tl ->
         let acc =
           let k =  Mutil.tr '_' ' ' hd in
-          let k = if mode <> `subdivision then UpdateData.remove_suburb k else k in
+          let k = if mode <> `subdivision then Place.without_suburb k else k in
           if string_start_with ini (Name.lower k) then begin
             let hd =
               if format <> []
@@ -689,29 +689,29 @@ let complete_with_dico conf nb max mode ini list =
           (String.split_on_char ',' s)
     in
     let dico_place = reduce_dico mode list format (load_dico_lieu conf mode) in
-    List.append list (List.sort Gutil.alphabetic_order dico_place)
-  | _ -> list
+    List.rev_append list (List.sort Place.compare_places dico_place)
+  | _ -> List.rev list
 
 let search_auto_complete conf base mode place_mode max n =
-  let aux data =
+  let aux data compare =
     let conf = { conf with env = ("data", data) :: conf.env } in
     UpdateData.get_all_data conf base
     |> List.rev_map (sou base)
-    |> List.sort Gutil.alphabetic_order
+    |> List.sort compare
   in
   match mode with
 
   | `place ->
-    let list = aux "place" in
+    let list = aux "place" Place.compare_places in
     let nb = ref 0 in
     let ini = Name.lower @@ Mutil.tr '_' ' ' n in
     let reduce_perso list =
       let rec loop acc = function
-        | [] -> List.rev acc
+        | [] -> acc
         | hd :: tl ->
           let hd' =
             if place_mode <> Some `subdivision
-            then UpdateData.remove_suburb hd
+            then Place.without_suburb hd
             else hd
           in
           let acc =
@@ -726,7 +726,7 @@ let search_auto_complete conf base mode place_mode max n =
     complete_with_dico conf nb max place_mode ini (reduce_perso list)
 
   | `source ->
-    let list = aux "src" in
+    let list = aux "src" Gutil.alphabetic_order in
     let nb = ref 0 in
     let ini = Name.lower @@ Mutil.tr '_' ' ' n in
     let rec reduce acc = function

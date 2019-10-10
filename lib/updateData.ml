@@ -115,29 +115,10 @@ let get_person_from_data conf base =
     (fun istr pset acc -> (istr, PersSet.elements pset) :: acc)
     acc []
 
-
-(* ********************************************************************* *)
-(*  [Fonc] remove_suburb : string -> string                              *)
-(** [Description] : Enlève le lieu-dit (de la forme
-      "[Lieu-dit] - Commune...") d'une chaîne de caractères.
-    [Args] :
-      - s : chaîne de caractères contenant le lieu-dit.
-    [Retour] : Retourne la chaîne de caractères dont le lieu-dit a été
-      enlevé.
-    [Rem] : Non exporté en clair hors de ce module.                      *)
-(* ********************************************************************* *)
-let remove_suburb s =
-  let re = Str.regexp "^\\[.+\\] - " in
-  let matched = Str.string_match re s 0 in
-  if matched then
-    let sub_start = Str.match_end () in
-    String.sub s sub_start (String.length s - sub_start)
-  else s
-
 let combine_by_ini ini list =
   let len = Util.str_length ini + 1 in
   Util.groupby
-    ~key:(fun (_, s) -> AllnDisplay.ini len @@ remove_suburb s)
+    ~key:(fun (_, s) -> AllnDisplay.ini len @@ Place.without_suburb s)
     ~value:(fun x -> x)
     list
 
@@ -544,7 +525,7 @@ let build_list conf base =
   if ini <> "" then
     Util.filter_map begin fun istr ->
       let str = sou base istr in
-      if Mutil.start_with ~wildcard:true ini 0 @@ remove_suburb str
+      if Mutil.start_with ~wildcard:true ini 0 @@ Place.without_suburb str
       then Some (istr, str)
       else None
     end list
@@ -576,7 +557,7 @@ let build_list_short conf list =
     let ini_list =
       List.rev_map
         (fun (_, s) ->
-           let s = remove_suburb s in
+           let s = Place.without_suburb s in
            if String.length s > len then
              String.sub s 0 (index_of_next_char s len)
            else s ^ String.make (len + 1 - String.length s) '_')
@@ -719,8 +700,8 @@ let print_foreach conf print_ast _eval_expr =
         Vlist_value l ->
           List.sort
             (fun (_, s1) (_, s2) ->
-               let rss1 = remove_suburb s1 in
-               let rss2 = remove_suburb s2 in
+               let rss1 = Place.without_suburb s1 in
+               let rss2 = Place.without_suburb s2 in
                if rss1 = rss2 then Gutil.alphabetic_order s1 s2
                else Gutil.alphabetic_order rss1 rss2)
             l

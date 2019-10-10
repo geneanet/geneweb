@@ -24,6 +24,11 @@ let () =
     [ "aaaaaaaaaa" ; "bbbbbbbbbb" ; "abbbbbbbb" ; "bbbbbbbbba" ; "ababababab" ]
 ; bench "Mutil.contains" (Mutil.contains "foobarbaz")
     [ "foo" ; "bar" ; "baz" ; "foobarbaz!" ]
+; bench "Place.compare_places" (Place.compare_places "[foo-bar] - baz, boobar")
+    [ "[foo-bar] - baz, boobar"
+    ; "[foo-bar] - baz, boobar, barboo"
+    ; "baz, boobar"
+    ]
 
 ; begin match Sys.getenv "BENCH_BASE" with
   | exception Not_found -> ()

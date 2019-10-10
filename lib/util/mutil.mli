@@ -90,3 +90,8 @@ val rm : string -> unit
 (** [string_of_int_sep "," 1000000] is ["1,000,000"]
 *)
 val string_of_int_sep : string -> int -> string
+
+(** [list_compare cmp l1 l2]
+    Comparison function for lists, using [cmp] to compare each elements
+*)
+val list_compare : ('a -> 'a -> int) -> 'a list -> 'a list -> int
