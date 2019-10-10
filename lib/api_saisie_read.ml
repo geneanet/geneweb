@@ -81,10 +81,7 @@ let short_dates_text conf base p =
          short_prec_year_text conf b ^ "-"
        | _ -> short_prec_year_text conf b )
     | (None, Some (Dgreg (d, _))) ->
-      (match get_death p with
-       | Death (_, _) | DeadDontKnowWhen | DeadYoung ->
-         DateDisplay.death_symbol conf ^ short_prec_year_text conf d
-       | _ -> "" )
+      DateDisplay.death_symbol conf ^ short_prec_year_text conf d
     | (None, None) ->
       (* La personne peut être décédée mais ne pas avoir de date. *)
       (match get_death p with
