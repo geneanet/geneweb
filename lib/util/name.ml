@@ -8,6 +8,18 @@ let forbidden_char = [':'; '@'; '#'; '='; '$']
 
 let nbc = Unidecode.nbc
 
+(* TODO: replace with Unidecode.nbc
+   when version constraint [= 0.2.0] will be removed *)
+let nbc c =
+  if Char.code c < 0b10000000 then 1
+  else if Char.code c < 0b11000000 then invalid_arg "nbc"
+  else if Char.code c < 0b11100000 then 2
+  else if Char.code c < 0b11110000 then 3
+  else if Char.code c < 0b11111000 then 4
+  else if Char.code c < 0b11111100 then 5
+  else if Char.code c < 0b11111110 then 6
+  else invalid_arg "nbc"
+
 let unaccent_utf_8 lower s i =
   let fns =
     if lower then fun n s -> String.lowercase_ascii s, n
