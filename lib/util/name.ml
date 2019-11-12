@@ -9,10 +9,16 @@ let forbidden_char = [':'; '@'; '#'; '='; '$']
 let nbc = Unidecode.nbc
 
 let unaccent_utf_8 lower s i =
+  let fns =
+    if lower then fun n s -> String.lowercase_ascii s, n
+    else fun n s -> s, n
+  in
+  let fnc =
+    if lower then fun n c -> String.make 1 @@ Char.lowercase_ascii c, n
+    else fun n c -> String.make 1 c, n
+  in
   let s, n =
-    Unidecode.decode
-      (fun n s -> s, n)
-      (fun n c -> String.make 1 c, n)
+    Unidecode.decode fns fnc
       (fun n -> String.sub s i (n - i), n)
       s i (String.length s)
   in
