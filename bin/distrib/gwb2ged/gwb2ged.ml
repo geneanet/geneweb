@@ -103,6 +103,17 @@ let find_br s ini_i =
     @param i specifies the last char index (index to s -- one byte
     char) *)
 let rec display_note_aux oc tagn s len i =
+  (* FIXME: Rewrite this so we can get rid of this custom [nbc] *)
+  let nbc c =
+    if Char.code c < 0b10000000 then 1
+    else if Char.code c < 0b11000000 then -1
+    else if Char.code c < 0b11100000 then 2
+    else if Char.code c < 0b11110000 then 3
+    else if Char.code c < 0b11111000 then 4
+    else if Char.code c < 0b11111100 then 5
+    else if Char.code c < 0b11111110 then 6
+    else -1
+  in
   let j = ref i in
   (* read wide char (case charset UTF-8) or char (other charset) in s string*)
   let rec output_onechar () =
@@ -110,7 +121,7 @@ let rec display_note_aux oc tagn s len i =
     (* non wide char / UTF-8 char *)
     else if !charset <> Utf8 then output_char oc s.[i]
     (* 1 to 4 bytes UTF-8 wide char *)
-    else if i = !j || Name.nbc s.[!j] = -1 then begin
+    else if i = !j || nbc s.[!j] = -1 then begin
       output_char oc s.[!j];
       incr j;
       output_onechar ()

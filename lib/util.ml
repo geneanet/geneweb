@@ -122,7 +122,7 @@ let rec capitale_utf_8 s =
       | _ -> s
 
 let index_of_next_char s i =
-  min (String.length s) (i + max 1 (Name.nbc s.[i]))
+  min (String.length s) (i + Name.nbc s.[i])
 
 let str_length s =
   let len = String.length s in

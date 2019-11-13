@@ -1126,7 +1126,7 @@ let capitalize_word s =
           copy (i + 1) (Buff.store len c) (particle s (i + 1))
         else
           let nbc = Name.nbc s.[i] in
-          if nbc = 1 || nbc < 0 || i + nbc > String.length s then
+          if nbc = 1 || i + nbc > String.length s then
             copy (i + 1) (Buff.store len s.[i]) true
           else
             let s = String.sub s i nbc in
@@ -1160,7 +1160,7 @@ let uppercase_word s =
           copy (i + 1) (Buff.store len c) (particle s (i + 1))
         else
           let nbc = Name.nbc s.[i] in
-          if nbc = 1 || nbc < 0 || i + nbc > String.length s then
+          if nbc = 1 || i + nbc > String.length s then
             copy (i + 1) (Buff.store len s.[i]) false
           else
             let s = String.sub s i nbc in
