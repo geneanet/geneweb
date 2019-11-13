@@ -27,12 +27,8 @@ let unaccent_utf_8 lower s i =
     if lower then fun n c -> String.make 1 @@ Char.lowercase_ascii c, n
     else fun n c -> String.make 1 c, n
   in
-  let s, n =
-    Unidecode.decode fns fnc
-      (fun n -> String.sub s i (n - i), n)
-      s i (String.length s)
-  in
-  if lower then String.lowercase_ascii s, n else s, n
+  Unidecode.decode
+    fns fnc (fun n -> String.sub s i (n - i), n) s i (String.length s)
 
 let next_chars_if_equiv s i t j =
   if i >= String.length s || j >= String.length t then None
