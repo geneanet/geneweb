@@ -781,7 +781,7 @@ let print_base_warnings conf base =
   let warnings = ref [] in
   Check.check_base base
     (Api_warnings.set_list errors) (Api_warnings.set_list warnings)
-    (fun _ -> true) (fun _ -> ()) false;
+    (fun _ -> ()) ;
   (* On rend la liste unique, parce qu'il se peut qu'un warning soit *)
   (* levé par plusieurs fonctions différents selon le context.       *)
   let warnings =

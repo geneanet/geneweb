@@ -11,7 +11,5 @@ val check_base
   : base
   -> (CheckItem.base_error -> unit)
   -> (CheckItem.base_warning -> unit)
-  -> (iper -> bool)
   -> (iper * person * Def.sex option * relation list option -> unit)
-  -> bool
   -> unit

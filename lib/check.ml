@@ -208,77 +208,6 @@ let print_base_warning oc base =
   | YoungForMarriage (p, a) ->
       Printf.fprintf oc "%s married at age %d\n" (designation base p) a.year
 
-type stats =
-  { mutable men : int;
-    mutable women : int;
-    mutable neutre : int;
-    mutable noname : int;
-    mutable oldest_father : int * person;
-    mutable oldest_mother : int * person;
-    mutable youngest_father : int * person;
-    mutable youngest_mother : int * person;
-    mutable oldest_dead : int * person;
-    mutable oldest_still_alive : int * person }
-
-let birth_year p =
-  match Adef.od_of_cdate (get_birth p) with
-    Some d ->
-      begin match d with
-        Dgreg ({year = y; prec = Sure}, _) -> Some y
-      | _ -> None
-      end
-  | _ -> None
-
-let death_year current_year p =
-  match get_death p with
-    Death (_, d) ->
-      begin match Adef.date_of_cdate d with
-        Dgreg ({year = y; prec = Sure}, _) -> Some y
-      | _ -> None
-      end
-  | NotDead -> Some current_year
-  | _ -> None
-
-let update_stats base current_year s p =
-  begin match get_sex p with
-    Male -> s.men <- s.men + 1
-  | Female -> s.women <- s.women + 1
-  | Neuter -> s.neutre <- s.neutre + 1
-  end;
-  if p_first_name base p = "?" && p_surname base p = "?" then
-    s.noname <- s.noname + 1;
-  begin match birth_year p, death_year current_year p with
-    Some y1, Some y2 ->
-      let age = y2 - y1 in
-      if age > fst s.oldest_dead && get_death p <> NotDead then
-        s.oldest_dead <- age, p;
-      if age > fst s.oldest_still_alive && get_death p = NotDead then
-        s.oldest_still_alive <- age, p
-  | _ -> ()
-  end;
-  match birth_year p, get_parents p with
-    Some y2, Some ifam ->
-      let cpl = foi base ifam in
-      begin match birth_year (poi base (get_father cpl)) with
-        Some y1 ->
-          let age = y2 - y1 in
-          if age > fst s.oldest_father then
-            s.oldest_father <- age, poi base (get_father cpl);
-          if age < fst s.youngest_father then
-            s.youngest_father <- age, poi base (get_father cpl)
-      | _ -> ()
-      end;
-      begin match birth_year (poi base (get_mother cpl)) with
-        Some y1 ->
-          let age = y2 - y1 in
-          if age > fst s.oldest_mother then
-            s.oldest_mother <- age, poi base (get_mother cpl);
-          if age < fst s.youngest_mother then
-            s.youngest_mother <- age, poi base (get_mother cpl)
-      | _ -> ()
-      end
-  | _ -> ()
-
 let min_year_of p =
   match Adef.od_of_cdate (get_birth p) with
     Some (Dgreg (d, _)) -> Some d.year
@@ -310,7 +239,7 @@ let rec check_ancestors base warning year year_tab ip ini_p =
       f get_mother
     | None -> ()
 
-let check_base_aux base error warning changed_p =
+let check_base base error warning changed_p =
   Printf.eprintf "check persons\n";
   let persons = Gwdb.ipers base in
   let len = Gwdb.Collection.length persons in
@@ -337,43 +266,3 @@ let check_base_aux base error warning changed_p =
     ) families ;
   ProgrBar.finish ();
   Consang.check_noloop base error
-
-let check_base base error warning def changed_p pr_stats =
-  let s =
-    let y = 1000, poi base Gwdb.dummy_iper in
-    let o = 0, poi base Gwdb.dummy_iper in
-    {men = 0; women = 0; neutre = 0; noname = 0; oldest_father = o;
-     oldest_mother = o; youngest_father = y; youngest_mother = y;
-     oldest_dead = o; oldest_still_alive = o}
-  in
-  let current_year = (Unix.localtime (Unix.time ())).Unix.tm_year + 1900 in
-  check_base_aux base error warning changed_p;
-  Gwdb.Collection.iter (fun i ->
-    let p = poi base i in
-    if not (def i) then Printf.printf "Undefined: %s\n" (designation base p);
-    if pr_stats then update_stats base current_year s p;
-    flush stdout
-    ) (Gwdb.ipers base) ;
-  if pr_stats then
-    begin
-      Printf.printf "\n";
-      Printf.printf "%d men\n" s.men;
-      Printf.printf "%d women\n" s.women;
-      Printf.printf "%d unknown sex\n" s.neutre;
-      Printf.printf "%d unnamed\n" s.noname;
-      Printf.printf "Oldest: %s, %d\n" (designation base (snd s.oldest_dead))
-        (fst s.oldest_dead);
-      Printf.printf "Oldest still alive: %s, %d\n"
-        (designation base (snd s.oldest_still_alive))
-        (fst s.oldest_still_alive);
-      Printf.printf "Youngest father: %s, %d\n"
-        (designation base (snd s.youngest_father)) (fst s.youngest_father);
-      Printf.printf "Youngest mother: %s, %d\n"
-        (designation base (snd s.youngest_mother)) (fst s.youngest_mother);
-      Printf.printf "Oldest father: %s, %d\n"
-        (designation base (snd s.oldest_father)) (fst s.oldest_father);
-      Printf.printf "Oldest mother: %s, %d\n"
-        (designation base (snd s.oldest_mother)) (fst s.oldest_mother);
-      Printf.printf "\n";
-      flush stdout
-    end
