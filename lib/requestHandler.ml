@@ -1214,9 +1214,10 @@ let defaultHandler : handler =
       Api.print_all_families conf base
     end
 
-  ; api_base_warnings = begin fun _self conf base ->
-      if conf.wizard || conf.friend     (* Pour les flex, on autorise en mode friend. *)
+  ; api_base_warnings = begin fun self conf base ->
+      if conf.wizard
       then Api.print_base_warnings conf base
+      else self.incorrect_request self conf base
     end
 
   ; api_close_persons = begin fun _self conf base ->
