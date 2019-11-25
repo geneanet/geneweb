@@ -18,12 +18,20 @@ val merge_events :
   ('a -> 'string event_name) -> ('a -> Adef.cdate) -> 'a list -> 'a list ->
     'a list
 
-val person :
-  base -> (base_warning -> unit) -> person ->
-    (iper * person * Def.sex option * relation list option) list option
+val person
+  : ?onchange:bool
+  -> base
+  -> (base_warning -> unit)
+  -> person
+  -> (iper * person * Def.sex option * relation list option) list option
 
-val family :
-  base -> (base_warning -> unit) -> ifam -> family -> unit
+val family
+  : ?onchange:bool
+  -> base
+  -> (base_warning -> unit)
+  -> ifam
+  -> family
+  -> unit
 
 val reduce_family :
   base -> (base_warning -> unit) -> ifam -> family -> unit
