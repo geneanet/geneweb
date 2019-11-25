@@ -798,31 +798,19 @@ let print_base_warnings conf base =
     in
     loop !warnings []
   in
-  let base_loop = has_base_loop conf base in
-  let () = Perso.build_sosa_ht conf base in
-  let () = load_image_ht conf in
+  let base_loop =
+    List.exists (function OwnAncestor _ -> true | _ -> false) !errors
+  in
+  Perso.build_sosa_ht conf base ;
+  load_image_ht conf ;
   List.iter
     (Api_warnings.add_error_to_piqi_warning_list
        conf base base_loop Perso.get_sosa_person true)
-    !errors;
+    !errors ;
   List.iter
     (Api_warnings.add_warning_to_piqi_warning_list
        conf base base_loop Perso.get_sosa_person true)
-    warnings;
-  (* On propage les modifications pour les warnings ChangedOrderOf... *)
-  List.iter
-    (fun warn ->
-      (match warn with
-      | ChangedOrderOfChildren (ifam, _, _, after) ->
-          patch_descend base ifam {children = after}
-      | ChangedOrderOfMarriages (p, _, after) ->
-          patch_union base (get_iper p) {family = after}
-      | _ -> ()))
-    warnings;
-  (* Attention, les FLEX peuvent aussi faire un calcul de warning, *)
-  (* mais on n'applique pas la modification de la base.            *)
-  if conf.wizard then Util.commit_patches conf base
-  else ();
+    warnings ;
   let data =
     if filters.nb_results then
       let len = List.length !errors + List.length warnings in
