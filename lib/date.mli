@@ -42,6 +42,11 @@ exception Not_comparable
 *)
 val compare_dmy : ?strict:bool -> dmy -> dmy -> int
 
+(** [compare_dmy_opt ?strict d1 d2]
+    Same as [compare_dmy], but do not raise an exception
+*)
+val compare_dmy_opt : ?strict:bool -> dmy -> dmy -> int option
+
 (** [compare_date d1 d2]
     If both [d1] and [d2] are [Dgreg] date, uses [compare_dmy]
     to compare them.
