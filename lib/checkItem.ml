@@ -17,6 +17,7 @@ let max_father_age = 70
 let max_mother_age = 55
 let lim_date_marriage = 1850
 let min_age_marriage = 13
+let max_age_marriage = 100
 let average_marriage_age = 20
 
 let strictly_before_dmy d1 d2 =
@@ -292,27 +293,31 @@ let check_difference_age_between_cpl base warning ifath imoth =
 let check_normal_marriage_date_for_someone base warning witn fam ip =
   let p = poi base ip in
   match Adef.od_of_cdate (get_marriage fam) with
-    Some (Dgreg (g2, _) as d2) ->
-      begin match Adef.od_of_cdate (get_birth p) with
-        Some (Dgreg (g1, _) as d1) ->
-          if strictly_before d2 d1 then
-            if witn then warning (WitnessDateBeforeBirth p)
-            else warning (MarriageDateBeforeBirth p)
-          else if
-            not witn && g2.year > lim_date_marriage &&
-            (Date.time_elapsed g1 g2).year < min_age_marriage
-          then
-            warning (YoungForMarriage (p, Date.time_elapsed g1 g2))
+  | Some (Dgreg (g2, _) as d2) ->
+    begin match Adef.od_of_cdate (get_birth p) with
+      | Some (Dgreg (g1, _) as d1) ->
+        if strictly_before d2 d1
+        then
+          if witn then warning (WitnessDateBeforeBirth p)
+          else warning (MarriageDateBeforeBirth p)
+        else
+        if not witn && g2.year > lim_date_marriage
+        then
+          let e = Date.time_elapsed g1 g2 in
+          if e.year < min_age_marriage
+          then warning (YoungForMarriage (p, e))
+          else if e.year > max_age_marriage
+          then warning (OldForMarriage (p, e))
       | _ -> ()
-      end;
-      begin match get_death p with
+    end;
+    begin match get_death p with
         Death (_, d3) ->
-          let d3 = Adef.date_of_cdate d3 in
-          if strictly_after d2 d3 then
-            if witn then warning (WitnessDateAfterDeath p)
-            else warning (MarriageDateAfterDeath p)
+        let d3 = Adef.date_of_cdate d3 in
+        if strictly_after d2 d3 then
+          if witn then warning (WitnessDateAfterDeath p)
+          else warning (MarriageDateAfterDeath p)
       | _ -> ()
-      end
+    end
   | _ -> ()
 
 
@@ -729,6 +734,7 @@ let check_witness_fevents base warning (_ifam, fam) =
     | _ -> ()
   end (get_fevents fam)
 
+(* FIXME: remove this and use (check_normal_marriage_date_for_someone base warning witn fam ip)? *)
 let check_marriage_age base warning (_ifam, fam) ip =
   let p = poi base ip in
   let rec loop = function
