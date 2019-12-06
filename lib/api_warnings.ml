@@ -46,6 +46,7 @@ let undefined_sex = ref []
 let witness_date_after_death = ref []
 let witness_date_before_birth = ref []
 let young_for_marriage = ref []
+let old_for_marriage = ref []
 let old_individual = ref []
 
 
@@ -249,6 +250,12 @@ let add_warning_to_piqi_warning_list conf base =
         person = p2wp base p
       ; date = string_of_prec_dmy dmy
       }
+  | OldForMarriage (p, dmy) ->
+    set_list old_for_marriage
+      M.Warning_old_for_marriage.{
+        person = p2wp base p
+      ; date = string_of_prec_dmy dmy
+      }
 
 let create_piqi_warnings () =
   (* Ajouter une limite. Pour pierfit, on peut
@@ -272,6 +279,7 @@ let create_piqi_warnings () =
     warning_title_dates_error = !title_dates_error;
     warning_undefined_sex = !undefined_sex;
     warning_young_for_marriage = !young_for_marriage;
+    warning_old_for_marriage = !old_for_marriage;
     warning_close_children = !close_children;
     warning_parent_too_old = !parent_too_old;
     warning_changed_order_of_marriages = !changed_order_of_marriages;

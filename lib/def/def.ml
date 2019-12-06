@@ -282,6 +282,7 @@ type ('iper, 'person, 'family, 'descend, 'title, 'pevent, 'fevent) warning =
   | WitnessDateAfterDeath of 'person
   | WitnessDateBeforeBirth of 'person
   | YoungForMarriage of 'person * dmy
+  | OldForMarriage of 'person * dmy
 
 type ('person, 'descend, 'title) misc = MissingSources
 

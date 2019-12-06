@@ -93,7 +93,7 @@ let print_base_error oc base =
 
 let print_base_warning oc base =
   function
-    BigAgeBetweenSpouses (fath, moth, a) ->
+  | BigAgeBetweenSpouses (fath, moth, a) ->
       Printf.fprintf oc
         "The difference of age between %s and %s is quite important: %d\n"
         (designation base fath) (designation base moth) a.year
@@ -205,7 +205,8 @@ let print_base_warning oc base =
   | WitnessDateBeforeBirth p ->
       Printf.fprintf oc "%s\n" (designation base p);
       Printf.fprintf oc "was witness before his/her birth\n"
-  | YoungForMarriage (p, a) ->
+  | YoungForMarriage (p, a)
+  | OldForMarriage (p, a) ->
       Printf.fprintf oc "%s married at age %d\n" (designation base p) a.year
 
 let min_year_of p =

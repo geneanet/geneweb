@@ -416,6 +416,11 @@ message WarningYoungForMarriage {
   required string date = 2;
 }
 
+message WarningOldForMarriage {
+  required WarningPerson person = 1;
+  required string date = 2;
+}
+
 message WarningParentTooOld {
   required WarningPerson parent = 1;
   required string date = 2;
@@ -520,6 +525,7 @@ message BaseWarnings {
   repeated WarningOldIndividual warning_old_individual = 23;
   repeated WarningWitnessDateAfterDeath warning_witness_date_after_death = 24;
   repeated WarningWitnessDateBeforeBirth warning_witness_date_before_birth = 25;
+  repeated WarningOldForMarriage warning_old_for_marriage = 27;
 }
 
 message FilterDate {
