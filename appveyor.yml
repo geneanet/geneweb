@@ -18,7 +18,7 @@ platform:
 environment:
   CYG_ROOT: C:/cygwin64
   CYG_BASH: '%CYG_ROOT%/bin/bash -lc'
-  OPAM_PACKAGES: 'benchmark camlp5 cppo dune.1.11.4 markup num ocaml ounit stdlib-shims unidecode.0.2.0 uucp zarith'
+  OPAM_PACKAGES: 'benchmark camlp5 cppo dune.1.11.4 markup num ocaml ounit stdlib-shims unidecode.0.2.0 uucp uutf zarith'
 
 install:
   - 'set OPAMYES=1'
