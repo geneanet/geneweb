@@ -1,4 +1,3 @@
-(* $Id: some.ml,v 5.44 2007-09-12 09:58:44 ddr Exp $ *)
 (* Copyright (c) 1998-2007 INRIA *)
 
 open Config
@@ -9,7 +8,7 @@ open Util
 module StrSet = Mutil.StrSet
 
 let not_found conf txt x =
-  let title _ = Wserver.printf "%s: \"%s\"" (capitale txt) x in
+  let title _ = Wserver.printf "%s: \"%s\"" (Utf8.capitalize txt) x in
   Hutil.rheader conf title; Hutil.print_link_to_welcome conf false; Hutil.trailer conf
 
 let first_name_not_found conf =
@@ -37,7 +36,7 @@ let print_branch_to_alphabetic conf x nb_branch =
   Wserver.printf "<td>";
   Wserver.printf "<b>";
   Wserver.printf "%s"
-    (capitale (transl_nth conf "display by/branch/alphabetic order" 0));
+    (Utf8.capitalize (transl_nth conf "display by/branch/alphabetic order" 0));
   Wserver.printf "</b>";
   Wserver.printf "</td>";
   Wserver.printf "<td>";
@@ -96,7 +95,7 @@ let print_alphabetic_to_branch conf x =
   Wserver.printf "<td>";
   Wserver.printf "<b>";
   Wserver.printf "%s"
-    (capitale (transl_nth conf "display by/branch/alphabetic order" 0));
+    (Utf8.capitalize (transl_nth conf "display by/branch/alphabetic order" 0));
   Wserver.printf "</b>";
   Wserver.printf "</td>";
   Wserver.printf "<td>";
@@ -276,7 +275,7 @@ let first_name_print_list conf base x1 xl liste =
 let select_first_name conf n list =
   let title _ =
     Wserver.printf "%s \"%s\" : %s"
-      (capitale (transl_nth conf "first name/first names" 0)) n
+      (Utf8.capitalize (transl_nth conf "first name/first names" 0)) n
       (transl conf "specify")
   in
   Hutil.header conf title;
@@ -627,7 +626,7 @@ let print_several_possible_surnames x conf base (_, homonymes) =
   in
   let title _ =
     Wserver.printf "%s \"%s\" : %s"
-      (capitale (transl_nth conf "surname/surnames" 0)) fx
+      (Utf8.capitalize (transl_nth conf "surname/surnames" 0)) fx
       (transl conf "specify")
   in
   Hutil.header conf title;
@@ -647,7 +646,7 @@ let print_several_possible_surnames x conf base (_, homonymes) =
     (fun (_, txt, sn) -> Wserver.printf "%s" (access txt sn)) list;
   Wserver.printf "<p>\n";
   Wserver.printf "<em style=\"font-size:80%%\">\n";
-  Wserver.printf "%s " (capitale (transl conf "click"));
+  Wserver.printf "%s " (Utf8.capitalize (transl conf "click"));
   Wserver.printf "<a href=\"%sm=N&o=i&v=%s\">%s</a>\n" (commd conf)
     (if List.length homonymes = 1 then code_varenv x ^ "&t=A"
      else code_varenv fx)

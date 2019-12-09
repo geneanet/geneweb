@@ -7,7 +7,7 @@ let print_result conf base max_answers (list, len) =
   let list =
     if len > max_answers then Util.reduce_list max_answers list else list
   in
-  if len = 0 then Wserver.printf "%s\n" (capitale (transl conf "no match"))
+  if len = 0 then Wserver.printf "%s\n" (Utf8.capitalize (transl conf "no match"))
   else
     let () = Perso.build_sosa_ht conf base in
     Wserver.printf "<ul>\n";
@@ -27,7 +27,7 @@ let print_result conf base max_answers (list, len) =
 
 let print conf base =
   let title _ =
-    Wserver.printf "%s" (capitale (transl_nth conf "advanced request" 0))
+    Wserver.printf "%s" (Utf8.capitalize (transl_nth conf "advanced request" 0))
   in
   let max_answers =
     match p_getint conf.env "max" with
@@ -36,7 +36,7 @@ let print conf base =
   in
   Hutil.header conf title;
   Wserver.printf "<p>\n";
-  Wserver.printf "%s %s." (capitale (transl conf "searching all"))
+  Wserver.printf "%s %s." (Utf8.capitalize (transl conf "searching all"))
     (AdvSearchOk.searching_fields conf);
   Wserver.printf "</p>\n";
   let list = AdvSearchOk.advanced_search conf base max_answers in

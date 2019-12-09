@@ -651,7 +651,7 @@ let defaultHandler : handler =
 
   ; unknown = begin fun conf n ->
       let title _ =
-        Wserver.printf "%s: \"%s\"" (capitale (transl conf "not found")) n
+        Wserver.printf "%s: \"%s\"" (Utf8.capitalize (transl conf "not found")) n
       in
       Wserver.http Wserver.Not_Found;
       Hutil.rheader conf title;
@@ -663,7 +663,7 @@ let defaultHandler : handler =
       match p_getenv conf.env "n", p_getenv conf.env "p" with
       | Some sname, Some fname ->
         let title _ =
-          Wserver.printf "%s: \"%s %s\"" (capitale (transl conf "not found"))
+          Wserver.printf "%s: \"%s %s\"" (Utf8.capitalize (transl conf "not found"))
             fname sname
         in
         Wserver.http Wserver.Not_Found;

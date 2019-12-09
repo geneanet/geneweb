@@ -198,7 +198,7 @@ and eval_simple_var conf base env (fam, cpl, des) =
             let fam = foi base fam.fam_index in
             let e = List.nth (get_fevents fam) (i - 1) in
             let name =
-              capitale (Util.string_of_fevent_name conf base e.efam_name)
+              Utf8.capitalize (Util.string_of_fevent_name conf base e.efam_name)
             in
             let date =
               match Adef.od_of_cdate e.efam_date with
@@ -438,8 +438,8 @@ and eval_parent conf env k =
     ["himher"] ->
       let s =
         match get_env "cnt" env with
-          Vint 1 -> capitale (transl_nth conf "him/her" 0)
-        | Vint 2 -> capitale (transl_nth conf "him/her" 1)
+          Vint 1 -> Utf8.capitalize (transl_nth conf "him/her" 0)
+        | Vint 2 -> Utf8.capitalize (transl_nth conf "him/her" 1)
         | Vint _ -> transl conf "him/her"
         | _ -> "???"
       in
@@ -689,7 +689,7 @@ let print_update_fam conf base fcd digest =
 let print_del1 conf base ifam =
   let title _ =
     let s = transl_nth conf "family/families" 0 in
-    Wserver.printf "%s" (capitale (transl_decline conf "delete" s))
+    Wserver.printf "%s" (Utf8.capitalize (transl_decline conf "delete" s))
   in
   let p =
     match p_getenv conf.env "ip" with
@@ -718,7 +718,7 @@ let print_del1 conf base ifam =
   Wserver.printf "<p>\n";
   Wserver.printf
     "<button type=\"submit\" class=\"btn btn-secondary btn-lg\">\n";
-  Wserver.printf "%s" (capitale (transl_nth conf "validate/delete" 0));
+  Wserver.printf "%s" (Utf8.capitalize (transl_nth conf "validate/delete" 0));
   Wserver.printf "</button>\n";
   Wserver.printf "</p>\n";
   Wserver.printf "</form>\n";
@@ -727,13 +727,13 @@ let print_del1 conf base ifam =
 
 let print_inv1 conf base p ifam1 ifam2 =
   let title _ =
-    Wserver.printf "%s" (capitale (transl_decline conf "invert" ""))
+    Wserver.printf "%s" (Utf8.capitalize (transl_decline conf "invert" ""))
   in
   let cpl1 = foi base ifam1 in
   let cpl2 = foi base ifam2 in
   Perso.interp_notempl_with_menu title "perso_header" conf base p;
   Wserver.printf "%s%s"
-    (capitale (transl conf "invert the order of the following families"))
+    (Utf8.capitalize (transl conf "invert the order of the following families"))
     (Util.transl conf ":");
   Wserver.printf "<ul>\n";
   Wserver.printf "<li>\n";
@@ -761,7 +761,7 @@ let print_inv1 conf base p ifam1 ifam2 =
   Wserver.printf "<p>\n";
   Wserver.printf
     "<button type=\"submit\" class=\"btn btn-secondary btn-lg\">\n";
-  Wserver.printf "%s" (capitale (transl_nth conf "validate/delete" 0));
+  Wserver.printf "%s" (Utf8.capitalize (transl_nth conf "validate/delete" 0));
   Wserver.printf "</button>\n";
   Wserver.printf "</p>\n";
   Wserver.printf "</form>\n";
@@ -903,14 +903,14 @@ let print_change_order conf base =
       let (before, after) = get_family p, Array.of_list after in
       let (bef_d, aft_d) = Difference.f before after in
       let title _ =
-        Wserver.printf "%s" (capitale (transl_decline conf "invert" ""))
+        Wserver.printf "%s" (Utf8.capitalize (transl_decline conf "invert" ""))
       in
       Perso.interp_templ_with_menu title "perso_header" conf base p;
       Wserver.printf "<h2>\n";
       title false;
       Wserver.printf "</h2>\n";
       Wserver.printf "%s%s"
-        (capitale (transl conf "invert the order of the following families"))
+        (Utf8.capitalize (transl conf "invert the order of the following families"))
         (Util.transl conf ":");
       Wserver.printf "<table style=\"margin:1em\">\n";
       Wserver.printf "<tr>\n";
@@ -943,7 +943,7 @@ let print_change_order conf base =
       Wserver.printf "<p>\n";
       Wserver.printf
         "<button type=\"submit\" class=\"btn btn-secondary btn-lg\">\n";
-      Wserver.printf "%s" (capitale (transl_nth conf "validate/delete" 0));
+      Wserver.printf "%s" (Utf8.capitalize (transl_nth conf "validate/delete" 0));
       Wserver.printf "</button>\n";
       Wserver.printf "</p>\n";
       Wserver.printf "</form>\n";

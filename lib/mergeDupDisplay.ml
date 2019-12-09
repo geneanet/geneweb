@@ -18,12 +18,12 @@ let print_link conf base p =
 let print_no_candidate conf base p =
   let title _ =
     Wserver.printf "%s\n"
-      (capitale
+      (Utf8.capitalize
          (transl_decline conf "merge" (transl conf "possible duplications")))
   in
   Hutil.header conf title;
   Hutil.print_link_to_welcome conf true;
-  Wserver.printf "%s\n" (capitale (transl conf "not found"));
+  Wserver.printf "%s\n" (Utf8.capitalize (transl conf "not found"));
   Wserver.printf "<ul>\n";
   Wserver.printf "<li>\n";
   print_link conf base p;
@@ -46,7 +46,7 @@ let print_input_excl conf string_of_i excl excl_name =
       excl_name s conf.xhs
 
 let print_cand_ind conf base (ip, p) (iexcl, fexcl) ip1 ip2 =
-  let title _ = Wserver.printf "%s\n" (capitale (transl conf "merge")) in
+  let title _ = Wserver.printf "%s\n" (Utf8.capitalize (transl conf "merge")) in
   Perso.interp_notempl_with_menu title "perso_header" conf base p;
   Wserver.printf "<h2>\n";
   title false;
@@ -61,7 +61,7 @@ let print_cand_ind conf base (ip, p) (iexcl, fexcl) ip1 ip2 =
   Wserver.printf "</li>\n";
   Wserver.printf "</ul>\n";
   Wserver.printf "<p>\n";
-  Wserver.printf "%s ?\n" (capitale (transl conf "merge"));
+  Wserver.printf "%s ?\n" (Utf8.capitalize (transl conf "merge"));
   Wserver.printf "<form method=\"post\" action=\"%s\">\n" conf.command;
   Util.hidden_env conf;
   Wserver.printf
@@ -86,7 +86,7 @@ let print_cand_ind conf base (ip, p) (iexcl, fexcl) ip1 ip2 =
 let print_cand_fam conf base (ip, p) (iexcl, fexcl) ifam1 ifam2 =
   let title _ =
     Wserver.printf "%s\n"
-      (capitale
+      (Utf8.capitalize
          (transl_decline conf "merge" (transl_nth conf "family/families" 1)))
   in
   Perso.interp_notempl_with_menu title "perso_header" conf base p;
@@ -110,7 +110,7 @@ let print_cand_fam conf base (ip, p) (iexcl, fexcl) ifam1 ifam2 =
   Wserver.printf "</li>\n";
   Wserver.printf "</ul>\n";
   Wserver.printf "<p>\n";
-  Wserver.printf "%s ?\n" (capitale (transl conf "merge"));
+  Wserver.printf "%s ?\n" (Utf8.capitalize (transl conf "merge"));
   Wserver.printf "<form method=\"post\" action=\"%s\">\n" conf.command;
   Util.hidden_env conf;
   Wserver.printf

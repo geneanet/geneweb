@@ -106,7 +106,6 @@ val update_family_loop : config -> base -> person -> string -> string
 val p_getenv : (string * string) list -> string -> string option
 val p_getint : (string * string) list -> string -> int option
 val create_env : string -> (string * string) list
-val capitale : string -> string
 
 val open_etc_file : string -> in_channel option
 val open_hed_trl : config -> string -> in_channel option

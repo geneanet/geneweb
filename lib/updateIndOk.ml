@@ -748,9 +748,9 @@ let error_person conf err =
 #ifdef API
   if not !Api_conf.mode_api then begin
 #endif
-  let title _ = Wserver.printf "%s" (capitale (transl conf "error")) in
+  let title _ = Wserver.printf "%s" (Utf8.capitalize (transl conf "error")) in
   Hutil.rheader conf title;
-  Wserver.printf "%s\n" (capitale err);
+  Wserver.printf "%s\n" (Utf8.capitalize err);
   Update.print_return conf;
   Hutil.trailer conf;
 #ifdef API
@@ -758,8 +758,8 @@ let error_person conf err =
 #endif
   let err =
     Printf.sprintf "%s%s%s"
-      (capitale (transl conf "error"))
-      (capitale (transl conf ":"))
+      (Utf8.capitalize (transl conf "error"))
+      (Utf8.capitalize (transl conf ":"))
       err
   in
   raise @@ Update.ModErr err
@@ -804,7 +804,7 @@ let print_conflict conf base p =
 #ifdef API
   if not !Api_conf.mode_api then begin
 #endif
-  let title _ = Wserver.printf "%s" (capitale (transl conf "error")) in
+  let title _ = Wserver.printf "%s" (Utf8.capitalize (transl conf "error")) in
   Hutil.rheader conf title;
   Update.print_error conf base (AlreadyDefined p);
   let free_n =
@@ -812,14 +812,14 @@ let print_conflict conf base p =
   in
   Wserver.printf "<ul>\n";
   Wserver.printf "<li>";
-  Wserver.printf "%s%s %d.\n" (capitale (transl conf "first free number"))
+  Wserver.printf "%s%s %d.\n" (Utf8.capitalize (transl conf "first free number"))
     (Util.transl conf ":") free_n;
   Wserver.printf (fcapitale (ftransl conf "click on \"%s\""))
     (transl conf "create");
   Wserver.printf "%s.\n" (transl conf " to try again with this number");
   Wserver.printf "</li>";
   Wserver.printf "<li>";
-  Wserver.printf "%s " (capitale (transl conf "or"));
+  Wserver.printf "%s " (Utf8.capitalize (transl conf "or"));
   Wserver.printf (ftransl conf "click on \"%s\"") (transl conf "back");
   Wserver.printf " %s %s." (transl_nth conf "and" 0)
     (transl conf "change it (the number) yourself");
@@ -834,9 +834,9 @@ let print_conflict conf base p =
   Wserver.printf "<input type=\"hidden\" name=\"free_occ\" value=\"%d\"%s>\n"
     free_n conf.xhs;
   Wserver.printf "<input type=\"submit\" name=\"create\" value=\"%s\"%s>\n"
-    (capitale (transl conf "create")) conf.xhs;
+    (Utf8.capitalize (transl conf "create")) conf.xhs;
   Wserver.printf "<input type=\"submit\" name=\"return\" value=\"%s\"%s>\n"
-    (capitale (transl conf "back")) conf.xhs;
+    (Utf8.capitalize (transl conf "back")) conf.xhs;
   Wserver.printf "</form>\n";
   Update.print_same_name conf base p;
   Hutil.trailer conf;
@@ -859,7 +859,7 @@ let print_cannot_change_sex conf base p =
 #ifdef API
   if not !Api_conf.mode_api then begin
 #endif
-  let title _ = Wserver.printf "%s" (capitale (transl conf "error")) in
+  let title _ = Wserver.printf "%s" (Utf8.capitalize (transl conf "error")) in
   Hutil.rheader conf title;
   Update.print_error conf base (BadSexOfMarriedPerson p);
   Wserver.printf "<ul><li>%s</li></ul>" (referenced_person_text conf base p);
@@ -869,7 +869,7 @@ let print_cannot_change_sex conf base p =
   end;
 #endif
   let err =
-    Printf.sprintf "%s." (capitale (transl conf "cannot change sex of a married person"))
+    Printf.sprintf "%s." (Utf8.capitalize (transl conf "cannot change sex of a married person"))
   in
   raise @@ Update.ModErr err
 
@@ -1110,7 +1110,7 @@ let effective_del base warning p =
 
 let print_mod_ok conf base wl pgl p ofn osn oocc =
   let title _ =
-    Wserver.printf "%s" (capitale (transl conf "person modified"))
+    Wserver.printf "%s" (Utf8.capitalize (transl conf "person modified"))
   in
   Hutil.header conf title;
   Hutil.print_link_to_welcome conf true;
@@ -1130,7 +1130,7 @@ let print_mod_ok conf base wl pgl p ofn osn oocc =
   | _ ->
       Wserver.printf "<p>\n";
       Wserver.printf "%s, %s %s %s :"
-        (capitale (transl_nth conf "relation/relations" 0))
+        (Utf8.capitalize (transl_nth conf "relation/relations" 0))
         (transl conf "first name missing") (transl conf "or")
         (transl conf "surname missing");
       Wserver.printf "<ul>\n";
@@ -1162,12 +1162,12 @@ let print_mod_ok conf base wl pgl p ofn osn oocc =
       let snocc = if nocc <> 0 then Printf.sprintf "/%d" nocc else "" in
       Wserver.printf "<span class=\"unselectable float-left\">%s%s</span>\n\
                       <span class=\"float-left ml-1\">%s/%s%s</span>\n<br>"
-        (capitale (transl conf "old name")) (transl conf ":") ofn osn soocc;
+        (Utf8.capitalize (transl conf "old name")) (transl conf ":") ofn osn soocc;
       Wserver.printf "<span class=\"unselectable float-left\">%s%s</span>\n\
                       <span class=\"float-left ml-1\">%s/%s%s</span>\n<br>"
-        (capitale (transl conf "new name")) (transl conf ":") nfn nsn snocc;
+        (Utf8.capitalize (transl conf "new name")) (transl conf ":") nfn nsn snocc;
       Wserver.printf "<span>%s%s</span>"
-        (capitale (transl conf "linked pages")) (transl conf ":");
+        (Utf8.capitalize (transl conf "linked pages")) (transl conf ":");
       NotesDisplay.print_linked_list conf base pgl
     end;
   Hutil.trailer conf
@@ -1225,14 +1225,14 @@ let all_checks_person base p a u =
   wl
 
 let print_add_ok conf base wl p =
-  let title _ = Wserver.printf "%s" (capitale (transl conf "person added")) in
+  let title _ = Wserver.printf "%s" (Utf8.capitalize (transl conf "person added")) in
   Hutil.header conf title;
   Hutil.print_link_to_welcome conf true;
   (* Si on a supprimé des caractères interdits *)
   if List.length !removed_string > 0 then
     begin
       Wserver.printf "<h2 class=\"error\">%s</h2>\n"
-        (capitale (transl conf "forbidden char"));
+        (Utf8.capitalize (transl conf "forbidden char"));
       List.iter (Wserver.printf "<p>%s</p>") !removed_string
     end;
   (* Si on a supprimé des relations, on les mentionne *)
@@ -1254,7 +1254,7 @@ value print_add_ok conf base wl p =
 
 let print_del_ok conf =
   let title _ =
-    Wserver.printf "%s" (capitale (transl conf "person deleted"))
+    Wserver.printf "%s" (Utf8.capitalize (transl conf "person deleted"))
   in
   Hutil.header conf title;
   Hutil.print_link_to_welcome conf false;
@@ -1262,7 +1262,7 @@ let print_del_ok conf =
 
 let print_change_event_order_ok conf base wl p =
   let title _ =
-    Wserver.printf "%s" (capitale (transl conf "person modified"))
+    Wserver.printf "%s" (Utf8.capitalize (transl conf "person modified"))
   in
   Hutil.header conf title;
   Hutil.print_link_to_welcome conf true;

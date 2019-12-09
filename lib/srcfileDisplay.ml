@@ -1,4 +1,3 @@
-(* $Id: srcfile.ml,v 5.41 2007-09-12 09:58:44 ddr Exp $ *)
 (* Copyright (c) 1998-2007 INRIA *)
 
 open Config
@@ -254,7 +253,7 @@ let rec lexicon_translate conf base nomin strm first_c =
           String.sub r (i + 2) (String.length r - i - 2)
       | _ -> (if nomin then Util.translate_eval r else r) ^ c
   in
-  if upp then capitale r else r
+  if upp then Utf8.capitalize r else r
 
 let browser_cannot_handle_passwords conf =
   let user_agent = Wserver.extract_param "user-agent: " '/' conf.request in

@@ -48,7 +48,7 @@ let old_print_relationship_dag conf base elem_txt vbar_txt path next_txt =
     | _ -> false
   in
   let (set, d) = dag_of_relation_path conf base path in
-  let page_title = capitale (transl conf "relationship") in
+  let page_title = Utf8.capitalize (transl conf "relationship") in
   let hts = DagDisplay.make_tree_hts conf base elem_txt vbar_txt invert set [] d in
   DagDisplay.print_slices_menu_or_dag_page conf page_title hts next_txt
 
@@ -62,7 +62,7 @@ let print_relationship_dag conf base elem_txt vbar_txt path next_txt =
       | _ -> false
     in
     let set = ind_set_of_relation_path base path in
-    let page_title = capitale (transl conf "relationship") in
+    let page_title = Utf8.capitalize (transl conf "relationship") in
     DagDisplay.make_and_print_dag conf base elem_txt vbar_txt invert set []
       page_title next_txt
 
@@ -97,7 +97,7 @@ let next_relation_link_txt conf ip1 ip2 excl_faml =
 let print_relation_path conf base ip1 ip2 path ifam excl_faml =
   if path = [] then
     let title _ =
-      Wserver.printf "%s" (capitale (transl conf "relationship"))
+      Wserver.printf "%s" (Utf8.capitalize (transl conf "relationship"))
     in
     Hutil.header_no_page_title conf title; Hutil.trailer conf
   else
@@ -115,10 +115,10 @@ let print_shortest_path conf base p1 p2 =
   let ip2 = get_iper p2 in
   if ip1 = ip2 then
     let title _ =
-      Wserver.printf "%s" (capitale (transl conf "relationship"))
+      Wserver.printf "%s" (Utf8.capitalize (transl conf "relationship"))
     in
     Hutil.header conf title;
-    Wserver.printf "%s\n" (capitale (transl conf "it is the same person!"));
+    Wserver.printf "%s\n" (Utf8.capitalize (transl conf "it is the same person!"));
     Hutil.trailer conf
   else
     let excl_faml =
@@ -145,7 +145,7 @@ let print_shortest_path conf base p1 p2 =
       loop [] 0
     in
     let title _ =
-      Wserver.printf "%s" (capitale (transl conf "relationship"))
+      Wserver.printf "%s" (Utf8.capitalize (transl conf "relationship"))
     in
     match get_shortest_path_relation conf base ip1 ip2 excl_faml with
       Some (path, ifam) ->
@@ -161,7 +161,7 @@ let print_shortest_path conf base p1 p2 =
             Wserver.printf "</h1>\n";
             Hutil.print_link_to_welcome conf true;
             Wserver.printf "%s.\n"
-              (capitale
+              (Utf8.capitalize
                  (cftransl conf "no known relationship link between %s and %s"
                     [s1; s2]));
             Wserver.printf "<br%s>\n" conf.xhs;
@@ -173,7 +173,7 @@ let print_shortest_path conf base p1 p2 =
                   Wserver.printf "<a href=\"%s&m=R&%s\">" (commd conf)
                     (acces conf base p1);
                   Wserver.printf "%s"
-                    (capitale
+                    (Utf8.capitalize
                        (transl_nth conf "try another/relationship computing"
                           0));
                   Wserver.printf "</a>"
@@ -513,7 +513,7 @@ let print_solution_ancestor conf base long p1 p2 pp1 pp2 x1 x2 list =
              (if pp1 = None then "" else "&" ^ acces_n conf base "3" p1)
              (if pp2 = None then "" else "&" ^ acces_n conf base "4" p2)
              (if propose_dag then "&dag=on" else "") image_opt;
-           Wserver.printf "%s" (capitale (transl conf "see"));
+           Wserver.printf "%s" (Utf8.capitalize (transl conf "see"));
            if n > 1 && not propose_dag then
              Wserver.printf "%s" (transl conf " the first branch");
            Wserver.printf "</a>"
@@ -531,7 +531,7 @@ let print_solution_not_ancestor conf base long p1 p2 sol =
   in
   Wserver.printf "<ul class=li_relationship>\n";
   Wserver.printf "<li>\n";
-  Wserver.printf "%s\n" (capitale (transl conf "indeed,"));
+  Wserver.printf "%s\n" (Utf8.capitalize (transl conf "indeed,"));
   Wserver.printf "<ul>\n";
   List.iter
     (fun (a, n) ->
@@ -562,7 +562,7 @@ let print_solution_not_ancestor conf base long p1 p2 sol =
              (if pp1 = None then "" else "&" ^ acces_n conf base "3" p1)
              (if pp2 = None then "" else "&" ^ acces_n conf base "4" p2)
              (if propose_dag then "&dag=on" else "") image_opt;
-           Wserver.printf "%s" (capitale (transl conf "see"));
+           Wserver.printf "%s" (Utf8.capitalize (transl conf "see"));
            Wserver.printf "</a>"
          end;
        Wserver.printf "</li>\n")
@@ -747,7 +747,7 @@ let print_propose_upto conf base p1 p2 rl =
       Wserver.printf "<span class=\"smaller\">";
       Wserver.printf "%s"
         (let s = person_title_text conf base p in
-         capitale
+         Utf8.capitalize
            (translate_eval
               (transl_a_of_b conf (transl conf "ancestors") s s)));
       Wserver.printf " %s"
@@ -757,7 +757,7 @@ let print_propose_upto conf base p1 p2 rl =
         (Util.image_prefix conf) "picto_rel_asc.png" conf.xhs;
       Wserver.printf "<a href=\"%sm=A&t=D&%s&%s&l=%d\">" (commd conf)
         (acces conf base p) (acces_n conf base "1" a) maxlen;
-      Wserver.printf "%s" (capitale (transl conf "see"));
+      Wserver.printf "%s" (Utf8.capitalize (transl conf "see"));
       Wserver.printf "</a>";
       Wserver.printf "</span>\n";
       Wserver.printf "</p>\n"
@@ -844,7 +844,7 @@ let print_main_relationship conf base long p1 p2 rel =
     | Some (_, total, _) -> total
   in
   let title _ =
-    Wserver.printf "%s" (capitale (transl conf "relationship"));
+    Wserver.printf "%s" (Utf8.capitalize (transl conf "relationship"));
     if Sosa.eq total Sosa.zero then ()
     else
       begin
@@ -889,11 +889,11 @@ let print_main_relationship conf base long p1 p2 rel =
     None ->
       if get_iper p1 = get_iper p2 then
         Wserver.printf "%s\n"
-          (capitale (transl conf "it is the same person!"))
+          (Utf8.capitalize (transl conf "it is the same person!"))
       else
         begin
           Wserver.printf "%s.\n"
-            (capitale
+            (Utf8.capitalize
                (cftransl conf "no known relationship link between %s and %s"
                   [gen_person_title_text reference raw_access conf base p1;
                    gen_person_title_text reference raw_access conf base p2]));
@@ -906,7 +906,7 @@ let print_main_relationship conf base long p1 p2 rel =
                 Wserver.printf "<a href=\"%s&m=R&%s\">" (commd conf)
                   (acces conf base p1);
                 Wserver.printf "%s"
-                  (capitale
+                  (Utf8.capitalize
                      (transl_nth conf "try another/relationship computing"
                         0));
                 Wserver.printf "</a>"
@@ -945,7 +945,7 @@ let print_main_relationship conf base long p1 p2 rel =
         begin
           Wserver.printf "<p>\n";
           Wserver.printf "<em>%s%s %s%%</em>"
-            (capitale (transl conf "relationship"))
+            (Utf8.capitalize (transl conf "relationship"))
             (Util.transl conf ":")
             (string_of_decimal_num conf
                (round_2_dec
@@ -981,7 +981,7 @@ let multi_relation_next_txt conf pl2 lim assoc_txt =
       let sl = commd conf :: "m=RLM" :: sl in String.concat "" sl
 
 let print_no_relationship conf base pl =
-  let title _ = Wserver.printf "%s" (capitale (transl conf "tree")) in
+  let title _ = Wserver.printf "%s" (Utf8.capitalize (transl conf "tree")) in
   Hutil.header conf title;
   Wserver.printf "<ul>\n";
   List.iter
@@ -1045,7 +1045,7 @@ let print_multi_relation conf base pl lim assoc_txt =
     print_relationship_dag conf base elem_txt vbar_txt path next_txt
 
 let print_base_loop conf base p =
-  let title _ = Wserver.printf "%s" (capitale (transl conf "error")) in
+  let title _ = Wserver.printf "%s" (Utf8.capitalize (transl conf "error")) in
   Hutil.rheader conf title;
   Wserver.printf
     (fcapitale (ftransl conf "loop in database: %s is his/her own ancestor"))

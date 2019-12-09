@@ -48,85 +48,11 @@ let start_with_hi_i s =
     | 'h' -> String.length s > 1 && s.[1] = 'i'
     | _ -> false
   else false
-let match_begin s t =
-  let rec loop i j =
-    if i >= String.length s || j >= String.length t then true
-    else if s.[i] = t.[j] then loop (i + 1) (j + 1)
-    else false
-  in
-  loop 0 0
-
-let amp_capitalize capitale s =
-  if String.length s <= 1 then s
-  else if match_begin s "&iexcl;" then
-    "&iexcl;" ^ capitale (String.sub s 7 (String.length s - 7))
-  else if match_begin s "&aelig;" then
-    "&AElig;" ^ String.sub s 7 (String.length s - 7)
-  else
-    match s.[1] with
-      'a'..'z' ->
-        "&" ^
-        String.make 1
-          (Char.chr (Char.code s.[1] - Char.code 'a' + Char.code 'A')) ^
-        String.sub s 2 (String.length s - 2)
-    | _ -> s
-
-
-(* Copied from Ocaml < 4.03. To be removed with proper utf8 support *)
-let uppercase c =
-  if (c >= 'a' && c <= 'z')
-  || (c >= '\224' && c <= '\246')
-  || (c >= '\248' && c <= '\254')
-  then Char.unsafe_chr(Char.code c - 32)
-  else c
-
-let rec capitale_utf_8 s =
-  if String.length s = 0 then ""
-  else
-    let c = s.[0] in
-    if c = '&' then amp_capitalize capitale_utf_8 s
-    else if c = '<' then
-      let rec loop i =
-        if i = String.length s then s
-        else if s.[i] = '>' then
-          let s1 = String.sub s (i + 1) (String.length s - i - 1) in
-          String.sub s 0 (i + 1) ^ capitale_utf_8 s1
-        else loop (i + 1)
-      in
-      loop 1
-    else if Char.code c < 0b10000000 then String.capitalize_ascii s
-    else if String.length s = 1 then s
-    else
-      match Char.code c with
-        0xC3 when Char.code s.[1] <> 0xBF ->
-        let c1 = uppercase (Char.chr (Char.code s.[1] + 0x40)) in
-        let c1 = Char.chr (Char.code c1 - 0x40) in
-          Printf.sprintf "%c%c%s" c c1 (String.sub s 2 (String.length s - 2))
-      | 0xC3 when Char.code s.[1] = 0xBF ->
-          (* ÿ *)
-          let c = Char.chr 0xC5 in
-          let c1 = Char.chr 0xB8 in
-          Printf.sprintf "%c%c%s" c c1 (String.sub s 2 (String.length s - 2))
-      | 0xC4 | 0xC5 | 0xC6 | 0xC7 ->
-          let c1 = Char.chr (Char.code s.[1] - 1) in
-          Printf.sprintf "%c%c%s" c c1 (String.sub s 2 (String.length s - 2))
-      | 0xD0 when Char.code s.[1] >= 0xB0 ->
-          (* cyrillic lowercase *)
-          let c1 = Char.chr (Char.code s.[1] - 0xB0 + 0x90) in
-          Printf.sprintf "%c%c%s" c c1 (String.sub s 2 (String.length s - 2))
-      | 0xD1 when Char.code s.[1] < 0x90 ->
-          (* cyrillic lowercase again *)
-          let c1 = Char.chr (Char.code s.[1] - 0x80 + 0xA0) in
-          Printf.sprintf "%c%c%s" (Char.chr 0xD0) c1
-            (String.sub s 2 (String.length s - 2))
-      | _ -> s
-
-let capitale s = capitale_utf_8 s
 
 type ('a, 'b) format2 = ('a, unit, string, 'b) format4
 
 let fcapitale (a : ('a, 'b, 'c, 'd) format4) : ('a, 'b, 'c, 'd) format4 =
-  Scanf.format_from_string (capitale (string_of_format a)) a
+  Scanf.format_from_string (Utf8.capitalize (string_of_format a)) a
 
 let nth_field_abs w n =
   let rec start i n =
@@ -3376,7 +3302,7 @@ let gen_print_tips conf s =
 let print_tips_relationship conf =
   if p_getenv conf.env "em" = Some "R" || p_getenv conf.env "m" = Some "C"
   then
-    let s = capitale (transl conf "select person to compute relationship") in
+    let s = Utf8.capitalize (transl conf "select person to compute relationship") in
     gen_print_tips conf s
 
 

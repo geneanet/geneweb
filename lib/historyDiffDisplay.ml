@@ -19,12 +19,12 @@ let print_clean conf =
   match p_getenv conf.env "f" with
     Some f when f <> "" ->
       let title _ =
-        Wserver.printf "%s" (capitale (transl conf "clean history"))
+        Wserver.printf "%s" (Utf8.capitalize (transl conf "clean history"))
       in
       Hutil.header conf title;
       Hutil.print_link_to_welcome conf true;
       Util.gen_print_tips conf
-        (capitale
+        (Utf8.capitalize
            (transl conf
               "select the input you want to erase from the history"));
       let history = load_person_history conf f in
@@ -54,7 +54,7 @@ let print_clean conf =
       Wserver.printf "</ul>\n";
       Wserver.printf
         "<button type=\"submit\" class=\"btn btn-secondary btn-lg\">\n";
-      Wserver.printf "%s" (capitale (transl_nth conf "validate/delete" 0));
+      Wserver.printf "%s" (Utf8.capitalize (transl_nth conf "validate/delete" 0));
       Wserver.printf "</button>\n";
       Wserver.printf "</form>\n";
       Hutil.trailer conf
@@ -82,7 +82,7 @@ let print_clean_ok conf =
   match p_getenv conf.env "f" with
     Some f when f <> "" ->
       let title _ =
-        Wserver.printf "%s" (capitale (transl conf "history cleaned"))
+        Wserver.printf "%s" (Utf8.capitalize (transl conf "history cleaned"))
       in
       Hutil.header conf title;
       Hutil.print_link_to_welcome conf true;
@@ -196,7 +196,7 @@ let string_of_related conf base ip related =
              in
              loop (get_rparents c)
            in
-           (capitale rel ^ ": " ^ p) :: accu)
+           (Utf8.capitalize rel ^ ": " ^ p) :: accu)
       related []
   in
   String.concat ", " related
@@ -207,7 +207,7 @@ let string_of_rparents conf base rparents =
       (fun rp accu ->
          match rp.r_fath, rp.r_moth with
            Some ip1, Some ip2 ->
-             let rel = capitale (Util.relation_type_text conf rp.r_type 2) in
+             let rel = Utf8.capitalize (Util.relation_type_text conf rp.r_type 2) in
              let fath = person_of_iper conf base ip1 in
              let moth = person_of_iper conf base ip2 in
              begin match fath, moth with
@@ -221,7 +221,7 @@ let string_of_rparents conf base rparents =
              if p = "" then accu
              else
                let rel =
-                 capitale (Util.relation_type_text conf rp.r_type 2)
+                 Utf8.capitalize (Util.relation_type_text conf rp.r_type 2)
                in
                (rel ^ ": " ^ p) :: accu
          | None, Some ip ->
@@ -229,7 +229,7 @@ let string_of_rparents conf base rparents =
              if p = "" then accu
              else
                let rel =
-                 capitale (Util.relation_type_text conf rp.r_type 2)
+                 Utf8.capitalize (Util.relation_type_text conf rp.r_type 2)
                in
                (rel ^ ": " ^ p) :: accu
          | None, None -> accu)
@@ -269,75 +269,75 @@ let string_of_event_witness conf base witnesses =
 
 let string_of_epers_name conf epers_name =
   match epers_name with
-    Epers_Birth -> capitale (transl conf "birth")
-  | Epers_Baptism -> capitale (transl conf "baptism")
-  | Epers_Death -> capitale (transl conf "death")
-  | Epers_Burial -> capitale (transl conf "burial")
-  | Epers_Cremation -> capitale (transl conf "cremation")
-  | Epers_Accomplishment -> capitale (transl conf "accomplishment")
-  | Epers_Acquisition -> capitale (transl conf "acquisition")
-  | Epers_Adhesion -> capitale (transl conf "adhesion")
-  | Epers_BaptismLDS -> capitale (transl conf "baptismLDS")
-  | Epers_BarMitzvah -> capitale (transl conf "bar mitzvah")
-  | Epers_BatMitzvah -> capitale (transl conf "bat mitzvah")
-  | Epers_Benediction -> capitale (transl conf "benediction")
-  | Epers_ChangeName -> capitale (transl conf "change name")
-  | Epers_Circumcision -> capitale (transl conf "circumcision")
-  | Epers_Confirmation -> capitale (transl conf "confirmation")
-  | Epers_ConfirmationLDS -> capitale (transl conf "confirmation LDS")
-  | Epers_Decoration -> capitale (transl conf "decoration")
+    Epers_Birth -> Utf8.capitalize (transl conf "birth")
+  | Epers_Baptism -> Utf8.capitalize (transl conf "baptism")
+  | Epers_Death -> Utf8.capitalize (transl conf "death")
+  | Epers_Burial -> Utf8.capitalize (transl conf "burial")
+  | Epers_Cremation -> Utf8.capitalize (transl conf "cremation")
+  | Epers_Accomplishment -> Utf8.capitalize (transl conf "accomplishment")
+  | Epers_Acquisition -> Utf8.capitalize (transl conf "acquisition")
+  | Epers_Adhesion -> Utf8.capitalize (transl conf "adhesion")
+  | Epers_BaptismLDS -> Utf8.capitalize (transl conf "baptismLDS")
+  | Epers_BarMitzvah -> Utf8.capitalize (transl conf "bar mitzvah")
+  | Epers_BatMitzvah -> Utf8.capitalize (transl conf "bat mitzvah")
+  | Epers_Benediction -> Utf8.capitalize (transl conf "benediction")
+  | Epers_ChangeName -> Utf8.capitalize (transl conf "change name")
+  | Epers_Circumcision -> Utf8.capitalize (transl conf "circumcision")
+  | Epers_Confirmation -> Utf8.capitalize (transl conf "confirmation")
+  | Epers_ConfirmationLDS -> Utf8.capitalize (transl conf "confirmation LDS")
+  | Epers_Decoration -> Utf8.capitalize (transl conf "decoration")
   | Epers_DemobilisationMilitaire ->
-      capitale (transl conf "demobilisationMilitaire")
-  | Epers_Diploma -> capitale (transl conf "diploma")
-  | Epers_Distinction -> capitale (transl conf "distinction")
-  | Epers_Dotation -> capitale (transl conf "dotation")
-  | Epers_DotationLDS -> capitale (transl conf "dotationLDS")
-  | Epers_Education -> capitale (transl conf "education")
-  | Epers_Election -> capitale (transl conf "election")
-  | Epers_Emigration -> capitale (transl conf "emigration")
-  | Epers_Excommunication -> capitale (transl conf "excommunication")
-  | Epers_FamilyLinkLDS -> capitale (transl conf "familyLinkLDS")
-  | Epers_FirstCommunion -> capitale (transl conf "firstCommunion")
-  | Epers_Funeral -> capitale (transl conf "funeral")
-  | Epers_Graduate -> capitale (transl conf "graduate")
-  | Epers_Hospitalisation -> capitale (transl conf "hospitalisation")
-  | Epers_Illness -> capitale (transl conf "illness")
-  | Epers_Immigration -> capitale (transl conf "immigration")
-  | Epers_ListePassenger -> capitale (transl conf "listePassenger")
-  | Epers_MilitaryDistinction -> capitale (transl conf "militaryDistinction")
-  | Epers_MilitaryPromotion -> capitale (transl conf "militaryPromotion")
-  | Epers_MilitaryService -> capitale (transl conf "militaryService")
+      Utf8.capitalize (transl conf "demobilisationMilitaire")
+  | Epers_Diploma -> Utf8.capitalize (transl conf "diploma")
+  | Epers_Distinction -> Utf8.capitalize (transl conf "distinction")
+  | Epers_Dotation -> Utf8.capitalize (transl conf "dotation")
+  | Epers_DotationLDS -> Utf8.capitalize (transl conf "dotationLDS")
+  | Epers_Education -> Utf8.capitalize (transl conf "education")
+  | Epers_Election -> Utf8.capitalize (transl conf "election")
+  | Epers_Emigration -> Utf8.capitalize (transl conf "emigration")
+  | Epers_Excommunication -> Utf8.capitalize (transl conf "excommunication")
+  | Epers_FamilyLinkLDS -> Utf8.capitalize (transl conf "familyLinkLDS")
+  | Epers_FirstCommunion -> Utf8.capitalize (transl conf "firstCommunion")
+  | Epers_Funeral -> Utf8.capitalize (transl conf "funeral")
+  | Epers_Graduate -> Utf8.capitalize (transl conf "graduate")
+  | Epers_Hospitalisation -> Utf8.capitalize (transl conf "hospitalisation")
+  | Epers_Illness -> Utf8.capitalize (transl conf "illness")
+  | Epers_Immigration -> Utf8.capitalize (transl conf "immigration")
+  | Epers_ListePassenger -> Utf8.capitalize (transl conf "listePassenger")
+  | Epers_MilitaryDistinction -> Utf8.capitalize (transl conf "militaryDistinction")
+  | Epers_MilitaryPromotion -> Utf8.capitalize (transl conf "militaryPromotion")
+  | Epers_MilitaryService -> Utf8.capitalize (transl conf "militaryService")
   | Epers_MobilisationMilitaire ->
-      capitale (transl conf "mobilisationMilitaire")
-  | Epers_Naturalisation -> capitale (transl conf "naturalisation")
-  | Epers_Occupation -> capitale (transl_nth conf "occupation/occupations" 0)
-  | Epers_Ordination -> capitale (transl conf "ordination")
-  | Epers_Property -> capitale (transl conf "property")
-  | Epers_Recensement -> capitale (transl conf "recensement")
-  | Epers_Residence -> capitale (transl conf "residence")
-  | Epers_Retired -> capitale (transl conf "retired")
-  | Epers_ScellentChildLDS -> capitale (transl conf "scellentChildLDS")
-  | Epers_ScellentParentLDS -> capitale (transl conf "scellentParentLDS")
-  | Epers_ScellentSpouseLDS -> capitale (transl conf "scellentSpouseLDS")
-  | Epers_VenteBien -> capitale (transl conf "venteBien")
-  | Epers_Will -> capitale (transl conf "will")
-  | Epers_Name n -> capitale n
+      Utf8.capitalize (transl conf "mobilisationMilitaire")
+  | Epers_Naturalisation -> Utf8.capitalize (transl conf "naturalisation")
+  | Epers_Occupation -> Utf8.capitalize (transl_nth conf "occupation/occupations" 0)
+  | Epers_Ordination -> Utf8.capitalize (transl conf "ordination")
+  | Epers_Property -> Utf8.capitalize (transl conf "property")
+  | Epers_Recensement -> Utf8.capitalize (transl conf "recensement")
+  | Epers_Residence -> Utf8.capitalize (transl conf "residence")
+  | Epers_Retired -> Utf8.capitalize (transl conf "retired")
+  | Epers_ScellentChildLDS -> Utf8.capitalize (transl conf "scellentChildLDS")
+  | Epers_ScellentParentLDS -> Utf8.capitalize (transl conf "scellentParentLDS")
+  | Epers_ScellentSpouseLDS -> Utf8.capitalize (transl conf "scellentSpouseLDS")
+  | Epers_VenteBien -> Utf8.capitalize (transl conf "venteBien")
+  | Epers_Will -> Utf8.capitalize (transl conf "will")
+  | Epers_Name n -> Utf8.capitalize n
 
 let string_of_efam_name conf efam_name =
   match efam_name with
-    Efam_Marriage -> capitale (transl conf "marriage event")
-  | Efam_NoMarriage -> capitale (transl conf "no marriage event")
-  | Efam_NoMention -> capitale (transl conf "no mention")
-  | Efam_Engage -> capitale (transl conf "engage event")
-  | Efam_Divorce -> capitale (transl conf "divorce event")
-  | Efam_Separated -> capitale (transl conf "separate event")
-  | Efam_Annulation -> capitale (transl conf "annulation")
-  | Efam_MarriageBann -> capitale (transl conf "marriage bann")
-  | Efam_MarriageContract -> capitale (transl conf "marriage contract")
-  | Efam_MarriageLicense -> capitale (transl conf "marriage licence")
-  | Efam_PACS -> capitale (transl conf "PACS")
-  | Efam_Residence -> capitale (transl conf "residence")
-  | Efam_Name n -> capitale n
+    Efam_Marriage -> Utf8.capitalize (transl conf "marriage event")
+  | Efam_NoMarriage -> Utf8.capitalize (transl conf "no marriage event")
+  | Efam_NoMention -> Utf8.capitalize (transl conf "no mention")
+  | Efam_Engage -> Utf8.capitalize (transl conf "engage event")
+  | Efam_Divorce -> Utf8.capitalize (transl conf "divorce event")
+  | Efam_Separated -> Utf8.capitalize (transl conf "separate event")
+  | Efam_Annulation -> Utf8.capitalize (transl conf "annulation")
+  | Efam_MarriageBann -> Utf8.capitalize (transl conf "marriage bann")
+  | Efam_MarriageContract -> Utf8.capitalize (transl conf "marriage contract")
+  | Efam_MarriageLicense -> Utf8.capitalize (transl conf "marriage licence")
+  | Efam_PACS -> Utf8.capitalize (transl conf "PACS")
+  | Efam_Residence -> Utf8.capitalize (transl conf "residence")
+  | Efam_Name n -> Utf8.capitalize n
 
 (* ************************************************************************ *)
 (*  [Fonc] highlight_diff : char array -> bool array -> string              *)

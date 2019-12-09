@@ -42,10 +42,10 @@ let print_title conf base is_surnames ini len =
       Wserver.printf (fcapitale (ftransl conf "the %d surnames")) len
     else Wserver.printf (fcapitale (ftransl conf "the %d first names")) len
   else if is_surnames then
-    Wserver.printf "%s" (capitale (transl_nth conf "surname/surnames" 0))
+    Wserver.printf "%s" (Utf8.capitalize (transl_nth conf "surname/surnames" 0))
   else
     Wserver.printf "%s"
-      (capitale (transl_nth conf "first name/first names" 0));
+      (Utf8.capitalize (transl_nth conf "first name/first names" 0));
   if ini <> "" then
     Wserver.printf " %s %s" (transl conf "starting with") ini
   else
@@ -88,7 +88,7 @@ let print_alphabetic_big conf base is_surnames ini list len too_big =
     begin
       begin
         Wserver.printf "<p>";
-        Wserver.printf "%s:" (capitale (transl conf "the whole list"));
+        Wserver.printf "%s:" (Utf8.capitalize (transl conf "the whole list"));
         Wserver.printf "</p>\n"
       end;
       begin

@@ -54,7 +54,7 @@ let print_differences conf base branches (ifam1, fam1) (ifam2, fam2) =
          <li><input type=\"radio\" class=\"form-control\" name=\"%s\" value=\"1\" checked>%s</li>\
          <li><input type=\"radio\" class=\"form-control\" name=\"%s\" value=\"2\">%s</li>\
          </ul>"
-        (capitale title) name x1 name x2;
+        (Utf8.capitalize title) name x1 name x2;
   in
   Wserver.printf "<form method=\"post\" action=\"%s\">\n" conf.command;
   Util.hidden_env conf;
@@ -119,12 +119,12 @@ let print_differences conf base branches (ifam1, fam1) (ifam2, fam2) =
            transl conf "divorced" ^ ds);
   Wserver.printf
     "</p><p><button type=\"submit\" class=\"btn btn-secondary btn-lg\">%s</button></form>"
-    (capitale (transl_nth conf "validate/delete" 0))
+    (Utf8.capitalize (transl_nth conf "validate/delete" 0))
 
 let merge_fam1 conf base fam1 fam2 =
   let title _ =
     let s = transl_nth conf "family/families" 1 in
-    Wserver.printf "%s" (capitale (transl_decline conf "merge" s))
+    Wserver.printf "%s" (Utf8.capitalize (transl_decline conf "merge" s))
   in
   Hutil.header conf title; print_differences conf base [] fam1 fam2; Hutil.trailer conf
 

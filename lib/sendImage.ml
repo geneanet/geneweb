@@ -1,5 +1,3 @@
-(* $Id: sendImage.ml,v 5.7 2007-09-12 09:58:44 ddr Exp $ *)
-
 open Config
 open Def
 open Gwdb
@@ -18,7 +16,7 @@ let extension_of_type =
 let incorrect conf = Hutil.incorrect_request conf; raise @@ Update.ModErr __LOC__
 
 let incorrect_content_type conf base p s =
-  let title _ = Wserver.printf "%s" (capitale (transl conf "error")) in
+  let title _ = Wserver.printf "%s" (Utf8.capitalize (transl conf "error")) in
   Hutil.rheader conf title;
   Hutil.print_link_to_welcome conf true;
   Wserver.printf "<p>\n";
@@ -35,7 +33,7 @@ let incorrect_content_type conf base p s =
   raise @@ Update.ModErr __LOC__
 
 let error_too_big_image conf base p len max_len =
-  let title _ = Wserver.printf "%s" (capitale (transl conf "error")) in
+  let title _ = Wserver.printf "%s" (Utf8.capitalize (transl conf "error")) in
   Hutil.rheader conf title;
   Hutil.print_link_to_welcome conf true;
   Wserver.printf "<p><em style=\"font-size:smaller\">";
@@ -63,7 +61,7 @@ let print_link_delete_image conf base p =
       begin
         Wserver.printf "<a href=\"%sm=DEL_IMAGE&i=%s\">" (commd conf)
           (string_of_iper (get_iper p));
-        Wserver.printf "%s %s" (capitale (transl conf "delete"))
+        Wserver.printf "%s %s" (Utf8.capitalize (transl conf "delete"))
           (transl_nth conf "image/images" 0);
         Wserver.printf "</a>"
       end;
@@ -76,11 +74,11 @@ let print_send_image conf base p =
   let title h =
     if Util.has_image conf base p then
       Wserver.printf "%s"
-        (capitale
+        (Utf8.capitalize
            (transl_decline conf "modify" (transl_nth conf "image/images" 0)))
     else
       Wserver.printf "%s"
-        (capitale
+        (Utf8.capitalize
            (transl_decline conf "add" (transl_nth conf "image/images" 0)));
     if h then ()
     else
@@ -106,7 +104,7 @@ let print_send_image conf base p =
     (string_of_iper (get_iper p)) conf.xhs;
   Wserver.printf "<input type=\"hidden\" name=\"digest\" value=\"%s\"%s>\n"
     digest conf.xhs;
-  Wserver.printf "%s%s\n" (capitale (transl conf "file")) (Util.transl conf ":");
+  Wserver.printf "%s%s\n" (Utf8.capitalize (transl conf "file")) (Util.transl conf ":");
   Wserver.printf "<input \
 type=\"file\" class=\"form-control\" name=\"file\" size=\"50\" maxlength=\"250\" accept=\"image/*\"%s>\n"
     conf.xhs;
@@ -120,7 +118,7 @@ type=\"file\" class=\"form-control\" name=\"file\" size=\"50\" maxlength=\"250\"
   end;
   Wserver.printf
     "<button type=\"submit\" class=\"btn btn-secondary btn-lg mt-2\">\n";
-  Wserver.printf "%s" (capitale (transl_nth conf "validate/delete" 0));
+  Wserver.printf "%s" (Utf8.capitalize (transl_nth conf "validate/delete" 0));
   Wserver.printf "</button>\n";
   Wserver.printf "</form>\n";
   print_link_delete_image conf base p;
@@ -142,7 +140,7 @@ let print conf base =
 let print_delete_image conf base p =
   let title h =
     Wserver.printf "%s"
-      (capitale
+      (Utf8.capitalize
          (transl_decline conf "delete" (transl_nth conf "image/images" 0)));
     if h then ()
     else
@@ -163,7 +161,7 @@ let print_delete_image conf base p =
      <p><button type=\"submit\" class=\"btn btn-secondary btn-lg\">%s</button></p>\
      </form>"
     (string_of_iper (get_iper p))
-    (capitale (transl_nth conf "validate/delete" 0));
+    (Utf8.capitalize (transl_nth conf "validate/delete" 0));
   Hutil.trailer conf
 
 let print_del conf base =
@@ -182,7 +180,7 @@ let print_del conf base =
 
 let print_sent conf base p =
   let title _ =
-    Wserver.printf "%s" (capitale (transl conf "image received"))
+    Wserver.printf "%s" (Utf8.capitalize (transl conf "image received"))
   in
   Hutil.header conf title;
   Wserver.printf "<ul>\n";
@@ -324,7 +322,7 @@ let print_send_ok conf base =
 
 let print_deleted conf base p =
   let title _ =
-    Wserver.printf "%s" (capitale (transl conf "image deleted"))
+    Wserver.printf "%s" (Utf8.capitalize (transl conf "image deleted"))
   in
   Hutil.header conf title;
   Wserver.printf "<ul><li>%s</li></ul>" (referenced_person_text conf base p);

@@ -113,7 +113,7 @@ let print_wizards_by_date conf list =
            prec = Sure; delta = 0}
         in
         Wserver.printf "%s"
-          (capitale (DateDisplay.string_of_ondate conf (Dgreg (dmy, Dgregorian)))));
+          (Utf8.capitalize (DateDisplay.string_of_ondate conf (Dgreg (dmy, Dgregorian)))));
      (fun tm -> tm.Unix.tm_year),
      (fun tm -> Wserver.printf "%d" (tm.Unix.tm_year + 1900))]
   in
@@ -247,7 +247,7 @@ let print_search_form conf from_wiz =
   Wserver.printf "%s\n" (transl_nth conf "search/case sensitive" 1);
   Wserver.printf "</label>\n";
   Wserver.printf "<input type=\"submit\" value=\"%s\"%s>\n"
-    (capitale (transl_nth conf "search/case sensitive" 0)) conf.xhs;
+    (Utf8.capitalize (transl_nth conf "search/case sensitive" 0)) conf.xhs;
   Wserver.printf "</p>\n";
   Wserver.printf "</form>\n";
   Wserver.printf "</td>\n";
@@ -260,7 +260,7 @@ let print_main conf base auth_file =
       (transl_nth conf "wizard/wizards/friend/friends/exterior" 1)
   in
   let title _ =
-    Wserver.printf "%s - %s" (capitale wiztxt)
+    Wserver.printf "%s - %s" (Utf8.capitalize wiztxt)
       (Util.translate_eval (transl_nth conf "note/notes" 1))
   in
   let by_alphab_order = p_getenv conf.env "o" <> Some "H" in
@@ -297,7 +297,7 @@ let print_main conf base auth_file =
         Wserver.printf "<p>\n";
         Wserver.printf "%d %s<br%s>\n" (List.length wizdata) wiztxt conf.xhs;
         Wserver.printf "<em style=\"font-size:80%%\">\n";
-        Wserver.printf "%s " (capitale (transl conf "click"));
+        Wserver.printf "%s " (Utf8.capitalize (transl conf "click"));
         Wserver.printf "<a href=\"%sm=WIZNOTES&o=H\">%s</a>\n" (commd conf)
           (transl conf "here");
         Wserver.printf "%s"
@@ -572,7 +572,7 @@ let print_connected_wizard conf first wddir wz tm_user =
 let do_connected_wizards conf base (_, _, _, wl) =
   let title _ =
     Wserver.printf "%s"
-      (capitale (transl_nth conf "wizard/wizards/friend/friends/exterior" 1))
+      (Utf8.capitalize (transl_nth conf "wizard/wizards/friend/friends/exterior" 1))
   in
   Hutil.header conf title;
   Hutil.print_link_to_welcome conf true;

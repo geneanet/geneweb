@@ -38,7 +38,7 @@ let print_search_form conf from_note =
   Wserver.printf "</label>\n";
   Wserver.printf
     "<button type=\"submit\" class=\"btn btn-secondary btn-lg\">\n";
-  Wserver.printf "%s" (capitale (transl_nth conf "search/case sensitive" 0));
+  Wserver.printf "%s" (Utf8.capitalize (transl_nth conf "search/case sensitive" 0));
   Wserver.printf "</button>\n";
   Wserver.printf "</p>\n";
   Wserver.printf "</form>\n";
@@ -231,7 +231,7 @@ let print_linked_list conf base pgl =
 
 let print_what_links conf base fnotes =
   let title h =
-    Wserver.printf "%s " (capitale (transl conf "linked pages"));
+    Wserver.printf "%s " (Utf8.capitalize (transl conf "linked pages"));
     if h then Wserver.printf "[%s]" fnotes
     else
       begin
@@ -278,7 +278,7 @@ let print_mod conf base =
     | None -> ""
   in
   let title _ =
-    Wserver.printf "%s - %s%s" (capitale (transl conf "base notes"))
+    Wserver.printf "%s - %s%s" (Utf8.capitalize (transl conf "base notes"))
       conf.bname (if fnotes = "" then "" else " (" ^ fnotes ^ ")")
   in
   let (env, s) = read_notes base fnotes in
@@ -335,7 +335,7 @@ let print_misc_notes conf base =
   let title h =
     Wserver.printf "%s"
       (if d = "" then
-         capitale (Util.translate_eval (transl conf "miscellaneous notes"))
+         Utf8.capitalize (Util.translate_eval (transl conf "miscellaneous notes"))
        else if h then "- " ^ d ^ " -"
        else "<tt>- " ^ d ^ " -</tt>")
   in

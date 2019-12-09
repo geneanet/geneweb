@@ -156,7 +156,7 @@ let print_same_name conf base p =
   | pl ->
       Wserver.printf "<p>\n";
       Wserver.printf "%s%s\n"
-        (capitale (transl conf "persons having the same name"))
+        (Utf8.capitalize (transl conf "persons having the same name"))
         (transl conf ":");
       Wserver.printf "<ul>\n";
       List.iter
@@ -214,7 +214,7 @@ let print_return conf =
   Wserver.printf "<input type=\"hidden\" name=\"return\" value=\"on\"%s>\n"
     conf.xhs;
   Wserver.printf "<input type=\"submit\" value=\"%s\"%s>\n"
-    (capitale (transl conf "back")) conf.xhs;
+    (Utf8.capitalize (transl conf "back")) conf.xhs;
   Wserver.printf "</form>\n";
   Wserver.printf "</p>\n"
 
@@ -222,10 +222,10 @@ let print_err_unknown conf _base (f, s, o) =
 #ifdef API
   if not !Api_conf.mode_api then begin
 #endif
-  let title _ = Wserver.printf "%s" (capitale (transl conf "error")) in
+  let title _ = Wserver.printf "%s" (Utf8.capitalize (transl conf "error")) in
   Hutil.rheader conf title;
   Wserver.printf "%s%s <strong>%s.%d %s</strong>\n"
-    (capitale (transl conf "unknown person")) (transl conf ":") f o s;
+    (Utf8.capitalize (transl conf "unknown person")) (transl conf ":") f o s;
   print_return conf;
   Hutil.trailer conf;
 #ifdef API
@@ -233,7 +233,7 @@ let print_err_unknown conf _base (f, s, o) =
 #endif
   let err =
     Printf.sprintf "%s%s <strong>%s.%d %s</strong>\n"
-      (capitale (transl conf "unknown person")) (transl conf ":") f o s
+      (Utf8.capitalize (transl conf "unknown person")) (transl conf ":") f o s
   in
   raise @@ ModErr err
 
@@ -282,7 +282,7 @@ let string_of_error conf base = function
       (transl conf "would be his/her own ancestor")
   | BadSexOfMarriedPerson _ ->
     Printf.sprintf "%s."
-      (capitale (transl conf "cannot change sex of a married person"))
+      (Utf8.capitalize (transl conf "cannot change sex of a married person"))
 
 let print_error conf base e =
   Wserver.printf "%s" @@ string_of_error conf base e
@@ -295,7 +295,7 @@ let someone_ref_text conf base p =
 
 let print_list_aux conf base title list printer =
   if list <> [] then begin
-    Wserver.printf "%s\n<ul>" (capitale (transl conf title)) ;
+    Wserver.printf "%s\n<ul>" (Utf8.capitalize (transl conf title)) ;
     printer conf base list ;
     Wserver.printf "</ul>";
   end
@@ -320,7 +320,7 @@ let print_warning conf base =
       let fath = poi base (get_father cpl) in
       let moth = poi base (get_mother cpl) in
       Wserver.printf "%s\n"
-        (capitale (transl conf "changed order of children"));
+        (Utf8.capitalize (transl conf "changed order of children"));
       Wserver.printf "-&gt;\n";
       Wserver.printf "%s"
         (someone_ref_text conf base fath ^ "\n" ^ transl_nth conf "and" 0 ^
@@ -375,7 +375,7 @@ let print_warning conf base =
       Wserver.printf "</ul>\n"
   | ChangedOrderOfMarriages (p, before, after) ->
       Wserver.printf "%s\n"
-        (capitale (transl conf "changed order of marriages"));
+        (Utf8.capitalize (transl conf "changed order of marriages"));
       Wserver.printf "-&gt;\n";
       let print_list arr diff_arr =
         Array.iteri
@@ -411,7 +411,7 @@ let print_warning conf base =
       Wserver.printf "</table>\n"
   | ChangedOrderOfFamilyEvents (_, before, after) ->
       Wserver.printf "%s\n"
-        (capitale (transl conf "changed order of family's events"));
+        (Utf8.capitalize (transl conf "changed order of family's events"));
       Wserver.printf "-&gt;\n";
       let print_list arr diff_arr =
         Array.iteri
@@ -442,7 +442,7 @@ let print_warning conf base =
       Wserver.printf "</table>\n"
   | ChangedOrderOfPersonEvents (_, before, after) ->
       Wserver.printf "%s\n"
-        (capitale (transl conf "changed order of person's events"));
+        (Utf8.capitalize (transl conf "changed order of person's events"));
       Wserver.printf "-&gt;\n";
       let print_list arr diff_arr =
         Array.iteri
@@ -655,7 +655,7 @@ let print_misc conf _base =
   function
     MissingSources ->
       Wserver.printf "<em>";
-      Wserver.printf "%s\n" (capitale (transl conf "missing sources"));
+      Wserver.printf "%s\n" (Utf8.capitalize (transl conf "missing sources"));
       Wserver.printf "</em>"
 
 (* ************************************************************************* *)
@@ -690,7 +690,7 @@ let print_miscs conf base ml =
 (* ************************************************************************* *)
 let print_warnings_and_miscs conf base wl ml =
   if wl <> [] || ml <> [] then begin
-    Wserver.printf "%s\n" (capitale (transl conf "warnings"));
+    Wserver.printf "%s\n" (Utf8.capitalize (transl conf "warnings"));
     Wserver.printf "<ul>\n";
     List.iter
       (fun w ->
@@ -712,7 +712,7 @@ let error conf base x =
 #ifdef API
   if not !Api_conf.mode_api then begin
 #endif
-  let title _ = Wserver.printf "%s" (capitale (transl conf "error")) in
+  let title _ = Wserver.printf "%s" (Utf8.capitalize (transl conf "error")) in
   Hutil.rheader conf title;
   Wserver.printf "%s" err;
   Wserver.printf "\n";
@@ -724,7 +724,7 @@ let error conf base x =
   raise @@ ModErr err
 
 let error_locked conf =
-  let title _ = Wserver.printf "%s" (capitale (transl conf "error")) in
+  let title _ = Wserver.printf "%s" (Utf8.capitalize (transl conf "error")) in
   Hutil.rheader conf title;
   Wserver.printf "<p>\n";
   Wserver.printf
@@ -754,7 +754,7 @@ let error_locked conf =
   Wserver.printf "<input type=\"hidden\" name=\"retry\" value=\"%s\"%s>\n"
     (Util.escape_html conf.user) conf.xhs;
   Wserver.printf "<input type=\"submit\" value=\"%s\"%s>\n"
-    (capitale (transl conf "try again")) conf.xhs;
+    (Utf8.capitalize (transl conf "try again")) conf.xhs;
   Wserver.printf "</form>\n";
   Wserver.printf "</td>\n";
   Wserver.printf "<td>\n";
@@ -776,7 +776,7 @@ let error_locked conf =
     | None -> ()
   end;
   Wserver.printf "<input type=\"submit\" value=\"%s\"%s>\n"
-    (capitale (transl_nth conf "user/password/cancel" 2)) conf.xhs;
+    (Utf8.capitalize (transl_nth conf "user/password/cancel" 2)) conf.xhs;
   Wserver.printf "</form>\n";
   Wserver.printf "</td>\n";
   Wserver.printf "</tr>\n";
@@ -791,7 +791,7 @@ let error_digest conf =
 #ifdef API
   if not !Api_conf.mode_api then begin
 #endif
-  let title _ = Wserver.printf "%s" (capitale (transl conf "error")) in
+  let title _ = Wserver.printf "%s" (Utf8.capitalize (transl conf "error")) in
   Hutil.rheader conf title;
   Hutil.print_link_to_welcome conf true;
   Wserver.printf "<p>%s.\n</p>\n" err ;
@@ -818,7 +818,7 @@ let bad_date conf d =
   let err =
     Printf.sprintf
       "%s%s%a\n"
-      (capitale (transl conf "incorrect date"))
+      (Utf8.capitalize (transl conf "incorrect date"))
       (transl conf ":")
       (fun _ -> function
          | {day = 0; month = 0; year = a} -> Printf.sprintf "%d" a
@@ -829,7 +829,7 @@ let bad_date conf d =
 #ifdef API
   if not !Api_conf.mode_api then begin
 #endif
-  let title _ = Wserver.printf "%s" (capitale (transl conf "error")) in
+  let title _ = Wserver.printf "%s" (Utf8.capitalize (transl conf "error")) in
   Hutil.rheader conf title ;
   Wserver.printf "%s" err ;
   Hutil.trailer conf ;
@@ -1075,7 +1075,7 @@ let print_create_conflict conf base p var =
 #ifdef API
   if not !Api_conf.mode_api then begin
 #endif
-  let title _ = Wserver.printf "%s" (capitale (transl conf "error")) in
+  let title _ = Wserver.printf "%s" (Utf8.capitalize (transl conf "error")) in
   Hutil.rheader conf title;
   Wserver.printf "%s" err ;
   let free_n =
@@ -1103,29 +1103,29 @@ let print_create_conflict conf base p var =
     free_n conf.xhs;
   Wserver.printf "<ul>\n";
   Wserver.printf "<li>";
-  Wserver.printf "%s%s %d. \n" (capitale (transl conf "first free number"))
+  Wserver.printf "%s%s %d. \n" (Utf8.capitalize (transl conf "first free number"))
     (transl conf ":") free_n;
   Wserver.printf (fcapitale (ftransl conf "click on \"%s\""))
     (transl conf "create");
   Wserver.printf "%s." (transl conf " to try again with this number");
   Wserver.printf "</li>";
   Wserver.printf "<li>";
-  Wserver.printf "%s " (capitale (transl conf "or"));
+  Wserver.printf "%s " (Utf8.capitalize (transl conf "or"));
   Wserver.printf (ftransl conf "click on \"%s\"") (transl conf "back");
   Wserver.printf " %s %s." (transl_nth conf "and" 0)
     (transl conf "change it (the number) yourself");
   Wserver.printf "</li>";
   Wserver.printf "<li>";
-  Wserver.printf "%s " (capitale (transl conf "or"));
+  Wserver.printf "%s " (Utf8.capitalize (transl conf "or"));
   Wserver.printf (ftransl conf "click on \"%s\"") (transl conf "back");
   Wserver.printf " %s %s." (transl_nth conf "and" 0)
     (transl conf "use \"link\" instead of \"create\"");
   Wserver.printf "</li>";
   Wserver.printf "</ul>\n";
   Wserver.printf "<input type=\"submit\" name=\"create\" value=\"%s\"%s>\n"
-    (capitale (transl conf "create")) conf.xhs;
+    (Utf8.capitalize (transl conf "create")) conf.xhs;
   Wserver.printf "<input type=\"submit\" name=\"return\" value=\"%s\"%s>\n"
-    (capitale (transl conf "back")) conf.xhs;
+    (Utf8.capitalize (transl conf "back")) conf.xhs;
   Wserver.printf "</form>\n";
   print_same_name conf base p;
   Hutil.trailer conf;

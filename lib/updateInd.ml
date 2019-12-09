@@ -1,4 +1,3 @@
-(* $id: updateInd.ml,v 5.15 2008-01-08 11:58:46 ddr Exp $ *)
 (* Copyright (c) 1998-2007 INRIA *)
 
 open Config
@@ -142,7 +141,8 @@ and eval_simple_var conf base env p =
             let p = poi base p.key_index in
             let e = List.nth (get_pevents p) (i - 1) in
             let name =
-              capitale (Util.string_of_pevent_name conf base e.epers_name)
+              Utf8.capitalize
+                (Util.string_of_pevent_name conf base e.epers_name)
             in
             let date =
               match Adef.od_of_cdate e.epers_date with
@@ -834,7 +834,7 @@ let print_update_ind conf base p digest =
 let print_del1 conf base p =
   let title _ =
     let s = transl_nth conf "person/persons" 0 in
-    Wserver.printf "%s" (capitale (transl_decline conf "delete" s))
+    Wserver.printf "%s" (Utf8.capitalize (transl_decline conf "delete" s))
   in
   Perso.interp_notempl_with_menu title "perso_header" conf base p;
   Wserver.printf "<h2>\n";
@@ -849,7 +849,7 @@ let print_del1 conf base p =
     (string_of_iper (get_iper p)) conf.xhs;
   Wserver.printf
     "<button type=\"submit\" class=\"btn btn-secondary btn-lg\">\n";
-  Wserver.printf "%s" (capitale (transl_nth conf "validate/delete" 0));
+  Wserver.printf "%s" (Utf8.capitalize (transl_nth conf "validate/delete" 0));
   Wserver.printf "</button>\n";
   Wserver.printf "</p>\n";
   Wserver.printf "</form>\n";

@@ -18,7 +18,7 @@ let print_merge conf base =
   | _ -> Hutil.incorrect_request conf
 
 let print_mod_merge_ok conf base wl p pgl1 ofn1 osn1 oocc1 pgl2 ofn2 osn2 oocc2 =
-  let title _ = Wserver.printf "%s" (capitale (transl conf "merge done")) in
+  let title _ = Wserver.printf "%s" (Utf8.capitalize (transl conf "merge done")) in
   Hutil.header conf title;
   Hutil.print_link_to_welcome conf true;
   Wserver.printf "\n%s\n"
@@ -39,20 +39,20 @@ let print_mod_merge_ok conf base wl p pgl1 ofn1 osn1 oocc1 pgl2 ofn2 osn2 oocc2 
       let snocc = if nocc <> 0 then Printf.sprintf "/%d" nocc else "" in
       Wserver.printf "<span class=\"unselectable float-left\">%s%s</span>\n\
                       <span class=\"float-left ml-1\">%s/%s%s</span>\n<br>"
-        (capitale (transl conf "new name")) (transl conf ":") nfn nsn snocc;
+        (Utf8.capitalize (transl conf "new name")) (transl conf ":") nfn nsn snocc;
       let soocc1 = if oocc1 <> 0 then Printf.sprintf "/%d" oocc1 else "" in
       Wserver.printf "<span class=\"unselectable float-left\">%s 1%s</span>\n\
                       <span class=\"float-left ml-1\">%s/%s%s</span>\n<br>"
-        (capitale (transl conf "old name")) (transl conf ":") ofn1 osn1 soocc1;
+        (Utf8.capitalize (transl conf "old name")) (transl conf ":") ofn1 osn1 soocc1;
       Wserver.printf "<span>%s%s</span>"
-        (capitale (transl conf "linked pages")) (transl conf ":");
+        (Utf8.capitalize (transl conf "linked pages")) (transl conf ":");
       NotesDisplay.print_linked_list conf base pgl1;
       let soocc2 = if oocc2 <> 0 then Printf.sprintf "/%d" oocc2 else "" in
       Wserver.printf "<span class=\"unselectable float-left\">%s 2%s</span>\n\
                       <span class=\"float-left ml-1\">%s/%s%s</span>\n<br>"
-        (capitale (transl conf "old name")) (transl conf ":") ofn2 osn2 soocc2;
+        (Utf8.capitalize (transl conf "old name")) (transl conf ":") ofn2 osn2 soocc2;
       Wserver.printf "<span>%s%s</span>"
-        (capitale (transl conf "linked pages")) (transl conf ":");
+        (Utf8.capitalize (transl conf "linked pages")) (transl conf ":");
       NotesDisplay.print_linked_list conf base pgl2
     end;
 

@@ -1,4 +1,3 @@
-(* $Id: relationLink.ml,v 5.20 2007-09-12 09:58:44 ddr Exp $ *)
 (* Copyright (c) 1998-2007 INRIA *)
 
 open Config
@@ -596,7 +595,7 @@ let print_relation_path conf base info =
 let print_relation_ok conf base info =
   let title _ =
     Wserver.printf "%s"
-      (capitale (transl_nth conf "relationship link/relationship links" 0));
+      (Utf8.capitalize (transl_nth conf "relationship link/relationship links" 0));
     begin match info.pb1, info.nb1 with
       None, None -> ()
     | _ -> Wserver.printf " %d" info.c1
@@ -739,7 +738,7 @@ let print_relation_dag conf base a ip1 ip2 l1 l2 =
         Some "on" -> true
       | _ -> false
     in
-    let page_title = Util.capitale (Util.transl conf "tree") in
+    let page_title = Utf8.capitalize (Util.transl conf "tree") in
     DagDisplay.make_and_print_dag conf base elem_txt vbar_txt invert set spl
       page_title ""
   with Exit -> Hutil.incorrect_request conf

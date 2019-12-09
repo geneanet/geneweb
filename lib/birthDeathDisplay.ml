@@ -21,7 +21,7 @@ let print_birth conf base =
       (fun (last_month_txt, was_future) (p, d, cal) ->
          let month_txt =
            let d = {d with day = 0} in
-           capitale (DateDisplay.string_of_date conf (Dgreg (d, cal)))
+           Utf8.capitalize (DateDisplay.string_of_date conf (Dgreg (d, cal)))
          in
          let future = Date.compare_dmy d conf.today = 1 in
          if not future && was_future then
@@ -72,7 +72,7 @@ let print_death conf base =
           (fun (last_month_txt, ages_sum, ages_nb) (p, d, cal) ->
              let month_txt =
                let d = {d with day = 0} in
-               capitale (DateDisplay.string_of_date conf (Dgreg (d, cal)))
+               Utf8.capitalize (DateDisplay.string_of_date conf (Dgreg (d, cal)))
              in
              if month_txt <> last_month_txt then
                begin
@@ -122,7 +122,7 @@ let print_death conf base =
       Wserver.printf "</ul>\n</li>\n</ul>\n";
       if fst ages_nb >= 3 then
         Wserver.printf "%s (%s) : %s<br%s>\n"
-          (capitale (transl conf "average age at death"))
+          (Utf8.capitalize (transl conf "average age at death"))
           (transl_nth conf "M/F" 0)
           (DateDisplay.string_of_age conf
              {day = 0; month = 0; year = fst ages_sum / fst ages_nb;
@@ -130,7 +130,7 @@ let print_death conf base =
           conf.xhs;
       if snd ages_nb >= 3 then
         Wserver.printf "%s (%s) : %s<br%s>\n"
-          (capitale (transl conf "average age at death"))
+          (Utf8.capitalize (transl conf "average age at death"))
           (transl_nth conf "M/F" 1)
           (DateDisplay.string_of_age conf
              {day = 0; month = 0; year = snd ages_sum / snd ages_nb;
@@ -182,7 +182,7 @@ let print_death conf base =
       Wserver.printf ")\n";
       Wserver.printf
         "<button type=\"submit\" class=\"btn btn-secondary btn-lg\">\n";
-      Wserver.printf "%s" (capitale (transl_nth conf "validate/delete" 0));
+      Wserver.printf "%s" (Utf8.capitalize (transl_nth conf "validate/delete" 0));
       Wserver.printf "</button>\n";
       Wserver.printf "</p>\n";
       Wserver.printf "</form>\n"
@@ -273,7 +273,7 @@ let print_marr_or_eng conf base title list =
       (fun (last_month_txt, was_future) (ifam, fam, d, cal) ->
          let month_txt =
            let d = {d with day = 0} in
-           capitale (DateDisplay.string_of_date conf (Dgreg (d, cal)))
+           Utf8.capitalize (DateDisplay.string_of_date conf (Dgreg (d, cal)))
          in
          let cpl = foi base ifam in
          let future = Date.compare_dmy d conf.today > 0 in
@@ -365,7 +365,7 @@ let print_oldest_engagements conf base =
   print_marr_or_eng conf base title list
 
 let old_print_statistics conf =
-  let title _ = Wserver.printf "%s" (capitale (transl conf "statistics")) in
+  let title _ = Wserver.printf "%s" (Utf8.capitalize (transl conf "statistics")) in
   let n =
     try int_of_string (List.assoc "latest_event" conf.base_env) with
       Not_found | Failure _ -> 20
@@ -469,7 +469,7 @@ let print_population_pyramid conf base =
     Mutil.string_of_int_sep (transl conf "(thousand separator)") n
   in
   let title _ =
-    Wserver.printf "%s (%d)" (capitale (transl conf "population pyramid"))
+    Wserver.printf "%s (%d)" (Utf8.capitalize (transl conf "population pyramid"))
       at_year
   in
   let print_image doit sex iname =
@@ -580,7 +580,7 @@ let print_population_pyramid conf base =
   let sum_men = Array.fold_left (+) 0 men in
   let sum_wom = Array.fold_left (+) 0 wom in
   Wserver.printf "<p>\n";
-  Wserver.printf "%s %s" (capitale (transl conf "number of living persons:"))
+  Wserver.printf "%s %s" (Utf8.capitalize (transl conf "number of living persons:"))
     (string_of_nb (sum_men + sum_wom));
   Wserver.printf "</p>\n";
   Wserver.printf "<p>\n";

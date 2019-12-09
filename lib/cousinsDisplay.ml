@@ -131,7 +131,7 @@ let rec print_descend_upto conf base max_cnt ini_p ini_br lev children =
                          (transl_nth conf "child/children" 1)
                          s s
                      in
-                     Wserver.printf "%s%s%s%s\n" (capitale (Util.translate_eval s)) with_sp
+                     Wserver.printf "%s%s%s%s\n" (Utf8.capitalize (Util.translate_eval s)) with_sp
                        (Util.transl conf ":") (if with_sp = "" then "<br>" else "")
                  end;
                (* the function children_of returns *all* the children of ip *)
@@ -167,7 +167,7 @@ let print_cousins_side_of conf base max_cnt a ini_p ini_br lev1 lev2 =
         begin
           Wserver.printf "<li>\n";
           Wserver.printf "%s%s\n"
-            (capitale
+            (Utf8.capitalize
                (cftransl conf "on %s's side"
                   [gen_person_title_text no_reference raw_access conf base
                      a]))
@@ -209,7 +209,7 @@ let print_cousins_lev conf base max_cnt p lev1 lev2 =
     loop first_sosa false
   in
   if some then ()
-  else Wserver.printf "%s.\n" (capitale (transl conf "no match"));
+  else Wserver.printf "%s.\n" (Utf8.capitalize (transl conf "no match"));
   if lev1 > 1 then Wserver.printf "</ul>\n"
 
 let include_templ conf name =
@@ -229,22 +229,22 @@ let print_cousins conf base p lev1 lev2 =
     in
     if lev1 = lev2 then
       let s = txt_fun (brother_label conf lev1) in
-      Wserver.printf "%s" (capitale (Util.translate_eval s))
+      Wserver.printf "%s" (Utf8.capitalize (Util.translate_eval s))
     else if lev1 = 2 && lev2 = 1 then
       let s = txt_fun (transl_nth conf "an uncle/an aunt" 4) in
-      Wserver.printf "%s" (capitale (Util.translate_eval s))
+      Wserver.printf "%s" (Utf8.capitalize (Util.translate_eval s))
     else if lev1 = 3 && lev2 = 1 then
       let s = txt_fun (transl_nth conf "a great-uncle/a great-aunt" 4) in
-      Wserver.printf "%s" (capitale (Util.translate_eval s))
+      Wserver.printf "%s" (Utf8.capitalize (Util.translate_eval s))
     else if lev1 = 1 && lev2 = 2 then
       let s = txt_fun (transl_nth conf "a nephew/a niece" 4) in
-      Wserver.printf "%s" (capitale (Util.translate_eval s))
+      Wserver.printf "%s" (Utf8.capitalize (Util.translate_eval s))
     else if lev1 = 1 && lev2 = 3 then
       let s = txt_fun (transl_nth conf "a great-nephew/a great-niece" 4) in
-      Wserver.printf "%s" (capitale (Util.translate_eval s))
+      Wserver.printf "%s" (Utf8.capitalize (Util.translate_eval s))
     else
-      Wserver.printf "%s %d / %s %d" (capitale (transl conf "ancestors")) lev1
-        (capitale (transl conf "descendants")) lev2
+      Wserver.printf "%s %d / %s %d" (Utf8.capitalize (transl conf "ancestors")) lev1
+        (Utf8.capitalize (transl conf "descendants")) lev2
   in
   let max_cnt =
     try int_of_string (List.assoc "max_cousins" conf.base_env) with
@@ -265,7 +265,7 @@ let print_cousins conf base p lev1 lev2 =
   Wserver.printf "<p>\n";
   if !cnt >= max_cnt then Wserver.printf "etc...\n"
   else if !cnt > 1 then
-    Wserver.printf "%s%s %d %s" (capitale (transl conf "total"))
+    Wserver.printf "%s%s %d %s" (Utf8.capitalize (transl conf "total"))
       (Util.transl conf ":") !cnt
       (Util.translate_eval ("@(c)" ^ transl_nth conf "person/persons" 1));
   if p_getenv conf.env "spouse" = Some "on" then

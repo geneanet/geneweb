@@ -1,4 +1,3 @@
-(* $Id: request.ml,v 5.61 2008-11-03 15:40:10 ddr Exp $ *)
 (* Copyright (c) 1998-2007 INRIA *)
 
 module type MakeIn = sig
@@ -363,7 +362,7 @@ let print_moved conf s =
 
 let print_no_index conf base =
   let title _ =
-    Wserver.printf "%s" (Util.capitale (transl conf "link to use"))
+    Wserver.printf "%s" (Utf8.capitalize (transl conf "link to use"))
   in
   let link = url_no_index conf base in
   Hutil.header conf title;
@@ -437,12 +436,12 @@ let treat_request_on_possibly_locked_base conf bfile =
         try Hashtbl.find conf.lexicon w with Not_found -> "[" ^ w ^ "]"
       in
       let title _ =
-        Wserver.printf "%s" (Util.capitale (transl conf "error"))
+        Wserver.printf "%s" (Utf8.capitalize (transl conf "error"))
       in
       Hutil.rheader conf title;
       Wserver.printf "<ul>";
       Wserver.printf "<li>" ;
-      Wserver.printf "%s" (Util.capitale (transl conf "cannot access base"));
+      Wserver.printf "%s" (Utf8.capitalize (transl conf "cannot access base"));
       Wserver.printf " \"%s\".</ul>\n" conf.bname;
       begin match e with
         Sys_error _ -> ()

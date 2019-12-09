@@ -7,7 +7,7 @@ open Util
 open Dag
 
 let image_normal_txt conf base p fname width height =
-  let image_txt = capitale (transl_nth conf "image/images" 0) in
+  let image_txt = Utf8.capitalize (transl_nth conf "image/images" 0) in
   let s = Unix.stat fname in
   let b = acces conf base p in
   let k = default_image_name base p in
@@ -27,7 +27,7 @@ let image_normal_txt conf base p fname width height =
   else Printf.sprintf "<a href=\"%sm=IM&%s&k=/%s\">" (commd conf) b k ^ r ^ "</a>"
 
 let image_url_txt conf url_p url height =
-  let image_txt = capitale (transl_nth conf "image/images" 0) in
+  let image_txt = Utf8.capitalize (transl_nth conf "image/images" 0) in
   Printf.sprintf "<a href=\"%s\">" url_p ^
   Printf.sprintf "<img src=\"%s\"\n alt=\"%s\" title=\"%s\" style=\"%s\" />" url
     image_txt image_txt
@@ -36,7 +36,7 @@ let image_url_txt conf url_p url height =
   "</a>\n"
 
 let image_url_txt_with_size conf url_p url width height =
-  let image_txt = capitale (transl_nth conf "image/images" 0) in
+  let image_txt = Utf8.capitalize (transl_nth conf "image/images" 0) in
   Printf.sprintf "<a href=\"%s\">" url_p ^
   Printf.sprintf
     "<img src=\"%s\"\nwidth=%d height=\"%d\" alt=\"%s\" title=\"%s\" style=\"%s %s\" />"
@@ -756,7 +756,7 @@ let make_tree_hts conf base elem_txt vbar_txt invert set spl d =
 
 let print_slices_menu conf hts =
   let txt n =
-    Util.capitale
+    Utf8.capitalize
       (transl_nth conf "display by slices/slice width/overlap/total width" n)
   in
   let title _ = Wserver.printf "%s" (txt 0) in
@@ -780,7 +780,7 @@ let print_slices_menu conf hts =
   Wserver.printf "<tr align=\"left\">\n";
   Wserver.printf "<td align=\"right\">\n";
   Wserver.printf "%s\n"
-    (Util.capitale (transl conf "don't group the common branches together"));
+    (Utf8.capitalize (transl conf "don't group the common branches together"));
   Wserver.printf "<input type=\"checkbox\" name=\"nogroup\" value=\"on\">\n";
   Wserver.printf "</td>\n";
   Wserver.printf "</tr>\n";
@@ -811,7 +811,7 @@ let print_slices_menu conf hts =
   Wserver.printf "<p>" ;
   Wserver.printf
     "<p><button type=\"submit\" class=\"btn btn-secondary btn-lg\">%s</button></p>"
-    (capitale (transl_nth conf "validate/delete" 0));
+    (Utf8.capitalize (transl_nth conf "validate/delete" 0));
   Wserver.printf "</form>\n";
   Hutil.trailer conf
 
@@ -1147,5 +1147,5 @@ let print conf base =
       Some "on" -> true
     | _ -> false
   in
-  let page_title = Util.capitale (Util.transl conf "tree") in
+  let page_title = Utf8.capitalize (Util.transl conf "tree") in
   make_and_print_dag conf base elem_txt vbar_txt invert set [] page_title ""

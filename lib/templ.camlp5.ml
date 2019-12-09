@@ -934,7 +934,7 @@ and eval_transl_lexicon conf upp s c =
           in
           Util.transl_decline conf s1 s3
   in
-  let r = Util.translate_eval r in if upp then Util.capitale r else r
+  let r = Util.translate_eval r in if upp then Utf8.capitalize r else r
 
 let nb_errors = ref 0
 
@@ -1375,7 +1375,7 @@ let rec interp_ast conf ifun env =
         let sl = List.map (eval_ast env ep) al in String.concat "" sl
     | None ->
         match f, vl with
-          "capitalize", [VVstring s] -> Util.capitale s
+          "capitalize", [VVstring s] -> Utf8.capitalize s
         | "interp", [VVstring s] ->
             let astl = parse_templ conf (Stream.of_string s) in
             String.concat "" (eval_ast_list env ep astl)

@@ -67,13 +67,13 @@ let give_access_someone conf base (x, t) list =
 let give_access_title conf t p =
   Wserver.printf "<a href=\"%sm=TT&sm=S&t=%s&p=%s\">" (commd conf)
     (code_varenv t) (code_varenv p);
-  Wserver.printf "%s" (capitale t);
+  Wserver.printf "%s" (Utf8.capitalize t);
   Wserver.printf "</a>\n"
 
 let give_access_all_titles conf t absolute =
   Wserver.printf "<a href=\"%sm=TT&sm=S&t=%s%s\">" (commd conf)
     (code_varenv t) (if absolute then "&a=A" else "");
-  Wserver.printf "%s" (if absolute then t else capitale t);
+  Wserver.printf "%s" (if absolute then t else Utf8.capitalize t);
   Wserver.printf "</a>"
 
 let give_access_all_places conf t =
@@ -101,7 +101,7 @@ let propose_tree_for_list list conf =
              i + 1)
           1 list
       in
-        Wserver.printf "&lim=6\">%s</a>\n" (capitale (transl conf "tree"))
+        Wserver.printf "&lim=6\">%s</a>\n" (Utf8.capitalize (transl conf "tree"))
       end;
       Wserver.printf "</p>\n"
   | _ -> ()
@@ -184,7 +184,7 @@ let print_places_list conf base t t_equiv list =
            give_access_all_titles conf t true)
         t_equiv
   in
-  let order s = capitale (Name.lower (surname_without_particle base s)) in
+  let order s = Utf8.capitalize (Name.lower (surname_without_particle base s)) in
   let list = List.sort (fun s1 s2 -> compare (order s1) (order s2)) list in
   let absolute = p_getenv conf.env "a" = Some "A" in
   let wprint_elem p =
@@ -222,20 +222,20 @@ let print_titles conf base p =
     begin
       Wserver.printf "<a href=\"%sm=TT&sm=A&p=%s\">" (commd conf)
         (code_varenv p);
-      Wserver.printf "%s" (capitale (transl conf "the whole list"));
+      Wserver.printf "%s" (Utf8.capitalize (transl conf "the whole list"));
       Wserver.printf "</a>\n"
     end;
   Hutil.trailer conf
 
 let print_all_titles conf base =
   let title _ =
-    Wserver.printf "%s" (capitale (transl conf "all the titles"))
+    Wserver.printf "%s" (Utf8.capitalize (transl conf "all the titles"))
   in
   let list =
     let l = select_all_titles conf base in
     string_cnt_list_uniq (List.sort compare_titles2 l)
   in
-  let order (s, _) = capitale (Name.lower s) in
+  let order (s, _) = Utf8.capitalize (Name.lower s) in
   let wprint_elem (t, cnt) =
     give_access_all_titles conf t false; Wserver.printf " (%d)" cnt
   in
@@ -245,7 +245,7 @@ let print_all_titles conf base =
 
 let print_all_places conf base =
   let title _ =
-    Wserver.printf "%s" (capitale (transl conf "all the estates"))
+    Wserver.printf "%s" (Utf8.capitalize (transl conf "all the estates"))
   in
   let list =
     let l = select_all_places conf base in

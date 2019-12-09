@@ -1,4 +1,3 @@
-(* $Id: descend.ml,v 5.27 2007-09-12 09:58:44 ddr Exp $ *)
 (* Copyright (c) 1998-2007 INRIA *)
 
 open Config
@@ -43,7 +42,7 @@ let descendants_title conf base p h =
     translate_eval
       (transl_a_of_gr_eq_gen_lev conf (transl conf "descendants") s1 s2)
   in
-  Wserver.printf "%s" (capitale s)
+  Wserver.printf "%s" (Utf8.capitalize s)
 
 let display_descendants_level conf base max_level ancestor =
   let max_level = min (Perso.limit_desc conf) max_level in
@@ -94,7 +93,7 @@ let display_descendants_level conf base max_level ancestor =
       [] list
   in
   Hutil.header conf (descendants_title conf base ancestor);
-  Wserver.printf "%s" (capitale (text_level conf max_level));
+  Wserver.printf "%s" (Utf8.capitalize (text_level conf max_level));
   if !len > 1 then
     Wserver.printf " (%d %s)" !len
       (Util.translate_eval ("@(c)" ^ transl_nth conf "person/persons" 1));
@@ -371,7 +370,7 @@ let display_descendants_with_numbers conf base max_level ancestor =
         ("m=D&i=" ^
          string_of_iper (get_iper ancestor) ^ "&v=" ^
          string_of_int max_level ^ "&t=G")
-        (capitale
+        (Utf8.capitalize
            (let s1 = person_text conf base ancestor in
             let s2 = person_text_no_html conf base ancestor in
             transl_a_of_gr_eq_gen_lev conf (transl conf "descendants") s1 s2))
@@ -388,7 +387,7 @@ let display_descendants_with_numbers conf base max_level ancestor =
       Some _, _ | _, Death (_, _) -> Wserver.printf "<br>"
     | _ -> ()
     end;
-  Wserver.printf "%s." (capitale (text_to conf max_level));
+  Wserver.printf "%s." (Utf8.capitalize (text_to conf max_level));
   Wserver.printf "<p>" ;
   mark_descendants conf base marks max_level (get_iper ancestor);
   label_descendants conf base marks paths max_level ancestor;
@@ -396,7 +395,7 @@ let display_descendants_with_numbers conf base max_level ancestor =
   if !total > 1 then
     begin
       Wserver.printf "<p>" ;
-      Wserver.printf "%s%s %d %s" (capitale (transl conf "total"))
+      Wserver.printf "%s%s %d %s" (Utf8.capitalize (transl conf "total"))
         (Util.transl conf ":") !total
         (Util.translate_eval ("@(c)" ^ transl_nth conf "person/persons" 1));
       if max_level > 1 then
@@ -504,7 +503,7 @@ let sort_and_display conf base paths precision list =
 let display_descendant_index conf base max_level ancestor =
   let max_level = min (Perso.limit_desc conf) max_level in
   let title h =
-    let txt = capitale (transl conf "index of the descendants") in
+    let txt = Utf8.capitalize (transl conf "index of the descendants") in
     if not h then
       wprint_geneweb_link conf
         ("m=D&i=" ^
@@ -540,7 +539,7 @@ let display_spouse_index conf base max_level ancestor =
   let max_level = min (Perso.limit_desc conf) max_level in
   let title _ =
     Wserver.printf "%s"
-      (capitale (transl conf "index of the spouses (non descendants)"))
+      (Utf8.capitalize (transl conf "index of the spouses (non descendants)"))
   in
   Hutil.header conf title;
   let persons = Gwdb.ipers base in
@@ -594,36 +593,36 @@ let print_desc_table_header conf =
   let nb_col = ref 2 in
   Wserver.printf "<tr class=\"descends_table_header\">\n";
   Wserver.printf "<th>\n";
-  Wserver.printf "%s" (capitale (transl conf "n° d'Aboville"));
+  Wserver.printf "%s" (Utf8.capitalize (transl conf "n° d'Aboville"));
   Wserver.printf "</th>\n";
   Wserver.printf "<th>\n";
-  Wserver.printf "%s" (capitale (transl_nth conf "person/persons" 0));
+  Wserver.printf "%s" (Utf8.capitalize (transl_nth conf "person/persons" 0));
   Wserver.printf "</th>\n";
   if p_getenv conf.env "birth" = Some "on" then
     begin
       Wserver.printf "<th>\n";
       incr nb_col;
-      Wserver.printf "%s" (capitale (transl conf "date of birth"));
+      Wserver.printf "%s" (Utf8.capitalize (transl conf "date of birth"));
       Wserver.printf "</th>\n"
     end;
   if p_getenv conf.env "birth_place" = Some "on" then
     begin
       Wserver.printf "<th>\n";
       incr nb_col;
-      Wserver.printf "%s" (capitale (transl conf "where born"));
+      Wserver.printf "%s" (Utf8.capitalize (transl conf "where born"));
       Wserver.printf "</th>\n"
     end;
   if p_getenv conf.env "marr" = Some "on" then
     begin
       Wserver.printf "<th>\n";
       incr nb_col;
-      Wserver.printf "%s" (capitale (transl_nth conf "spouse/spouses" 1));
+      Wserver.printf "%s" (Utf8.capitalize (transl_nth conf "spouse/spouses" 1));
       Wserver.printf "</th>\n"
     end;
   if p_getenv conf.env "marr_date" = Some "on" then
     begin
       Wserver.printf "<th>\n";
-      Wserver.printf "%s" (capitale (transl conf "date of marriage"));
+      Wserver.printf "%s" (Utf8.capitalize (transl conf "date of marriage"));
       incr nb_col;
       Wserver.printf "</th>\n"
     end;
@@ -631,20 +630,20 @@ let print_desc_table_header conf =
     begin
       Wserver.printf "<th>\n";
       incr nb_col;
-      Wserver.printf "%s" (capitale (transl conf "where married"));
+      Wserver.printf "%s" (Utf8.capitalize (transl conf "where married"));
       Wserver.printf "</th>\n"
     end;
   if p_getenv conf.env "child" = Some "on" then
     begin
       Wserver.printf "<th>\n";
       incr nb_col;
-      Wserver.printf "%s" (capitale (transl conf "nb children"));
+      Wserver.printf "%s" (Utf8.capitalize (transl conf "nb children"));
       Wserver.printf "</th>\n"
     end;
   if p_getenv conf.env "death" = Some "on" then
     begin
       Wserver.printf "<th>\n";
-      Wserver.printf "%s" (capitale (transl conf "date of death"));
+      Wserver.printf "%s" (Utf8.capitalize (transl conf "date of death"));
       incr nb_col;
       Wserver.printf "</th>\n"
     end;
@@ -652,14 +651,14 @@ let print_desc_table_header conf =
     begin
       Wserver.printf "<th>\n";
       incr nb_col;
-      Wserver.printf "%s" (capitale (transl conf "where dead"));
+      Wserver.printf "%s" (Utf8.capitalize (transl conf "where dead"));
       Wserver.printf "</th>\n"
     end;
   if p_getenv conf.env "death_age" = Some "on" then
     begin
       Wserver.printf "<th>\n";
       incr nb_col;
-      Wserver.printf "%s" (capitale (transl conf "age at death"));
+      Wserver.printf "%s" (Utf8.capitalize (transl conf "age at death"));
       Wserver.printf "</th>\n"
     end;
   if p_getenv conf.env "occu" = Some "on" then
@@ -667,7 +666,7 @@ let print_desc_table_header conf =
       Wserver.printf "<th>\n";
       incr nb_col;
       Wserver.printf "%s"
-        (capitale (transl_nth conf "occupation/occupations" 1));
+        (Utf8.capitalize (transl_nth conf "occupation/occupations" 1));
       Wserver.printf "</th>\n"
     end;
   Wserver.printf "</tr>\n";
@@ -1029,7 +1028,7 @@ let display_descendant_with_table conf base max_lev p =
             begin
               Wserver.printf "<th align=\"left\" colspan=\"%d\">\n" nb_col;
               Wserver.printf "%s %d"
-                (capitale (transl_nth conf "generation/generations" 0)) lev;
+                (Utf8.capitalize (transl_nth conf "generation/generations" 0)) lev;
               Wserver.printf "</th>\n"
             end;
             Wserver.printf "</tr>\n"
@@ -1040,7 +1039,7 @@ let display_descendant_with_table conf base max_lev p =
   in
   Hutil.header_fluid conf (descendants_title conf base p);
   Wserver.printf "<p>\n";
-  Wserver.printf "%s." (capitale (text_to conf max_lev));
+  Wserver.printf "%s." (Utf8.capitalize (text_to conf max_lev));
   Wserver.printf "</p>\n";
   Wserver.printf "<table class=descends_table>\n";
   (* On affiche l'entête et on en profite pour récupèrer *)
@@ -1050,7 +1049,7 @@ let display_descendant_with_table conf base max_lev p =
   end;
   Wserver.printf "</table>\n";
   Wserver.printf "<p>\n";
-  Wserver.printf "%s%s %d %s" (capitale (transl conf "total"))
+  Wserver.printf "%s%s %d %s" (Utf8.capitalize (transl conf "total"))
     (Util.transl conf ":")
     !nb_pers
     (transl_nth conf "person/persons" 1);
@@ -1314,7 +1313,7 @@ let print_aboville conf base max_level p =
   let num_aboville = p_getenv conf.env "num" = Some "on" in
   Hutil.header conf (descendants_title conf base p);
   Hutil.print_link_to_welcome conf true;
-  Wserver.printf "%s.<br><p>" (capitale (text_to conf max_level));
+  Wserver.printf "%s.<br><p>" (Utf8.capitalize (text_to conf max_level));
   let rec loop_ind lev lab p =
     if num_aboville then Wserver.printf "<tt>%s</tt>\n" lab
     else Wserver.printf "%s\n" lab;

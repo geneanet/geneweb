@@ -1,4 +1,3 @@
-(* $Id: gwd.ml,v 5.61 2009-03-11 10:56:09 ddr Exp $ *)
 (* Copyright (c) 1998-2007 INRIA *)
 
 open Config
@@ -332,7 +331,7 @@ let propose_base conf =
   Wserver.printf "<input name=\"b\" size=\"40\"> =&gt;\n";
   Wserver.printf
     "<button type=\"submit\" class=\"btn btn-secondary btn-lg\">\n";
-  Wserver.printf "%s" (capitale (transl_nth conf "validate/delete" 0));
+  Wserver.printf "%s" (Utf8.capitalize (transl_nth conf "validate/delete" 0));
   Wserver.printf "</button>\n";
   Wserver.printf "</li></ul>";
   Hutil.trailer conf
