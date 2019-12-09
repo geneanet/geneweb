@@ -33,7 +33,7 @@ let gen_print_link_to_welcome f conf right_aligned =
       Wserver.printf "<a href=\"%s\">\
          <span class=\"fa fa-home fa-lg ml-1 px-0\" title=\"%s\"></span>\
        </a>\n"
-        (commd_no_params conf) (Util.capitale (Util.transl conf "home"));
+        (commd_no_params conf) (Utf8.capitalize (Util.transl conf "home"));
       if right_aligned then Wserver.printf "</div>\n"
       else Wserver.printf "</p>\n"
     end
