@@ -32,9 +32,13 @@ install:
 
 build_script:
   - '%CYG_BASH% "cd ${APPVEYOR_BUILD_FOLDER} && BENCH_FILE=geneweb-bench.tmp.bin make ci"'
+  - '%CYG_BASH% "cd ${APPVEYOR_BUILD_FOLDER} && ocaml ./configure.ml && make clean distrib"'
+  - 7z a geneweb.zip %APPVEYOR_BUILD_FOLDER%\distribution
   - '%CYG_BASH% "cd ${APPVEYOR_BUILD_FOLDER} && ocaml ./configure.ml --sosa-zarith && make clean distrib"'
-  - 7z a geneweb.%APPVEYOR_REPO_COMMIT%.zip %APPVEYOR_BUILD_FOLDER%\distribution
+  - 7z a geneweb-zarith.zip %APPVEYOR_BUILD_FOLDER%\distribution
 
 artifacts:
-  - path: geneweb.%APPVEYOR_REPO_COMMIT%.zip
-    name: GeneWeb
+  - path: geneweb.zip
+    name: GeneWeb with default options
+  - path: geneweb-zarith.zip
+    name: GeneWeb with --sosa-zarith option
