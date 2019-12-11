@@ -61,6 +61,15 @@ let printf fmt =
   Printf.ksprintf (fun s -> output_string !wserver_oc s) fmt
 let wflush () = flush !wserver_oc
 
+let print_string s =
+  if !printing_state <> Contents then
+    begin
+      if !printing_state = Nothing then http OK;
+      printnl "";
+      printing_state := Contents
+    end;
+  output_string !wserver_oc s
+
 let hexa_digit x =
   if x >= 10 then Char.chr (Char.code 'A' + x - 10)
   else Char.chr (Char.code '0' + x)

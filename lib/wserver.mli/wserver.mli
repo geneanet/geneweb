@@ -29,6 +29,9 @@ val f :
 val printf : ('a, unit, string, unit) format4 -> 'a
     (* To be called to print page contents. *)
 
+val print_string : string -> unit
+    (* To be called to print page contents. *)
+
 val header : ('a, unit, string, unit) format4 -> 'a
     (* To print an http header line *)
 
