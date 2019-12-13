@@ -19,7 +19,9 @@ let lim_date_marriage = 1850
 let min_age_marriage = 13
 let max_age_marriage = 100
 let average_marriage_age = 20
+let max_siblings_gap = 50
 
+(* Check if d1 < d2 *)
 let strictly_before_dmy d1 d2 =
   match Date.compare_dmy_opt ~strict:true d1 d2 with
   | Some x -> x < 0
@@ -49,6 +51,13 @@ let strictly_older age year =
   match age.prec with
   | Before -> false
   | _ -> age.year > year
+
+let odate = function
+  | Some (Dgreg (d, _)) -> Some d
+  | _ -> None
+
+let obirth x =
+  Adef.od_of_cdate (get_birth x) |> odate
 
 type 'string event_name =
     Psort of 'string gen_pers_event_name
@@ -445,9 +454,9 @@ let changed_marriages_order base warning p =
 
 let close_siblings warning x np ifam des =
   match np with
-  | Some (elder, Dgreg (d1, _)) ->
-    begin match Adef.od_of_cdate (get_birth x) with
-      | Some (Dgreg (d2, _)) ->
+  | Some (elder, d1) ->
+    begin match odate @@ Adef.od_of_cdate (get_birth x) with
+      | Some d2 ->
         let d = Date.time_elapsed d1 d2 in
         (* On vérifie les jumeaux ou naissances proches. *)
         if d.year = 0
@@ -458,19 +467,29 @@ let close_siblings warning x np ifam des =
     end
   | _ -> ()
 
-let born_after_his_elder_sibling warning x np ifam des =
+let born_after_his_elder_sibling warning x b np ifam des =
   match np with
   | None -> ()
   | Some (elder, d1) ->
-    match Adef.od_of_cdate (get_birth x) with
+    match b with
     | Some d2 ->
-      if strictly_after d1 d2 then
+      if strictly_after_dmy d1 d2 then
         warning (ChildrenNotInOrder (ifam, des, elder, x))
-    | None -> match Date.date_of_death (get_death x) with
+    | None -> match odate @@ Date.date_of_death (get_death x) with
       | Some d2 ->
-        if strictly_after d1 d2 then
+        if strictly_after_dmy d1 d2 then
           warning (ChildrenNotInOrder (ifam, des, elder, x))
       | None -> ()
+
+let siblings_gap gap child = function
+  | None -> gap
+  | Some b ->
+    match gap with
+    | None -> Some ((b, child), (b, child))
+    | Some ((min, minp), (max, maxp)) ->
+      Some
+        ( (if strictly_before_dmy b min then (b, child) else (min, minp))
+        , (if strictly_after_dmy b max then (b, child) else (max, maxp)) )
 
 let child_born_after_his_parent warning x parent =
   match Adef.od_of_cdate (get_birth parent) with
@@ -583,21 +602,31 @@ let check_children ?(onchange = true) base warning (ifam, fam) fath moth =
         a
     else get_children fam
   in
-  ignore @@
-  Array.fold_left begin fun np child ->
-    let child = poi base child in
-    check_pevents base warning child;
-    born_after_his_elder_sibling warning child np ifam fam;
-    close_siblings warning child np ifam fam;
-    child_born_after_his_parent warning child fath;
-    child_born_after_his_parent warning child moth;
-    child_born_before_mother_death warning child moth;
-    possible_father warning child fath;
-    child_has_sex warning child;
-    match Adef.od_of_cdate (get_birth child) with
-    | Some d -> Some (child, d)
-    | _ -> np
-  end None children
+  let (_, gap) =
+    Array.fold_left begin fun (np, gap) child ->
+      let child = poi base child in
+      let b = obirth child in
+      let gap = siblings_gap gap child b in
+      check_pevents base warning child;
+      born_after_his_elder_sibling warning child b np ifam fam;
+      close_siblings warning child np ifam fam;
+      child_born_after_his_parent warning child fath;
+      child_born_after_his_parent warning child moth;
+      child_born_before_mother_death warning child moth;
+      possible_father warning child fath;
+      child_has_sex warning child;
+      let np = match b with
+        | Some d -> Some (child, d)
+        | _ -> np
+      in
+      (np, gap)
+    end (None, None) children
+  in
+  match gap with
+  | Some ((d1, p1), (d2, p2)) ->
+    let e = Date.time_elapsed d1 d2 in
+    if e.year > max_siblings_gap then warning (BigAgeBetweenSiblings (p1, p2, e))
+   | _ -> ()
 
 let has_family_sources fam =
   not

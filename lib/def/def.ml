@@ -252,7 +252,8 @@ type 'person error =
   | BadSexOfMarriedPerson of 'person
 
 type ('iper, 'person, 'family, 'descend, 'title, 'pevent, 'fevent) warning =
-    BigAgeBetweenSpouses of 'person * 'person * dmy
+  | BigAgeBetweenSpouses of 'person * 'person * dmy
+  | BigAgeBetweenSiblings of 'person * 'person * dmy
   | BirthAfterDeath of 'person
   | IncoherentSex of 'person * int * int
   | ChangedOrderOfChildren of 'family * 'descend * 'iper array * 'iper array

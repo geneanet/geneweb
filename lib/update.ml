@@ -302,13 +302,14 @@ let print_list_aux conf base title list printer =
 
 let print_warning conf base =
   function
-    BigAgeBetweenSpouses (fath, moth, a) ->
+  | BigAgeBetweenSiblings (p1, p2, a)
+  | BigAgeBetweenSpouses (p1, p2, a) ->
       Wserver.printf
         (fcapitale
            (ftransl conf
               "the difference of age between %t and %t is quite important"))
-        (fun _ -> print_someone_strong conf base fath)
-        (fun _ -> print_someone_strong conf base moth);
+        (fun _ -> print_someone_strong conf base p1)
+        (fun _ -> print_someone_strong conf base p2);
       Wserver.printf ": %s" (DateDisplay.string_of_age conf a)
   | BirthAfterDeath p ->
       Wserver.printf (ftransl conf "%t died before his/her birth")
