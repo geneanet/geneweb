@@ -1198,21 +1198,10 @@ let relation_sex_is_coherent base warning p =
 let all_checks_person base p a u =
   let wl = ref [] in
   let warning w = wl := w :: !wl in
-  let _ =
-    (let p = person_of_gen_person base (p, a, u) in
-     CheckItem.person base warning p :
-     _ option)
-  in
+  let pp = person_of_gen_person base (p, a, u) in
+  ignore @@ CheckItem.person base warning pp ;
   relation_sex_is_coherent base warning p;
-  begin match a.parents with
-    Some ifam ->
-      CheckItem.reduce_family base warning ifam (foi base ifam)
-  | _ -> ()
-  end;
-  Array.iter
-    (fun ifam ->
-       CheckItem.reduce_family base warning ifam (foi base ifam))
-    u.family;
+  CheckItem.on_person_update base warning pp ;
   let wl = List.sort_uniq compare !wl in
   List.iter
     (function

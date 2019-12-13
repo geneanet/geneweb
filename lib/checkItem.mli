@@ -33,8 +33,11 @@ val family
   -> family
   -> unit
 
-val reduce_family :
-  base -> (base_warning -> unit) -> ifam -> family -> unit
+val on_person_update
+  : base
+  -> (base_warning -> unit)
+  -> person
+  -> unit
 
 val sort_children :
   base -> iper array -> (iper array * iper array) option
