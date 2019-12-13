@@ -11,7 +11,13 @@ val nb_days_in_month : int -> int -> int
 (** [time_elapsed start stop]
     Compute the time elapsed between [start] and [stop].
     If [stop] is prior to [start], resulting [dmy]'s field
-    are negative (but correct). *)
+    are negative (but correct).
+    Resulting [prec] can be:
+    - [Sure] for exact duration
+    - [Before] for "less than" duration
+    - [After] for "more than" duration
+    - [Maybe] for other cases
+ *)
 val time_elapsed : Def.dmy -> Def.dmy -> Def.dmy
 
 val date_of_death : Def.death -> Adef.date option

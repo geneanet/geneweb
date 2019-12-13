@@ -8,14 +8,6 @@ let dmy_of_dmy2 dmy2 =
   {day = dmy2.day2; month = dmy2.month2; year = dmy2.year2; prec = Sure;
    delta = dmy2.delta2}
 
-let common_prec p1 p2 =
-  if p1 = p2 then p1
-  else
-    match p1, p2 with
-      Sure, _ -> p2
-    | _, Sure -> p1
-    | _ -> Maybe
-
 let leap_year a = if a mod 100 = 0 then a / 100 mod 4 = 0 else a mod 4 = 0
 
 let nb_days_in_month m a =
@@ -26,7 +18,14 @@ let nb_days_in_month m a =
   else 0
 
 let time_elapsed d1 d2 =
-  let prec = common_prec d1.prec d2.prec in
+  let prec =
+    match d1.prec, d2.prec with
+    | (Sure, Sure) -> Sure
+    | (Maybe | Sure | About), (Maybe | Sure | About) -> Maybe
+    | (About | Maybe | Sure | Before), (After | Sure | Maybe | About) -> After
+    | (About | Maybe | Sure | After), (Before | Sure | Maybe | About) -> Before
+    | _ -> Maybe
+  in
   match d1 with
   | {day = 0; month = 0; year = a1} ->
     {day = 0; month = 0; year = d2.year - a1; prec = prec; delta = 0}
