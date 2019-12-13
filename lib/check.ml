@@ -209,31 +209,56 @@ let print_base_warning oc base =
   | OldForMarriage (p, a) ->
       Printf.fprintf oc "%s married at age %d\n" (designation base p) a.year
 
+type check_date = CheckBefore of int | CheckAfter of int | CheckOther of int | CheckInfered of check_date
+
 let min_year_of p =
+  let aux = function
+    | { prec = After ; year } -> CheckAfter year
+    | { prec = Before ; year } -> CheckBefore year
+    | { year } -> CheckOther year
+  in
   match Adef.od_of_cdate (get_birth p) with
-  | Some (Dgreg (d, _)) -> Some d.year
+  | Some (Dgreg (d, _)) -> Some (aux d)
   | Some (Dtext _) | None -> None
 
+let dummy_date = CheckInfered (CheckOther max_int)
+
 let rec check_ancestors base warning year year_tab ip ini_p =
-  if fst @@ Gwdb.Marker.get year_tab ip = max_int then
+  let infer = function
+    | CheckBefore i -> CheckInfered (CheckBefore (pred i))
+    | CheckAfter i -> CheckInfered (CheckAfter (pred i))
+    | CheckOther i -> CheckInfered (CheckOther (pred i))
+    | CheckInfered (CheckBefore i) -> CheckInfered (CheckBefore (pred i))
+    | CheckInfered (CheckAfter i) -> CheckInfered (CheckAfter (pred i))
+    | CheckInfered (CheckOther i) -> CheckInfered (CheckOther (pred i))
+    | _ -> assert false
+  in
+  let own = function CheckInfered _ -> false | _ -> true in
+  let test a b p p' =
+    match a, b with
+    | CheckAfter y
+    , (CheckBefore y' | CheckOther y' | CheckInfered (CheckBefore y') | CheckInfered (CheckOther y'))
+      when y >= y' ->
+      warning (IncoherentAncestorDate (Lazy.force p, p'))
+    | _ -> ()
+  in
+  if Gwdb.Marker.get year_tab ip = dummy_date then
     let p = poi base ip in
-    let new_year_o = min_year_of p in
-    let (new_year, new_ini_p, own_year) =
-      match new_year_o with
-        Some y -> y, p, true
-      | None -> year - 1, ini_p, false
+    let (new_year, new_ini_p) =
+      match min_year_of p with
+      | Some y -> y, p
+      | None -> infer year, ini_p
     in
-    Gwdb.Marker.set year_tab ip (new_year, own_year) ;
-    if new_year >= year then warning (IncoherentAncestorDate (p, ini_p));
+    Gwdb.Marker.set year_tab ip new_year ;
+    test new_year year (lazy p) ini_p ;
     match get_parents p with
     | Some ifam ->
       let fam = foi base ifam in
       let f ip =
         let year = Gwdb.Marker.get year_tab ip in
-        if fst year = max_int
+        if year = dummy_date
         then check_ancestors base warning new_year year_tab ip new_ini_p
-        else if snd year && fst year >= new_year then
-          warning (IncoherentAncestorDate (poi base ip, new_ini_p))
+        else if own year then test year new_year (lazy (poi base ip)) new_ini_p
       in
       f @@ get_father fam ;
       f @@ get_mother fam
@@ -248,15 +273,16 @@ let check_base ?(verbose = false) ?(mem = false) base error warning changed_p =
   end ;
   let persons = Gwdb.ipers base in
   let len = Gwdb.Collection.length persons in
-  let year_tab = Gwdb.iper_marker persons (max_int, false) in
+
+  let year_tab = Gwdb.iper_marker persons dummy_date in
   if verbose then begin
     Printf.eprintf "check persons\n" ;
     ProgrBar.start () ;
     Gwdb.Collection.iteri begin fun i ip ->
       ProgrBar.run i len ;
       let p = poi base ip in
-      if fst @@ Gwdb.Marker.get year_tab ip = max_int
-      then check_ancestors base warning max_int year_tab ip p ;
+      if Gwdb.Marker.get year_tab ip = dummy_date
+      then check_ancestors base warning dummy_date year_tab ip p ;
       match CheckItem.person ~onchange:false base warning p with
       | Some ippl -> List.iter changed_p ippl
       | None -> ()
@@ -265,8 +291,8 @@ let check_base ?(verbose = false) ?(mem = false) base error warning changed_p =
   end else begin
     Gwdb.Collection.iter begin fun ip ->
       let p = poi base ip in
-      if fst @@ Gwdb.Marker.get year_tab ip = max_int
-      then check_ancestors base warning max_int year_tab ip p ;
+      if Gwdb.Marker.get year_tab ip = dummy_date
+      then check_ancestors base warning dummy_date year_tab ip p ;
       match CheckItem.person ~onchange:false base warning p with
       | Some ippl -> List.iter changed_p ippl
       | None -> ()
