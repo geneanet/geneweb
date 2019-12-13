@@ -696,14 +696,15 @@ let compute_warnings conf base resp =
         List.fold_right
           (fun w wl ->
             match w with
-            | BigAgeBetweenSpouses (fath, moth, a) ->
+            | BigAgeBetweenSiblings (p1, p2, a)
+            | BigAgeBetweenSpouses (p1, p2, a) ->
                 let w =
                   (Printf.sprintf
                      (fcapitale
                         (ftransl conf
                            "the difference of age between %t and %t is quite important"))
-                     (fun _ -> print_someone fath)
-                     (fun _ -> print_someone moth))
+                     (fun _ -> print_someone p1)
+                     (fun _ -> print_someone p2))
                   ^ ": " ^ (DateDisplay.string_of_age conf a)
                 in
                 w :: wl
