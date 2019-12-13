@@ -95,7 +95,12 @@ exception Not_comparable
 let rec compare_dmy_aux failure success ?(strict=false) dmy1 dmy2 =
   match compare dmy1.year dmy2.year with
   | 0 -> compare_month strict failure success dmy1 dmy2
-  | x -> success x
+  | x ->
+    if strict then match x with
+      | -1 when dmy1.prec = After || dmy2.prec = Before -> failure ()
+      | 1 when dmy1.prec = Before || dmy2.prec = After -> failure ()
+      | x -> success x
+    else success x
 and compare_month strict failure success dmy1 dmy2 = match dmy1.month, dmy2.month with
   | 0, 0 -> cmp_prec strict failure success dmy1 dmy2
   | 0, _ ->
