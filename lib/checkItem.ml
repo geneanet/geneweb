@@ -40,6 +40,16 @@ let strictly_after d1 d2 =
   | Dgreg (d1, _), Dgreg (d2, _) -> strictly_after_dmy d1 d2
   | _ -> false
 
+let strictly_younger age year =
+  match age.prec with
+  | After -> false
+  | _ -> age.year < year
+
+let strictly_older age year =
+  match age.prec with
+  | Before -> false
+  | _ -> age.year > year
+
 type 'string event_name =
     Psort of 'string gen_pers_event_name
   | Fsort of 'string gen_fam_event_name
@@ -146,9 +156,11 @@ let titles_after_birth warning p t =
 let check_person_age base warning p =
   let aux d1 d2 =
     let a = Date.time_elapsed d1 d2 in
-    if d2.year > lim_date_death then
-      (if a.year > max_death_after_lim_date_death then warning (DeadOld (p, a)))
-    else if a.year > max_death_before_lim_date_death then warning (DeadOld (p, a))
+    if d2.year > lim_date_death then begin
+      if strictly_older a max_death_after_lim_date_death
+      then warning (DeadOld (p, a))
+    end else if strictly_older a max_death_before_lim_date_death
+    then warning (DeadOld (p, a))
   in
   (* On pourrait faire un calcul sur la descendance ou l'ascendance si  *)
   (* on ne trouve rien ... mais c'est peut être un peu trop gourmand    *)
@@ -285,7 +297,7 @@ let check_difference_age_between_cpl warning fath moth =
     | None -> ()
     | Some d2 ->
       let a = Date.time_elapsed d1 d2 in
-      if a.year > max_age_btw_cpl
+      if strictly_older a max_age_btw_cpl
       then warning (BigAgeBetweenSpouses (fath, moth, a))
 
 (*
@@ -438,9 +450,10 @@ let close_siblings warning x np ifam des =
       | Some (Dgreg (d2, _)) ->
         let d = Date.time_elapsed d1 d2 in
         (* On vérifie les jumeaux ou naissances proches. *)
-        if d.year = 0 && d.month = 0 && d.day < max_days_btw_sibl then ()
-        else if d.year = 0 && d.month < max_month_btw_sibl then
-          warning (CloseChildren (ifam, des, elder, x))
+        if d.year = 0
+        && (d.month < max_month_btw_sibl)
+        && (d.month <> 0 || d.day >= max_days_btw_sibl)
+        then warning (CloseChildren (ifam, des, elder, x))
       | _ -> ()
     end
   | _ -> ()
@@ -467,19 +480,18 @@ let child_born_after_his_parent warning x parent =
         if strictly_after_dmy g1 g2 then warning (ParentBornAfterChild (parent, x))
         else
           let a = Date.time_elapsed g1 g2 in
-          if a.year < min_parent_age then
-            warning (ParentTooYoung (parent, a))
-          else if
-            (get_sex parent = Female && a.year > max_mother_age)
-            || (get_sex parent = Male && a.year > max_father_age)
-          then
-            warning (ParentTooOld (parent, a))
+          if strictly_younger a min_parent_age
+          then warning (ParentTooYoung (parent, a))
+          else if (get_sex parent = Female && strictly_older a max_mother_age)
+               || (get_sex parent = Male && strictly_older a max_father_age)
+          then warning (ParentTooOld (parent, a))
       | _ -> match Date.date_of_death (get_death x) with
         | Some (Dgreg (g2, _)) ->
           if strictly_after_dmy g1 g2 then warning (ParentBornAfterChild (parent, x))
           else
             let a = Date.time_elapsed g1 g2 in
-            if a.year < min_parent_age then warning (ParentTooYoung (parent, a))
+            if strictly_younger a min_parent_age
+            then warning (ParentTooYoung (parent, a))
         | _ -> ()
     end
   | _ -> ()
@@ -666,9 +678,9 @@ let check_parent_marriage_age warning fam p =
                 else if g2.year > lim_date_marriage
                 then
                   let e = Date.time_elapsed g1 g2 in
-                  if e.year < min_age_marriage
+                  if strictly_younger e min_age_marriage
                   then warning (YoungForMarriage (p, e))
-                  else if e.year > max_age_marriage
+                  else if strictly_older e max_age_marriage
                   then warning (OldForMarriage (p, e))
                   else loop list
                 else loop list
