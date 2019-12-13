@@ -439,6 +439,12 @@ message WarningBigAgeBetweenSpouses {
   required string date = 3;
 }
 
+message WarningBigAgeBetweenSiblings {
+  required WarningPerson fst = 1;
+  required WarningPerson snd = 2;
+  required string date = 3;
+}
+
 message WarningDeadOld {
   required WarningPerson person = 1;
   required string date = 3;

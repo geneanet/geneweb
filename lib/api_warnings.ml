@@ -16,6 +16,7 @@ let bad_sex_of_married_person = ref []
 
 (* Listes des warnings *)
 let big_age_between_spouses = ref []
+let big_age_between_siblings = ref []
 let birth_after_death = ref []
 let incoherent_sex = ref []
 let changed_order_of_children = ref []
@@ -76,6 +77,13 @@ let add_warning_to_piqi_warning_list conf base =
       M.Warning_big_age_between_spouses.{
         father = p2wp base fath
       ; mother = p2wp base moth
+      ; date = string_of_prec_dmy dmy
+      }
+  | BigAgeBetweenSiblings (fst, snd, dmy) ->
+    set_list big_age_between_siblings
+      M.Warning_big_age_between_siblings.{
+        fst = p2wp base fst
+      ; snd = p2wp base snd
       ; date = string_of_prec_dmy dmy
       }
   | BirthAfterDeath p ->
