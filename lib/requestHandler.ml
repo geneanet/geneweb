@@ -3,6 +3,15 @@ open Def
 open Gwdb
 open Util
 
+let _bench name fn =
+  let p1 = Sys.time () in
+  let t1 = Unix.gettimeofday () in
+  let res = fn () in
+  let t2 = Unix.gettimeofday () in
+  let p2 = Sys.time () in
+  Printf.printf "[%s]: %f seconds (~%f seconds of CPU time).\n" name (t2 -. t1) (p2 -. p1) ;
+  res
+
 (*** Utils ***)
 
 let person_is_std_key conf base p k =
@@ -1215,6 +1224,7 @@ let defaultHandler : handler =
     end
 
   ; api_base_warnings = begin fun self conf base ->
+      _bench __LOC__ @@ fun () ->
       if conf.wizard
       then Api.print_base_warnings conf base
       else self.incorrect_request self conf base
