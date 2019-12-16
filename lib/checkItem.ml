@@ -95,28 +95,18 @@ let compare_event_name name1 name2 =
   | _, Psort Epers_Death -> -1
   | _ -> 0
 
-(* Compare les dates sans prendre en compte les dates textes. *)
-let compare_event_date d1 d2 =
-  match d1, d2 with
-  | Dgreg (d1, _), Dgreg (d2, _) ->
-    begin match Date.compare_dmy_opt ~strict:false d1 d2 with
-      | Some x -> x
-      | None -> 0
-    end
-  | _ -> 0
-
 let cmp_events get_name get_date e1 e2 =
   match Adef.od_of_cdate (get_date e1) with
-  | None -> compare_event_name (get_name e1) (get_name e2)
-  | Some d1 -> match Adef.od_of_cdate (get_date e2) with
-    | Some d2 ->
-      (* On utilise compare_event_date parce qu'on ne veut *)
-      (* pas prendre en compte les dates textes, on veut   *)
-      (* que l'évènement soit plus important pour le tri.  *)
-      let comp_date = compare_event_date d1 d2 in
-      if comp_date = 0 then compare_event_name (get_name e1) (get_name e2)
-      else comp_date
-    | _ -> compare_event_name (get_name e1) (get_name e2)
+  | Some (Dgreg (d1, _)) -> begin
+      match Adef.od_of_cdate (get_date e2) with
+      | Some (Dgreg (d2, _)) ->
+        begin match Date.compare_dmy_opt ~strict:false d1 d2 with
+          | Some 0 | None -> compare_event_name (get_name e1) (get_name e2)
+          | Some x -> x
+        end
+      | _ -> compare_event_name (get_name e1) (get_name e2)
+    end
+  | _ -> compare_event_name (get_name e1) (get_name e2)
 
 let sort_events get_name get_date events =
   List.stable_sort (fun e1 e2 -> cmp_events get_name get_date e1 e2) events
