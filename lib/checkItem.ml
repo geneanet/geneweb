@@ -42,17 +42,15 @@ let strictly_after d1 d2 =
   | Dgreg (d1, _), Dgreg (d2, _) -> strictly_after_dmy d1 d2
   | _ -> false
 
-(* Check if elapsed time [age] is less than [year] (in absolute value) *)
 let strictly_younger age year =
   match age.prec with
   | After -> false
-  | _ -> abs age.year < year
+  | _ -> age.year < year
 
-(* Check if elapsed time [age] is more than [year] (in absolute value) *)
 let strictly_older age year =
   match age.prec with
   | Before -> false
-  | _ -> abs age.year > year
+  | _ -> age.year > year
 
 let odate = function
   | Some (Dgreg (d, _)) -> Some d
