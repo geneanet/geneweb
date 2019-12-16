@@ -18,7 +18,6 @@ let max_mother_age = 55
 let lim_date_marriage = 1850
 let min_age_marriage = 13
 let max_age_marriage = 100
-let average_marriage_age = 20
 let max_siblings_gap = 50
 
 (* Check if d1 < d2 *)
@@ -152,10 +151,11 @@ let titles_after_birth warning p t =
       ()
   | _ -> ()
 
-let check_person_age base warning p =
+let check_person_age warning p =
   let aux d1 d2 =
     let a = Date.time_elapsed d1 d2 in
-    if d2.year > lim_date_death then begin
+    if a.year < 0 then warning (BirthAfterDeath p)
+    else if d2.year > lim_date_death then begin
       if strictly_older a max_death_after_lim_date_death
       then warning (DeadOld (p, a))
     end else if strictly_older a max_death_before_lim_date_death
@@ -171,17 +171,7 @@ let check_person_age base warning p =
       | Some (Dgreg (d, _)) -> aux d d2
       | _ -> match Adef.od_of_cdate (get_baptism p) with
         | Some (Dgreg (d, _)) -> aux d d2
-        | _ ->
-          let rec loop i =
-            if i >= Array.length (get_family p) then ()
-            else
-              let fam = foi base (get_family p).(i) in
-              match Adef.od_of_cdate (get_marriage fam) with
-              | Some (Dgreg (d, _)) ->
-                aux { d with year = d.year - average_marriage_age } d2
-              | _ -> loop (i + 1)
-        in
-        loop 0
+        | _ -> ()
     end
   | _ -> ()
 
@@ -295,7 +285,10 @@ let check_difference_age_between_cpl warning fath moth =
     match find_date moth with
     | None -> ()
     | Some d2 ->
-      let a = Date.time_elapsed d1 d2 in
+      let a =
+        if d1.year < d2.year then Date.time_elapsed d1 d2
+        else Date.time_elapsed d2 d1
+      in
       if strictly_older a max_age_btw_cpl
       then warning (BigAgeBetweenSpouses (fath, moth, a))
 
@@ -720,7 +713,7 @@ let check_parents warning fam fath moth =
 
 let person ?(onchange = true) base warning p =
   check_pevents base warning p;
-  check_person_age base warning p;
+  check_person_age warning p;
   List.iter (titles_after_birth warning p) (get_titles p);
   if onchange then changed_pevents_order warning p ;
   related_sex_is_coherent base warning p
