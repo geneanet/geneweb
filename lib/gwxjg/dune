@@ -1,0 +1,10 @@
+(ocamllex lexicon_parser)
+
+(library
+  (name gwxjg)
+  (public_name geneweb-jingoo)
+  (wrapped true)
+  (libraries unix geneweb-lib jingoo)
+  (flags (:standard -w -42-40))
+  (modules ezgw data trans lexicon_parser)
+)

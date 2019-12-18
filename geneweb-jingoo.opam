@@ -1,0 +1,23 @@
+opam-version: "2.0"
+
+synopsis: "Bridge between Geneweb data structures and jingoo templating system"
+
+maintainer: [ "Julien Sagot <julien.sagot@geneanet.org>" ]
+
+authors: [ "Julien Sagot <julien.sagot@geneanet.org>" ]
+
+homepage: "http://geneweb.org"
+
+dev-repo: "git://github.com/geneweb/geneweb"
+
+bug-reports: "https://github.com/geneweb/geneweb/issues"
+
+build: [
+  [ "dune" "build" "-p" name "-j" jobs ]
+]
+
+depends: [
+  "geneweb-lib"
+  "jingoo"
+  "unix"
+]

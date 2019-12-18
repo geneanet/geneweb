@@ -55,9 +55,9 @@
 (executable
   (package geneweb-bin)
   (public_name gwd)
-  (libraries unix str %%%GWDB_PKG%%% %%%SOSA_PKG%%% %%%WSERVER_PKG%%% geneweb)
+  (libraries geneweb geneweb-jingoo jingoo unix str %%%GWDB_PKG%%% %%%SOSA_PKG%%% %%%WSERVER_PKG%%%)
   (preprocess (action (run %{bin:cppo} %%%CPPO_D%%% -V OCAML:%{ocaml_version} %{input-file})))
-  (modules gwd gwDaemon request requestHandler)
+  (modules gwd gwDaemon jgInterp list_ind request requestHandler)
 )
 
 (executables
