@@ -1,5 +1,7 @@
 (* Copyright (c) 1998-2007 INRIA *)
 
+open Geneweb
+
 module type MakeIn = sig
   val handler : RequestHandler.handler
 end

@@ -1,3 +1,4 @@
+open Geneweb
 open Config
 open Def
 open Gwdb

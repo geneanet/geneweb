@@ -52,10 +52,18 @@
 
 (include_subdirs unqualified)
 
+(executable
+  (package geneweb-bin)
+  (public_name gwd)
+  (libraries unix str %%%GWDB_PKG%%% %%%SOSA_PKG%%% %%%WSERVER_PKG%%% geneweb)
+  (preprocess (action (run %{bin:cppo} %%%CPPO_D%%% -V OCAML:%{ocaml_version} %{input-file})))
+  (modules gwd gwDaemon request requestHandler)
+)
+
 (executables
   (package geneweb-bin)
-  (public_names connex gwb2ged gwd gwdiff gwu setup update_nldb)
-  (modules connex gwb2ged gwdiff gwd gwu setup update_nldb)
+  (public_names connex gwb2ged gwdiff gwu setup update_nldb)
+  (modules connex gwb2ged gwdiff gwu setup update_nldb)
   (libraries unix str %%%GWDB_PKG%%% %%%SOSA_PKG%%% %%%WSERVER_PKG%%% geneweb)
 )
 
