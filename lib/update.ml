@@ -302,7 +302,6 @@ let print_list_aux conf base title list printer =
 
 let print_warning conf base =
   function
-  | BigAgeBetweenSiblings (p1, p2, a)
   | BigAgeBetweenSpouses (p1, p2, a) ->
       Wserver.printf
         (fcapitale
@@ -491,6 +490,25 @@ let print_warning conf base =
       Wserver.printf "%s" (DateDisplay.short_dates_text conf base x);
       Wserver.printf "</li>";
       Wserver.printf "</ul>\n"
+  | DistantChildren (ifam, p1, p2) ->
+      let cpl = foi base ifam in
+      Wserver.printf
+        (fcapitale
+           (ftransl conf
+              "the following children of %t and %t are born very close"))
+        (fun _ -> print_someone_strong conf base (poi base (get_father cpl)))
+        (fun _ -> print_someone_strong conf base (poi base (get_mother cpl)));
+      Wserver.printf ":\n";
+      Wserver.printf "<ul>\n";
+      Wserver.printf "<li>";
+      print_first_name_strong conf base p1;
+      Wserver.printf "%s" (DateDisplay.short_dates_text conf base p1);
+      Wserver.printf "</li>";
+      Wserver.printf "<li>";
+      print_first_name_strong conf base p2;
+      Wserver.printf "%s" (DateDisplay.short_dates_text conf base p2);
+      Wserver.printf "</li>";
+      Wserver.printf "</ul>\n"
   | DeadOld (p, a) ->
       Wserver.printf "%s\n%s\n" (print_someone_strong conf base p)
         (transl_nth conf "died at an advanced age"
@@ -498,8 +516,7 @@ let print_warning conf base =
       Wserver.printf "(%s)" (DateDisplay.string_of_age conf a)
   | DeadTooEarlyToBeFather (father, child) ->
       Wserver.printf
-        (ftransl conf "\
-%t is born more than 2 years after the death of his/her father %t")
+        (ftransl conf "%t is born more than 2 years after the death of his/her father %t")
         (fun _ ->
            Printf.sprintf "%s%s" (print_someone_strong conf base child)
              (DateDisplay.short_dates_text conf base child))
