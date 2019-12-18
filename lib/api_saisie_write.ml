@@ -755,7 +755,7 @@ let compute_warnings conf base resp =
                 Gutil.designation base elder ^ (DateDisplay.short_dates_text conf base elder) ^
                 Gutil.designation base x ^ (DateDisplay.short_dates_text conf base x)
                 *)
-            | CloseChildren (ifam, _, elder, x) ->
+            | CloseChildren (ifam, c1, c2) ->
                 let cpl = foi base ifam in
                 let w =
                 (Printf.sprintf
@@ -765,7 +765,7 @@ let compute_warnings conf base resp =
                    (fun _ -> print_someone (poi base (get_father cpl)))
                    (fun _ -> print_someone (poi base (get_mother cpl))))
                 ^ ": " ^
-                print_someone_dates elder ^ " " ^ print_someone_dates x
+                print_someone_dates c1 ^ " " ^ print_someone_dates c2
                 in
                 w :: wl
             | DistantChildren (ifam, p1, p2) ->

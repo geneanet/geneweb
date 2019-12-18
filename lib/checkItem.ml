@@ -435,7 +435,7 @@ let changed_marriages_order base warning p =
       loop 0 (get_family p)
     end
 
-let close_siblings warning x np ifam des =
+let close_siblings warning x np ifam =
   match np with
   | Some (elder, d1) ->
     begin match odate @@ Adef.od_of_cdate (get_birth x) with
@@ -445,7 +445,7 @@ let close_siblings warning x np ifam des =
         if d.year = 0
         && (d.month < max_month_btw_sibl)
         && (d.month <> 0 || d.day >= max_days_btw_sibl)
-        then warning (CloseChildren (ifam, des, elder, x))
+        then warning (CloseChildren (ifam, elder, x))
       | _ -> ()
     end
   | _ -> ()
@@ -592,7 +592,7 @@ let check_children ?(onchange = true) base warning (ifam, fam) fath moth =
       let gap = siblings_gap gap child b in
       check_pevents base warning child;
       born_after_his_elder_sibling warning child b np ifam fam;
-      close_siblings warning child np ifam fam;
+      close_siblings warning child np ifam ;
       child_born_after_his_parent warning child fath;
       child_born_after_his_parent warning child moth;
       child_born_before_mother_death warning child moth;
