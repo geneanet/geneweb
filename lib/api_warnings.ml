@@ -16,7 +16,6 @@ let bad_sex_of_married_person = ref []
 
 (* Listes des warnings *)
 let big_age_between_spouses = ref []
-let big_age_between_siblings = ref []
 let birth_after_death = ref []
 let incoherent_sex = ref []
 let changed_order_of_children = ref []
@@ -49,7 +48,7 @@ let witness_date_before_birth = ref []
 let young_for_marriage = ref []
 let old_for_marriage = ref []
 let old_individual = ref []
-
+let distant_children = ref []
 
 (** [add_error_to_piqi_warning_list base error]
     Convert [error] and add it to corresponding error list
@@ -79,13 +78,6 @@ let add_warning_to_piqi_warning_list conf base =
       ; mother = p2wp base moth
       ; date = string_of_prec_dmy dmy
       }
-  | BigAgeBetweenSiblings (fst, snd, dmy) ->
-    set_list big_age_between_siblings
-      M.Warning_big_age_between_siblings.{
-        fst = p2wp base fst
-      ; snd = p2wp base snd
-      ; date = string_of_prec_dmy dmy
-      }
   | BirthAfterDeath p ->
     set_list birth_after_death
       M.Warning_birth_after_death.{ person = p2wp base p }
@@ -96,8 +88,8 @@ let add_warning_to_piqi_warning_list conf base =
       let cpl = foi base ifam in
       set_list changed_order_of_children
         M.Warning_changed_order_of_children.{
-          father = p2wp base @@ poi base @@ get_father cpl 
-        ; mother = p2wp base @@ poi base @@ get_mother cpl 
+          father = p2wp base @@ poi base @@ get_father cpl
+        ; mother = p2wp base @@ poi base @@ get_mother cpl
         }
   | ChangedOrderOfMarriages (p, _, _) ->
     set_list changed_order_of_marriages
@@ -125,13 +117,13 @@ let add_warning_to_piqi_warning_list conf base =
         M.Warning_close_children.{
           father = p2wp base @@ poi base @@ get_father cpl
         ; mother = p2wp base @@ poi base @@ get_mother cpl
-        ; child1 = p2wp base c1 
-        ; child2 = p2wp base c2 
+        ; child1 = p2wp base c1
+        ; child2 = p2wp base c2
         }
   | DeadOld (p, dmy) ->
     set_list dead_old
       M.Warning_dead_old.{
-        person = p2wp base p 
+        person = p2wp base p
         ; date = string_of_prec_dmy dmy ;
       }
   | DeadTooEarlyToBeFather (f, s) ->
@@ -140,11 +132,20 @@ let add_warning_to_piqi_warning_list conf base =
         father = p2wp base f
         ; son = p2wp base s;
       }
+  | DistantChildren (ifam, c1, c2) ->
+      let cpl = foi base ifam in
+      set_list distant_children
+        M.Warning_distant_children.{
+          father = p2wp base @@ poi base @@ get_father cpl
+        ; mother = p2wp base @@ poi base @@ get_mother cpl
+        ; child1 = p2wp base c1
+        ; child2 = p2wp base c2
+        }
   | FEventOrder (p, e1, e2) ->
     set_list fevent_order
       M.Warning_fevent_order.{
-        person = p2wp base p 
-        ; event1 = Util.string_of_fevent_name conf base e1.efam_name 
+        person = p2wp base p
+        ; event1 = Util.string_of_fevent_name conf base e1.efam_name
         ; event2 = Util.string_of_fevent_name conf base e2.efam_name ;
       }
   | FWitnessEventAfterDeath (p, e) ->
@@ -200,7 +201,7 @@ let add_warning_to_piqi_warning_list conf base =
       ; child = p2wp base c
       }
   | ParentTooOld (p, dmy) ->
-    set_list parent_too_old 
+    set_list parent_too_old
       M.Warning_parent_too_old.{
         parent = p2wp base p
       ; date = string_of_prec_dmy dmy
@@ -296,6 +297,7 @@ let create_piqi_warnings () =
     warning_old_individual = !old_individual;
     warning_witness_date_after_death = !witness_date_after_death;
     warning_witness_date_before_birth = !witness_date_before_birth;
+    warning_distant_children = !distant_children;
   }
 
 #endif

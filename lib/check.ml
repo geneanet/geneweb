@@ -93,7 +93,6 @@ let print_base_error oc base =
 
 let print_base_warning oc base =
   function
-  | BigAgeBetweenSiblings (p1, p2, a)
   | BigAgeBetweenSpouses (p1, p2, a) ->
       Printf.fprintf oc
         "The difference of age between %s and %s is quite important: %d\n"
@@ -132,6 +131,7 @@ let print_base_warning oc base =
         (designation base (poi base (get_mother cpl)));
       Printf.fprintf oc "- %s\n" (designation base elder);
       Printf.fprintf oc "- %s\n" (designation base x)
+
   | DeadOld (p, a) ->
       Printf.fprintf oc "%s died at the advanced age of %d years old\n"
         (designation base p) a.year
@@ -140,6 +140,14 @@ let print_base_warning oc base =
       Printf.fprintf oc
         "  is born more than 2 years after the death of his/her father\n";
       Printf.fprintf oc "%s\n" (designation base father)
+  | DistantChildren (ifam, p1, p2) ->
+      let cpl = foi base ifam in
+      Printf.fprintf oc
+        "The following children of\n  %s\nand\n  %s\nare born very close:\n"
+        (designation base (poi base (get_father cpl)))
+        (designation base (poi base (get_mother cpl)));
+      Printf.fprintf oc "- %s\n" (designation base p1);
+      Printf.fprintf oc "- %s\n" (designation base p2)
   | FEventOrder (p, e1, e2) ->
       Printf.fprintf oc "%s's %s before his/her %s\n" (designation base p)
         (string_of_efam_name base e1.efam_name)

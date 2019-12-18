@@ -433,15 +433,16 @@ message WarningCloseChildren {
   required WarningPerson child2 = 4;
 }
 
+message WarningDistantChildren {
+  required WarningPerson father = 1;
+  required WarningPerson mother = 2;
+  required WarningPerson child1 = 3;
+  required WarningPerson child2 = 4;
+}
+
 message WarningBigAgeBetweenSpouses {
   required WarningPerson father = 1;
   required WarningPerson mother = 2;
-  required string date = 3;
-}
-
-message WarningBigAgeBetweenSiblings {
-  required WarningPerson fst = 1;
-  required WarningPerson snd = 2;
   required string date = 3;
 }
 
@@ -532,6 +533,7 @@ message BaseWarnings {
   repeated WarningWitnessDateAfterDeath warning_witness_date_after_death = 24;
   repeated WarningWitnessDateBeforeBirth warning_witness_date_before_birth = 25;
   repeated WarningOldForMarriage warning_old_for_marriage = 27;
+  repeated WarningDistantChildren warning_distant_children = 28;
 }
 
 message FilterDate {
