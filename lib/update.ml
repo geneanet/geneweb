@@ -471,7 +471,7 @@ let print_warning conf base =
       Wserver.printf "</td>\n";
       Wserver.printf "</tr>\n";
       Wserver.printf "</table>\n"
-  | CloseChildren (ifam, _, elder, x) ->
+  | CloseChildren (ifam, c1, c2) ->
       let cpl = foi base ifam in
       Wserver.printf
         (fcapitale
@@ -482,12 +482,12 @@ let print_warning conf base =
       Wserver.printf ":\n";
       Wserver.printf "<ul>\n";
       Wserver.printf "<li>";
-      print_first_name_strong conf base elder;
-      Wserver.printf "%s" (DateDisplay.short_dates_text conf base elder);
+      print_first_name_strong conf base c1;
+      Wserver.printf "%s" (DateDisplay.short_dates_text conf base c1);
       Wserver.printf "</li>";
       Wserver.printf "<li>";
-      print_first_name_strong conf base x;
-      Wserver.printf "%s" (DateDisplay.short_dates_text conf base x);
+      print_first_name_strong conf base c2;
+      Wserver.printf "%s" (DateDisplay.short_dates_text conf base c2);
       Wserver.printf "</li>";
       Wserver.printf "</ul>\n"
   | DistantChildren (ifam, p1, p2) ->

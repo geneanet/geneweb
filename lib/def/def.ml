@@ -260,7 +260,7 @@ type ('iper, 'person, 'family, 'descend, 'title, 'pevent, 'fevent) warning =
   | ChangedOrderOfFamilyEvents of 'family * 'fevent list * 'fevent list
   | ChangedOrderOfPersonEvents of 'person * 'pevent list * 'pevent list
   | ChildrenNotInOrder of 'family * 'descend * 'person * 'person
-  | CloseChildren of 'family * 'descend * 'person * 'person
+  | CloseChildren of 'family * 'person * 'person
   | DeadOld of 'person * dmy
   | DeadTooEarlyToBeFather of 'person * 'person
   | DistantChildren of 'family * 'person * 'person

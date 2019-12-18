@@ -111,7 +111,7 @@ let add_warning_to_piqi_warning_list conf base =
           father = p2wp base @@ poi base @@ get_father cpl
         ; mother = p2wp base @@ poi base @@ get_mother cpl
         }
-  | CloseChildren (ifam, _, c1, c2) ->
+  | CloseChildren (ifam, c1, c2) ->
       let cpl = foi base ifam in
       set_list close_children
         M.Warning_close_children.{

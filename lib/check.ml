@@ -123,14 +123,14 @@ let print_base_warning oc base =
   | ChangedOrderOfPersonEvents (p, _, _) ->
       Printf.fprintf oc "Changed order of person's events for %s\n"
         (designation base p)
-  | CloseChildren (ifam, _, elder, x) ->
+  | CloseChildren (ifam, c1, c2) ->
       let cpl = foi base ifam in
       Printf.fprintf oc
         "The following children of\n  %s\nand\n  %s\nare born very close:\n"
         (designation base (poi base (get_father cpl)))
         (designation base (poi base (get_mother cpl)));
-      Printf.fprintf oc "- %s\n" (designation base elder);
-      Printf.fprintf oc "- %s\n" (designation base x)
+      Printf.fprintf oc "- %s\n" (designation base c1);
+      Printf.fprintf oc "- %s\n" (designation base c2)
 
   | DeadOld (p, a) ->
       Printf.fprintf oc "%s died at the advanced age of %d years old\n"
