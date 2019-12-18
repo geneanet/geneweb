@@ -608,7 +608,7 @@ let check_children ?(onchange = true) base warning (ifam, fam) fath moth =
   match gap with
   | Some ((d1, p1), (d2, p2)) ->
     let e = Date.time_elapsed d1 d2 in
-    if e.year > max_siblings_gap then warning (BigAgeBetweenSiblings (p1, p2, e))
+    if e.year > max_siblings_gap then warning (DistantChildren (ifam, p1, p2))
    | _ -> ()
 
 let has_family_sources fam =

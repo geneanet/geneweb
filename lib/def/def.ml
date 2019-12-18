@@ -253,7 +253,6 @@ type 'person error =
 
 type ('iper, 'person, 'family, 'descend, 'title, 'pevent, 'fevent) warning =
   | BigAgeBetweenSpouses of 'person * 'person * dmy
-  | BigAgeBetweenSiblings of 'person * 'person * dmy
   | BirthAfterDeath of 'person
   | IncoherentSex of 'person * int * int
   | ChangedOrderOfChildren of 'family * 'descend * 'iper array * 'iper array
@@ -264,6 +263,7 @@ type ('iper, 'person, 'family, 'descend, 'title, 'pevent, 'fevent) warning =
   | CloseChildren of 'family * 'descend * 'person * 'person
   | DeadOld of 'person * dmy
   | DeadTooEarlyToBeFather of 'person * 'person
+  | DistantChildren of 'family * 'person * 'person
   | FEventOrder of 'person * 'fevent * 'fevent
   | FWitnessEventAfterDeath of 'person * 'fevent
   | FWitnessEventBeforeBirth of 'person * 'fevent

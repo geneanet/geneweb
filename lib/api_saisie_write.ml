@@ -696,7 +696,6 @@ let compute_warnings conf base resp =
         List.fold_right
           (fun w wl ->
             match w with
-            | BigAgeBetweenSiblings (p1, p2, a)
             | BigAgeBetweenSpouses (p1, p2, a) ->
                 let w =
                   (Printf.sprintf
@@ -767,6 +766,19 @@ let compute_warnings conf base resp =
                    (fun _ -> print_someone (poi base (get_mother cpl))))
                 ^ ": " ^
                 print_someone_dates elder ^ " " ^ print_someone_dates x
+                in
+                w :: wl
+            | DistantChildren (ifam, p1, p2) ->
+                let cpl = foi base ifam in
+                let w =
+                (Printf.sprintf
+                   (fcapitale
+                      (ftransl conf
+                         "the following children of %t and %t are born very close"))
+                   (fun _ -> print_someone (poi base (get_father cpl)))
+                   (fun _ -> print_someone (poi base (get_mother cpl))))
+                ^ ": " ^
+                print_someone_dates p1 ^ " " ^ print_someone_dates p2
                 in
                 w :: wl
             | DeadOld (p, a) ->
