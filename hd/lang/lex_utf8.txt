@@ -8197,6 +8197,18 @@ oc: lista dels diccionaris
 pt: lista de dicionários
 ru: список словарей
 
+    list_ind_title
+de: Liste aller Personen des Baumes
+en: List of all individuals in the family tree
+es: Lista de todos los individuos del árbol
+fi: Kaikkien sukupuussa esiintyvien henkilöiden luettelo
+fr: liste de tous les individus de l'arbre
+it: Elenco di tutti gli individui dell'albero
+nl: Lijst van alle personen van de stamboom
+no: Liste over alle personer i slektstreet
+pt: Lista de todas as pessoas na árvore genealógica
+sv: En lista på alla personer i familjeträden
+
     living after %s
 co: vivu(a) dopu %s
 de: lebte nach %s

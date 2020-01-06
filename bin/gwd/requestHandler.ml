@@ -338,6 +338,7 @@ and handler =
   ; lb : handler_base
   ; ld : handler_base
   ; linked : handler_base
+  ; list_ind : handler_base
   ; ll : handler_base
   ; lm : handler_base
   ; misc_notes : handler_base
@@ -513,6 +514,7 @@ let dummyHandler =
   ; lb = dummy_base
   ; ld = dummy_base
   ; linked = dummy_base
+  ; list_ind = dummy_base
   ; ll = dummy_base
   ; lm = dummy_base
   ; misc_notes = dummy_base
@@ -924,6 +926,46 @@ let defaultHandler : handler =
       match find_person_in_env conf base "" with
       | Some p -> Perso.print_what_links conf base p
       | _ -> self.very_unknown self conf base
+    end
+
+  ; list_ind = begin fun self conf base ->
+      let open List_ind in
+      let num = (Opt.default 1 @@ Util.p_getint conf.env "pg") - 1 in
+      let size = Opt.default 2000 @@ Util.p_getint conf.env "sz" in
+      if not (is_cache_iper_inorder_uptodate conf base)
+      then build_cache_iper_inorder conf base ;
+      let page_count, letters, ipers, num =
+        read_cache_iper_inorder conf num size
+      in
+      let persons =
+        Array.map begin fun i ->
+          Gwxjg.Data.unsafe_mk_person conf base @@ Gwdb.poi base i
+        end ipers
+      in
+      let anchorAtIndex =
+        let fst_idx = size * num in
+        let list = List.map (fun (c, i) -> (i - fst_idx, c)) letters  in
+        Jg_types.func_arg1_no_kw @@ function
+        | Tint i ->
+          begin match List.assoc_opt i list with
+            |  Some s -> Tstr s
+            | None -> Tnull
+          end
+        | x -> Jg_types.func_failure [x]
+      in
+      let letters =
+        List.map begin fun (c, i) ->
+          Tset [ Tstr c ; Tint (i / size + 1) ]
+        end letters
+      in
+      let models = ("letters", Tlist letters)
+                   :: ("anchorAtIndex", anchorAtIndex)
+                   :: ("persons", Tarray persons)
+                   :: ("page_num", Tint (num + 1))
+                   :: ("page_count", Tint page_count)
+                   :: Gwxjg.Data.default_env conf base
+      in
+      JgInterp.render ~conf ~file:"list_ind" ~models
     end
 
   ; ll = begin fun _self conf base ->

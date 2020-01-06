@@ -130,6 +130,7 @@ let family_m conf base =
       | "LB" -> handler.lb
       | "LD" -> handler.ld
       | "LINKED" -> handler.linked
+      | "LIST_IND" -> handler.list_ind
       | "LL" -> handler.ll
       | "LM" -> handler.lm
       | "MISC_NOTES" -> handler.misc_notes

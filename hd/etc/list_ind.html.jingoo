@@ -1,0 +1,82 @@
+{%- include 'perso_utils.jingoo' -%}
+{%- include 'utils.jingoo' -%}
+
+{%- extends "template.jingoo" -%}
+
+{%- block title -%}
+  {{ 'list_ind_title'|trans|capitalize }}
+{%- endblock -%}
+
+{%- block body -%}
+
+  <h1>{{ 'list_ind_title'|trans|capitalize }}</h1>
+
+  <p>
+    {%- for (c, p) in letters -%}
+      <a 
+         {% if (env.pg && '' + p == env.pg) || (p == 1 && not env.pg) -%}href="#anchor-{{ c }}"
+         {% else -%}href="{{ env.prefix }}m=LIST_IND&sz={{ env.sz }}&pg={{ p }}#anchor-{{ c }}"
+         {% endif %}
+         >
+         {%--%}{{ c|upper }}{%--%}
+      </a>
+    {% endfor -%}
+  </p>
+
+  {%- macro navigation () -%}
+    {%- if page_count > 1 -%}
+      <form class="form-inline justify-content-center my-3" action="{{ env.prefix }}" method="get">
+        {{ print_hidden_env () }}
+        {%- if page_num > 1 -%}
+          <a class="btn btn-outline-secondary mr-3"
+             href="{{ env.prefix }}m=LIST_IND&sz={{ env.sz }}&pg={{ page_num - 1 }}">
+             &laquo;
+          </a>
+        {%- endif -%}
+        <input name="m" type="hidden" value="LIST_IND">
+        <input name="sz" type="hidden" value="{{ env.sz }}">
+        <div class="input-group">
+          <input class="form-control" name="pg" type="text" size="{{ length ('' + page_count) }}" pattern="[0-9]+" value="{{ page_num }}">
+          <div class="input-group-append">
+            <div class="input-group-text">/ {{ page_count }}</div>
+          </div>
+        </div>
+        {%- if page_num < page_count -%}
+          <a class="btn btn-outline-secondary ml-3"
+             href="{{ env.prefix }}m=LIST_IND&sz={{ env.sz }}&pg={{ page_num + 1 }}">
+             &raquo;
+          </a>
+        {%- endif -%}
+      </form>
+    {%- endif -%}
+  {%- endmacro -%}
+
+  {{ navigation () }}
+  <ul>
+    {%- for p in persons -%}
+      {%- set anchor = anchorAtIndex (loop.index0) -%}
+      {%- if anchor -%}
+        {%- if loop.index0 %}</ul></li>{% endif %}
+        <li id="anchor-{{ anchor }}">
+          {%- if anchor == env.letter -%}<b>{{ anchor|upper }}</b>{%- else -%}{{ anchor|upper }}{%- endif -%}
+          <ul>
+      {%- else if loop.index0 == 0 %}<li style="list-style-type:none;"><ul>
+      {%- endif -%}
+      <li>
+        {%--%}{{ display_sosa (p) }}
+        {%- set particle = NAME.particle (p.surname) -%}
+        {%--%}<a href="{{ person_href (p) }}">
+        {%- if particle -%}{{ NAME.without_particle (p.surname) }} ({{ particle }}) {{ p.first_name }}
+        {% else %}{{ p.surname }} {{ p.first_name }}{% endif %}
+        {%--%}</a>
+        {%- set sdt = short_dates_text (p) -%}
+        {%- if sdt != "?" %} {{ sdt }}{%- endif -%}
+        {%- set pas = parents_and_spouses (p, verbose=true) -%}
+        {%- if pas != "" -%}, {{ pas }}{%- endif -%}
+        {%--%}.
+      </li>
+    {%- endfor -%}
+  </ul>
+  {{ navigation () }}
+
+{% endblock %}
