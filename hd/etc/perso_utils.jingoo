@@ -1,0 +1,543 @@
+{%- include 'date_utils.jingoo' -%}
+
+{%- function approx_birth (p) -%}
+  {%- if p.birth_date && p.birth_date.year -%}
+    {{ p.birth_date }}
+  {%- elif p.baptism_date && p.baptism_date.year -%}
+    {{ { prec: p.baptism_date.prec,
+         year: p.baptism_date.year,
+         month: p.baptism_date.month,
+         day: p.baptism_date.day,
+         d2: p.baptism_date.d2,
+         approx: true } }}
+  {%- endif -%}
+{%- endfunction -%}
+
+{%- function approx_death (p) -%}
+  {%- if p.death && p.death.date && p.death.date.year -%}
+    {{ p.death.date }}
+  {%- elif p.burial && p.burial.date && p.burial.date.year -%}
+    {{ { prec: p.burial.date.prec,
+         year: p.burial.date.year,
+         month: p.burial.date.month,
+         day: p.burial.date.day,
+         d2: p.burial.date.d2,
+         approx: true } }}
+  {%- endif -%}
+{%- endfunction -%}
+
+{%- function short_dates_text (p) -%}
+  {%- set birth = approx_birth (p) -%}
+  {%- set death = approx_death (p) -%}
+  {%- if birth -%}
+    {%- if death -%}{{ short_year (birth) + '-' + short_year (death) }}
+    {%- elif p.death and p.death.death_reason != "DontKnowIfDead" %}{{ short_year (birth) + '-' }}
+    {%- else -%}{{ short_year (birth) }}
+    {%- endif -%}
+  {% elif death -%}{{ DATE.death_symbol + short_year (death) }}
+  {%- elif p.death and p.death.death_reason != "DontKnowIfDead" %}{{ DATE.death_symbol }}
+  {%- elif not birth -%}{{ '?' }}
+  {%- endif -%}
+{%- endfunction -%}
+
+{%- macro print_short_dates_text (p) -%}
+  {{ short_dates_text (p) }}
+{%- endmacro -%}
+
+{% macro fso (x) -%}
+  {{ x.first_name }}{% if x.occ %}.{{ x.occ }}{% endif %} {{ x.surname }}
+{%- endmacro -%}
+
+{% macro link(p) -%}
+  <a href="{{ env.prefix }}{{ p.access }}"{% if iper is defined %}id="i{{ p.iper }}"{% endif %}>{{ p.__str__ }}</a>
+  {{ p.dates }}
+{%- endmacro -%}
+
+{% macro ext_link(xx) -%}
+  {% if false {# env.prefix != conf.command #} %} {# FIXME #}
+    style="background:linear-gradient(transparent,transparent),url(data:image/svg+xml,%%3C%%3Fxml%%20version%%3D%%221.0%%22%%20encoding%%3D%%22UTF-8%%22%%3F%%3E%%3Csvg%%20xmlns%%3D%%22http%%3A%%2F%%2Fwww.w3.org%%2F2000%%2Fsvg%%22%%20width%%3D%%2210%%22%%20height%%3D%%2210%%22%%3E%%3Cg%%20transform%%3D%%22translate%%28-826.429%%20-698.791%%29%%22%%3E%%3Crect%%20width%%3D%%225.982%%22%%20height%%3D%%225.982%%22%%20x%%3D%%22826.929%%22%%20y%%3D%%22702.309%%22%%20fill%%3D%%22%%23fff%%22%%20stroke%%3D%%22%%2306c%%22%%2F%%3E%%3Cg%%3E%%3Cpath%%20d%%3D%%22M831.194%%20698.791h5.234v5.391l-1.571%%201.545-1.31-1.31-2.725%%202.725-2.689-2.689%%202.808-2.808-1.311-1.311z%%22%%20fill%%3D%%22%%2306f%%22%%2F%%3E%%3Cpath%%20d%%3D%%22M835.424%%20699.795l.022%%204.885-1.817-1.817-2.881%%202.881-1.228-1.228%%202.881-2.881-1.851-1.851z%%22%%20fill%%3D%%22%%23fff%%22%%2F%%3E%%3C%%2Fg%%3E%%3C%%2Fg%%3E%%3C%%2Fsvg%%3E) no-repeat right; padding-right:15px;" target="_blank" title="{{ 'individual is from another tree'|trans }}"
+  {% endif %}
+{% endmacro -%}
+
+{% macro li_SD(xx) -%}
+  <li style="vertical-align: middle;list-style-type: {% if xx.has_parents %}disc{% else %}circle{% endif %}">
+{%- endmacro -%}
+
+{% macro li_SDC(xx) -%}
+  {% set cnt = namespace(val = 0) %}
+  {% for f in xx.families %}
+    {% if f.children %}{% set cnt.val = cnt.val + 1 %}{% endif %}
+  {% endfor %}
+  <li style="vertical-align:middle;list-style-type:
+    {%- if xx.families %}{% if cnt.val != 0 %}square{% else %}disc{% endif %}{% else %}circle{% endif %};">
+{%- endmacro -%}
+
+{%- macro image_MF(xx,wi_he) -%}
+  {%- if xx != "x x" -%}
+    <img width="{{ wi_he }}" height="{{ wi_he }}" style="border: none"
+         {%- if xx.sex == 0 -%}
+           src="{{ conf.image_prefix }}male.png"
+           alt="{{ 'M/F'|trans(0) }}"
+         {%- elif xx.sex == 1 -%}
+           src="{{ conf.image_prefix }}female.png"
+           alt="{{ 'M/F'|trans(1) }}"
+         {%- else -%}
+           src="{{ conf.image_prefix }}sexunknown.gif"
+           alt="?" title="?"
+         {%- endif -%}
+         >
+  {%- endif -%}
+{%- endmacro -%}
+
+{%- macro display_sosa (xx, pad=false) -%}
+  {%- if xx.sosa -%}
+    <a href="{{ env.prefix }}m=RL&i1={{ xx.iper }}&i2={{ env.sosa_ref.iper }}&b1=1&b2={{ xx.sosa }}">
+      <i class="far fa-fw fa-dot-circle"
+         title="{{ 'direct ancestor of %s'|trans(s=person_text (env.sosa_ref))|capitalize }}, {{ 'Sosa'|trans }} {{ xx.sosa }}"></i>
+    </a>
+  {%- else if pad -%}
+    <i class="fa fa-fw">&nbsp;</i>
+  {%- endif -%}
+{%- endmacro -%}
+
+{% macro short_display_person(xx) -%}
+  {{ display_sosa(xx) }}
+  {% if xx.iper == central_index -%}
+    <b>{{ xx.__str__ }}</b>
+  {%- elif xx.is_restricted -%}
+    {{ xx.__str__ }}
+  {%- else -%}
+    <a {{ ext_link(xx) }} href="{{ env.prefix_base }}{{ xx.access }}{# prefix_base or prefix? #}
+       {%- if conf.benv.default_landing == 'tree' and (conf.wizard or conf.friend) -%}type=fiche{%- endif %}">
+       {{ xx.__str__ }}
+    </a>
+  {%- endif -%}
+  {%- set title = find (compose (eq (""), attr ("name")), xx.titles) -%}
+  {%- if title %} (<em>{{ print_title (title) }})</em>){% endif %}
+  {%- if xx.dates %} {{ xx.dates }}{% endif %}
+{%- endmacro -%}
+
+{%- function string_of_title (t, date=true) -%}
+  {%- set txt = t.ident -%}
+  {%- if t.place %}{% set txt = txt + ' ' + t.place %}{% endif -%}
+  {%- if date and t.date_start %}{% set txt = txt + " <em>" + t.date_start + "-" + t.date_end + "</em>" %}{% endif -%}
+  {{ txt }}
+{%- endfunction -%}
+
+{%- macro print_title (t, date=true) -%}
+  {{ t.ident }}
+  {%- if t.place %} {{ t.place }}{%- endif -%}
+  {%- if date and t.date_start %} <em>{{ t.date_start }} - {{ t.date_end }}</em>{% endif -%}
+{%- endmacro -%}
+
+{%- macro print_person_birth (xx, birthday = false, sep = " - ") -%}
+  {%- if xx.birth_date or xx.birth_place -%}
+    , {{ 'born'|trans(xx.sex) }}
+    {%- if xx.birth_date -%}
+      {{ DATE.string_of_ondate (xx.birth_date) }}
+      {%- if birthday && xx.is_birthday %} ({{ 'happy birthday to you!'|trans }}){%- endif -%}
+    {%- endif -%}
+    {%- if xx.birth_place %}{{ sep }}{{ xx.birth_place }}{%- endif -%}
+  {%- endif -%}
+{%- endmacro -%}
+
+{%- macro print_person_baptism (xx, sep = " - ") -%}
+  {%- if xx.baptism_date or xx.baptism_place -%}
+    , {{ 'baptized'|trans(xx.sex) }}
+    {%- if xx.baptism_date %} {{ DATE.string_of_ondate (xx.baptism_date) }}{%- endif -%}
+    {%- if xx.baptism_place %}{{ sep }}{{ xx.baptism_place }}{%- endif -%}
+  {%- endif -%}
+{%- endmacro -%}
+
+{%- macro print_person_age (xx) -%}
+  {%- if xx.birth_date && xx.birth_date.prec == "sure" && not xx.death %}, {{ 'age'|trans }}{{ ':'|trans }}{%--%}
+    {{ DATE.string_of_age (DATE.sub (conf.today, xx.birth_date)) }}{% endif -%}
+{%- endmacro -%}
+
+{%- macro print_person_death_age (xx) -%}
+  {%- if xx.birth_date.prec == "sure" and xx.death_date.prec == "sure" -%}
+    {{ 'at the age of (sure)'|trans }} {{ DATE.string_of_age (DATE.sub (xx.death_date, xx.birth_date)) }}
+  {%- elif xx.birth_date.prec == "maybe" or xx.death_date.prec == "maybe" -%}
+    {{ 'at the age of (maybe)'|trans }} {{ DATE.string_of_age (DATE.sub (xx.death_date, xx.birth_date)) }}
+  {%- else -%}
+    {{ 'at the age of (about)'|trans }} {{ DATE.string_of_age (DATE.sub (xx.death_date, xx.birth_date)) }}
+  {%- endif -%}
+{%- endmacro -%}
+
+{%- macro print_person_death (xx, age = true, sep = " - ") -%}
+  {%- if xx.death_date or xx.death_place -%}
+    , {{ 'deceased'|trans(xx.sex) }}
+    {%- if xx.death_date %} {{ DATE.string_of_ondate (xx.death_date) }}{% endif -%}
+    {%- if age && xx.is_computable_death_age %} {{ print_person_death_age (xx) }}{% endif -%}
+    {%- if xx.death_place %} - {{ xx.death_place }}{% endif -%}
+  {%- endif -%}
+{%- endmacro -%}
+
+{%- macro print_person_burial (xx, age = false, sep = " - ") -%}
+  {%- if xx.burial_date || xx.burial_place -%}
+    , {{ 'buried'|trans(xx.sex) }}
+    {%- if xx.burial_date %} {{ DATE.string_of_ondate (xx.burial_date) }}{% endif -%}
+    {%- if age && xx.is_computable_death_age %} {{ print_person_death_age (xx) }}{% endif -%}
+    {%- if xx.burial_place %}{{ sep }}{{ xx.burial_place }}{% endif -%}
+  {%- endif -%}
+{%- endmacro -%}
+
+{%- macro print_person_cremation (xx, age = false, sep = " - ") -%}
+  {%- if xx.cremation_date || xx.cremation_place -%}
+    , {{ 'cremated'|trans(xx.sex) }}
+    {%- if xx.cremation_date %} {{ DATE.string_of_ondate (xx.cremation_date) }}{% endif -%}
+    {%- if age && xx.is_computable_death_age %} {{ print_person_death_age (xx) }}{% endif -%}
+    {%- if xx.cremation_place %}{{ sep }}{{ xx.cremation_place }}{% endif -%}
+  {%- endif -%}
+{%- endmacro -%}
+
+{%- macro print_person_occupation (xx) -%}
+  {%- if xx.occupation %}, {{ xx.occupation|capitalize }}{% endif -%}
+{%- endmacro -%}
+
+{%- macro print_person_consanguinity (xx) -%}
+  {%- if ((conf.friend or conf.wizard) and xx.consanguinity and conf.benv.showConsang != "no") %}
+    {{ 'relationship'|trans }}{{ xx.consanguinity }}
+  {%- endif -%}
+{%- endmacro -%}
+
+{%- macro print_person_titles (xx) -%}
+  {%- for t in xx.titles %}, {{ t }}{% endfor -%}
+{%- endmacro -%}
+
+{%- macro long_display_person(xx) -%}
+  {{ display_sosa(xx) }}
+  {% if xx.iper == central_index %}<b>{{ xx }}</b>
+  {%- else -%}
+    {%- if xx.is_restricted -%}
+      {{ xx }}
+    {%- else -%}
+      <a {{ ext_link(xx) }}
+         href="{{ env.prefix_base }}{{ xx.access }}{# prefix_base or prefix? #}
+         {%- if conf.benv.default_landing == 'tree' and (wizard or friend) %}type=fiche{%- endif -%}">
+         {{ xx }}
+      </a>
+    {%- endif -%}
+    {{ print_person_titles (xx) }}{%--%}
+    <span style="font-size: 90%">{%--%}
+      {{ print_person_birth (xx, birthday=true) }}{%--%}
+      {{ print_person_baptism (xx) }}{%--%}
+      {{ print_person_age (xx) }}{%--%}
+      {{ print_person_death (xx) }}{%--%}
+      {{ print_person_burial (xx) }}{%--%}
+      {{ print_person_cremation (xx) }}{%--%}
+      {{ print_person_occupation (xx) }}{%--%}
+      {{ print_person_consanguinity (xx) }}{%--%}
+    </span>
+  {%- endif -%}
+{%- endmacro -%}
+
+{% function married_to(sexx, ff, date_place) -%}
+  {%- if sexx == 0 or sexx == 2 %}{% set n = 0 %}{% else %}{% set n = 1 %}{% endif -%}
+  {%- switch ff.relation -%}
+    {%- case "MARRIED" || "NO_SEXES_CHECK_MARRIED" || "MARRIAGE_LICENSE" -%}
+      {{ 'married%t to'|trans(n, t=date_place) }}
+    {%- case "NOT_MARRIED" || "NO_SEXES_CHECK_NOT_MARRIED" -%}
+      {{ 'relationship%t to'|trans(n, t=date_place) }}
+    {%- case "ENGAGED" %}
+      {{ 'engaged%t to'|trans(n, t=date_place) }}
+    {%- case "PACS" -%}
+      {{ 'pacsed%t to'|trans(n, t=date_place) }}
+    {%- case "MARRIAGE_BANN" -%}
+      {{ 'marriage banns%t to'|trans(n, t=date_place) }}
+    {%- case "MARRIAGE_CONTRACT" -%}
+      {{ 'marriage contract%t with'|trans(n, t=date_place) }}
+    {%- case "RESIDENCE" -%}
+      {{ 'relationship%t to'|trans(t='') }}
+    {%- default -%}
+      {{ 'with'|trans }}
+  {%- endswitch -%}
+{%- endfunction -%}
+
+{%- function long_married_aux (ff) -%}
+  {%- if not ff.marriage_place -%}
+    {%- if ff.marriage_date -%}
+      {{ ' <em>' + DATE.string_of_ondate (ff.marriage_date) + '</em>' }}
+    {%- else -%}
+      {{ '' }}
+    {%- endif -%}
+  {%- else -%}
+    {%- if not ff.marriage_date -%}
+      {{ ' <em>, ' + ff.marriage_place + ', </em>' }}
+    {%- else -%}
+      {{ ' <em>' + DATE.string_of_ondate (ff.marriage_date) + '), ' + ff.marriage_place +', </em>' }}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfunction -%}
+
+{% macro long_married(ff, xx) -%}
+  {{ married_to (xx.sex, ff, long_married_aux (ff)) }}
+{%- endmacro -%}
+
+{% macro short_display_siblings(xx) -%}
+  {{ li_SDC(xx) }}
+  {{ image_MF(xx,13) }}
+  {{ short_display_person(xx) }}
+  </li>
+{%- endmacro -%}
+
+{% macro long_display_siblings(xx) -%}
+  {{ li_SDC(xx) }}
+  {{ image_MF(xx, 13) }}
+  {{ short_display_person(xx) }}
+  {% for f in xx.families %}
+    {% if loop.index0 %}
+      <br/><img src="{{ conf.image_prefix }}1pixel.png" width="13" height="13" alt=""/>
+      {# <em>{{ child }}{{ child.title }}{{ child.dates }}</em> #} {# FIXME #}
+    {% endif %}
+    <em> {{ '{{ long_married(f, xx) }}'|eval|capitalize }}</em>
+    {{ short_display_person (f.spouse) }}
+  {% endfor %}
+  </li>
+{%- endmacro -%}
+
+{% macro witness_relation(xxx,yyy) -%}
+  {{ i18n ('[witness at marriage of %s and %s:::' + xxx + ':' + yyy + ']') }} {# FIXME #}
+{%- endmacro -%}
+
+{%- function person_href (param=null, p) -%}
+  {{ env.prefix + p.access + (param ? '&' + param|map (join('='))|join ('&') : '') }}
+{%- endfunction -%}
+
+{% macro string_of_sex_short(x) -%}
+  {%- if p.sex == 0 %}M
+  {%- elif p.sex == 1 %}F
+  {%- elif p.sex == 2 %}N
+  {%- endif %}
+{%- endmacro -%}
+
+{% function string_of_age(dmy) -%}
+  {%- if dmy.day == 0 %}
+    {%- if dmy.year >= 2 %}{{ dmy.year + '&nbsp;' + ('years old'|trans) }}
+    {%- elif dmy.year > 0 or dmy.month > 1 %}{{ (dmy.year * 12 + dmy.month) + '&nbsp;' + ('months old'|trans) }}
+    {%- elif dmy.month == 1 %}{{ 'one month old'|trans }}
+    {%- else %}{{ 'less than one month old'|trans }}
+    {%- endif -%}
+  {%- elif dmy.month == 0 %}
+    {%- if dmy.year > 1 %}{{ dmy.year + '&nbsp;' + ('years old'|trans) }}
+    {%- elif dmy.year == 1 %}{{ 'one year old'|trans }}
+    {%- else %}{{ 'birth'|trans }}
+    {%- endif -%}
+  {%- else -%}
+    {%- if dmy.year >= 2 %}{{ dmy.year + '&nbsp;' + ('years old'|trans) }}
+    {%- elif dmy.year > 0 or dmy.month > 1 %}{{ (dmy.year * 12 + dmy.month) + '&nbsp;' + ('months old'|trans) }}
+    {%- elif dmy.month == 1 %}{{ 'one month old'|trans }}
+    {%- elif dmy.day >= 2 %}{{ dmy.day + '&nbsp;' + ('days old'|trans) }}
+    {%- elif dmy.day == 1 %}{{ 'one day old'|trans }}
+    {%- else %}{{ 0 }}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfunction -%}
+
+{%- function string_of_death_reason (death_reason, sex) -%}
+  {%- switch death_reason -%}
+    {%- case "DeadYoung" -%}{{ 'died young'|trans(sex) }}
+    {%- case "DeadDontKnowWhen" -%}{{ 'died'|trans(sex) }}
+    {%- case "OfCourseDead" -%}{{ 'of course dead'|trans(sex) }}
+    {%- case "DontKnowIfDead" -%}{{ "don't know"|trans(sex) }}
+    {%- case "Killed" -%}{{ 'killed (in action)'|trans(sex) }}
+    {%- case "Murdered" -%}{{ 'murdered'|trans(sex) }}
+    {%- case "Executed" -%}{{ 'executed (legally killed)'|trans(sex) }}
+    {%- case "Disappeared" -%}{{ 'disappeared'|trans(sex) }}
+    {%- case "Unspecified" -%}{{ 'died'|trans(sex) }}
+    {%- default -%}
+  {%- endswitch -%}
+{%- endfunction -%}
+
+{%- macro menubar () %}
+<!-- start-menu --><!-- end-menu -->
+{% endmacro -%}
+
+{%- macro perso_header (ind) -%}
+  <geneweb_param>{%--%}
+    <n>{{ ind.surname_key_val }}</n>{%--%}
+    <p>{{ ind.first_name_key_val }}</p>{%--%}
+    <oc>{{ ind.occ }}</oc>{%--%}
+    <index>{{ ind.iper }}</index>{%--%}
+    <iz>{% if env.browsing_with_sosa_ref %}{{ ind.sosa_ref.iper }}{%- endif -%}</iz>{# FIXME!!! #}{%--%}
+    {%- if ind.public_name -%}{%--%}
+    <lastname>{%--%}
+    {%- if ind.qualifier -%}{{ ind.qualifier }}{%- else -%}{{ ind.surname }}{%- endif -%}{%--%}
+    </lastname>{%--%}
+    <firstname>{{ ind.public_name }}</firstname>{%--%}
+    {%- else -%}{%--%}
+    <lastname>{{ ind.surname }}{% if has_qualifiers %} {{ ind.qualifier }}{% endif %}</lastname>{%--%}
+    <firstname>{{ ind.first_name }}</firstname>{%--%}
+    {%- endif -%}{%--%}
+    <sex>{{ ind.sex }}</sex>{%--%}
+  </geneweb_param>
+  {% if ind.is_visible_for_visitors and conf.benv.no_image_for_visitor != "yes"
+    or conf.wizard or conf.friend -%}
+    <has_image></has_image>
+  {%- endif %}
+  {% if ind.is_visible_for_visitors and conf.benv.no_image_for_visitor != "yes" -%}
+    <has_image_visitor></has_image_visitor>
+  {%- endif %}
+  {% if ind.is_visible_for_visitors -%}
+    <is_visible_for_visitors></is_visible_for_visitors>
+  {%- endif %}
+  {% if conf.wizard -%}
+    <wizard_editable></wizard_editable>
+  {%- endif %}
+  {{ menubar () }}
+  <hr class="separateur">
+  <p></p>
+{%- endmacro -%}
+
+{%- function person_text (p) -%}
+  {%- if p.public_name -%}
+    {%- if p.qualifiers %}{{ p.public_name + ' <em>' + p.qualifiers[0] + '</em> ' + p.surname }}
+    {%- else %}{{ p.public_name + ' ' + p.surname }}
+    {%- endif -%}
+  {%- elif p.qualifiers %}{{ p.first_name + ' <em>' + p.qualifiers[0] + '</em> ' + p.surname }}
+  {%- else -%}{{ p.first_name + ' ' + p.surname }}
+  {%- endif -%}
+{%- endfunction -%}
+
+{%- macro print_event (event) -%}
+  <tr>{%--%}
+    <td valign="top" style="white-space: nowrap;" width="1">
+      {%- if event.date %}<span class="ddate">{{ event.date }}{{ ':' | trans }}</span>
+      {%- else %}<span style="float: right;"><i>--- {{ ':' | trans }}<i></span>
+      {%- endif -%}
+    </td>{%--%}
+    <td valign="top">{%--%}
+      <span class="nnom">{%--%}
+        {{ event.name|capitalize }}
+        {%- if event.spouse %} ({{ 'with'|trans }} {{ event.spouse }}){% endif -%}
+        {%- if event.place %} - {{ event.place }}{% endif -%}
+      </span>{%--%}
+      <br>{%--%}
+      {%- if ((conf.wizard or conf.friend or bvar.no_note_for_visitor != "yes")
+               and event.note) -%}
+        <div class="nnotes">{{ event.note }}</div>
+      {%- endif -%}
+      {%- if event.witnesses -%}
+        <p class="ttemoins" style="margin:0;">
+          {% for w in event.witnesses -%}
+            <span class="titre">{{ w.kind|capitalize }}{{ ':'|trans }}</span>
+            {{ short_display_person (w) }}<br>
+          {%- endfor -%}
+        </p>
+      {%- endif -%}
+      {% if event.src -%}
+        <span class="ssource">{%--%}
+          {{ 'source/sources'|trans(1)|capitalize }}{{ ':'|trans }} {{ event.src }}{%--%}
+        </span>
+      {%- endif -%}
+    </td>{%--%}
+  </tr>{%--%}
+{%- endmacro -%}
+
+{%- macro print_events (events) -%}
+  {%- if events -%}
+    <table class="ligne_vie">
+      {%- for e in events %}{{ print_event (e) }}{% endfor -%}
+    </table>
+  {%- endif -%}
+{%- endmacro -%}
+
+{%- macro print_notes (xx, tag = "h3") -%}
+  {%- if child.birth_note -%}
+    <{{ tag }} class="note_type">{{ 'birth'|trans|capitalize }}</{{ tag }}> {{ child.birth_note }}
+  {%- endif -%}
+  {%- if child.baptism_note -%}
+    <{{ tag }} class="note_type">{{ 'baptism'|trans|capitalize }}</{{ tag }}> {{ child.baptism_note }}
+  {%- endif -%}
+  {%- if child.death_note -%}
+    <{{ tag }} class="note_type">{{ 'death'|trans|capitalize }}</{{ tag }}> {{ child.death_note }}
+  {%- endif -%}
+  {%- if child.burial_note -%}
+    <{{ tag }} class="note_type">{{ 'burial'|trans|capitalize }} }}</{{ tag }}> {{ child.burial_note }}
+  {%- endif -%}
+{%- endmacro -%}
+
+{%- function get_union (p1, p2) -%}
+  {{ find (compose (eq (p2.iper), attr ('spouse.iper')), p1.families) }}
+{%- endfunction %}
+
+{%- function child_of (p) -%}
+  {%- if p.father and p.mother -%}
+    {{ "%1 of %2"
+    | trans(_1=('son/daughter/child'|trans(p.sex))
+           ,_2=(person_text(p.father)+' '+(verbose?('and'|trans):'&amp;')+' '+person_text(p.mother)) ) }}
+  {%- else -%}{{ "" }}
+  {%- endif -%}
+{%- endfunction -%}
+
+{%- function parents_and_spouses (p, verbose=false) -%}
+  {%- set parents_and_spouses_ns = namespace (r = child_of (p)) -%}
+  {%- if verbose %}
+    {%- for f in p.families -%}
+      {%- if loop.index0 or (p.father and p.mother) -%}{% set parents_and_spouses_ns.r += ', ' %}{% endif -%}
+      {%- set parents_and_spouses_ns.r +=
+      married_to (p.sex, f, (f.marriage_date ? ' ' + long_year (f.marriage_date) : ''))
+      + ' ' + f.spouse.first_name + ' ' + f.spouse.surname
+      -%}
+    {%- endfor -%}
+  {%- else -%}
+    {%- for f in p.families %}
+      {%- if loop.index0 or (p.father and p.mother) -%}{% set parents_and_spouses_ns.r += ', ' %}{% endif -%}
+      {%- set parents_and_spouses_ns.r += '&amp;' -%}
+      {%- if loop.length > 1 %}{% set parents_and_spouses_ns.r += loop.index %}{% endif -%}
+      {%- set parents_and_spouses_ns.r += ' ' -%}
+      {%- set parents_and_spouses_ns.r += f.spouse.first_name + '.' + f.spouse.occ + ' ' + f.spouse.surname + f.spouse.dates -%}
+    {%- endfor -%}
+  {%- endif -%}
+  {{ parents_and_spouses_ns.r }}
+{%- endfunction -%}
+
+{% macro print_reference_person(param=null, p, titles=false) -%}
+  {%- if p.iper is defined -%}
+    <a href="{{ person_href (param=param, p) }}" id="i{{ p.iper }}">
+  {%- else -%}
+    <span>
+  {%- endif -%}
+  {%- if p.public_name %}{{ p.public_name }}
+  {%- else %}{{ p.first_name }}
+  {%- endif %}
+  {%- if p.qualifier %} <em>{{ p.qualifier }}</em>{% endif -%}
+  {%- if p.surname %} {{ p.surname }}{% endif -%}
+  {%- if p.iper is defined %}</a>{% else %}</span>{% endif -%}
+  {%- if titles and p.titles %}
+    <em>(
+    {%- for t in p.titles -%}
+      {%- if loop.index0 %}, {% endif %}{{ print_title (t, date=false) }}
+    {%- endfor -%}
+    )</em>
+  {%- endif -%}
+{%- endmacro -%}
+
+{% function reference_person(param=null, p, titles=false) -%}
+  {% set txt = '' %}
+  {%- if p.public_name %}{% set txt = txt + p.public_name -%}
+  {%- elif p.first_name %}{% set txt = txt + p.first_name -%}
+  {%- else %}{% set txt = txt + 'x' -%}
+  {%- endif -%}
+  {%- if p.qualifier %}{% set txt = txt + ' <em>' + p.qualifier + '</em>' %}{% endif -%}
+  {%- if p.surname %}{% set txt = txt + ' ' + p.surname -%}
+  {%- else %}{% set txt = txt + ' x' %}{% endif -%}
+  {% set rpn = namespace (res='') -%}
+  {%- if p.iper is defined -%}
+    {%- if p.access %}{% set rpn.res = '<a href="' + env.prefix + p.access -%}
+    {%- else -%}{% set rpn.res = '<a href="' + env.prefix + 'i=' + p.iper -%}
+    {%- endif -%}
+    {%- if param %}{%- set rpn.res = rpn.res + '&' + param | map (join ('=')) | join('&') %}{% endif -%}
+    {%- set rpn.res = rpn.res + '" id="i' + p.iper + '">' + txt + '</a>' -%}
+  {%- else -%}
+    {%- set rpn.res = '<span>' + txt + '</span>' -%}
+  {%- endif -%}
+  {%- if titles and p.titles -%}
+    {%- set rpn.res = rpn.res + ' <em>(' -%}
+    {% for t in p.titles -%}
+      {%- if loop.index0 %}{% set rpn.res = rpn.res + ', ' %}{% endif %}{% set rpn.res = rpn.res + string_of_title (t, date=false) -%}
+    {%- endfor -%}
+    {%- set rpn.res = rpn.res + '</em>)' -%}
+  {%- endif -%}
+  {{ rpn.res }}
+{%- endfunction -%}

@@ -1,0 +1,256 @@
+{%- include 'date_utils.jingoo' -%}
+
+{%- function w_Strong (p) -%}
+  {{ '<strong>' + p.first_name + (p.occ ? '.' + p.occ : '') + ' ' + p.surname + '</strong>' }}
+{%- endfunction -%}
+
+{%- function w_Link (p) -%}
+  {{ '<a href="' +  env.prefix + p.access + '">' + w_Strong (p) + '</a>' }}
+{%- endfunction -%}
+
+{%- function w_Link_date (p) -%}
+  {{ w_Link (p) + ' ' + p.dates }}
+{%- endfunction -%}
+
+{%- macro w_BigAgeBetweenSpouses (fath, moth, a) -%}
+  {{ "the difference of age between %t and %t is quite important"
+  |trans(t1=w_Link(fath), t2=w_Link(moth))
+  |capitalize }}{{ ':'|trans }} {{ string_of_age (a) }}
+{%- endmacro -%}
+
+{%- macro w_BirthAfterDeath (p) -%}
+  {{ "%t died before his/her birth"|trans(t=w_Link_date(p))|capitalize }}
+{%- endmacro -%}
+
+{%- macro w_DeadOld (p, a) -%}
+  {{ w_Link (p) }} {{ 'died at an advanced age'|trans(p.sex) }} ({{ string_of_age (a) }})
+{%- endmacro -%}
+
+{%- macro w_UndefinedSex (p) -%}
+  {{ 'undefined sex for %t'|trans(t=w_Link(p))|capitalize }}
+{%- endmacro -%}
+
+{%- macro w_WitnessDateAfterDeath (p) -%}
+  {{ '%s was witness after his/her death'|trans(s=w_Link_date(p)) }}
+{%- endmacro -%}
+
+{%- macro w_WitnessDateBeforeBirth (p) -%}
+  {{ '%s was witness before his/her birth'|trans(s=w_Link_date(p)) }}
+{%- endmacro -%}
+
+{%- macro w_YoungForMarriage (p, a) -%}
+  {{ w_Link (p) }} {{ 'married at age %t'|trans(t=string_of_age(a)) }}
+{%- endmacro -%}
+
+{%- macro w_DeadTooEarlyToBeFather (father, child) -%}
+  {{ "%t is born more than 2 years after the death of his/her father %t"
+  | trans(t1=w_Link_date(child), t2=w_Link_date(father)) }}
+{%- endmacro -%}
+
+{%- macro w_FEventOrder (p, e1, e2) -%}
+  {{ "%t's %s before his/her %s"|trans(t=w_Link (p), s1=e1.name, s2=e2.name) }}
+{%- endmacro -%}
+
+{%- macro w_FWitnessEventAfterDeath (p, e) -%}
+  {{ "%t witnessed the %s after his/her death"|trans(t=w_Link_date(p), s=e.name) }}
+{%- endmacro -%}
+
+{%- macro w_FWitnessEventBeforeBirth (p, e) -%}
+  {{ "%t witnessed the %s before his/her birth"|trans(t=w_Link_date(p), s=e.name) }}
+{%- endmacro -%}
+
+{%- macro w_IncoherentSex (p, i1, i2) -%}
+  {{ "%s's sex is not coherent with his/her relations"|trans(s=w_Link(p)) }}
+{%- endmacro -%}
+
+{%- macro w_IncoherentAncestorDate (anc, p) -%}
+  {{ "%s has a younger ancestor %s"|trans(s1=w_Link(p), s2=w_Link(anc)) }}
+{%- endmacro -%}
+
+{%- macro w_MarriageDateAfterDeath (p) -%}
+  {{ "marriage had occurred after the death of %t"|trans(t=w_Link_date(p))|capitalize }}
+{%- endmacro -%}
+
+{%- macro w_MarriageDateBeforeBirth (p) -%}
+  {{ "marriage had occurred before the birth of %t"|trans(t=w_Link_date(p))|capitalize }}
+{%- endmacro -%}
+
+{%- macro w_MotherDeadAfterChildBirth (m, c) -%}
+  {{ "%t is born after the death of his/her mother %t"
+  | trans(t1=w_Link_date(c), t2=w_Link_date(m)) }}
+{%- endmacro -%}
+
+{%- macro w_ParentBornAfterChild (p, c) -%}
+  {{ w_Link_date (p) }} {{ 'is born after his/her child'|trans }} {{ w_Link_date (c) }}
+{%- endmacro -%}
+
+{%- macro w_ParentTooYoung (p, a) -%}
+  {{ w_Link (p) }}
+  {{ 'is a very young parent'|trans }} ({{ string_of_age (a) }})
+{%- endmacro -%}
+
+{%- macro w_ParentTooOld (p, a) -%}
+  {{ w_Link (p) }}
+  {{ 'is a very old parent'|trans }} ({{ string_of_age (a) }})
+{%- endmacro -%}
+
+{%- macro w_PEventOrder (p, e1, e2) -%}
+  {{ "%t's %s before his/her %s"|trans(t=w_Link(p),s1=e1.name,s2=e2.name)|capitalize }}
+{%- endmacro -%}
+
+{%- macro w_PWitnessEventAfterDeath (p, e) -%}
+  {{ "%t witnessed the %s after his/her death"|trans(t=w_Link(p),s=e.name)|capitalize }}
+{%- endmacro -%}
+
+{%- macro w_PWitnessEventBeforeBirth (p, e) -%}
+  {{ "%t witnessed the %s before his/her birth"|trans(t=w_Link(p), s=e.name)|capitalize }}
+{%- endmacro -%}
+
+{%- macro w_TitleDatesError (p, t) -%}
+  {{ "%t has incorrect title dates: %t"|trans(t1=w_Link(p), t2=t)|capitalize }}
+{%- endmacro -%}
+
+{# {%- macro w_print_changes_aux (print, x, b, a, bd, ad) -%} #}
+{#   <table style="margin:1em"> #}
+{#     <tr> #}
+{#       <td><ul style="list-style-type:none">{{ print (x, b, bd) }}</ul></td> #}
+{#       <td><ul style="list-style-type:none">{{ print (x, a, ad) }}</ul></td> #}
+{#     </tr> #}
+{#   </table> #}
+{# {%- endmacro -%} #}
+
+{# {%- macro w_ChangedOrderOfChildren_aux (fam, list, list_diff) -%} #}
+{#   {%- for p in list -%} #}
+{#     <li{% if list_diff [ loop.index0 ] %} style="background:pink"{% endif %}> #}
+{#       {{ p.first_name }}{% if p.surname != fam.father.surname %}p.surname{% endif %} #}
+{#       {{ p.dates }} #}
+{#     </li> #}
+{#   {%- endfor -%} #}
+{# {%- endmacro -%} #}
+
+{%- macro w_ChangedOrderOfChildren (fam, before, after, bef_d, aft_d) -%}
+  {{ 'changed order of children'|trans|capitalize }}
+  -&gt;
+  {{ w_Link (fam.father) }} {{ "and"|trans(0) }} {{ w_Link (fam.mother) }}
+  {# FIXME #}
+  {# {{ w_print_changes_aux (w_ChangedOrderOfChildren_aux, fam, before, after, bef_d, aft_d) }} #}
+{%- endmacro -%}
+
+{%- macro w_ChildrenNotInOrder (fam, elder, x) -%}
+  {{ "the following children of %t and %t are not in order"
+  | trans(t1=w_Link(fam.father), t2=w_Link(fam.mother) )
+  | capitalize }}{{ ":"|trans }}
+  <ul>
+    <li>{{ w_Link_date (elder) }}</li>
+    <li>{{ w_Link_date (x) }}</li>
+  </ul>
+{%- endmacro -%}
+
+{# {%- macro w_ChangedOrderOfMarriages_aux (p, list, list_diff) -%} #}
+{#   {%- for f in list -%} #}
+{#     <li{% if list_diff [ loop.index0 ] %} style="background:pink"{% endif %}> #}
+{#       {{ p.first_name }} &amp;{{Date.short_marriage_date_text (fam, p, f.spouse)}} #}
+{#       {{ print_someone (f.spouse) }} #}
+{#     </li> #}
+{#   {%- endfor -%} #}
+{# {%- endmacro -%} #}
+
+{%- macro w_ChangedOrderOfMarriages (fam, before, after, bef_d, aft_d) -%}
+  {{ 'changed order of marriages'|trans|capitalize }}
+  -&gt;
+  {{ w_Link (fam.father) }} {{ "and"|trans(0) }} {{ a_Link (fam.mother) }}
+  {# FIXME #}
+  {# {{ w_print_changes_aux (w_ChangedOrderOfMarriages_aux, fam, before, after, bef_d, aft_d) }} #}
+{%- endmacro -%}
+
+{# {%- macro w_ChangedOrderOfFamilyEvents_aux (list, list_diff) -%} #}
+{#   {%- for e in list -%} #}
+{#     <li{% if list_diff [ loop.index0 ] %}style="background:pink"{% endif %}> #}
+{#       {{ e.efam_name }} #}
+{#     </li> #}
+{#   {%- endfor -%} #}
+{# {%- endmacro -%} #}
+
+{%- macro w_ChangedOrderOfFamilyEvents (before, after, bef_d, aft_d) -%}
+  {{ "changed order of family's events"|trans|capitalize }}
+  -&gt;
+  {# FIXME #}
+  {# {{ w_print_changes_aux (w_ChangedOrderOfFamilyEvents_aux, null, before, after, bef_d, aft_d) }} #}
+{%- endmacro -%}
+
+{# {%- macro w_ChangedOrderOfPersonEvents_aux (list, list_diff) -%} #}
+{#   {%- for e in list -%} #}
+{#     <li{% if list_diff [ loop.index0 ] %}style="background:pink"{% endif %}> #}
+{#       {{ Date.string_of_pevent_name (e.epers_name) }} #}
+{#     </li> #}
+{#   {%- endfor -%} #}
+{# {%- endmacro -%} #}
+
+{%- macro w_ChangedOrderOfPersonEvents (before, after, bef_d, aft_d) -%}
+  {{ "changed order of person's events"|trans|capitalize }}
+  -&gt;
+  {# FIXME #}
+  {# {{ w_print_changes_aux (w_ChangedOrderOfPersonEvents_aux, null, before, after, bef_d, aft_d) }} #}
+{%- endmacro -%}
+
+{%- macro w_CloseChildren (fam, c1, c2) -%}
+  {{ "the following children of %t and %t are born very close"
+  | trans(t1=w_Link(fam.father), t2=w_Link (fam.mother))
+  | capitalize }}{{ ":"|trans }}
+  <ul>
+    <li>{{ w_Link_date (c1) }}</li>
+    <li>{{ w_Link_date (c2) }}</li>
+  </ul>
+{%- endmacro -%}
+
+{%- macro w_DistantChildren (fam, c1, c2) -%}
+  {{ "the following children of %t and %t are born very distant"
+  | trans(t1=w_Link(fam.father), t2=w_Link (fam.mother))
+  | capitalize }}{{ ":"|trans }}
+  <ul>
+    <li>{{ w_Link_date (c1) }}</li>
+    <li>{{ w_Link_date (c2) }}</li>
+  </ul>
+{%- endmacro -%}
+
+{%- macro w_PossibleDuplicateFam (f1, f2) -%}
+  {{ "%s and %s have several unions"
+  | trans(s1=w_Link(f1.father), s2=w_Link (f2.mother))
+  | capitalize }}
+{%- endmacro -%}
+
+{%- macro print_warning (w) -%}
+  {%- switch w[0] -%}
+  {%- case "BigAgeBetweenSpouses" %}{{ w_BigAgeBetweenSpouses(w[1], w[2], w[3]) }}
+  {%- case "BirthAfterDeath" %}{{ w_BirthAfterDeath(w[1]) }}
+  {%- case "IncoherentSex" %}{{ w_IncoherentSex(w[1]) }}
+  {%- case "ChangedOrderOfChildren" %}{{ w_ChangedOrderOfChildren(w[1]) }}
+  {%- case "ChangedOrderOfMarriages" %}{{ w_ChangedOrderOfMarriages(w[1]) }}
+  {%- case "ChangedOrderOfFamilyEvents" %}{{ w_ChangedOrderOfFamilyEvents(w[1], w[2], w[3], w[4]) }}
+  {%- case "ChangedOrderOfPersonEvents" %}{{ w_ChangedOrderOfPersonEvents(w[1], w[2], w[3], w[4]) }}
+  {%- case "ChildrenNotInOrder" %}{{ w_ChildrenNotInOrder(w[1], w[2], w[3]) }}
+  {%- case "CloseChildren" %}{{ w_CloseChildren(w[1], w[2], w[3]) }}
+  {%- case "DistantChildren" %}{{ w_DistantChildren(w[1], w[2], w[3]) }}
+  {%- case "DeadOld" %}{{ w_DeadOld(w[1], w[2]) }}
+  {%- case "DeadTooEarlyToBeFather" %}{{ w_DeadTooEarlyToBeFather(w[1], w[2]) }}
+  {%- case "FEventOrder" %}{{ w_FEventOrder(w[1]) }}
+  {%- case "FWitnessEventAfterDeath" %}{{ w_FWitnessEventAfterDeath(w[1], w[2]) }}
+  {%- case "FWitnessEventBeforeBirth" %}{{ w_FWitnessEventBeforeBirth(w[1], w[2]) }}
+  {%- case "IncoherentAncestorDate" %}{{ w_IncoherentAncestorDate(w[1], w[2]) }}
+  {%- case "MarriageDateAfterDeath" %}{{ w_MarriageDateAfterDeath(w[1]) }}
+  {%- case "MarriageDateBeforeBirth" %}{{ w_MarriageDateBeforeBirth(w[1]) }}
+  {%- case "MotherDeadAfterChildBirth" %}{{ w_MotherDeadAfterChildBirth(w[1], w[2]) }}
+  {%- case "ParentBornAfterChild" %}{{ w_ParentBornAfterChild(w[1], w[2]) }}
+  {%- case "ParentTooOld" %}{{ w_ParentTooOld(w[1], w[2]) }}
+  {%- case "ParentTooYoung" %}{{ w_ParentTooYoung(w[1], w[2]) }}
+  {%- case "PEventOrder" %}{{ w_PEventOrder(w[1], w[2], w[3]) }}
+  {%- case "PossibleDuplicateFam" %}{{ w_PossibleDuplicateFam(w[1], w[2]) }}
+  {%- case "PWitnessEventAfterDeath" %}{{ w_PWitnessEventAfterDeath(w[1], w[2]) }}
+  {%- case "PWitnessEventBeforeBirth" %}{{ w_PWitnessEventBeforeBirth(w[1], w[2]) }}
+  {%- case "TitleDatesError" %}{{ w_TitleDatesError(w[1], w[2]) }}
+  {%- case "UndefinedSex" %}{{ w_UndefinedSex(w[1]) }}
+  {%- case "WitnessDateAfterDeath" %}{{ w_WitnessDateAfterDeath(w[1]) }}
+  {%- case "WitnessDateBeforeBirth" %}{{ w_WitnessDateBeforeBirth(w[1]) }}
+  {%- case "YoungForMarriage" || "OldForMarriage" %}{{ w_YoungForMarriage(w[1], w[2]) }}
+  {%- endswitch -%}
+{%- endmacro -%}

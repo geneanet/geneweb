@@ -1,0 +1,304 @@
+{%- extends "template.jingoo" -%}
+
+{% block title %}{{ 'advanced request'|trans|capitalize }}{% endblock %}
+
+{%- block body -%}
+
+  <style>
+    /* Mimic Bootstrap .nav-tabs>li(.active)>a 
+    when using radio buttons instead of links in tab headers */
+    .nav-tabs>li>label
+    {
+    display: inline-block;
+    padding: 1em;
+    margin: 0;
+    border: 1px solid transparent;
+    cursor: pointer;
+    position: relative;
+    bottom: -1px;
+    }
+    .nav-tabs>li>label.active
+    {
+    cursor: default;
+    border-color: #ddd;
+    border-bottom-color: white;
+    }
+  </style>
+
+  <h1 class="my-3">{{ 'advanced request'|trans|capitalize }}</h1>
+
+  {%- set row = "row form-group" -%}
+
+  {%- macro columns (s, m, l, xl) -%}
+    col-sm-{{ s }} col-md-{{ m }} col-lg-{{ l }} {% if xl %}col-xl-{{ xl }}{% endif %}
+  {%- endmacro -%}
+
+  {%- macro checkbox (class="", name, label, small, medium, large, xlarge) -%}
+    <div class="form-check {{ class }}">
+      <input class="form-check-input" id="{{ name }}" name="{{ name }}" type="checkbox" checked="checked">
+      <label class="form-check-label" for="{{ name }}">{{ label }}</label>
+    </div>
+  {%- endmacro checkbox -%}
+
+  {%- macro formRadio (name, value, label, checked) -%}
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" name="{{ name }}" value="{{ value }}"
+             {% if checked %}checked{% endif %}>
+      <label class="form-check-label" for="{{ id }}">
+        {{ label|capitalize }}
+      </label>
+    </div>
+  {%- endmacro -%}
+
+  {%- macro date_place (title, prefix) -%}
+    <div class="{{ columns (12, 6, 6) }}">
+      {%- if title -%}
+        <div class="card"><div class="card-header">{{ title }}</div><div class="card-body">
+      {%- endif -%}
+      <div class="{{ row }}">
+        <div class="{{ columns (12, 4, 4, 2) }}">
+          <label for="{{ prefix }}place">{{ 'place'|trans|capitalize }}</label>
+        </div>
+        <div class="{{ columns (12, 8, 8, 10) }}">
+          <input class="form-control" type="text" name="{{ prefix }}place" id="{{ prefix }}place">
+        </div>
+      </div>
+      <div class="{{ row }}">
+        <div class="{{ columns (12, 4, 4, 2) }}">
+          <label for="{{ prefix }}date1_yyyy">{{ 'after'|trans|capitalize }}</label>
+        </div>
+        <div class="{{ columns (12, 8, 8, 10) }}">
+          <div class="input-group">
+            <input class="form-control" type="text" name="{{ prefix }}date1_yyyy"
+                   placeholder="{{ 'dd/mm/yyyy'|trans(2)|upper }}"
+                   id="{{ prefix }}date1_yyyy">
+            <input class="form-control" name="{{ prefix }}date1_mm" pattern="[0-9]{0,2}"
+                   placeholder="{{ 'dd/mm/yyyy'|trans(1)|upper }}">
+            <input class="form-control" name="{{ prefix }}date1_dd" pattern="[0-9]{0,2}"
+                   placeholder="{{ 'dd/mm/yyyy'|trans(0)|upper }}">
+          </div>
+        </div>
+      </div>
+      <div class="{{ row }}">
+        <div class="{{ columns (12, 4, 4, 2) }}">
+          <label for="{{ prefix }}date1_yyyy">{{ 'before'|trans|capitalize }}</label>
+        </div>
+        <div class="{{ columns (12, 8, 8, 10) }}">
+          <div class="input-group">
+            <input class="form-control" type="text" name="{{ prefix }}date2_yyyy"
+                   placeholder="{{ 'dd/mm/yyyy'|trans(2)|upper }}"
+                   id="{{ prefix }}date2_yyyy">
+            <input class="form-control" name="{{ prefix }}date2_mm" pattern="[0-9]{0,2}"
+                   placeholder="{{ 'dd/mm/yyyy'|trans(1)|upper }}">
+            <input class="form-control" name="{{ prefix }}date2_dd" pattern="[0-9]{0,2}"
+                   placeholder="{{ 'dd/mm/yyyy'|trans(0)|upper }}">
+          </div>
+        </div>
+      </div>
+      {%- if title -%}</div></div>{%- endif -%} {# card-body & card #}
+    </div>
+  {%- endmacro -%}
+
+  <div class="card">
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" role="tab" data-toggle="tab" href="#h_advanced_search">
+            {{ 'advanced request'|trans|capitalize }}
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" role="tab" data-toggle="tab" href="#h_advanced_lists">
+            {{ 'list'|trans|capitalize }}
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="tab-content">
+      <div class="tab-pane active" id="h_advanced_search" role="tabpanel">
+        <form method="post" action="{{ conf.command }}">
+          <input type="hidden" name="m" value="AS_OK">
+          <div class="card-body">
+            <div class="row">
+              <div class="{{ columns (12, 12, 6) }}">
+                <div class="{{ row }}">
+                  <div class="{{ columns (12, 4, 4, 2) }}">
+                    <label for="sex">
+                      {{ 'sex'|trans|capitalize }}
+                    </label>
+                  </div>
+                  <div class="{{ columns (12, 8, 8, 10) }}">
+                    {{ formRadio ("sex", "M", 'M/F'|trans(0)) }}
+                    {{ formRadio ("sex", "F", 'M/F'|trans(1)) }}
+                    {{ formRadio ("sex", "N", 'indifferent'|trans(2), true) }}
+                  </div>
+                </div>
+                <div class="{{ row }}">
+                  <div class="{{ columns (12, 4, 4, 2) }}">
+                    <label for="surname">{{ 'surname/surnames'|trans(0)|capitalize }}</label>
+                  </div>
+                  <div class="{{ columns (12, 8, 8, 10) }}">
+                    <input class="form-control" type="text" name="surname" id="surname">
+                  </div>
+                </div>
+                <div class="{{ row }}">
+                  <div class="{{ columns (12, 4, 4, 2) }}">
+                    <label for="first_name">{{ 'first name/first names'|trans(0)|capitalize }}</label>
+                  </div>
+                  <div class="{{ columns (12, 8, 8, 10) }}">
+                    <input class="form-control" type="text" name="first_name" id="first_name">
+                  </div>
+                </div>
+              </div>
+              <div class="{{ columns (12, 12, 6) }}">
+                <div class="{{ row }}">
+                  <div class="{{ columns (12, 4, 4, 2) }}">
+                    <label for="married">
+                      {{ 'married'|trans|capitalize }}
+                    </label>
+                  </div>
+                  <div class="{{ columns (8, 8, 8, 10) }}">
+                    {{ formRadio ("married", "Y", 'Y/N'|trans(0)) }}
+                    {{ formRadio ("married", "N", 'Y/N'|trans(1)) }}
+                    {{ formRadio ("married", "A", 'indifferent'|trans(2), true) }}
+                  </div>
+                </div>
+                <div class="{{ row }}">
+                  <div class="{{ columns (12, 4, 4, 2) }}">
+                    <label for="occu">{{ 'occupation/occupations'|trans(0)|capitalize }}</label>
+                  </div>
+                  <div class="{{ columns (12, 8, 8, 10) }}">
+                    <input class="form-control" type="text" name="occu" id="occu">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div role="tabpanel">
+            <ul class="px-3 nav nav-tabs" role="tablist">
+              <li role="tab">
+                <label class="active" data-target="#h_advanced_or">
+                  <input type="radio" name="search_type" value="OR" checked>
+                  {{ 'h_advanced_or'|trans(0)|capitalize }}
+                </label>
+              </li>
+              <li role="tab">
+                <label data-target="#h_advanced_and">
+                  <input type="radio" name="search_type" value="AND">
+                  {{ 'h_advanced_and'|trans(0)|capitalize }}
+                </label>
+              </li>
+            </ul>
+            <div class="card-body tab-content border-bottom">
+              <div role="tabpanel" class="tab-pane pt-3 active" id="h_advanced_or">
+                <div class="row">
+                  {{ date_place (null, '') }}
+                  <div class="{{ columns (12, 6, 6) }}">
+                    {{ checkbox ('event_birth', 'birth'|trans|capitalize, 12, 6, 6) }}
+                    {{ checkbox ('event_bapt', 'baptism'|trans|capitalize, 12, 6, 6) }}
+                    {{ checkbox ('event_marriage', 'marriage event'|trans|capitalize, 12, 12, 12, 12) }}
+                    {{ checkbox ('event_death', 'death'|trans|capitalize, 12, 6, 6) }}
+                    {{ checkbox ('event_burial', 'burial'|trans|capitalize, 12, 6, 6) }}
+                  </div>
+                </div>
+              </div>
+              <div role="tabpanel" class="tab-pane pt-3" id="h_advanced_and">
+                <div class="{{ row }}">
+                  {{ date_place ('birth'|trans|capitalize, 'birth_') }}
+                  {{ date_place ('baptism'|trans|capitalize, 'bapt_') }}
+                </div>
+                <div class="{{ row }}">
+                  {{ date_place ('marriage event'|trans|capitalize, 'marriage_') }}
+                </div>
+                <div class="{{ row }}">
+                  {{ date_place ('death'|trans|capitalize, 'death_') }}
+                  {{ date_place ('burial'|trans|capitalize, 'burial_') }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="form-inline">
+              <label for="max" class="ml-auto mr-2">{{ 'maximum'|trans|capitalize }}</label>
+              <input type="text" pattern="[0-9]+" class="form-control" size="3" name="max" id="max" value="500">
+              <span class="ml-2">{{ 'person/persons'|trans(1)|capitalize }}</span>
+              <button type="submit" class="ml-3 mr-auto btn btn-outline-success btn-lg">
+                <i class="fa fa-search"></i>
+                {{ 'search/case sensitive'|trans(0)|capitalize }}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="tab-pane" id="h_advanced_lists" role="tabpanel">
+
+        <div class="card-body border-bottom">
+
+          <form class="form-inline" method="GET" action="{{ conf.command }}">
+            {{ print_hidden_env () }}
+
+            <label class="my-1 mr-2" for="m">
+              {{ 'visualize/show/hide/summary'|trans(0)|capitalize }}
+            </label>
+            <select class="custom-select my-1 mr-sm-2" name="m">
+              <option value="N">{{ 'surname/surnames'|trans(1)|capitalize }}</option>
+              <option value="P">{{ 'first name/first names'|trans(1)|capitalize }}</option>
+            </select>
+            <label class="my-1 mx-2" for="m">{{ 'by'|trans }}</label>
+            <select class="custom-select my-1 mr-sm-2" name="tri">
+              <option value="A">{{ 'alphabetic order'|trans|capitalize }}</option>
+              <option value="F">{{ 'frequency'|trans|capitalize }}</option>
+            </select>
+            <button class="btn btn-outline-success ml-auto" type="submit">
+              {{ 'visualize/show/hide/summary'|trans(0)|capitalize }}
+            </button>
+          </form>
+        </div>
+        <div class="card-body border-bottom">
+          <form class="form-inline" method="get" action="{{ conf.command }}">
+            {{ print_hidden_env () }}
+            <input type="hidden" name="m" value="PS" readonly>
+            <strong>
+              {{ 'place'|trans|capitalize }}
+              / {{ 'event/events'|trans(0) }}
+              / {{ 'surname/surnames'|trans(0) }}
+            </strong>
+            {{ checkbox (class="ml-2", "bi",'birth'|trans|capitalize|capitalize, 12, 12, 12) }}
+            {{ checkbox (class="ml-2", "bp",'baptism'|trans|capitalize, 12, 12, 12) }}
+            {{ checkbox (class="ml-2", "de",'death'|trans|capitalize, 12, 12, 12) }}
+            {{ checkbox (class="ml-2", "bu",'burial'|trans|capitalize, 12, 12, 12) }}
+            {{ checkbox (class="ml-2", "ma",'marriage/marriages'|trans(0)|capitalize) }}
+            <button class="btn btn-outline-success ml-auto" type="submit">
+              {{ 'visualize/show/hide/summary'|trans(0)|capitalize }}
+            </button>
+          </form>
+        </div>
+        <div class="card-body">
+          <form class="form-inline" method="get" action="{{ conf.command }}">
+            {{ print_hidden_env () }}
+            <input type="hidden" name="m" value="LIST_IND" readonly>
+            <input type="hidden" name="sz" value="500" readonly>
+            <input type="hidden" name="pg" value="1" readonly>
+            <strong>{{ 'list_ind_title'|trans|capitalize }}</strong>
+            <button class="btn btn-outline-success ml-auto" type="submit">
+              {{ 'visualize/show/hide/summary'|trans(0)|capitalize }}
+            </button>
+          </form>
+        </div>
+
+      </form>
+
+      </div>
+
+    </div>
+
+{%- endblock -%}
+
+{% block script %}
+  $('input[name="search_type"]').click(function () { $(this).closest('label').tab('show'); }) ;
+  $('input[name="search_type"]:checked').closest('label').tab('show');
+{% endblock %}

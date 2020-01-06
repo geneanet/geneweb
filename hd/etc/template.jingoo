@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="{{ conf.lang }}">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="{{ conf.image_prefix }}/geneweb.png">
+    <link rel="apple-touch-icon" href="{{ conf.image_prefix }}/geneweb.png">
+    <style>
+      li.folder { list-style-type: disc; list-style-image: url('{{ conf.image_prefix }}/folder.png'); }
+      li.file { list-style-type: circle; list-style-image: url('{{ conf.image_prefix }}/file.png'); }
+      li.parent { list-style-type: disc; list-style-image: url('{{ conf.image_prefix }}/left.png'); }
+      li.male { list-style-type: square; list-style-image: url('{{ conf.image_prefix }}/male.png'); }
+      li.female { list-style-type: circle; list-style-image: url('{{ conf.image_prefix }}/female.png'); }
+    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.9.0/css/all.css"
+          integrity="sha384-i1LQnF23gykqWXg6jxC2ZbCbUMxyw5gLZY6UiUS98LYV5unm8GWmfkIS6jqJfb4E" crossorigin="anonymous">
+    <title>{{ base.name }} - {% block title %}GeneWeb{% endblock %}</title>
+  </head>
+  <body>
+
+    {%- block navbar -%}
+      {%- include 'navbar.html.jingoo' -%}
+    {%- endblock -%}
+
+    <div class="sticky-top" style="top:57px;">
+      {%- block pagebar -%}{%- endblock -%}
+    </div>
+
+    <div class="container">
+      {%- block body %}{% endblock -%}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script>
+
+    <script>{% block script %}{% endblock %}</script>
+
+  </body>
+
+</html>

@@ -6643,6 +6643,30 @@ sk: manžel/manželka
 sl: mož/žena
 sv: partner/partner
 
+    h_advanced_or
+de: Einzelpersonen, passend zu mindestens einem der Ereignisse
+en: individuals related to at least one event
+es: Individuos correspondientes a menos de uno de ese eventos
+fi: henkilöt, jotka liittyvät ainakin yhteen tapahtumaan
+fr: individus correspondant à au moins un des événements
+it: individui corrispondenti a almeno uno di questi eventi
+nl: personen die minstens met één van de evenementen overeenkomen
+no: personer relatert til minst en hendelse
+pt: pessoas relacionadas com pelo menos um evento
+sv: individer relaterade till åtminstone en händelse
+
+    h_advanced_and
+de: Einzelpersonen, passend zu allen Ereignissen
+en: individuals related to all the events
+es: individuos correspondientes a todos los eventos
+fi: kaikkiin tapahtumiin liittyvät henkilöt
+fr: individus correspondant à tous les événements
+it: individui corrispondenti a tutti questi eventi
+nl: personen die overeenkomen met alle evenementen
+no: personer relatert til alle hendelsene
+pt: pessoas relacionadas com todos os eventos
+sv: individer relaterade till alla händelser
+
     h7-tree
 co: arburu in H di 7 generazione
 en: 7 generation H tree
@@ -7549,6 +7573,18 @@ sk: zoznam manželov/manželiek (bez potomkov)
 sl: seznam mož/žena (brez potomcev)
 sv: förteckning över makarna (icke ättlingar)
 
+    indifferent
+de: gleichgültig
+en: all
+es: indiferente
+fi: yhdentekevä
+fr: indifférent
+it: indifferente
+nl: onverschillig
+no: uviktig
+pt: indiferente
+sv: oviktigt
+
     individual notes
 co: note individuale
 de: Hinweis zur Person
@@ -8095,7 +8131,7 @@ oc: lista rapida
 pt: listar por nome, local e data
 sv: Index
 
-    list/list (ancestors)
+    list
 af: lys
 bg: списък
 br: roll
@@ -8805,6 +8841,18 @@ pt: avós maternos
 ru: бабушка и дедушка по материнской линии
 sv: mormor och morfar
 
+    max.
+de: Maximum
+en: maximum
+es: máximo
+fi: maks.
+fr: max.
+it: massimo
+nl: maximum
+no: maks.
+pt: máximo
+sv: maximum
+
     maximum
 af: maksimum
 bg: най-много
@@ -9026,6 +9074,18 @@ no: Verneplikt
 pt: serviço militar
 ru: военная служба
 sv: Värnplikt
+
+    min.
+de: Minimum
+en: minimum
+es: mínimo
+fi: väh.
+fr: min.
+it: minimo
+nl: minimum
+no: min.
+pt: mínimo
+sv: minimum
 
     miscellaneous
 co: diversu
@@ -15520,4 +15580,3 @@ ro: mesajul dvs. asteapta sa fie validat
 ru: ваше сообщение ожидает проверки
 sk: tvoja správa čaká na potvrdenie
 sv: ditt meddelande väntar på giltighet
-

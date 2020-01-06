@@ -1,0 +1,53 @@
+{%- function short_year (d) -%}
+  {%- switch d.prec -%}
+    {%- case "sure" %}{{ '' + d.year }}
+    {%- case "about" %}{{ '~' + d.year }}
+    {%- case "maybe" %}{{ '?' + d.year }}
+    {%- case "before" %}{{ '/' + d.year }}
+    {%- case "after" %}{{ d.year + '/' }}
+    {%- case "oryear" %}{% if d.year == d.d2.year %}{{ '' + d.year }}{% else %}{{ d.year + '/' + d.d2.year }}{% endif %}
+    {%- case "yearint" %}{% if d.year == d.d2.year %}{{ '' + d.year }}{% else %}{{ d.year + '..' + d.d2.year }}{% endif %}
+  {%- endswitch -%}
+{%- endfunction -%}
+
+{%- function long_year (d) -%}
+  {%- switch d.prec -%}
+    {%- case "sure" %}{{ "in (year)"|trans + ' ' + d.year }}
+    {%- case "about" %}{{ "about (date)"|trans + ' ' + d.year }}
+    {%- case "maybe" %}{{ "in (year)"|trans + ' ' + d.year }}
+    {%- case "before" %}{{ "before (date)"|trans }}{{ d.year }}
+    {%- case "after" %}{{ "after (date)"|trans + ' ' + d.year }}/
+    {%- case "oryear" -%}
+    {%- if d.year == d.d2.year %}{{ "in (year)"|trans + ' ' + d.year }}
+    {%- else %}{{ "in (year)"|trans + ' ' + d.year + ' ' + "or"|trans + ' ' + d.d2.year }}
+    {%- endif %}
+    {%- case "yearint" -%}
+    {%- if d.year == d.d2.year %}{{ "in (year)"|trans + ' ' + d.year }}
+    {%- else %}{{ "between (date)"|trans + ' ' + d.year + ' ' + "and"|trans + ' ' + d.d2.year }}
+    {%- endif %}
+    {%- default -%}{{ '' }}
+  {%- endswitch -%}
+{%- endfunction -%}
+
+{% function string_of_age(dmy) -%}
+  {%- if dmy.day == 0 %}
+    {%- if dmy.year >= 2 %}{{ dmy.year + '&nbsp;' + ('years old'|trans) }}
+    {%- elif dmy.year > 0 or dmy.month > 1 %}{{ (dmy.year * 12 + dmy.month) + '&nbsp;' + ('months old'|trans) }}
+    {%- elif dmy.month == 1 %}{{ 'one month old'|trans }}
+    {%- else %}{{ 'less than one month old'|trans }}
+    {%- endif -%}
+  {%- elif dmy.month == 0 %}
+    {%- if dmy.year > 1 %}{{ dmy.year + '&nbsp;' + ('years old'|trans) }}
+    {%- elif dmy.year == 1 %}{{ 'one year old'|trans }}
+    {%- else %}{{ 'birth'|trans }}
+    {%- endif -%}
+  {%- else -%}
+    {%- if dmy.year >= 2 %}{{ dmy.year + '&nbsp;' + ('years old'|trans) }}
+    {%- elif dmy.year > 0 or dmy.month > 1 %}{{ (dmy.year * 12 + dmy.month) + '&nbsp;' + ('months old'|trans) }}
+    {%- elif dmy.month == 1 %}{{ 'one month old'|trans }}
+    {%- elif dmy.day >= 2 %}{{ dmy.day + '&nbsp;' + ('days old'|trans) }}
+    {%- elif dmy.day == 1 %}{{ 'one day old'|trans }}
+    {%- else %}{{ 0 }}
+    {%- endif -%}
+  {%- endif -%}
+{%- endfunction -%}

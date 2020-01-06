@@ -3,6 +3,8 @@ open Config
 open Def
 open Gwdb
 open Util
+open Jingoo
+open Jg_types
 
 (*** Utils ***)
 
@@ -859,10 +861,12 @@ let defaultHandler : handler =
 
   ; forum_view = if_enabled_forum ForumDisplay.print
 
-  ; h = begin fun _self conf base ->
-      match p_getenv conf.env "v" with
+  ; h = begin fun self conf base ->
+      match Util.p_getenv conf.env "v" with
+      | Some "advanced" ->
+        JgInterp.render ~conf ~file:"h_advanced" ~models:(Gwxjg.Data.default_env conf base)
       | Some f -> SrcfileDisplay.print conf base f
-      | None -> Hutil.incorrect_request conf
+      | None -> self.incorrect_request self conf base
     end
 
   ; hist = begin fun _self conf base ->
