@@ -1,0 +1,45 @@
+{%- include 'utils.jingoo' -%}
+
+{%- extends "template.jingoo" -%}
+
+{%- block title -%}
+  {{ 'warnings'|trans|capitalize }}
+{%- endblock -%}
+
+{%- block body -%}
+
+  {%- macro print_hidden_env_aux (list) -%}
+    {%- for (k, v) in list -%}
+      {%- if v != '' && ((k != 'oc' && k != 'ocz') || v != '0') -%}
+        <input type="hidden" name="{{ k }}" value="{{ decode_varenv (v) }}">
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endmacro -%}
+
+  {# Add hidden inputs to forms in order to carry informations such as #}
+  {# which sosa 1 you are currently browsing with #}
+  {%- macro print_hidden_env () -%}
+    {{ print_hidden_env_aux (conf.henv) }}
+    {{ print_hidden_env_aux (conf.senv) }}
+  {%- endmacro -%}
+
+  <h1>{{ 'warnings'|trans|capitalize }}</h1>
+
+  {%- set warnings = warnings|groupby(nth(0)) -%}
+
+  {%- for (grouper, list) in warnings -%}
+    <div class="card mt-3">
+      <a class="card-header" data-toggle="collapse" href="#{{ grouper }}">
+        {{ grouper }} ({{ length (list) }})
+      </a>
+      <div class="card-body collapse show" id="{{ grouper }}">
+        <ul>
+          {%- for w in list -%}
+            <li>{{ print_warning (w) }}</li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+  {%- endfor -%}
+
+{%- endblock -%}

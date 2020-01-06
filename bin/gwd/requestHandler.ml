@@ -384,6 +384,7 @@ and handler =
   ; tt : handler_base
   ; u : handler_base
   ; view_wiznotes : handler_base
+  ; warnings : handler_base
   ; wiznotes : handler_base
   ; wiznotes_search : handler_base
   ; _no_mode : handler_base
@@ -560,6 +561,7 @@ let dummyHandler =
   ; tt = dummy_base
   ; u = dummy_base
   ; view_wiznotes = dummy_base
+  ; warnings = dummy_base
   ; wiznotes = dummy_base
   ; wiznotes_search = dummy_base
   ; _no_mode = dummy_base
@@ -1246,6 +1248,18 @@ let defaultHandler : handler =
   ; view_wiznotes = begin fun self conf base ->
       if conf.wizard && conf.authorized_wizards_notes then WiznotesDisplay.print_view conf base
       else self.incorrect_request self conf base
+    end
+
+  ; warnings = begin fun _self conf base ->
+      let ht = Hashtbl.create 1024 in
+      Check.check_base base ignore (fun x -> Hashtbl.replace ht x ()) ignore ;
+      let warnings = Hashtbl.fold begin fun w () acc ->
+          Gwxjg.Data.mk_warning conf base w :: acc
+        end ht [] in
+      let models = ("warnings", Tlist warnings)
+                   :: Gwxjg.Data.default_env conf base
+      in
+      JgInterp.render ~conf ~file:"warnings" ~models
     end
 
   ; wiznotes = begin fun self conf base ->

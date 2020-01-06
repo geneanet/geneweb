@@ -176,6 +176,7 @@ let family_m conf base =
       | "TT" -> handler.tt
       | "U" -> handler.u
       | "VIEW_WIZNOTES" -> handler.view_wiznotes
+      | "WARNINGS" -> handler.warnings
       | "WIZNOTES" -> handler.wiznotes
       | "WIZNOTES_SEARCH" -> handler.wiznotes_search
 #ifdef API
