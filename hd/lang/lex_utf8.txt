@@ -1,4 +1,4 @@
-     !dates order
+    !dates order
 af: yyyymmdd
 ar: ddmmyyyy
 bg: ddmmyyyy
@@ -29,11 +29,11 @@ sk: ddmmyyyy
 sl: ddmmyyyy
 sv: ddmmyyyy
 
-     !dir
+    !dir
 ar: rtl
 he: rtl
 
-     !languages
+    !languages
 af: af=Afrikaans/bg=Bulgaars/br=Bretons/ca=Catalan/co=Korsikaans/cs=Czeck/da=Deens/de=Duits/en=Engels/eo=Esperanto/es=Spaans/et=Estnies/fi=Fins/fr=Frans/he=Hibreeus/is=Yslandies/it=Italiaans/lv=Lets/nl=Nederlands/no=Noorweegs/oc=Oksitaans/pl=Pools/pt=Portugees/pt-br=Portugees-in-Brazilië/ro=Roemeens/ru=Russies/sk=Slowaaks/sl=Sloweens/sv=Sweeds/zh=Chinees
 bg: af=бурски/bg=български/br=бретонски/ca=каталонски/co=корсикан/cs=чешки/da=датски/de=немски/en=английски/eo=есперанто/es=испански/et=естонски/fi=финландски/fr=френски/he=иврит/is=исландски/it=италиански/lv=латвийски/nl=холандски/no=норвежки/oc=окситански/pl=полски/pt=португалски/pt-br=бразилско-португалски/ro=румънски/ru=руски/sk=Словашки език/sl=словенски/sv=шведски/zh=китайски
 br: af=afrikaaneg/bg=bulgareg/br=brezhoneg/ca=katalaneg/co=korseg/cs=tchekeg/da=daneg/de=alamaneg/en=saozneg/eo=esperanteg/es=spagnoleg/et=estonieg/fi=finneg/fr=galleg/he=hebreeg/is=islandeg/it=italianeg/lv=letoneg/nl=izelvroeg/no=norvegieg/oc=okitaneg/pl=poloneg/pt=portugaleg/pt-br=portugaleg bro-Vrazil/ro=roumaneg/ru=rusianeg/sk=Slovakeg/sl=sloveneg/sv=svedeg/zh=sinaeg
@@ -65,125 +65,125 @@ sl: af=afrikaanščina/bg=bolgarščina/br=bretonščina/ca=katalonščina/co=ko
 sv: af=afrikaans/bg=bulgariska/br=bretonska/ca=katalanska/co=korsikanska/cs=tjeckiska/da=danska/de=tyska/en=engelska/eo=esperanto/es=spanska/et=estniska/fi=finska/fr=franska/he=hebreiska/is=isländska/it=italienska/lv=litauiska/nl=holländska/no=norska/oc=occitanska/pl=polska/pt=portugisiska/pt-br=brasiliansk-portugisiska/ro=rumänska/ru=ryska/sk=slovakiska/sl=slovenska/sv=svenska/zh=kinesiska
 zh: af=南非語/bg=保加利亚语/br=布列塔尼语/ca=加泰罗尼亚语/co=科西嘉岛/cs=捷克语/da=丹麦语/de=德语/en=英语/eo=世界语/es=西班牙语/et=爱沙尼亚语/fi=芬兰语/fr=法语/he=希伯来语/is=冰岛语/it=意大利语/lv=拉脱维亚语/nl=荷蘭語/no=挪威语/oc=奥克语/pl=波兰语/pt=葡萄牙語/pt-br= 巴西葡萄牙语/ro=羅馬尼亞語/ru=俄语/sk=斯洛伐克语/sl=斯洛文尼亚语/sv= 瑞典語/zh=中文
 
-     the first branch
-af:  om die eerste staak te sien
-bg:  за да видите първия клон
-br:  evit gwelout ar skourr kentañ
-ca:  per veure la primera branca
-co:  a prima ghjemba
-cs:  abyste viděli první
-da:  for at se den første
-de:  Erster Zweig
-en:  first line
-eo:  por vidi la unuan branĉon
-es:  la primera rama
-et:  esimese haru vaatamiseks
-fi:  ensimmäinen sukuhaara
-fr:  la première
-he:   לראות את הענף הראשון
-is:  til að sjá fyrstu grein
-it:  il primo ramo
-lv:  skatīt pirmo zaru
-nl:  de eerste tak
-no:  den første grenen
-oc:  la primièra branca
-pl:  aby zobaczyć pierwszą linię (gałąź)
-pt:  para ver o primeiro ramo
-ro:  pentru a vedea primul
-ru:  чтобы увидеть первую ветку
-sk:  aby ste videli prvú vetvu
-sl:  za prikaz prve veje
-sv:  den första grenen
+    the first branch
+af: om die eerste staak te sien
+bg: за да видите първия клон
+br: evit gwelout ar skourr kentañ
+ca: per veure la primera branca
+co: a prima ghjemba
+cs: abyste viděli první
+da: for at se den første
+de: Erster Zweig
+en: first line
+eo: por vidi la unuan branĉon
+es: la primera rama
+et: esimese haru vaatamiseks
+fi: ensimmäinen sukuhaara
+fr: la première
+he:  לראות את הענף הראשון
+is: til að sjá fyrstu grein
+it: il primo ramo
+lv: skatīt pirmo zaru
+nl: de eerste tak
+no: den første grenen
+oc: la primièra branca
+pl: aby zobaczyć pierwszą linię (gałąź)
+pt: para ver o primeiro ramo
+ro: pentru a vedea primul
+ru: чтобы увидеть первую ветку
+sk: aby ste videli prvú vetvu
+sl: za prikaz prve veje
+sv: den första grenen
 
-     to see the first branch
-af:  om die eerste staak te sien
-bg:  за да видите първия клон
-br:  evit gwelout ar skourr kentañ
-ca:  per veure la primera branca
-co:  per fighjà a prima ghjemba
-cs:  abyste viděli první
-da:  for at se den første
+    to see the first branch
+af: om die eerste staak te sien
+bg: за да видите първия клон
+br: evit gwelout ar skourr kentañ
+ca: per veure la primera branca
+co: per fighjà a prima ghjemba
+cs: abyste viděli první
+da: for at se den første
 de: , um den ersten zu sehen
-en:  to see the first one
-eo:  por vidi la unuan branĉon
-es:  para ver la primera rama
-et:  esimese haru vaatamiseks
-fi:  nähdäksesi ensimmäisen haaran
-fr:  pour voir la première
-he:   לראות את הענף הראשון
-is:  til að sjá fyrstu grein
-it:  per vedere il primo
-lv:  skatīt pirmo zaru
-nl:  om de eerste tak te zien
-no:  for å se den første
-oc:  per veire la primièra branca
-pl:  aby zobaczyć pierwszą linię (gałąź)
-pt:  para ver o primeiro ramo
-ro:  pentru a vedea primul
-ru:  чтобы увидеть первую ветку
-sk:  aby ste videli prvú vetvu
-sl:  za prikaz prve veje
-sv:  för att se den första
+en: to see the first one
+eo: por vidi la unuan branĉon
+es: para ver la primera rama
+et: esimese haru vaatamiseks
+fi: nähdäksesi ensimmäisen haaran
+fr: pour voir la première
+he:  לראות את הענף הראשון
+is: til að sjá fyrstu grein
+it: per vedere il primo
+lv: skatīt pirmo zaru
+nl: om de eerste tak te zien
+no: for å se den første
+oc: per veire la primièra branca
+pl: aby zobaczyć pierwszą linię (gałąź)
+pt: para ver o primeiro ramo
+ro: pentru a vedea primul
+ru: чтобы увидеть первую ветку
+sk: aby ste videli prvú vetvu
+sl: za prikaz prve veje
+sv: för att se den första
 
-     to see the first relationship link
-af:  om die eerste te sien
-bg:  за да видите първата родствена връзка
-br:  evit gwelout al liamm kentañ
-ca:  per veure el primer vincle de parentesc
-co:  per fighjà a prima lea
-cs:  zobrazit první
-da:  for at se det første
+    to see the first relationship link
+af: om die eerste te sien
+bg: за да видите първата родствена връзка
+br: evit gwelout al liamm kentañ
+ca: per veure el primer vincle de parentesc
+co: per fighjà a prima lea
+cs: zobrazit první
+da: for at se det første
 de: , um die erste zu sehen
-en:  to see the first one
-eo:  por vidi la unuan ligon de parenceco
-es:  para ver el primer vínculo de parentesco
-et:  esimese sugulussuhte vaatamiseks
-fi:  nähdäksesi ensimmäisen sukulaisuuden
-fr:  pour voir le premier
-he:   לראות את הקשר המשפחתי הראשון
-is:  til að sjá fyrstu tengsl
-it:  per vedere il primo
-lv:  skatīt pirmo attiecību saiti
-nl:  om de eerste te zien
-no:  for å se den første
-oc:  per veire lo primièr ligam de parentatge
-pl:  aby zobaczyć pierwszą linię pokrewieństwa
-pt:  para ver o primeiro link
-ro:  pentru a vedea prima relatie
-ru:  чтобы увидеть первую связь отношения
-sk:  zobraziť prvý vzťah
-sl:  za prikaz prve sorodstvene povezave
-sv:  för att se den första
+en: to see the first one
+eo: por vidi la unuan ligon de parenceco
+es: para ver el primer vínculo de parentesco
+et: esimese sugulussuhte vaatamiseks
+fi: nähdäksesi ensimmäisen sukulaisuuden
+fr: pour voir le premier
+he:  לראות את הקשר המשפחתי הראשון
+is: til að sjá fyrstu tengsl
+it: per vedere il primo
+lv: skatīt pirmo attiecību saiti
+nl: om de eerste te zien
+no: for å se den første
+oc: per veire lo primièr ligam de parentatge
+pl: aby zobaczyć pierwszą linię pokrewieństwa
+pt: para ver o primeiro link
+ro: pentru a vedea prima relatie
+ru: чтобы увидеть первую связь отношения
+sk: zobraziť prvý vzťah
+sl: za prikaz prve sorodstvene povezave
+sv: för att se den första
 
-     to try again with this number
-af:  om weer te probeer met die nommer
-bg:  за опит с този номер
-br:  evit esaiñ en-dro gant an niverenn-se
-ca:  per tornar a provar aquest número
-co:  per pruvà torna cù stu numeru
-cs:  zkusit znovu s tímto číslem
-da:  for at forsøge igen med dette nummer
+    to try again with this number
+af: om weer te probeer met die nommer
+bg: за опит с този номер
+br: evit esaiñ en-dro gant an niverenn-se
+ca: per tornar a provar aquest número
+co: per pruvà torna cù stu numeru
+cs: zkusit znovu s tímto číslem
+da: for at forsøge igen med dette nummer
 de: , um es mit dieser Nummer nochmals zu versuchen
-en:  to try again with this number
-eo:  por reprovi kun ĉi tiu numero
-es:  para ensayar de nuevo con este número
+en: to try again with this number
+eo: por reprovi kun ĉi tiu numero
+es: para ensayar de nuevo con este número
 et: , proovimaks uuesti selle numbriga
-fi:  yrittääksesi uudelleen tällä numerolla
-fr:  pour réessayer avec ce numéro
-he:  לנסות שוב עם המספר הזה
-is:  til að reyna þetta aftur með þessu númeri
-it:  per provare di nuovo con questo numero
-lv:  mēģiniet vēlreiz ar šo nummuru
+fi: yrittääksesi uudelleen tällä numerolla
+fr: pour réessayer avec ce numéro
+he: לנסות שוב עם המספר הזה
+is: til að reyna þetta aftur með þessu númeri
+it: per provare di nuovo con questo numero
+lv: mēģiniet vēlreiz ar šo nummuru
 nl: , om dit nummer weer te proberen
-no:  for å prøve igjen med dette nummeret
-oc:  per tornar ensajar amb aquel numèro
-pl:  aby ponowić z tym numerem
-pt:  para tentar novamente com este número
-ro:  incearca din nou cu acest numar
-ru:  для того, чтобы пытаться снова с этим числом
-sk:  skúsiť znovu s týmto číslom
-sl:  za ponoven poskus s to številko
-sv:  för att försöka igen med detta nummer
+no: for å prøve igjen med dette nummeret
+oc: per tornar ensajar amb aquel numèro
+pl: aby ponowić z tym numerem
+pt: para tentar novamente com este número
+ro: incearca din nou cu acest numar
+ru: для того, чтобы пытаться снова с этим числом
+sk: skúsiť znovu s týmto číslom
+sl: za ponoven poskus s to številko
+sv: för att försöka igen med detta nummer
 
     %1 of %2
 af: %1 van %2
