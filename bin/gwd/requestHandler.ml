@@ -334,6 +334,7 @@ and handler =
   ; imh : handler_base
   ; inv_fam : handler_base
   ; inv_fam_ok : handler_base
+  ; itree : handler_base
   ; kill_anc : handler_base
   ; lb : handler_base
   ; ld : handler_base
@@ -511,6 +512,7 @@ let dummyHandler =
   ; imh = dummy_base
   ; inv_fam = dummy_base
   ; inv_fam_ok = dummy_base
+  ; itree = dummy_base
   ; kill_anc = dummy_base
   ; lb = dummy_base
   ; ld = dummy_base
@@ -907,6 +909,15 @@ let defaultHandler : handler =
   ; inv_fam_ok = begin fun self conf base ->
       if conf.wizard then UpdateFamOk.print_inv conf base
       else self.incorrect_request self conf base
+    end
+
+  ; itree = begin fun self conf base ->
+      match find_person_in_env conf base "" with
+      | Some p ->
+        let root = Gwxjg.Data.get_n_mk_person conf base (get_iper p) in
+        JgInterp.render ~conf ~file:"itree"
+          ~models:(("root", root) :: Gwxjg.Data.default_env conf base)
+      | _ -> self.very_unknown self conf base
     end
 
   ; kill_anc = begin fun self conf base ->
