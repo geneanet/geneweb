@@ -1,15 +1,13 @@
 {%- include "navbar_utils.jingoo" -%}
 
 <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top border-bottom">
-  <a class="navbar-brand pr-2 mr-2 border-right" href="{{ env.prefix }}">{{ base.name }}</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse">
-    <i class="navbar-toggler-icon"></i>
-  </button>
-  <div id="navbarCollapse" class="collapse navbar-collapse">
-    <ul class="navbar-nav mr-auto">
+  <ul class="navbar-nav">
+    <li class="nav-item dropdown pr-2 mr-2 border-right">
+      {{ dropdownToggle ('<strong>' + base.name + '</strong>') }}
+      <ul class="dropdown-menu">
       {%- if conf.wizard -%}
-        <li class="nav-item dropdown">
-          {{ dropdownToggle ('modify'|trans|capitalize) }}
+        <li class="dropdown-submenu">
+          {{ subDropdownToggle ('modify'|trans|capitalize, 'fa-edit') }}
           <div class="dropdown-menu">
             {{ dropdownItem (null, 'add'|trans|capitalize + ' ' + 'family/families'|trans(0), env.prefix + 'm=ADD_FAM') }}
             <div class="dropdown-divider"></div>
@@ -21,9 +19,26 @@
           </div>
         </li>
       {%- endif -%}
-      <li class="nav-item dropdown">
-        {{ dropdownToggle ('search/case sensitive'|trans(0)|capitalize) }}
+      <li class="dropdown-submenu">
+        {{ subDropdownToggle ('search/case sensitive'|trans(0)|capitalize, 'fa-search') }}
         <div class="dropdown-menu">
+          <form class="form-inline mx-3" method="get" action="{{ env.prefix }}">
+            {{ print_hidden_env () }}
+            <input type="hidden" name="m" value="S">
+            <div class="input-group">
+              <input class="form-control" type="search"
+                     name="n" placeholder="{{ 'surname/surnames'|trans(0)|capitalize }}">
+              <input class="form-control" type="search"
+                     name="p" placeholder="{{ 'first name/first names'|trans(0)|capitalize }}">
+              <div class="input-group-append" >
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit"
+                        title="{{ 'search/case sensitive'|trans(0)|capitalize }} {{ 'person/persons'|trans(0) }}">
+                  <i class="fa fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+          <div class="dropdown-divider"></div>
           {{ dropdownItem ('fa-search-plus', 'advanced request'|trans(0), env.prefix + 'm=H&v=advanced') }}
           {{ dropdownItem ('fa-users', 'list_ind_title'|trans, env.prefix + 'm=LIST_IND') }}
           {{ dropdownItem ('fa-globe', 'places'|trans + ' ' + 'by'|trans + ' ' + 'surname/surnames'|trans(0), env.prefix + 'm=PS&bi=on&bp=on&de=on&bu=on&ma=on') }}
@@ -47,8 +62,8 @@
           {{ dropdownItem ('fa-list', 'all the estates'|trans, env.prefix + 'm=TT&p=*') }}
         </div>
       </li>
-      <li class="nav-item dropdown">
-        {{ dropdownToggle ('tools'|trans|capitalize) }}
+      <li class="dropdown-submenu">
+        {{ subDropdownToggle ('tools'|trans|capitalize, 'fa-calculator') }}
         <div class="dropdown-menu">
           {% if conf.wizard %}
             {{ dropdownItem ('fa-file-alt', 'base wizard notes'|trans, env.prefix + 'm=WIZNOTES') }}
@@ -60,54 +75,42 @@
           {{ dropdownItem ('fa-exclamation-triangle', 'warnings'|trans, env.prefix + 'm=WARNINGS') }}
         </div>
       </li>
-    </ul>
-     <form class="form-inline" method="get" action="{{ env.prefix }}">
-      {{ print_hidden_env () }}
-      <input type="hidden" name="m" value="S">
-      <div class="input-group">
-        <input class="form-control" type="search"
-               name="n" placeholder="{{ 'surname/surnames'|trans(0)|capitalize }}">
-        <input class="form-control" type="search"
-               name="p" placeholder="{{ 'first name/first names'|trans(0)|capitalize }}">
-        <div class="input-group-append" >
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit"
-                  title="{{ 'search/case sensitive'|trans(0)|capitalize }} {{ 'person/persons'|trans(0) }}">
-            <i class="fa fa-search"></i>
-	    </button>
-        </div>
-      </div>
-    </form>
-
-    <ul class="navbar-nav">
-      <li class="nav-item dropdown">
-        {{ dropdownToggle (conf.lang|upper) }}
-        <div class="dropdown-menu dropdown-menu-right" style="height:auto;max-height:200px;overflow-x:hidden;">
-          {%- for lang in range (0,29)|map((i) => ('!languages'|trans(i)|split('='))) | sort(compare=(a,b)=>compare(a[1],b[1])) -%}
-            {{ dropdownItem (null, lang[1], conf.command + '?lang=' + lang[0] + print_env (conf.env)) }}
-          {%- endfor -%}
-        </div>
+      <li class="dropdown-submenu">
+        {{ subDropdownToggle ('settings'|trans|capitalize, 'fa-cogs') }}
+        <ul class="dropdown-menu">
+          <li class="dropdown-submenu">
+            {{ subDropdownToggle (conf.lang|upper) }}
+            <div class="dropdown-menu" style="height:auto;max-height:200px;overflow-x:hidden;">
+              {%- for lang in range (0,29)|map((i) => ('!languages'|trans(i)|split('='))) | sort(compare=(a,b)=>compare(a[1],b[1])) -%}
+              {{ dropdownItem (null, lang[1], conf.command + '?lang=' + lang[0] + print_env (conf.env)) }}
+              {%- endfor -%}
+            </div>
+          </li>
+          <li class="dropdown-submenu">
+            {% if conf.wizard %}
+            {{ subDropdownToggle ('<i class="fa fa-lg fa-hat-wizard"></i>') }}
+            <div class="dropdown-menu dropdown-menu-right">
+              {{ dropdownItem ('fa-user-friends', 'wizard/wizards/friend/friends/exterior'|trans(2)|capitalize, conf.command + '?w=f') }}
+              {{ dropdownItem ('fa-sign-out-alt', 'disconnect'|trans|capitalize, conf.command + '?w=' + print_env (conf.env)) }}
+            </div>
+            {% else if conf.friend %}
+            {{ subDropdownToggle ('<i class="fa fa-lg fa-user-friends"></i>') }}
+            <div class="dropdown-menu dropdown-menu-right">
+              {{ dropdownItem ('fa-hat-wizard', 'wizard/wizards/friend/friends/exterior'|trans(0)|capitalize, conf.command + '?w=w') }}
+              {{ dropdownItem ('fa-sign-out-alt', 'disconnect'|trans|capitalize, conf.command + '?w=' + print_env (conf.env)) }}
+            </div>
+            {% else %}
+            {{ subDropdownToggle ('<i class="fa fa-lg fa-sign-in-alt"></i>') }}
+            <div class="dropdown-menu dropdown-menu-right">
+              {{ dropdownItem ('fa-hat-wizard', 'wizard/wizards/friend/friends/exterior'|trans(0)|capitalize, conf.command + '?w=w' + print_env (conf.env)) }}
+              {{ dropdownItem ('fa-user-friends', 'wizard/wizards/friend/friends/exterior'|trans(2)|capitalize, conf.command + '?w=f' + print_env (conf.env)) }}
+            </div>
+            {% endif %}
+          </li>
+        </ul>
       </li>
-      <li class="nav-item dropdown">
-        {% if conf.wizard %}
-          {{ dropdownToggle ('<i class="fa fa-lg fa-hat-wizard"></i>') }}
-          <div class="dropdown-menu dropdown-menu-right">
-            {{ dropdownItem ('fa-user-friends', 'wizard/wizards/friend/friends/exterior'|trans(2)|capitalize, conf.command + '?w=f') }}
-            {{ dropdownItem ('fa-sign-out-alt', 'disconnect'|trans|capitalize, conf.command + '?w=' + print_env (conf.env)) }}
-          </div>
-        {% else if conf.friend %}
-          {{ dropdownToggle ('<i class="fa fa-lg fa-user-friends"></i>') }}
-          <div class="dropdown-menu dropdown-menu-right">
-            {{ dropdownItem ('fa-hat-wizard', 'wizard/wizards/friend/friends/exterior'|trans(0)|capitalize, conf.command + '?w=w') }}
-            {{ dropdownItem ('fa-sign-out-alt', 'disconnect'|trans|capitalize, conf.command + '?w=' + print_env (conf.env)) }}
-          </div>
-        {% else %}
-          {{ dropdownToggle ('<i class="fa fa-lg fa-sign-in-alt"></i>') }}
-          <div class="dropdown-menu dropdown-menu-right">
-            {{ dropdownItem ('fa-hat-wizard', 'wizard/wizards/friend/friends/exterior'|trans(0)|capitalize, conf.command + '?w=w' + print_env (conf.env)) }}
-            {{ dropdownItem ('fa-user-friends', 'wizard/wizards/friend/friends/exterior'|trans(2)|capitalize, conf.command + '?w=f' + print_env (conf.env)) }}
-          </div>
-        {% endif %}
-      </li>
-    </ul>
-  </div>
+      </ul>
+    </li>
+  </ul>
+  <div class="mr-auto">{{ pagebar () }}</div>
 </nav>

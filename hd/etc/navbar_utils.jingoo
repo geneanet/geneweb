@@ -15,9 +15,18 @@
   </a>
 {%- endmacro -%}
 
-{%- macro dropdownToggle (content) -%}
+{%- macro dropdownToggle (content, icn) -%}
   <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+    {%- if icn %}<i class="fa fa-fw {{ icn }} mr-2"></i>{%- endif -%}
     {{ content }}
+  </a>
+{%- endmacro -%}
+
+{%- macro subDropdownToggle (content, icn) -%}
+  <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-toggle="dropdown">
+    {%- if icn %}<i class="fa fa-fw {{ icn }} mr-2"></i>{%- endif -%}
+    {{ content }}
+    <i class="fa fa-chevron-right ml-auto"></i>
   </a>
 {%- endmacro -%}
 

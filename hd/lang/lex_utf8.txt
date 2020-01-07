@@ -12529,6 +12529,10 @@ sk: odlúčení
 sl: živela narazen
 sv: separerat
 
+    settings
+en: settings
+fr: réglages
+
     several answers
 af: verskeie antwoorde
 bg: няколко отговора
