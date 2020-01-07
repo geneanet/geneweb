@@ -232,7 +232,7 @@
 
 {% macro a_descend (x, n, root) %}
   {% if not root %}{{ print_person(x) }}{% endif %}
-  {% if n > 0 && x.families %}
+  {% if n > 0 && x.families && exists (((f) => (length (f.children) > 0)), x.families) %}
   <ul>
     {%- for f in x.families -%}
     {% if f.children %}
