@@ -774,7 +774,7 @@ let compute_warnings conf base resp =
                 (Printf.sprintf
                    (fcapitale
                       (ftransl conf
-                         "the following children of %t and %t are born very close"))
+                         "the following children of %t and %t are born very distant"))
                    (fun _ -> print_someone (poi base (get_father cpl)))
                    (fun _ -> print_someone (poi base (get_mother cpl))))
                 ^ ": " ^
