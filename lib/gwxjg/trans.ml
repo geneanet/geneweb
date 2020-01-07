@@ -1,15 +1,15 @@
 open Jingoo
 
 let fast_concat = function
-  | [||] -> ""
-  | [| s |] -> s
+  | [] -> ""
+  | [ s ] -> s
   | l ->
     let b =
-      Bytes.create (Array.fold_left (fun acc s -> String.length s + acc) 0 l)
+      Bytes.create (List.fold_left (fun acc s -> String.length s + acc) 0 l)
     in
-    ignore @@ Array.fold_left
+    ignore @@ List.fold_left
       (fun pos s ->
-         let len = String.length s in
+         let len =String.length s in
          Bytes.unsafe_blit (Bytes.unsafe_of_string s) 0 b pos len ;
          pos + len)
       0 l ;
@@ -30,9 +30,28 @@ let import_trad ht keyword line =
   let i = if i < 0 || i >= Array.length line then 0 else i in
   let arg s = List.assoc s kwargs in
   Tstr begin fast_concat @@
-    Array.map
-      (function Lexicon_parser.Str s -> s | Arg n -> string_of_tvalue (arg n))
-      (Array.unsafe_get line i)
+    let a = Array.unsafe_get line i in
+    let rec loop acc i =
+      if i < 0 then acc
+      else match Array.unsafe_get a i with
+        | Lexicon_parser.Str s -> loop (s :: acc) (i - 1)
+        | Arg n -> loop (string_of_tvalue (arg n) :: acc) (i - 1)
+        | Elision (s1, s2) ->
+          let x =
+            try unbox_string @@ arg "elision"
+            with Not_found -> List.hd acc
+          in
+          if x <> ""
+          && Unidecode.decode
+               (fun _ _ -> false)
+               (fun _ -> function
+                  |'A'|'E'|'I'|'O'|'U'|'a'|'e'|'i'|'o'|'u' -> true
+                  | _ -> false)
+               (fun _ -> false)
+               x 0 (String.length x)
+          then loop (s2 :: acc) (i - 1)
+          else loop (s1 :: acc) (i - 1)
+    in loop [] (Array.length a - 1)
   end
 
 let default_lang = "en"

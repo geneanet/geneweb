@@ -3,6 +3,7 @@
 type i18n_expr =
   | Arg of string
   | Str of string
+  | Elision of string * string
 
 let flush buffer acc =
   let acc = match Buffer.contents buffer with
@@ -105,6 +106,10 @@ and p_trad buffer acc = parse
       let acc = flush buffer acc in
       p_trad buffer (Arg n :: acc) lexbuf
     }
+  | '[' ([^'|']* as s1) '|' ([^']']* as s2) ']' {
+      let acc = flush buffer acc in
+      p_trad buffer (Elision (s1, s2) :: acc) lexbuf
+    }
   | _ as c {
       Buffer.add_char buffer c ;
       p_trad buffer acc lexbuf
@@ -116,11 +121,13 @@ and p_trad buffer acc = parse
       let rec loop acc = function
         | Arg hd :: tl ->
           let c = hd.[0] in
-          let occ = occ c tl in
-          if occ = 1
-          && not (List.exists (function Arg s -> s.[0] = c | _ -> false) acc)
-          then loop (Arg hd :: acc) tl
-          else loop (Arg (hd ^ string_of_int occ) :: acc) tl
+          if c <> '_' then
+            let occ = occ c tl in
+            if occ = 1
+            && not (List.exists (function Arg s -> s.[0] = c | _ -> false) acc)
+            then loop (Arg hd :: acc) tl
+            else loop (Arg (hd ^ string_of_int occ) :: acc) tl
+          else loop (Arg hd :: acc) tl
         | hd :: tl -> loop (hd :: acc) tl
         | [] -> acc
       in

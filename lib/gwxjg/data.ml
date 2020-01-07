@@ -1041,16 +1041,29 @@ let trans (conf : Config.config) =
       let arg s = List.assoc s kwargs in
       let t = Array.unsafe_get t i in
       Tstr begin
-        let conv = function
+        let conv acc = function
           | Lexicon_parser.Str s -> s
           | Arg n -> Jg_runtime.string_of_tvalue (arg n)
+          | Elision (s1, s2) ->
+            let x = try unbox_string @@ arg "elision" with Not_found -> acc in
+            if x <> ""
+            && Unidecode.decode
+                 (fun _ _ -> false)
+                 (fun _ -> function
+                    | 'A'|'E'|'I'|'O'|'U'|'a'|'e'|'i'|'o'|'u' -> true
+                    | _ -> false)
+                 (fun _ -> false)
+                 x 0 (String.length x)
+            then s2
+            else s1
         in
         let rec loop s i =
-          if i < Array.length t
-          then loop (s ^ conv (Array.unsafe_get t i)) (i + 1)
-          else s
+          if i < 0
+          then s
+          else loop (conv s (Array.unsafe_get t i) ^ s) (i - 1)
         in
-        loop (conv @@ Array.unsafe_get t 0) 1
+        let len = Array.length t in
+        loop (conv "" @@ Array.unsafe_get t @@ len - 1) (len - 2)
         |> Util.translate_eval
       end
     with Not_found -> Tstr (Printf.sprintf "{{%s|trans}}" @@ stringify @@ s)
