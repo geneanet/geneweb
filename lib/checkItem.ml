@@ -15,7 +15,6 @@ let max_death_before_lim_date_death = 100
 let min_parent_age = 11
 let max_father_age = 70
 let max_mother_age = 55
-let lim_date_marriage = 1850
 let min_age_marriage = 13
 let max_age_marriage = 100
 let max_siblings_gap = 50
@@ -687,15 +686,13 @@ let check_parent_marriage_age warning fam p =
               | Some (Dgreg (g1, _) as d1) ->
                 if strictly_before d2 d1
                 then warning (MarriageDateBeforeBirth p)
-                else if g2.year > lim_date_marriage
-                then
+                else
                   let e = Date.time_elapsed g1 g2 in
                   if strictly_younger e min_age_marriage
                   then warning (YoungForMarriage (p, e))
                   else if strictly_older e max_age_marriage
                   then warning (OldForMarriage (p, e))
                   else loop list
-                else loop list
               | _ -> loop list
             end
           | _ -> loop list
