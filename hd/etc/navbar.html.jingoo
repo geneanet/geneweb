@@ -2,7 +2,7 @@
   {% set print_env_ns = namespace (result = '') %}
   {%- for (k, v) in env -%}
     {%- if k != 'lang' && v != '' && ((k != 'oc' && k != 'ocz') || v != '0') -%}
-      {% set print_env_ns.result += '&' + k + '=' + v -%}
+      {% set print_env_ns.result += '&' + k + '=' + decode_varenv (v) -%}
     {%- endif -%}
   {%- endfor -%}
   {{ print_env_ns.result }}

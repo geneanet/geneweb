@@ -254,3 +254,22 @@
   {%- case "YoungForMarriage" || "OldForMarriage" %}{{ w_YoungForMarriage(w[1], w[2]) }}
   {%- endswitch -%}
 {%- endmacro -%}
+
+{%- macro print_hidden (k, v) -%}
+  {%- if v && v != '' && ((k != 'oc' && k != 'ocz') || v != '0') -%}
+    <input type="hidden" name="{{ k }}" value="{{ decode_varenv (v) }}">
+  {%- endif -%}
+{%- endmacro -%}
+
+{%- macro print_hidden_env_aux (list) -%}
+  {%- for (k, v) in list -%}
+    {{ print_hidden (k, v) }}
+  {%- endfor -%}
+{%- endmacro -%}
+
+{# Add hidden inputs to forms in order to carry informations such as #}
+{# which sosa 1 you are currently browsing with #}
+{%- macro print_hidden_env () -%}
+  {{ print_hidden_env_aux (conf.henv) }}
+  {{ print_hidden_env_aux (conf.senv) }}
+{%- endmacro -%}

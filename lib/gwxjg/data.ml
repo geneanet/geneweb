@@ -947,13 +947,14 @@ let module_NAME base =
   end
 
 let mk_conf conf =
+  let lazy_env e = Tlazy (lazy (Tobj (List.map (fun (k, v) -> (k, Tstr v)) e))) in
   let wizard = Tvolatile (fun () -> Tbool conf.Config.wizard) in
   let friend = Tbool conf.friend in
   let command = Tstr conf.command in
-  let env = Tobj (List.map (fun (k, v) -> (k, Tstr (Wserver.decode v))) conf.env) in
-  let senv = Tlazy (lazy (Tobj (List.map (fun (k, v) -> (k, Tstr v)) conf.senv))) in
-  let henv = Tlazy (lazy (Tobj (List.map (fun (k, v) -> (k, Tstr v)) conf.henv))) in
-  let benv = Tlazy (lazy (Tobj (List.map (fun (k, v) -> (k, Tstr v)) conf.base_env))) in
+  let env = lazy_env conf.env in
+  let senv = lazy_env conf.senv in
+  let henv = lazy_env conf.henv in
+  let benv = lazy_env conf.base_env in
   let today = mk_dmy conf.today in
   let image_prefix = Tstr conf.image_prefix in
   let user = Tstr conf.user in
