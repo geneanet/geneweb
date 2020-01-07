@@ -250,9 +250,38 @@
   {% endif %}
 {% endmacro %}
 
+{%- block pagebar -%}
+  <nav class="navbar navbar-expaned-md navbar-light bg-light border-bottom">
+    <strong class="d-sm-none d-md-block">
+      {{ 'tree'|trans|capitalize }} ({{ 'ancestors'|trans|capitalize }}/{{ 'descendants'|trans|capitalize }})
+    </strong>
+    <form class="form-inline ml-3 mr-auto" method="get" action="{{ env.prefix }}">
+      {{ 'generation/generations'|trans(1)|capitalize }}{{ ':'|trans }}
+      {%- for (k, v) in (list (conf.env) + list (conf.senv) + list (conf.henv)) | unique -%}
+        {%- if k != "an" && k != "dn" %}{{ print_hidden (k, v) }}{% endif -%}
+      {%- endfor -%}
+      <div class="input-group ml-3">
+        <div class="input-group-prepend">
+          <div class="input-group-text">{{ 'ancestors'|trans|capitalize }}</div>
+        </div>
+        <input type="text" class="form-control" name="an" value="{{ env.an ? env.an : 2 }}" size="1">
+      </div>
+      <div class="input-group ml-3">
+        <div class="input-group-prepend">
+          <div class="input-group-text">{{ 'descendants'|trans|capitalize }}</div>
+        </div>
+        <input type="text" class="form-control" name="dn" value="{{ env.dn ? env.dn : 2 }}" size="1">
+      </div>
+      <button class="btn btn-outline-success ml-3" type="submit">
+        {{ 'visualize/show/hide/summary'|trans(0)|capitalize }}
+      </button>
+    </form>
+  </nav>
+{%- endblock -%}
+
 <div style="width=100vw;overflow:hidden;">
   <div class="ascend" style="width:100%;display:flex;justify-content:center;">
-    <div class="tree"><ul><li>{{ a_ascend (root, 4, true) }}</li></ul></div>
+    <div class="tree"><ul><li>{{ a_ascend (root, (env.an ? int (env.an) : 2), true) }}</li></ul></div>
   </div>
   <div style="width:100%;display:flex;justify-content:center;">
     <div class="border p-3 text-center">
@@ -260,6 +289,6 @@
     </div>
   </div>
   <div class="descend" style="width:100%;display:flex;justify-content:center;">
-    <div class="tree"><ul><li>{{ a_descend (root, 3, true) }}</li></ul></div>
+    <div class="tree"><ul><li>{{ a_descend (root, (env.dn ? int (env.dn) : 2), true) }}</li></ul></div>
   </div>
 </div>
