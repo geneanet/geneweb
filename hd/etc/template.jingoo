@@ -23,7 +23,7 @@
       {%- include 'navbar.html.jingoo' -%}
     {%- endblock -%}
 
-    <div class="sticky-top" style="top:57px;">
+    <div class="sticky-top" style="top:57px;z-index:1019">
       {%- block pagebar -%}{%- endblock -%}
     </div>
 

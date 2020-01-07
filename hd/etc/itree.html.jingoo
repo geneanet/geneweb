@@ -251,28 +251,35 @@
 {% endmacro %}
 
 {%- block pagebar -%}
-  <nav class="navbar navbar-expaned-md navbar-light bg-light border-bottom">
-    <strong class="d-sm-none d-md-block">
+  <nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom">
+    <strong class="d-none d-md-block my-2 my-md-0">
       {{ 'tree'|trans|capitalize }} ({{ 'ancestors'|trans|capitalize }}/{{ 'descendants'|trans|capitalize }})
     </strong>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#pagebarCollapse">
+      <strong class="d-sm-none d-md-block my-2 my-md-0">
+        {{ 'tree'|trans|capitalize }}<i class="ml-3 fa fa-chevron-down"></i>
+      </strong>
+    </button>
+    <div id="pagebarCollapse" class="collapse navbar-collapse">
+
     <form class="form-inline ml-3 mr-auto" method="get" action="{{ env.prefix }}">
-      {{ 'generation/generations'|trans(1)|capitalize }}{{ ':'|trans }}
+      <div class="my-2 my-md-0">{{ 'generation/generations'|trans(1)|capitalize }}{{ ':'|trans }}</div>
       {%- for (k, v) in (list (conf.env) + list (conf.senv) + list (conf.henv)) | unique -%}
         {%- if k != "an" && k != "dn" %}{{ print_hidden (k, v) }}{% endif -%}
       {%- endfor -%}
-      <div class="input-group ml-3">
+      <div class="input-group ml-3 my-2 my-md-0">
         <div class="input-group-prepend">
           <div class="input-group-text">{{ 'ancestors'|trans|capitalize }}</div>
         </div>
         <input type="text" class="form-control" name="an" value="{{ env.an ? env.an : 2 }}" size="1">
       </div>
-      <div class="input-group ml-3">
+      <div class="input-group ml-3 my-2 my-md-0">
         <div class="input-group-prepend">
           <div class="input-group-text">{{ 'descendants'|trans|capitalize }}</div>
         </div>
         <input type="text" class="form-control" name="dn" value="{{ env.dn ? env.dn : 2 }}" size="1">
       </div>
-      <button class="btn btn-outline-success ml-3" type="submit">
+      <button class="btn btn-outline-success ml-3 my-2 my-md-0" type="submit">
         {{ 'visualize/show/hide/summary'|trans(0)|capitalize }}
       </button>
     </form>

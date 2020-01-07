@@ -1,0 +1,34 @@
+{%- function print_env (env) -%}
+  {% set print_env_ns = namespace (result = '') %}
+  {%- for (k, v) in env -%}
+    {%- if k != 'lang' && v != '' && ((k != 'oc' && k != 'ocz') || v != '0') -%}
+      {% set print_env_ns.result += '&' + k + '=' + decode_varenv (v) -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {{ print_env_ns.result }}
+{%- endfunction -%}
+
+{%- macro dropdownItem (icn, label, href) -%}
+  <a class="dropdown-item" href="{{ href }}">
+    {%- if icn %}<i class="fa fa-fw {{ icn }} mr-2"></i>{%- endif -%}
+    {{ label|capitalize }}
+  </a>
+{%- endmacro -%}
+
+{%- macro dropdownToggle (content) -%}
+  <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+    {{ content }}
+  </a>
+{%- endmacro -%}
+
+{%- macro book_link (data, label) -%}
+  {{ dropdownItem (null, 'book of %s'|trans(s=label), env.prefix + 'm=MOD_DATA&data=' + data) }}
+{%- endmacro -%}
+
+{%- macro navBarLink (href, icon) -%}
+  <li class="nav-item">
+    <a class="nav-link" href="{{ href }}">
+      <i class="fa fa-lg {{ icon }}"></i>
+    </a>
+  </li>
+{%- endmacro -%}
