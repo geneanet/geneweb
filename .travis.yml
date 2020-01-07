@@ -19,8 +19,8 @@ jobs:
     env: OCAML_VERSION=4.09
 
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update && brew install protobuf ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -qq protobuf-compiler ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then command -v protoc >/dev/null 2>&1 || (brew update && brew install protobuf) ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then command -v protoc >/dev/null 2>&1 || sudo apt-get install -qq protobuf-compiler ; fi
 
 install:
   - wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-ocaml.sh ;
