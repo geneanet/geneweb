@@ -2529,6 +2529,10 @@ pt: qualquer pessoa da árvore
 ru: любой человек в генеалогическом дереве
 sv: en person i ditt träd
 
+    apply modifications
+en: apply modifications
+fr: appliquer les modifications
+
     are
 af: is
 bg: са

@@ -1,0 +1,921 @@
+{%- include 'perso_utils.jingoo' -%}
+{%- include 'utils.jingoo' -%}
+
+{%- extends "template.jingoo" -%}
+{%- block body -%}
+
+<style type="text/css">
+
+.delete_button {
+  position: relative !important;
+  right: 0 !important;
+  float: right !important;
+  top: 3px !important;
+  margin-left: 5px !important;
+}
+
+.select_p { float:right ; width: auto ; }
+
+.witness_wrapper + .witness_wrapper { margin-top:1rem; }
+
+.children {
+  counter-reset: children ;
+}
+.child_wrapper {
+  counter-increment: children ;
+}
+.child_wrapper::before {
+  content: counter(children) ;
+  position: absolute;
+  top: -1rem;
+  left: calc(-1rem + 15px);
+  width: 2rem;
+  line-height: 2rem;
+  z-index: 1;
+  text-align: center;
+  background-color: white;
+  font-weight: bold;
+}
+
+</style>
+
+{%- if "!dates order"|trans(0) == "ddmmyy"
+  or "!dates order"|trans(0) == "ddmmyyyy"
+  or "!dates order"|trans(0) == "dmyyyy" -%}
+  {%- set date_order = "dmy" -%}
+{%- elseif "!dates order"|trans(0) == "mmddyyyy" -%}
+  {%- set date_order = "mdy" -%}
+{%- else -%}
+  {%- set date_order = "ymd" -%}
+{%- endif -%}
+
+{%- macro dd (xvar, value) -%}
+  {# <label>{{ "year/month/day"|trans(2)|capitalize }} #}
+    <input type="text"
+           placeholder="DD"
+           name="{{ xvar }}_dd"
+           size="2"
+           maxlength="2"
+           value="{{ value }}"
+           class="form-control"
+           >
+  {# </label> #}
+{%- endmacro dd -%}
+
+{%- macro mm (xvar, value) -%}
+  {# <label>{{ "year/month/day"|trans(1)|capitalize }} #}
+    {# <span id="{{ xvar }}_mm_sel"> #}
+      <input
+        type="text"
+        placeholder="MM"
+        id="{{ xvar }}_mm"
+        name="{{ xvar }}_mm"
+        size="2"
+        maxlength="2"
+        value="{{ value }}"
+        class="form-control"
+        >
+    {# </span> #}
+  {# </label> #}
+{%- endmacro mm -%}
+
+{%- macro yyyy (xvar, value) -%}
+  {# <label>{{ "year/month/day"|trans(0)|capitalize }} #}
+    <input
+      type="text"
+      placeholder="YYYY"
+      name="{{ xvar }}_yyyy"
+      size="5"
+      maxlength="6"
+      value="{{ value }}"
+      class="form-control"
+      >
+  {# </label> #}
+{%- endmacro yyyy -%}
+
+{# FIXME #}
+{%- macro oryear (xvar, xdt, cond) -%}
+  <div id="{{ xvar }}_oryear"
+       style="display:{%- if xdt.prec != "oryear" and xdt.prec != "yearint" -%}none{% else %}inline{% endif %}">
+    <span id="{{ xvar }}_oryear_sp" {% if xdt.prec != "oryear" %}style="display:none"{% endif %}>
+      {%--%}{{ "or" }}{%--%}
+    </span>
+    <span id="{{ xvar }}_yearint_sp" {% if xdt.prec != "yearint" %}style="display:none"{% endif %}>
+      {%--%}{{ "and" }}{%--%}
+    </span>
+    <label>{{ "year/month/day"|trans(2)|capitalize }}
+      <input type="text" name="{{ xvar }}_orday" size="2" maxlength="2" value="{{ xdt.orday }}" {{ xcond }}>
+    </label>
+    <label>{{ "year/month/day"|trans(1)|capitalize }}
+      <span id="{{ xvar }}_ormonth_sel">
+        <input type="text" name="{{ xvar }}_ormonth" size="2" maxlength="2"
+               value="{{ xdt.ormonth }}" {{ xcond }}>
+      </span>
+    </label>
+    <label>{{ "year/month/day"|trans(0)|capitalize }}
+      <input type="text" name="{{ xvar }}_oryear" size="5" maxlength="6"
+             value="{{ xdt.oryear }}" {{ xcond }}>
+    </label>
+  </div>
+{%- endmacro oryear -%}
+
+{%- macro option (value, cond, label) -%}
+  <option value="{{ value }}"{% if cond %} selected="selected"{% endif %}>
+    {%--%}{{ label }}{%--%}
+  </option>
+{%- endmacro option -%}
+
+{%- macro radio (name,value,cond,label) -%}
+  <div class="form-check form-check-inline">
+    <input class="form-check-input" type="radio" name="{{ name }}" value="{{ value }}" {% if cond %} checked="checked"{% endif %}>
+    <label class="form-check-label" for="{{ name }}">{{ label|capitalize }}</label>
+  </div>
+{%- endmacro -%}
+
+{%- macro columns (s, m, l) -%}
+  col-sm-{{ s }} col-md-{{ m }} col-lg-{{ l }}
+{%- endmacro columns -%}
+
+{%- set form_row = "row form-group " -%}
+
+{%- macro date (xvar,xdt) -%}
+  {%- if xdt -%}
+    {% set prec, day, month, year = (xdt.prec, xdt.day, xdt.month, xdt.year) %}
+  {%- else -%}
+    {% set prec, day, month, year = ("sure", null, null, null) %}
+  {%- endif -%}
+
+  <div class="{# row  #}form-inline">
+    <div class="{# {{ columns (12, 4, 4) }}  #}form-group input-group">
+      <select id="{{ xvar }}_select" name="{{ xvar }}_prec"
+              class="custom-select" {{ xcond }}
+              onchange="show_d2 ('{{ xvar }}')">
+        {{ option ("sure", prec == "sure", "exact"|trans(0)|capitalize) }}
+        {{ option ("about", prec == "about", "about (date)"|trans(0)|capitalize) }}
+        {{ option ("maybe", prec == "maybe", "possibly (date)"|trans(0)|capitalize) }}
+        {{ option ("before", prec == "before", "before (date)"|trans(0)|capitalize) }}
+        {{ option ("after", prec == "after", "after (date)"|trans(0)|capitalize) }}
+        {{ option ("oryear", prec == "oryear", "&lt;-" +"or"|trans|capitalize+" -&gt;") }}
+        {{ option ("yearint", prec == "yearint", "&lt;-" +"between (date)"|trans|capitalize+" -&gt;") }}
+      </select>
+    {# </div> #}
+    {# <div class="{{ columns (12, 8, 8) }}"> #}
+      {%- switch date_order -%}
+        {%- case "dmy" -%}
+        {{ dd (xvar, day) }}
+        {{ mm (xvar, month) }}
+        {{ yyyy (xvar, year) }}
+        {# {{ oryear (xvar, xdt) }} #}
+        {%- case "mdy" -%}
+        {{ mm (xvar, month) }}
+        {{ dd (xvar, day) }}
+        {{ yyyy (xvar, year) }}
+        {# {{ oryear (xvar, xdt) }} #}
+        {%- case "ymd" -%}
+        {{ yyyy (xvar, year) }}
+        {{ mm (xvar, month) }}
+        {{ dd (xvar, day) }}
+        {# {{ oryear (xvar, xdt) }} #}
+      {%- endswitch -%}
+      {{ reveal_calendar_button (xvar, xdt) }}
+    </div>
+  </div>
+  {# <tr {% if not xdt.text %} style="display:none" {% endif %}> #}
+  {#   <th>...<label for="{{ xvar }}_text">{{ "or"|trans }} {{ "text"|trans(0) }}{{ ":"|trans }}&nbsp;</label></th> #}
+  {#   <td> #}
+  {#     <input type="text" name="{{ xvar }}_text" type="text" size="28" maxlength="30" value="{{ xdt.text }}" {{ xcond }}> #}
+  {#   </td> #}
+  {# </tr> #}
+{%- endmacro date -%}
+
+{%- macro calendar_option (v, d, t, def, n) -%}
+  {{ option (v, (d ? d.calendar == t : def), "gregorian/julian/french/hebrew"|trans(n)|capitalize) }}
+{%- endmacro calendar_option -%}
+
+{%- macro calendar (xvar,xdt) -%}
+  <div id="calendar_wrapper_{{ xvar }}" class="{{ columns (12, 5, 5) }}"
+       {%- if (not xdt) || xdt.calendar == "Dgregorian" %}style="display:none"{%- endif -%}>
+    <select id="{{ xvar }}_cal" name="{{ xvar }}_cal"
+            onchange="changeCalendar('{{ xvar }}_mm_sel','{{ xvar }}_mm','{{ xdt.month }}',this)">
+            {{ calendar_option ("G", xdt, "Dgregorian", true, 0) }}
+            {{ calendar_option ("J", xdt, "Djulian", false, 1) }}
+            {{ calendar_option ("F", xdt, "Dfrench", false, 2) }}
+            {{ calendar_option ("H", xdt, "Dhebrew", false, 3) }}
+    </select>
+  </div>
+  <div id="calendar_wrapper_help_{{ xvar }}" class="{{ columns (12, 5, 5) }} hide-mobile text-right"
+       {%- if (not xdt) || (xdt.calendar == "Dgregorian") %}style="display:none"{%- endif -%}>
+    <label class="inline">
+      <a href="{{ env.prefix }}&m=CAL" target="_blank">{{ "calendar/calendars"|trans(1) }}</a>
+    </label>
+  </div>
+  <div id="calendar_wrapper_blank_{{ xvar }}" class="{{ columns (12, 2, 2) }} hide-mobile"
+       {%- if (not xdt) || (xdt.calendar == "Dgregorian") %}style="display:none"{%- endif -%}>
+       &nbsp;
+  </div>
+{%- endmacro calendar -%}
+
+{%- macro reveal_calendar_button (xvar, xdt) -%}
+  {%- if (not xdt) || xdt.calendar == "Dgregorian" %}
+    <div class="input-group-append">
+      <span class="input-group-text">
+        <a tabindex="-1" style="text-decoration:none;" role="button" id="reveal_calendar_button_{{ xvar }}"
+           onclick="reveal_calendar('{{ xvar }}')"><span>&nbsp;<i class="fa fa-calendar"></i>&nbsp;</span></a>
+          </span>
+      </div>
+  {%- endif -%}
+{%- endmacro reveal_calendar_button -%}
+
+{%- macro print_autocomplete_input (id, value, type, placeholder=null, onchange=null) -%}
+  <datalist id="{{ id }}-datalist"></datalist>
+  <input name="{{ id }}" type="text" value="{{ value }}" id="{{ id }}"
+         class="form-control"
+         {% if placeholder %}placeholder="{{ placeholder|capitalize }}"{% endif %}
+         autoComplete="off"
+         list="{{ id }}-datalist"
+         {% if onchange %}onchange="{{ onchange }}"{% endif %}
+         oninput="API_AUTO_COMPLETE('{{ id }}', '{{ id }}-datalist', '{{ type }}')">
+{%- endmacro print_autocomplete_input -%}
+
+{%- macro line_label (name, txt) -%}
+  <label class="{{ columns (12, 3, 3) }} text-right" for="{{ name }}">{{ txt|capitalize }}</label>
+{%- endmacro line_label -%}
+
+{%- set line_control = "col-sm-12 col-md-9 col-lg-9" -%}
+
+{%- macro print_delete_button (id) -%}
+  <a tabindex="-1" class="delete_button delete-row" role="button" onclick="delete_entry('#{{ id }}')"></a>
+{%- endmacro print_delete_button -%}
+
+{%- macro print_add_button (onclick, txt) -%}
+  <div class="text-right">
+    <button type="button" class="btn btn-link" onclick="{{ onclick }}">
+      <span>{{ txt|capitalize }}</span>
+    </button>
+  </div>
+{%- endmacro print_add_button -%}
+
+{%- macro print_person_form (prefix, i, p, title, wrapper) -%}
+
+  <div id="{{ prefix + i }}_person_form" class="card">
+
+    {%- if title -%}
+      <div class="card-header {{ columns (12, 12, 12) }}">
+        <strong class="person-sex">{{ title|capitalize }}</strong>
+      </div>
+    {%- endif -%}
+
+    <div class="card-body">
+
+      <div class="{{ form_row }}">
+        <div class="{{ columns (12, 8, 8) }}">
+          <em id="{{ prefix + i }}_person_label">
+            {%- if p -%}
+              {{ p.first_name }}.{{ p.occ }} {{ p.surname }}
+            {%- endif -%}
+          </em>
+        </div>
+        <div class="{{ columns (12, 4, 4) }}">
+          {%- if prefix != "pa" -%}&nbsp;{{ print_delete_button (wrapper) }}{%- endif -%}
+          <select id="{{ prefix + i }}_p" name="{{ prefix + i }}_p" class="custom-select select_p"
+                  onchange="update_link_create ('{{ prefix + i }}')">
+            {{ option ("link", p is defined, "link"|trans(0)|capitalize) }}
+            {{ option ("create", p is undefined, "create"|trans(0)|capitalize) }}
+          </select>
+        </div>
+      </div>
+
+      <div class="{{ form_row }}">
+        {{ line_label (prefix + i + "_sn", "surname/surnames"|trans(0)) }}
+        <div class="{{ line_control }}">
+          {{ print_autocomplete_input (prefix + i + "_sn", (p ? p.surname : ""), "lastname",
+                                       onchange="update_person_label ('" + prefix + i + "')") }}
+        </div>
+      </div>
+
+      <div class="{{ form_row }}">
+        {{ line_label (prefix + i + "_fn", "first name/first names"|trans(1)) }}
+        <div class="{{ line_control }}">
+          {{ print_autocomplete_input (prefix + i + "_fn", (p ? p.first_name : ""), "firstname",
+          onchange="update_person_label ('" + prefix + i + "')") }}
+        </div>
+      </div>
+
+      <div class="{{ form_row }}">
+        {{ line_label (prefix + i + "_oc", "occ") }}
+        <div class="{{ line_control }}">
+          <input name="{{ prefix + i }}_occ" type="text" size="5" maxlength="8" value="{{ p ? p.occ : 0 }}"
+                 class="form-control"
+                 onchange="update_person_label ('{{ prefix + i }}')")
+                 id="{{ prefix + i }}_occ">
+        </div>
+      </div>
+
+      <div class="{{ form_row }}">
+        {{ line_label ("", "sex"|trans) }}
+        <div class="{{ line_control }}">
+          {{ radio (prefix+i+"_sex","M", (p ? p.sex == 0 : false), "male/female/neuter"|trans(0)) }}
+          {{ radio (prefix+i+"_sex","F", (p ? p.sex == 1 : false), "male/female/neuter"|trans(1)) }}
+          {{ radio (prefix+i+"_sex","N", (p ? p.sex != 0 && p.sex != 1 : true), "male/female/neuter"|trans(2)) }}
+        </div>
+      </div>
+
+      <div class="{{ form_row }}">
+        {{ line_label (prefix + i + "_occupation", "occupation/occupations"|trans(0)) }}
+        <div class="{{ line_control }}">
+          <input name="{{ prefix + i }}_occupation" type="text" size="30" maxlength="200"
+                 class="form-control"
+                 value="{{ p ? p.occupation : '' }}" id="{{ prefix + i }}_occupation">
+        </div>
+      </div>
+
+      <div class="{{ form_row }}">
+        {{ line_label ("", "birth"|trans) }}
+        <div class="{{ columns (12, 9, 9) }}">
+          {{ calendar (prefix + i + "b", (p ? p.birth_date : null)) }}
+          <div class="row">
+            <div class="{{ columns (12, 12, 12) }}">
+              {{ date (prefix + i + "b", (p ? p.birth_date : null)) }}
+            </div>
+            {%- if prefix == "pa" || prefix == "ch" -%}
+              <div class="mt-1 {{ columns (12, 12, 12) }}">
+                {{ print_autocomplete_input (prefix + i + "b_pl", (p ? p.birth_place : null), 'place', placeholder="place"|trans) }}
+              </div>
+          </div>
+        </div>
+        {%- endif -%}
+      </div>
+
+      {%- if prefix == "pa" || prefix == "ch" -%}
+        <div class="{{ form_row }}">
+          {{ line_label ("", "death"|trans) }}
+          {{ calendar (prefix + i + "d", (p && p.death ? p.death.date : null)) }}
+          <div class="{{ columns (12, 9, 9) }}">
+            <div class="row">
+              <div class="{{ columns (12, 12, 12) }}">
+                {{ date (prefix + i + "d", (p && p.death ? p.death.date : null)) }}
+              </div>
+              <div class="mt-1 {{ columns (12, 12, 12) }}">
+                {{ print_autocomplete_input (prefix + i + "d_pl", (p ? p.death_place : null), 'place', placeholder="place"|trans) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endmacro print_person_form -%}
+
+{%- macro print_parent_form (xcnt, xx, txt) -%}
+  <div class="{{ columns (12, 12, 6) }}">
+    {{ print_person_form ("pa", xcnt, xx, txt, null) }}
+  </div>
+{%- endmacro print_parent_form -%}
+
+{%- macro print_child_form (xcnt, child) -%}
+  <div class="child_wrapper deletable {{ columns (12, 12, 6) }} my-3" id="child_wrapper{{ xcnt }}">
+    {{ print_person_form ("ch", xcnt, child, "", "child_wrapper" + xcnt) }}
+  </div>
+{%- endmacro print_child_form -%}
+
+{%- macro print_witness_form (xcnt, wcnt, w) -%}
+  {%- set prefix = "e" +  xcnt + "_witn"  -%}
+  <div class="witness_wrapper" id="{{ prefix + wcnt }}">
+      {{ print_person_form (prefix, wcnt, w, "", prefix + wcnt) }}
+  </div>
+{%- endmacro print_witness_form -%}
+
+{%- macro fevent_option (value, event, kind, label) -%}
+  {{ option (value, event ? event.kind == kind : false, label) }}
+{%- endmacro fevent_option -%}
+
+{%- macro selector_fevent (xcnt, event) -%}
+  <div class="{{ columns (12, 5, 5) }}">
+    <select id="fevent_select{{ xcnt }}"
+            class="select_autocomplete custom-select"
+            onchange="update_fevent_label({{ xcnt }})">
+            {{ option ("", event ? event.kind == "" : true, "event/events"|trans(0)|capitalize) }}
+            {{ fevent_option ("#marr", event, "EFAM_MARRIAGE", "marriage event"|trans|capitalize) }}
+            {{ fevent_option ("#nmar", event, "EFAM_NO_MARRIAGE", "no marriage event"|trans|capitalize) }}
+            {{ fevent_option ("#enga", event, "EFAM_ENGAGE", "engage event"|trans|capitalize) }}
+            {{ fevent_option ("#nmen", event, "EFAM_NO_MENTION", "no mention"|trans|capitalize) }}
+            {{ fevent_option ("#marb", event, "EFAM_MARRIAGE_BANN", "marriage bann"|trans|capitalize) }}
+            {{ fevent_option ("#marc", event, "EFAM_MARRIAGE_CONTRACT", "marriage contract"|trans|capitalize) }}
+            {{ fevent_option ("#marl", event, "EFAM_MARRIAGE_LICENSE", "marriage licence"|trans|capitalize) }}
+            {{ fevent_option ("#pacs", event, "EFAM_PACS", "PACS"|trans|capitalize) }}
+            {{ fevent_option ("#div" , event, "EFAM_DIVORCE", "divorce event"|trans|capitalize) }}
+            {{ fevent_option ("#sep" , event, "EFAM_SEPARATED", "separate event"|trans|capitalize) }}
+            {{ fevent_option ("#anul", event, "EFAM_ANNULATION", "annulation"|trans|capitalize) }}
+            {{ fevent_option ("#resi", event, "EFAM_RESIDENCE", "residence"|trans|capitalize) }}
+    </select>
+  </div>
+  <div class="{{ columns (12, 5, 5) }}">
+    <input name="e_name{{ xcnt }}" type="text" size="30"
+           {%- switch event.kind -%}
+             {%- case "EFAM_MARRIAGE" -%}value="#marr"
+             {%- case "EFAM_NO_MARRIAGE" -%}value="#nmar"
+             {%- case "EFAM_ENGAGE" -%}value="#enga"
+             {%- case "EFAM_NO_MENTION" -%}value="#nmen"
+             {%- case "EFAM_MARRIAGE_BANN" -%}value="#marb"
+             {%- case "EFAM_MARRIAGE_CONTRACT" -%}value="#marc"
+             {%- case "EFAM_MARRIAGE_LICENSE" -%}value="#marl"
+             {%- case "EFAM_PACS" -%}value="#pacs"
+             {%- case "EFAM_DIVORCE" -%}value="#div"
+             {%- case "EFAM_SEPARATED" -%}value="#sep"
+             {%- case "EFAM_ANNULATION" -%}value="#anul"
+             {%- case "EFAM_RESIDENCE" -%}value="#resi"
+           {%- endswitch -%}
+           {%- if event.kind != "" -%}style="display:none"{%- endif -%}
+           placeholder="{{ "event/events"|trans(0)|capitalize }}"
+           id="e_name{{ xcnt }}">
+  </div>
+{%- endmacro selector_fevent -%}
+
+{%- macro one_fevent (xcnt, event) -%}
+  <div class="fevent_wrapper my-3 {{ columns (12, 12, 12) }}" id="fevent_wrapper{{ xcnt }}">
+    <div class="card" >
+      <div class="card-header {{ columns (12, 12, 12) }}">
+        {# {{ print_delete_button ("fevent_wrapper" + xcnt) }} #}
+        <span id="fevent_label{{ xcnt }}">
+          {{ (event.name ? event.name|capitalize : "event/events"|trans(0)|capitalize) }}
+        </span>
+      </div>
+      <div class="card-body">
+
+        <div class="{{ form_row }}">
+          {{ line_label ("e_name" + xcnt, "event/events"|trans(0)) }}
+          {{ selector_fevent (xcnt, event) }}
+        </div>
+
+        <div class="{{ form_row }}">
+          {{ line_label ("e_place" + xcnt, "place"|trans) }}
+          <div class="{{ line_control }}">
+            {{ print_autocomplete_input ("e_place" + xcnt, event.place, 'place') }}
+          </div>
+        </div>
+
+        <div class="{{ form_row }}">
+          {{ line_label ("", "date/dates"|trans(0)) }}
+          {{ calendar ("e_date" + xcnt, (event ? event.date : null)) }}
+          <div class="{{ line_control }}">
+            {{ date ("e_date" + xcnt, event.date, "updfam") }}
+          </div>
+        </div>
+
+        <div class="{{ form_row }}">
+          {{ line_label ("e_note" + xcnt, "note/notes"|trans(0)) }}
+          <div class="{{ line_control }}">
+            {{ print_autocomplete_input ("e_note" + xcnt, event.note, 'note') }}
+          </div>
+        </div>
+
+        <div class="{{ form_row }}">
+          {{ line_label ("e_src" + xcnt, "source/sources"|trans(0)) }}
+          <div class="{{ line_control }}">
+            {{ print_autocomplete_input ("e_src" + xcnt, event.source, 'source') }}
+          </div>
+        </div>
+        <hr>
+        <div class="{{ form_row }}">
+          {{ line_label ('', "witness/witnesses"|trans(1)) }}
+          <div class="{{ line_control }}">
+            {%- for w in witnesses -%}
+              {{ print_witness_form (xcnt, loop.index, w) }}
+            {%- endfor -%}
+            <div style="display:none" id="e{{ xcnt }}_witn_anchor"></div>
+            {{ print_add_button ("add_witness(" + xcnt + ")", "add"|trans + " " + "witness/witness/witnesses"|trans(0)) }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{%- endmacro one_fevent -%}
+
+{%- macro section_title (txt) -%}
+  <h2 class="h3 mt-3">{{ txt }}</h2>
+{%- endmacro section_title -%}
+
+<div class="container">
+
+  <h1 class="border-bottom text-center">{{ "modify"|trans|capitalize }} {{ "family/families"|trans(0) }}</h1>
+
+  <form method="post" action="{{ conf.command }}" class="{# form-gw-old #}"  name="form_fam">
+    {# <input type="image" src="images/transparent.gif" style="cursor:default" class="radio"> #}
+    {{ print_hidden_env () }}
+    <input type="hidden" name="digest" value="{{ digest }}">
+    {% if conf.env.ip %}<input type="hidden" name="ip" value="{{ conf.env.ip }}">{% endif %}
+    {% if conf.env.i %}<input type="hidden" name="i" value="{{ conf.env.i }}">{% endif %}
+    {%- switch conf.env.m -%}
+      {%- case "ADD_FAM" || "ADD_FAM_OK" -%}
+      <input type="hidden" name="m" value="ADD_FAM_OK">
+      {%- case "ADD_PAR" -%}
+      <input type="hidden" name="m" value="ADD_FAM_OK">
+      <input type="hidden" name="m_action" value="ADD_PAR_OK">
+      {%- case "MOD_FAM" || "MOD_FAM_OK" -%}
+      <input type="hidden" name="m" value="MOD_FAM_OK">
+      {%- case "MRG_DUP_FAM_Y_N" || "MRG_FAM" || "MRG_FAM_OK" || "MRG_MOD_FAM_OK" -%}
+      <input type="hidden" name="i2" value="{{ conf.env.i2 }}">
+      {%- if conf.env.ini1 and conf.env.ini2 -%}
+        <input type="hidden" name="ini1" value="{{ conf.env.ini1 }}">
+        <input type="hidden" name="ini2" value="{{ conf.env.ini2 }}">
+      {%- endif -%}
+      {%- if conf.env.iexcl -%}
+        <input type="hidden" name="iexcl" value="{{ conf.env.iexcl }}">
+      {%- endif -%}
+      {%- if conf.env.fexcl -%}
+        <input type="hidden" name="fexcl" value="{{ conf.env.fexcl }}">
+      {%- endif -%}
+      <input type="hidden" name="m" value="MRG_MOD_FAM_OK">
+    {%- endswitch -%}
+
+    {{ section_title('parents'|trans|capitalize) }}
+
+    <div class="row">
+      {{ print_parent_form (1, family.father, "father/mother"|trans(0)) }}
+      {{ print_parent_form (2, family.mother, "father/mother"|trans(1)) }}
+    </div>
+
+    {{ section_title("event/events"|trans(1)|capitalize) }}
+
+    <div class="family-events" style="width:auto;">
+      <div id="fevents" class="row">
+        {% for e in family.events %}{{ one_fevent (loop.index, e) }}{% endfor %}
+        <div style="display:none" id="new_fevent_anchor"></div>
+      </div>
+      {{ print_add_button ("add_fevent()", "add"|trans + " " + "event/events"|trans(0)) }}
+    </div>
+
+    <div class="family-events" style="width:auto;">
+      <div class="row person-title">
+        <div class="{{ columns (12, 12, 12) }}">
+          <strong>{{ "child/children"|trans(1)|capitalize }}</strong>
+        </div>
+      </div>
+      <div id="children" class="row">
+        {%- for c in family.children -%}{{ print_child_form (loop.index, c) }}{%- endfor -%}
+        <div style="display:none" id="new_child_anchor"></div>
+      </div>
+      {{ print_add_button ("add_child()", "add"|trans + " " + "child/children"|trans(0)) }}
+    </div>
+
+    <div class="family-events" style="width:auto;">
+      <div class="row person-title">
+        <div class="{{ columns (12, 12, 12) }}">
+          <strong>{{ "note/notes"|trans(1)|capitalize }} {{ "and"|trans }} {{ "source/sources"|trans(1) }}</strong>
+        </div>
+      </div>
+      <div class="row">&nbsp;</div>
+      <div class="row">
+        {{ line_label ('', "note/notes"|trans(1)) }}
+        <div class="{{ columns (12, 9, 9) }}">
+          <textarea name="comment" rows="12" id="comment" style="max-width:none;width:100%;">{{ f.notes }}</textarea>
+        </div>
+      </div>
+    </div>
+
+    <hr class="my-3">
+
+    <div class="text-right">
+      <button type="submit" class="btn btn-outline-success">{{ "apply modifications"|trans(0)|capitalize }}</button>
+    </div>
+
+  </form></div>
+
+</div>
+
+<div id="updfam" class="help_form" style="display:none;"></div>
+
+{%- macro changeCalendar (i18n, n) -%}
+    var month = [{% for i in range (0, n) %}"{{ i18n|trans(i)|capitalize }}",{% endfor %}];
+    var select = document.createElement('select') ;
+    select.setAttribute ("name", v) ;
+    select.setAttribute ("class", "custom-select") ;
+    var option = document.createElement('option') ;
+    option.setAttribute("value", 0) ;
+    option.innerText = "-" ;
+    if (m == 0) { option.setAttribute("selected", "selected") } ;
+    select.appendChild (option) ;
+    for (var i = 0; i <= {{ n }} ; i++) {
+      var option = document.createElement('option') ;
+      option.setAttribute("value", i+1) ;
+      option.innerText = month[i] ;
+      if (m == i+1) { option.setAttribute("selected", "selected") } ;
+      select.appendChild (option) ;
+    }
+    console.log ("1") ;
+    var e = document.getElementById (e) ;
+    console.log ("2") ;
+    e.parentNode.replaceChild (select, e) ;
+{%- endmacro changeCalendar -%}
+
+<script type="text/javascript">
+  function changeCalendar(e,v,m,c) {
+  var e = v ;
+  var mv = m;
+  switch (m) {
+    case "VD": mv = 1; break;
+    case "BR": mv = 2; break;
+    case "FM": mv = 3; break;
+    case "NI": mv = 4; break;
+    case "PL": mv = 5; break;
+    case "VT": mv = 6; break;
+    case "GE": mv = 7; break;
+    case "FL": mv = 8; break;
+    case "PR": mv = 9; break;
+    case "ME": mv = 10; break;
+    case "TH": mv = 11; break;
+    case "FT": mv = 12; break;
+    case "JC": mv = 13; break;
+  }
+  switch(c.options[c.selectedIndex].value) {
+    case 'G':
+    case 'J':
+      {{ changeCalendar ('(month)', 12) }}
+      break;
+    case 'F':
+      {{ changeCalendar ('(french revolution month)', 13) }}
+      break;
+    case 'H':
+      {{ changeCalendar ('(hebrew month)', 13) }}
+      break;
+  }
+}
+</script>
+
+<script type="text/javascript">
+
+  function reveal_calendar (i) {
+    document.querySelector("#calendar_wrapper_"+i).style.display = "initial" ;
+    document.querySelector("#calendar_wrapper_help_"+i).style.display = "initial" ;
+    document.querySelector("#calendar_wrapper_blank_"+i).style.display = "initial" ;
+    document.querySelector("#reveal_calendar_button_"+i).parentNode.parentNode.style.display = "none" ;
+  }
+
+  function update_fevent_label(xcnt) {
+    console.log ("3") ;
+    var selector = document.getElementById('fevent_select' + xcnt);
+    console.log ("4") ;
+    var label = document.getElementById('fevent_label' + xcnt);
+    console.log ("5") ;
+    var input = document.getElementById('e_name' + xcnt);
+    console.log ("6") ;
+    console.log (selector.value) ;
+    console.log (input.value) ;
+    if (selector.value == "") {
+      input.style.display = 'inline';
+      label.innertText = input.value || "{{ 'event/events'|trans(0)|capitalize }}" ;
+    } else {
+      label.innerText = selector.children[selector.selectedIndex].innerText ;
+      input.value = selector.value ;
+      input.style.display = 'none';
+    }
+    console.log (selector.value) ;
+    console.log (input.value) ;
+  }
+
+  function update_person_label (prefix) {
+    console.log ("7") ;
+    var n = document.getElementById(prefix + '_sn').value || "" ;
+    console.log ("8") ;
+    var p = document.getElementById(prefix + '_fn').value || "" ;
+    console.log ("9") ;
+    var oc = document.getElementById(prefix + '_occ').value || 0 ;
+    console.log ("10") ;
+    if (n || p ) {
+    console.log ("11") ;
+      document.getElementById(prefix + '_person_label').innerText =
+        p + '.' + oc + ' ' + n ;
+    console.log ("12") ;
+    }
+  }
+
+  var API_AUTO_COMPLETE_debounceTimeout = null;
+  var API_AUTO_COMPLETE_xhr = null;
+
+  function API_AUTO_COMPLETE (input, datalist, field) {
+    var callback = function () { aux_API_AUTO_COMPLETE (input, datalist, field) } ;
+    clearTimeout (API_AUTO_COMPLETE_debounceTimeout) ;
+    if (API_AUTO_COMPLETE_xhr) { API_AUTO_COMPLETE_xhr.abort () ; }
+    API_AUTO_COMPLETE_debounceTimeout = setTimeout(callback, 200) ;
+  }
+
+  function aux_API_AUTO_COMPLETE (input, datalist, field) {
+    console.log ("13") ;
+    var input = document.getElementById(input) ;
+    console.log ("14") ;
+    var dataList = document.getElementById(datalist) ;
+    console.log ("15") ;
+    var value = input.value ;
+    var data = { "field": field, "limit":10 } ;
+    if (field == "place") {
+      var splitted = value.split (",") ;
+      var len = splitted.length ;
+      data.place_field = ["subdivision","town","area_code","county","region","country"][len] ;
+      data.input = splitted [ len - 1 ] ;
+    } else {
+      data.input = value ;
+    }
+    if (data.input == "") {
+      dataList.innerHTML = "" ;
+      input.focus () ;
+      return ;
+    } ;
+    var xhr = new XMLHttpRequest () ;
+    API_AUTO_COMPLETE_xhr = xhr ;
+    xhr.onreadystatechange = function (response) {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          var res = JSON.parse (xhr.responseText);
+          dataList.innerHTML = "" ;
+          if (!res.result) { return ; }
+          res.result.forEach (function (item) {
+            var option = document.createElement('option');
+            if (field == "place") {
+              option.value = value.substring(0, value.lastIndexOf(",") + 1) + item ;
+            } else {
+              option.value = item ;
+            }
+            dataList.appendChild (option) ;
+          }) ;
+          input.focus () ;
+        }
+      }
+    };
+    var url =
+      '{{ env.prefix }}m=API_AUTO_COMPLETE&input=json&output=json&data='
+      + encodeURIComponent(JSON.stringify (data)) ;
+    xhr.open('GET', url, true);
+    xhr.send() ;
+  }
+
+  function delete_entry (selector) {
+    var root = document.querySelector (selector) ;
+    root.style.display = "none";
+    root.querySelectorAll("input").forEach(function(x){x.value="";});
+    root.querySelectorAll("select").forEach(function(x){x.value="";});
+    return false ;
+  }
+
+  function add_entry (anchor, nodes, sublen, ghost, replace) {
+    var anchor = document.querySelector(anchor) ;
+    var nodes = document.querySelectorAll(nodes) ;
+    var ghost = document.querySelector(ghost) ;
+    var j = nodes && nodes.length > 0 ? parseInt((nodes [nodes.length - 1]).id.substring(sublen)) + 1 + '' : '1' ;
+    var s = replace (ghost.innerHTML, j) ;
+    var n = document.createElement('div') ;
+    n.innerHTML = s ;
+    n = n.firstChild ;
+    anchor.parentNode.insertBefore(n, anchor);
+    return false ;
+  }
+
+  function add_fevent () {
+    /* length "fevent_wrapper" = 14 */
+    add_entry ("#new_fevent_anchor", "#fevents .fevent_wrapper", 14, "#ghost_fevent",
+               function (s, j) {
+                 var res =
+                 s.replace(/fevent_wrapper0/g, "fevent_wrapper" + j)
+                  .replace(/fevent_select0/g, "fevent_select" + j)
+                  .replace(/update_fevent_label\(0\)/g,  "update_fevent_label(" + j + ")")
+                  .replace(/fevent_label0/g, "fevent_label" + j)
+                  .replace(/e_name0/g, "e_name" + j)
+                  .replace(/e_place0/g, "e_place" + j)
+                  .replace(/e_date0/g, "e_date" + j)
+                  .replace(/e_note0/g, "e_note" + j)
+                  .replace(/e_src0/g, "e_src" + j)
+                  .replace(/e0_witn_anchor/g, "e" + j + "_witn_anchor")
+                  .replace(/add_witness\(0\)/g, "add_witness(" + j + ")")
+                 ;
+                 return res
+               })
+  }
+
+  function add_child () {
+    /* length "child_wrapper" = 13 */
+    add_entry ("#new_child_anchor", "#children .child_wrapper", 13, "#ghost_child",
+               function (s, j) {
+               var res =
+               s.replace(/child_wrapper0/g, "child_wrapper" + j)
+                .replace(/ch0/g, "ch" + j) ;
+               return res ;
+               })
+  }
+
+  function add_witness (xcnt) {
+    add_entry ("#e" + xcnt + "_witn_anchor", "#fevent_wrapper" + xcnt + " .witness_wrapper",
+               ("e" + xcnt + "_witn").length, "#ghost_witness",
+               function (s, j) {
+                 return s.replace(/e0_witn0/g,"e" + xcnt + "_witn" + j) ;
+               })
+  }
+
+  {# function update_link_create (prefix) { #}
+  {#   var root = document.querySelector ('#' + prefix + '_person_form') ; #}
+  {#   var link = document.querySelector ('#' + prefix + '_p').value == "link" ; #}
+  {#   root.querySelectorAll("input").forEach(function (x) { #}
+  {#     if (link) { #}
+  {#       if (x.id != prefix + "_fn" #}
+  {#           && x.id != prefix + "_sn" #}
+  {#           && x.id != prefix + "_occ") { #}
+  {#         x.value = x.defaultValue || "" ; #}
+  {#         x.readOnly = true ; #}
+  {#       } #}
+  {#     } else { #}
+  {#       x.removeAttribute ("readonly") ; #}
+  {#     } #}
+  {#   }) ; #}
+
+  {#   /* Disabled inputs are not submitted */ #}
+  {#   root.querySelectorAll("select").forEach(function (x) { #}
+  {#     if (link) { #}
+  {#       if (x.id != prefix + "_p") { #}
+  {#         Array.from(x.options).some(function(y){ #}
+  {#           if (y.defaultSelected) { #}
+  {#             x.selectedIndex = y.index ; #}
+  {#             return true #}
+  {#           } else { #}
+  {#             return false #}
+  {#           } #}
+  {#         }) ; #}
+  {#         x.disabled = true ; #}
+  {#         var hidden = document.createElement ("input") ; #}
+  {#         hidden.style.display = "none" ; #}
+  {#         hidden.name = x.name ; #}
+  {#         hidden.id = x.id + "-hidden" ; #}
+  {#         x.parentElement.insertBefore (hidden, x) ; #}
+  {#       } #}
+  {#     } else { #}
+  {#       var n = document.querySelector(x.id + "-hidden") ; #}
+  {#       if (x != null) { x.remove () } #}
+  {#       x.removeAttribute ("disabled") ; #}
+  {#     } #}
+  {#   }) ; #}
+
+  {#   root.querySelectorAll("a").forEach(function (x) { #}
+  {#     if (link) { #}
+  {#       x.style.pointerEvents = "none" ; #}
+  {#     } else { #}
+  {#       x.style.pointerEvents = "" ; #}
+  {#     } #}
+  {#   }) ; #}
+  {# } #}
+
+  function update_link_create (prefix) {
+    var root = document.querySelector ('#' + prefix + '_person_form') ;
+    var link = document.querySelector ('#' + prefix + '_p').value == "link" ;
+    root.querySelectorAll('.row + .row').forEach (function (x, i) {
+      if (x.querySelector('#' + prefix + "_p")
+          || x.querySelector('#' + prefix + "_fn")
+          || x.querySelector('#' + prefix + "_sn")
+          || x.querySelector('#' + prefix + "_occ") ) {
+      } else {
+        x.style.display = link ? "none" : "" ;
+      }
+    }) ;
+  }
+
+  function show_d2 (d) {
+    console.log ("16") ;
+    var d_select = document.getElementById(d+'_select');
+    console.log ("17") ;
+    var d_or = document.getElementById(d+'_oryear');
+    console.log ("18") ;
+    var d_span_or = document.getElementById(d+'_oryear_sp');
+    console.log ("19") ;
+    var d_span_between = document.getElementById(d+'_yearint_sp');
+    console.log ("20") ;
+
+    d_or.style.display = 'none';
+    d_span_or.style.display = 'none';
+    d_span_between.style.display = 'none';
+
+    if (d_select.value == "oryear" || d_select.value == "yearint") {
+      d_or.style.display = 'inline';
+      if (d_select.value == "oryear") {
+        d_span_or.style.display = 'inline';
+      } else {
+        d_span_between.style.display = 'inline';
+      }
+    }
+  }
+
+(function (fn) {
+  if (document.readyState != 'loading'){
+    fn ();
+  } else {
+    document.addEventListener('DOMContentLoaded', fn);
+  }
+})(function () {
+    document.querySelectorAll(".select_p").forEach(function (x) {
+      update_link_create (x.id.substring(0, x.id.length - 2)) ;
+    }) ;
+  }) ;
+
+</script>
+
+<div id="ghost_fevent" style="display:none">{{ one_fevent (0, null) }}</div>
+<div id="ghost_witness" style="display:none">{{ print_witness_form (0, 0, null) }}</div>
+<div id="ghost_child" style="display:none">{{ print_child_form (0, null) }}</div>
+
+{% endblock -%}

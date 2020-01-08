@@ -630,6 +630,10 @@ let dummyHandler =
   ; fallback = dummy_base
   }
 
+let restricted_wizard fn self conf base =
+  if conf.wizard then fn self conf base
+  else self.incorrect_request self conf base
+
 let person_selected self conf base p =
   match p_getenv conf.senv "em" with
     Some "R" -> relation_print conf base p
@@ -1008,9 +1012,20 @@ let defaultHandler : handler =
       else self.incorrect_request self conf base
     end
 
-  ; mod_fam = begin fun self conf base ->
-      if conf.wizard then UpdateFam.print_mod conf base
-      else self.incorrect_request self conf base
+  ; mod_fam = restricted_wizard begin fun self conf base ->
+      match Util.p_getenv conf.env "i" with
+      | Some i ->
+        let ifam = ifam_of_string i in
+        let sfam = UpdateFam.string_family_of conf base ifam in
+        let digest = Update.digest_family sfam in
+        let models =
+          ("digest", Tstr digest)
+          :: ( "family"
+             , Gwxjg.Data.get_n_mk_family conf base ifam @@ Gwdb.foi base ifam)
+          :: Gwxjg.Data.default_env conf base
+        in
+        JgInterp.render ~conf ~file:"updfam" ~models
+      | _ -> self.incorrect_request self conf base
     end
 
   ; mod_fam_ok = begin fun self conf base ->
