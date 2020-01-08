@@ -11,11 +11,11 @@
           <div class="dropdown-menu">
             {{ dropdownItem (null, 'add'|trans|capitalize + ' ' + 'family/families'|trans(0), env.prefix + 'm=ADD_FAM') }}
             <div class="dropdown-divider"></div>
-            {{ book_link ('place', 'places'|trans) }}
-            {{ book_link ('sn', 'surname/surnames'|trans(1)) }}
-            {{ book_link ('fn', 'first name/first names'|trans(1)) }}
-            {{ book_link ('occu', 'occupation/occupations'|trans(1)) }}
-            {{ book_link ('src', 'source/sources'|trans(1)) }}
+            {{ book_link ('fa-globe', 'place', 'places'|trans) }}
+            {{ book_link ('fa-id-card ', 'sn', 'surname/surnames'|trans(1)) }}
+            {{ book_link ('fa-id-card ', 'fn', 'first name/first names'|trans(1)) }}
+            {{ book_link ('fa-briefcase', 'occu', 'occupation/occupations'|trans(1)) }}
+            {{ book_link ('fa-quote-left ', 'src', 'source/sources'|trans(1)) }}
           </div>
         </li>
       {%- endif -%}

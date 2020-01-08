@@ -30,8 +30,8 @@
   </a>
 {%- endmacro -%}
 
-{%- macro book_link (data, label) -%}
-  {{ dropdownItem (null, 'book of %s'|trans(s=label), env.prefix + 'm=MOD_DATA&data=' + data) }}
+{%- macro book_link (icn, data, label) -%}
+  {{ dropdownItem (icn, 'book of %s'|trans(s=label), env.prefix + 'm=MOD_DATA&data=' + data) }}
 {%- endmacro -%}
 
 {%- macro navBarLink (href, icon) -%}
