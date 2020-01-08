@@ -61,6 +61,13 @@ val array_to_list_map : ('a -> 'b) -> 'a array -> 'b list
  *)
 val array_to_list_rev_map : ('a -> 'b) -> 'a array -> 'b list
 
+(** [array_assoc k arr]
+    returns the value associated with key [k] in the array of pairs [arr].
+    That is, [array_assoc k [| ... ; (k,v) ; ... |] = v]
+    if [(k,v)] is the leftmost binding of a in array [arr].
+    Raise [Not_found] if there is no value associated with [k] in [arr]. *)
+val array_assoc : 'k -> ('k * 'v) array -> 'v
+
 (** [start_with ?wildcard prefix off str]
     Test if [str] starts with [prefix] (at offset [off]).
     If [wildcard] is set to [true], occurences of ['_'] in [prefix]

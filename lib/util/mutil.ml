@@ -405,6 +405,16 @@ let array_to_list_map fn a =
 let array_to_list_rev_map fn a =
   Array.fold_left (fun acc x -> fn x :: acc) [] a
 
+let array_assoc k a =
+  let len = Array.length a in
+  let rec loop i =
+    if i = len then raise Not_found
+    else
+      let (k', v) = Array.unsafe_get a i in
+      if k' = k then v
+      else loop (i + 1)
+  in loop 0
+
 let string_of_int_sep sep x =
   let digits, len =
     let rec loop (d, l) x =
