@@ -286,16 +286,19 @@
   </nav>
 {%- endblock -%}
 
-<div style="width=100vw;overflow:hidden;">
-  <div class="ascend" style="width:100%;display:flex;justify-content:center;">
-    <div class="tree"><ul><li>{{ a_ascend (root, (env.an ? int (env.an) : 2), true) }}</li></ul></div>
-  </div>
-  <div style="width:100%;display:flex;justify-content:center;">
-    <div class="border p-3 text-center">
-      {{ root.surname }} {{ root.first_name }} <em>{{ root.dates }}</em>
+{%- block body -%}
+  <div style="width=100vw;overflow:hidden;">
+    <div class="ascend" style="width:100%;display:flex;justify-content:center;">
+      <div class="tree"><ul><li>{{ a_ascend (root, (env.an ? int (env.an) : 2), true) }}</li></ul></div>
+    </div>
+    <div style="width:100%;display:flex;justify-content:center;">
+      <div class="border p-3 text-center">
+        {{ root.surname }} {{ root.first_name }} <em>{{ root.dates }}</em>
+      </div>
+    </div>
+    <div class="descend" style="width:100%;display:flex;justify-content:center;">
+      <div class="tree"><ul><li>{{ a_descend (root, (env.dn ? int (env.dn) : 2), true) }}</li></ul></div>
     </div>
   </div>
-  <div class="descend" style="width:100%;display:flex;justify-content:center;">
-    <div class="tree"><ul><li>{{ a_descend (root, (env.dn ? int (env.dn) : 2), true) }}</li></ul></div>
-  </div>
-</div>
+{%- endblock -%}
+
