@@ -736,7 +736,6 @@ let on_person_update base warning p =
       let fam = foi base i in
       let fath = poi base @@ get_father fam in
       let moth = poi base @@ get_mother fam in
-      check_parents warning fam fath moth ;
       child_born_after_his_parent warning p fath ;
       child_born_after_his_parent warning p moth
     | _ -> ()
@@ -745,6 +744,13 @@ let on_person_update base warning p =
     let fam = foi base ifam in
     Array.iter begin fun child ->
       let child = poi base child in
+      check_parent_marriage_age warning fam p ;
+      let fath, moth =
+        if get_iper p = get_father fam
+        then p, poi base @@ get_mother fam
+        else poi base @@ get_father fam, p
+      in
+      check_difference_age_between_cpl warning fath moth ;
       child_born_after_his_parent warning child p ;
       match get_sex p with
       | Male -> possible_father warning child p ;
