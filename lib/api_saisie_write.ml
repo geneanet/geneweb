@@ -1927,7 +1927,7 @@ let print_add_parents_ok conf base =
           ; event_perso = None
           } ] ->
         begin match date with
-          | None | Some  { Mwrite.Date.dmy = None ; text = None } -> true
+          | None | Some { Mwrite.Date.dmy = (Some { Mwrite.Dmy.year = None ; _ } | None) ; text = None } -> true
           | _ -> false
         end
       | _ -> false
