@@ -523,7 +523,7 @@ $(document).ready(function(){
     %if;(evar_m = "ADD_FAM" or evar_m = "ADD_FAM_OK")
       <input type="hidden" name="m" value="ADD_FAM_OK"%/>%nl;
     %elseif;(evar_m = "ADD_PAR")
-      <input type="hidden" name="m" value="ADD_FAM_OK"%/>%nl;
+      <input type="hidden" name="m" value="ADD_PAR_OK"%/>%nl;
     %elseif;(evar_m = "MOD_FAM" or evar_m = "MOD_FAM_OK")
       <input type="hidden" name="m" value="MOD_FAM_OK"%/>%nl;
     %elseif;(evar_m = "MRG_DUP_FAM_Y_N" or evar_m = "MRG_FAM" or

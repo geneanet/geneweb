@@ -1437,6 +1437,81 @@ let print_add o_conf base =
       Update.delete_topological_sort conf base;
       print_add_ok conf base (wl, ml) cpl des
 
+(* If we only have two linked parents,
+   with one linked child and not other informations,
+   and if a union already exists between the parents,
+   edit the existing union in order to add a child.
+   Else, create a new union. *)
+let print_add_parents o_conf base =
+  let conf = Update.update_conf o_conf in
+  let (sfam, scpl, sdes, _) = reconstitute_family conf base in
+  if sfam.marriage = Adef.cdate_None
+  && sfam.marriage_place = ""
+  && sfam.marriage_note = ""
+  && sfam.marriage_src = ""
+  && sfam.witnesses = [||]
+  && sfam.relation = Married
+  && sfam.divorce = NotDivorced
+  && sfam.fevents =
+     [ { efam_name = Efam_Marriage
+       ; efam_date = Adef.cdate_None
+       ; efam_place = ""
+       ; efam_reason = ""
+       ; efam_note = ""
+       ; efam_src = ""
+       ; efam_witnesses = [| |] } ]
+  && sfam.comment = ""
+  && sfam.origin_file = ""
+  && sfam.fsources = Opt.to_string @@ p_getenv conf.env "dsrc"
+  && sfam.fam_index = dummy_ifam
+  then match Adef.father scpl, Adef.mother scpl, sdes.children with
+    | ( (ff, fs, fo, Update.Link, _)
+      , (mf, ms, mo, Update.Link, _)
+      , [| (cf, cs, co, Update.Link, _) |] ) ->
+      begin match person_of_key base ff fs fo
+                , person_of_key base mf ms mo
+                , person_of_key base cf cs co with
+        | Some fath, Some moth, Some child ->
+          let ffam = get_family @@ poi base fath in
+          let mfam = get_family @@ poi base moth in
+          let rec loop i =
+            if i = -1 then print_add o_conf base
+            else
+              let ifam = Array.unsafe_get ffam i in
+              if Array.exists ((=) ifam) mfam
+              then
+                let f = foi base ifam in
+                let sfam = gen_family_of_family f in
+                let o_f = Util.string_gen_family base sfam in
+                let scpl = gen_couple_of_couple f in
+                let sdes = { children = Array.append (gen_descend_of_descend f).children [|child|] } in
+                patch_descend base ifam sdes ;
+                patch_ascend base child { parents = Some ifam
+                                        ; consang = Adef.fix (-1) } ;
+                Util.commit_patches conf base ;
+                let f' = family_of_gen_family base (sfam, scpl, sdes) in
+                let wl = ref [] in
+                let warning w = wl := w :: !wl in
+                CheckItem.family ~onchange:true base warning ifam f' ;
+                let n_f = Util.string_gen_family base sfam in
+                let hr =
+                  U_Modify_family
+                    (poi base child
+                     |> gen_person_of_person
+                     |> Util.string_gen_person base
+                    , o_f
+                    , n_f)
+                in
+                History.record conf base hr "mf" ;
+                Update.delete_topological_sort conf base ;
+                print_mod_ok conf base (!wl, []) scpl sdes
+              else loop (i - 1)
+          in loop (Array.length ffam)
+        | _ -> print_add o_conf base
+      end
+    | _ -> print_add o_conf base
+  else print_add o_conf base
+
 let print_del conf base =
   match p_getenv conf.env "i" with
     Some i ->

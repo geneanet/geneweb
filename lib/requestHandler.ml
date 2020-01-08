@@ -287,6 +287,7 @@ and handler =
   ; add_ind : handler_base
   ; add_ind_ok : handler_base
   ; add_par : handler_base
+  ; add_par_ok : handler_base
   ; anm : handler_base
   ; an : handler_base
   ; ad : handler_base
@@ -461,6 +462,7 @@ let dummyHandler =
   ; add_ind = dummy_base
   ; add_ind_ok = dummy_base
   ; add_par = dummy_base
+  ; add_par_ok = dummy_base
   ; anm = dummy_base
   ; an = dummy_base
   ; ad = dummy_base
@@ -701,6 +703,11 @@ let defaultHandler : handler =
 
   ; add_par = begin fun self conf base ->
       if conf.wizard then UpdateFam.print_add_parents conf base
+      else self.incorrect_request self conf base
+    end
+
+  ; add_par_ok = begin fun self conf base ->
+      if conf.wizard then UpdateFamOk.print_add_parents conf base
       else self.incorrect_request self conf base
     end
 

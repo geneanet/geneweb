@@ -80,6 +80,7 @@ let family_m conf base =
       | "ADD_IND" -> handler.add_ind
       | "ADD_IND_OK" -> handler.add_ind_ok
       | "ADD_PAR" -> handler.add_par
+      | "ADD_PAR_OK" -> handler.add_par_ok
       | "ANM" -> handler.anm
       | "AN" -> handler.an
       | "AD" -> handler.ad
