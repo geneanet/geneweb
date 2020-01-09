@@ -193,7 +193,7 @@
 {%- endmacro calendar_option -%}
 
 {%- macro calendar (xvar,xdt) -%}
-  <div id="calendar_wrapper_{{ xvar }}" class="{{ columns (12, 5, 5) }}"
+  <div id="calendar_wrapper_{{ xvar }}" class="{{ columns (12, 5, 5) }} mb-3"
        {%- if (not xdt) || xdt.calendar == "Dgregorian" %}style="display:none"{%- endif -%}>
     <select id="{{ xvar }}_cal" name="{{ xvar }}_cal"
             onchange="changeCalendar('{{ xvar }}_mm_sel','{{ xvar }}_mm','{{ xdt.month }}',this)">
@@ -203,13 +203,13 @@
             {{ calendar_option ("H", xdt, "Dhebrew", false, 3) }}
     </select>
   </div>
-  <div id="calendar_wrapper_help_{{ xvar }}" class="{{ columns (12, 5, 5) }} hide-mobile text-right"
+  <div id="calendar_wrapper_help_{{ xvar }}" class="{{ columns (12, 4, 4) }} hide-mobile text-right"
        {%- if (not xdt) || (xdt.calendar == "Dgregorian") %}style="display:none"{%- endif -%}>
     <label class="inline">
       <a href="{{ env.prefix }}&m=CAL" target="_blank">{{ "calendar/calendars"|trans(1) }}</a>
     </label>
   </div>
-  <div id="calendar_wrapper_blank_{{ xvar }}" class="{{ columns (12, 2, 2) }} hide-mobile"
+  <div id="calendar_wrapper_blank_{{ xvar }}" class="{{ columns (12, 3, 3) }} hide-mobile"
        {%- if (not xdt) || (xdt.calendar == "Dgregorian") %}style="display:none"{%- endif -%}>
        &nbsp;
   </div>
@@ -244,7 +244,9 @@
 {%- set line_control = "col-sm-12 col-md-9 col-lg-9" -%}
 
 {%- macro print_delete_button (id) -%}
-  <a tabindex="-1" class="delete_button delete-row" role="button" onclick="delete_entry('#{{ id }}')"></a>
+  <button class="btn btn-sm btn-outline-danger delete_button delete-row" type="button" onclick="delete_entry('#{{ id }}')">
+    <i class="fa fa-trash"></i>
+  </button>
 {%- endmacro print_delete_button -%}
 
 {%- macro print_add_button (onclick, txt) -%}
@@ -435,7 +437,7 @@
   <div class="fevent_wrapper my-3 {{ columns (12, 12, 12) }}" id="fevent_wrapper{{ xcnt }}">
     <div class="card" >
       <div class="card-header {{ columns (12, 12, 12) }}">
-        {# {{ print_delete_button ("fevent_wrapper" + xcnt) }} #}
+        {{ print_delete_button ("fevent_wrapper" + xcnt) }}
         <span id="fevent_label{{ xcnt }}">
           {{ (event.name ? event.name|capitalize : "event/events"|trans(0)|capitalize) }}
         </span>
