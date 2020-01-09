@@ -546,12 +546,9 @@
       {{ print_add_button ("add_fevent()", "add"|trans + " " + "event/events"|trans(0)) }}
     </div>
 
+    {{ section_title("child/children"|trans(1)|capitalize) }}
+
     <div class="family-events" style="width:auto;">
-      <div class="row person-title">
-        <div class="{{ columns (12, 12, 12) }}">
-          <strong>{{ "child/children"|trans(1)|capitalize }}</strong>
-        </div>
-      </div>
       <div id="children" class="row">
         {%- for c in family.children -%}{{ print_child_form (loop.index, c) }}{%- endfor -%}
         <div style="display:none" id="new_child_anchor"></div>
@@ -559,17 +556,19 @@
       {{ print_add_button ("add_child()", "add"|trans + " " + "child/children"|trans(0)) }}
     </div>
 
+    {{ section_title("note/notes"|trans(1)|capitalize + ' ' + "and"|trans + ' ' + "source/sources"|trans(1)) }}
+
     <div class="family-events" style="width:auto;">
-      <div class="row person-title">
-        <div class="{{ columns (12, 12, 12) }}">
-          <strong>{{ "note/notes"|trans(1)|capitalize }} {{ "and"|trans }} {{ "source/sources"|trans(1) }}</strong>
-        </div>
-      </div>
-      <div class="row">&nbsp;</div>
-      <div class="row">
+      <div class="{{ form_row }}">
         {{ line_label ('', "note/notes"|trans(1)) }}
         <div class="{{ columns (12, 9, 9) }}">
           <textarea name="comment" rows="12" id="comment" style="max-width:none;width:100%;">{{ f.notes }}</textarea>
+        </div>
+      </div>
+      <div class="{{ form_row }}">
+        {{ line_label ("src", "source/sources"|trans(0)) }}
+        <div class="{{ line_control }}">
+          {{ print_autocomplete_input ("src", f.source, 'source') }}
         </div>
       </div>
     </div>
