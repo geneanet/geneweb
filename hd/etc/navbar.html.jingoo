@@ -112,5 +112,5 @@
       </ul>
     </li>
   </ul>
-  <div class="mr-auto">{{ pagebar () }}</div>
+  <div class="mr-auto" style="margin-bottom: -1rem;">{{ pagebar () }}</div>
 </nav>

@@ -1015,6 +1015,11 @@ let defaultHandler : handler =
   ; mod_fam = restricted_wizard begin fun self conf base ->
       match Util.p_getenv conf.env "i" with
       | Some i ->
+        let root =
+          match find_person_in_env conf base "" with
+          | Some p -> Gwxjg.Data.get_n_mk_person conf base (get_iper p)
+          | None -> Tnull
+        in
         let ifam = ifam_of_string i in
         let sfam = UpdateFam.string_family_of conf base ifam in
         let digest = Update.digest_family sfam in
@@ -1022,6 +1027,7 @@ let defaultHandler : handler =
           ("digest", Tstr digest)
           :: ( "family"
              , Gwxjg.Data.get_n_mk_family conf base ifam @@ Gwdb.foi base ifam)
+          :: ("root", root)
           :: Gwxjg.Data.default_env conf base
         in
         JgInterp.render ~conf ~file:"updfam" ~models

@@ -44,9 +44,9 @@
   {{ short_dates_text (p) }}
 {%- endmacro -%}
 
-{% macro fso (x) -%}
-  {{ x.first_name }}{% if x.occ %}.{{ x.occ }}{% endif %} {{ x.surname }}
-{%- endmacro -%}
+{% function fso (x) -%}
+  {{ x.first_name + (x.occ ? '.' + x.occ : '') + ' ' + x.surname }}
+{%- endfunction -%}
 
 {% macro link(p) -%}
   <a href="{{ env.prefix }}{{ p.access }}"{% if iper is defined %}id="i{{ p.iper }}"{% endif %}>{{ p.__str__ }}</a>

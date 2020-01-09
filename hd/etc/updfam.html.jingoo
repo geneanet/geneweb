@@ -1,5 +1,6 @@
 {%- include 'perso_utils.jingoo' -%}
 {%- include 'utils.jingoo' -%}
+{%- include 'perso_pagebar.html.jingoo' -%}
 
 {%- extends "template.jingoo" -%}
 {%- block body -%}
