@@ -1,4 +1,5 @@
 {% include 'navbar_utils.jingoo' %}
+{% include 'perso_utils.jingoo' %}
 
 {% macro navItem (icn, txt, href, active) %}
   <li class="nav-item">
@@ -9,15 +10,59 @@
   </li>
 {% endmacro %}
 
+<style>
+  #sub-topbar { margin: -1rem auto -1rem 0; display: flex; align-items:center; }
+  #sub-topbar .nav-link { padding-bottom: 1rem; margin-top: .5rem; }
+</style>
+
 {% macro pagebar () %}
   {% if root %}
+  <strong>{{ fso (root) }}</strong>
+  <i class="fa fa-chevron-right ml-3"></i>
   <ul class="nav nav-tabs" role="tablist">
-    {{ navItem ('fa-user-alt', '', env.prefix + root.access, not env.m) }}
+    {{ navItem ('fa-user-alt', 'vital record'|trans|capitalize, env.prefix + root.access, not env.m) }}
     {%- if conf.wizard -%}
     <li class="nav-item dropdown">
-      {{ dropdownToggle ('modify'|trans|capitalize, 'fa-edit') }}
+      {{ dropdownToggle ('modify'|trans|capitalize, 'fa-edit', env.m == "MOD_IND" || env.m == "MOD_FAM") }}
       <div class="dropdown-menu">
-        {{ dropdownItem ('fa-user', fso (root), env.prefix + 'm=MOD_IND&i=' + root.iper) }}
+        {{ dropdownItem ('fa-edit', 'modify'|trans + ' ' + fso (root), env.prefix + 'm=MOD_IND&i=' + root.iper) }}
+        {{ dropdownItem ('fa-compress', 'merge'|trans + ' ' + 'person/persons'|trans(1), env.prefix + 'm=MRG&i=' + root.iper) }}
+        {{ dropdownItem ('fa-trash-alt', 'delete'|trans + ' ' + 'person/persons'|trans(0), env.prefix + 'm=MRG&i=' + root.iper, 'danger') }}
+        <div class="dropdown-divider"></div>
+        {{ dropdownItem ('fa-plus', 'add'|trans + ' ' + 'family/families'|trans(0), env.prefix + 'm=ADD_FAM&ip=' + root.iper) }}
+        {{ dropdownItem ('fa-child', "change children's names"|trans, env.prefix + 'm=CHG_CHN&ip=' + root.iper) }}
+        {%- for f in root.families -%}
+        <div class="dropdown-divider"></div>
+        <div class="dropdown-header">
+          {{ f.spouse.surname }} {{ f.spouse.first_name }}
+        </div>
+        {{ dropdownItem ('fa-edit', 'modify'|trans + ' ' + 'family/families'|trans(0), env.prefix + 'm=MOD_FAM&i=' + f.ifam + '&ip=' + root.iper) }}
+        {{ dropdownItem ('fa-trash-alt', 'delete'|trans + ' ' + 'family/families'|trans(0), env.prefix + 'm=DEL_FAM&i=' + f.ifam + '&ip=' + root.iper, 'danger') }}
+        {%- endfor -%}
+      </div>
+    </li>
+    <li class="nav-item dropdown">
+      {{ dropdownToggle ('tree'|trans|capitalize, 'fa-sitemap', env.m == "ITREE") }}
+      <div class="dropdown-menu">
+        <div class="dropdown-item">{{ 'generation/generations'|trans(1)|capitalize }}{{ ':'|trans }}</div>
+        <div class="dropdown-divider"></div>
+        <form class="py-2 px-4" method="get" action="{{ env.prefix }}">
+          <input type="hidden" name="m" value="ITREE">
+          {%- for (k, v) in (list (conf.env) + list (conf.senv) + list (conf.henv)) | unique -%}
+          {%- if k != "an" && k != "dn" && k != "m" %}{{ print_hidden (k, v) }}{% endif -%}
+          {%- endfor -%}
+          <div class="form-group">
+            <label>{{ 'ancestors'|trans|capitalize }}</label>
+            <input type="text" class="form-control" name="an" value="{{ env.an ? env.an : 4 }}" size="1">
+          </div>
+          <div class="form-group">
+            <label>{{ 'descendants'|trans|capitalize }}</label>
+            <input type="text" class="form-control" name="dn" value="{{ env.dn ? env.dn : 3 }}" size="1">
+          </div>
+          <button class="btn btn-outline-success" type="submit">
+            {{ 'visualize/show/hide/summary'|trans(0)|capitalize }}
+          </button>
+        </form>
       </div>
     </li>
     {% endif %}

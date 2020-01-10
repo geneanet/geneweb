@@ -112,5 +112,8 @@
       </ul>
     </li>
   </ul>
-  <div class="mr-auto" style="margin-bottom: -1rem;">{{ pagebar () }}</div>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sub-topbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div id="sub-topbar" class="collapse navbar-collapse">{{ pagebar () }}</div>
 </nav>

@@ -8,15 +8,15 @@
   {{ print_env_ns.result }}
 {%- endfunction -%}
 
-{%- macro dropdownItem (icn, label, href) -%}
-  <a class="dropdown-item" href="{{ href }}">
+{%- macro dropdownItem (icn, label, href, color) -%}
+  <a class="dropdown-item{% if color %} text-{{ color }}{% endif %}" href="{{ href }}">
     {%- if icn %}<i class="fa fa-fw {{ icn }} mr-2"></i>{%- endif -%}
     {{ label|capitalize }}
   </a>
 {%- endmacro -%}
 
-{%- macro dropdownToggle (content, icn) -%}
-  <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+{%- macro dropdownToggle (content, icn, active) -%}
+  <a class="nav-link dropdown-toggle{% if active %} active{% endif %}" href="#" role="button" data-toggle="dropdown">
     {%- if icn %}<i class="fa fa-fw {{ icn }} mr-2"></i>{%- endif -%}
     {{ content }}
   </a>

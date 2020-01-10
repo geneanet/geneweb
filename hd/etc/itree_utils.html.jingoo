@@ -1,4 +1,5 @@
 {%- include 'perso_utils.jingoo' -%}
+{%- include 'navbar_utils.jingoo' -%}
 {%- include 'utils.jingoo' -%}
 
 {% macro itree_style_aux (descend, top) %}
@@ -169,15 +170,9 @@
         {{ fso (p) }}
       </div>
       <div class="dropdown-divider"></div>
-      <a class="dropdown-item" href="{{ env.prefix }}{{ p.access }}">
-        <i class="fa fa-user"></i>
-        {{ 'visualize/show/hide/summary'|trans(0)|capitalize }}
-      </a>
-     <a class="dropdown-item"
-         href="{{ env.prefix }}m=MOD_IND&i={{ p.iper }}">
-        <i class="fa fa-edit"></i>
-        {{ 'modify'|trans|capitalize }}
-      </a>
+      {{ dropdownItem ('fa-user', 'vital record'|trans, env.prefix + p.access) }}
+      {{ dropdownItem ('fa-edit', 'modify'|trans, env.prefix + 'm=MOD_IND&i=' + p.iper) }}
+      {{ dropdownItem ('fa-sitemap', 'tree'|trans, env.prefix + p.access + '&m=ITREE&an=' + env.an + '&dn=' + env.dn) }}
     </div>
   </div>
 </div>

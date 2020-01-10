@@ -812,56 +812,56 @@
                })
   }
 
-  {# function update_link_create (prefix) { #}
-  {#   var root = document.querySelector ('#' + prefix + '_person_form') ; #}
-  {#   var link = document.querySelector ('#' + prefix + '_p').value == "link" ; #}
-  {#   root.querySelectorAll("input").forEach(function (x) { #}
-  {#     if (link) { #}
-  {#       if (x.id != prefix + "_fn" #}
-  {#           && x.id != prefix + "_sn" #}
-  {#           && x.id != prefix + "_occ") { #}
-  {#         x.value = x.defaultValue || "" ; #}
-  {#         x.readOnly = true ; #}
-  {#       } #}
-  {#     } else { #}
-  {#       x.removeAttribute ("readonly") ; #}
-  {#     } #}
-  {#   }) ; #}
+  function update_link_create (prefix) {
+    var root = document.querySelector ('#' + prefix + '_person_form') ;
+    var link = document.querySelector ('#' + prefix + '_p').value == "link" ;
+    root.querySelectorAll("input").forEach(function (x) {
+      if (link) {
+        if (x.id != prefix + "_fn"
+            && x.id != prefix + "_sn"
+            && x.id != prefix + "_occ") {
+          x.value = x.defaultValue || "" ;
+          x.readOnly = true ;
+        }
+      } else {
+        x.removeAttribute ("readonly") ;
+      }
+    }) ;
 
-  {#   /* Disabled inputs are not submitted */ #}
-  {#   root.querySelectorAll("select").forEach(function (x) { #}
-  {#     if (link) { #}
-  {#       if (x.id != prefix + "_p") { #}
-  {#         Array.from(x.options).some(function(y){ #}
-  {#           if (y.defaultSelected) { #}
-  {#             x.selectedIndex = y.index ; #}
-  {#             return true #}
-  {#           } else { #}
-  {#             return false #}
-  {#           } #}
-  {#         }) ; #}
-  {#         x.disabled = true ; #}
-  {#         var hidden = document.createElement ("input") ; #}
-  {#         hidden.style.display = "none" ; #}
-  {#         hidden.name = x.name ; #}
-  {#         hidden.id = x.id + "-hidden" ; #}
-  {#         x.parentElement.insertBefore (hidden, x) ; #}
-  {#       } #}
-  {#     } else { #}
-  {#       var n = document.querySelector(x.id + "-hidden") ; #}
-  {#       if (x != null) { x.remove () } #}
-  {#       x.removeAttribute ("disabled") ; #}
-  {#     } #}
-  {#   }) ; #}
+    /* Disabled inputs are not submitted */
+    root.querySelectorAll("select").forEach(function (x) {
+      if (link) {
+        if (x.id != prefix + "_p") {
+          Array.from(x.options).some(function(y){
+            if (y.defaultSelected) {
+              x.selectedIndex = y.index ;
+              return true
+            } else {
+              return false
+            }
+          }) ;
+          x.disabled = true ;
+          var hidden = document.createElement ("input") ;
+          hidden.style.display = "none" ;
+          hidden.name = x.name ;
+          hidden.id = x.id + "-hidden" ;
+          x.parentElement.insertBefore (hidden, x) ;
+        }
+      } else {
+        var n = document.querySelector(x.id + "-hidden") ;
+        if (x != null) { x.remove () }
+        x.removeAttribute ("disabled") ;
+      }
+    }) ;
 
-  {#   root.querySelectorAll("a").forEach(function (x) { #}
-  {#     if (link) { #}
-  {#       x.style.pointerEvents = "none" ; #}
-  {#     } else { #}
-  {#       x.style.pointerEvents = "" ; #}
-  {#     } #}
-  {#   }) ; #}
-  {# } #}
+    root.querySelectorAll("a").forEach(function (x) {
+      if (link) {
+        x.style.pointerEvents = "none" ;
+      } else {
+        x.style.pointerEvents = "" ;
+      }
+    }) ;
+  }
 
   function update_link_create (prefix) {
     var root = document.querySelector ('#' + prefix + '_person_form') ;

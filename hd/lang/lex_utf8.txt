@@ -6403,6 +6403,10 @@ en: full width display/columns display
 fr: affichage pleine largeur/affichage sur deux colonnes
 pt: exibir na largura total/exibir em duas colunas
 
+    full-screen
+en: full-screen
+fr: plein écran
+
     funeral
 co: murtoriu
 de: Bestattung

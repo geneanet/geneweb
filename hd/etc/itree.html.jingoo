@@ -1,4 +1,5 @@
 {%- include 'itree_utils.html.jingoo' -%}
+{%- include 'perso_pagebar.html.jingoo' -%}
 
 {%- extends "template.jingoo" -%}
 
@@ -6,6 +7,7 @@
 
 <style>{{ itree_style () }}</style>
 <style>
+    #panzoom-parent { padding-top: 3rem ; }
     #panzoom-parent.fullscreen {
         position:fixed ;
         top: 0 ;
@@ -16,13 +18,15 @@
         z-index: 99999 ;
         margin-top: 0 !important ;
     }
-    #panzoom-fullscreen-controller {
+    #panzoom-controllers {
+        display: flex ;
+        align-items: center ;
         position: absolute ;
         margin-top: .5rem ;
         margin-left: .5rem ;
         z-index: 1 ;
     }
-    #panzoom-fullscreen-controller.fullscreen {
+    #panzoom-controllers.fullscreen {
         position: fixed ;
         top: .5rem ;
         left: .5rem ;
@@ -32,38 +36,45 @@
 
 
   <h1>{{ 'tree'|trans|capitalize }} ({{ 'ancestors'|trans|capitalize }}/{{ 'descendants'|trans|capitalize }})</h1>
+
   <form class="form-inline my-3" method="get" action="{{ env.prefix }}">
     <div class="my-2 my-md-0">{{ 'generation/generations'|trans(1)|capitalize }}{{ ':'|trans }}</div>
     {%- for (k, v) in (list (conf.env) + list (conf.senv) + list (conf.henv)) | unique -%}
     {%- if k != "an" && k != "dn" %}{{ print_hidden (k, v) }}{% endif -%}
     {%- endfor -%}
-      <div class="input-group ml-3 my-2 my-md-0">
-        <div class="input-group-prepend">
-          <div class="input-group-text">{{ 'ancestors'|trans|capitalize }}</div>
-        </div>
-        <input type="text" class="form-control" name="an" value="{{ env.an ? env.an : 2 }}" size="1">
+    <div class="input-group ml-3 my-2 my-md-0">
+      <div class="input-group-prepend">
+        <div class="input-group-text">{{ 'ancestors'|trans|capitalize }}</div>
       </div>
-      <div class="input-group ml-3 my-2 my-md-0">
-        <div class="input-group-prepend">
-          <div class="input-group-text">{{ 'descendants'|trans|capitalize }}</div>
-        </div>
-        <input type="text" class="form-control" name="dn" value="{{ env.dn ? env.dn : 2 }}" size="1">
+      <input type="text" class="form-control" name="an" value="{{ env.an ? env.an : 2 }}" size="1">
+    </div>
+    <div class="input-group ml-3 my-2 my-md-0">
+      <div class="input-group-prepend">
+        <div class="input-group-text">{{ 'descendants'|trans|capitalize }}</div>
       </div>
-      <button class="btn btn-outline-success ml-3 my-2 my-md-0" type="submit">
-        {{ 'visualize/show/hide/summary'|trans(0)|capitalize }}
-      </button>
-    </form>
+      <input type="text" class="form-control" name="dn" value="{{ env.dn ? env.dn : 2 }}" size="1">
+    </div>
+    <button class="btn btn-outline-success ml-3 my-2 my-md-0" type="submit">
+      {{ 'visualize/show/hide/summary'|trans(0)|capitalize }}
+    </button>
+  </form>
 
-  <div class="custom-control custom-switch"
-       id="panzoom-fullscreen-controller"
-       >
-    <input type="checkbox" class="custom-control-input" id="customSwitch1" onclick="toggleFullscreen()">
-    <label class="custom-control-label" for="customSwitch1">Fullscreen</label>
+  <div id="panzoom-controllers">
+    <div class="custom-control custom-switch">
+      <input type="checkbox" class="custom-control-input" id="panzoom-fullscreen-controller-input" onclick="toggleFullscreen()">
+      <label class="custom-control-label" for="panzoom-fullscreen-controller-input">{{ 'full-screen'|trans|capitalize }}</label>
+    </div>
+    <button class="btn" type="button" id="panzoom-controller-reset"><i class="fa fa-history"></i></button>
+    <button class="btn" type="button" id="panzoom-controller-zoomin"><i class="fa fa-plus-square"></i></button>
+    <button class="btn" type="button" id="panzoom-controller-zoomout"><i class="fa fa-minus-square"></i></button>
   </div>
 
   {{ print_itree (root, env.an, env.dn) }}
 
   <script>
-    function toggleFullscreen () { $('#panzoom-parent, #panzoom-fullscreen-controller').toggleClass('fullscreen') ; }
+    document.getElementById('panzoom-controller-reset').addEventListener('click', panzoom.reset)
+    document.getElementById('panzoom-controller-zoomin').addEventListener('click', panzoom.zoomIn)
+    document.getElementById('panzoom-controller-zoomout').addEventListener('click', panzoom.zoomOut)
+    function toggleFullscreen () { $('#panzoom-parent, #panzoom-controllers').toggleClass('fullscreen') ; }
   </script>
 {%- endblock -%}
