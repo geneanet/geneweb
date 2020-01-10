@@ -7,7 +7,7 @@
 {% macro style (descend, top) %}
 
 .{{ descend }} .tree ul {
-    padding: 1rem .125rem;
+    padding: {% if top == "top" %}1rem{% else %}0{% endif %} .125rem;
     position: relative;
     display: flex;
     flex-wrap: nowrap;
@@ -287,7 +287,8 @@
 {%- endblock -%}
 
 {%- block body -%}
-  <div style="width=100vw;overflow:hidden;">
+  <div id="panzoom-parent" class="border" style="width:100%;overflow:hidden;">
+  <div id="panzoom">
     <div class="ascend" style="width:100%;display:flex;justify-content:center;">
       <div class="tree"><ul><li>{{ a_ascend (root, (env.an ? int (env.an) : 2), true) }}</li></ul></div>
     </div>
@@ -300,5 +301,17 @@
       <div class="tree"><ul><li>{{ a_descend (root, (env.dn ? int (env.dn) : 2), true) }}</li></ul></div>
     </div>
   </div>
-{%- endblock -%}
 
+  <script src="js/panzoom.min.js"></script>
+
+  <script>
+    const element = document.getElementById('panzoom') ;
+    const parent = document.getElementById('panzoom-parent') ;
+    const panzoom = Panzoom(element) ;
+    parent.addEventListener ('wheel', function(event) {
+        if (!event.shiftKey) return
+        panzoom.zoomWithWheel(event)
+    }) ;
+  </script>
+
+{%- endblock -%}
