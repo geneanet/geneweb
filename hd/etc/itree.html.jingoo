@@ -250,23 +250,14 @@
   {% endif %}
 {% endmacro %}
 
-{%- block pagebar -%}
-  <nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom">
-    <strong class="d-none d-md-block my-2 my-md-0">
-      {{ 'tree'|trans|capitalize }} ({{ 'ancestors'|trans|capitalize }}/{{ 'descendants'|trans|capitalize }})
-    </strong>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#pagebarCollapse">
-      <strong class="d-sm-none d-md-block my-2 my-md-0">
-        {{ 'tree'|trans|capitalize }}<i class="ml-3 fa fa-chevron-down"></i>
-      </strong>
-    </button>
-    <div id="pagebarCollapse" class="collapse navbar-collapse">
-
-    <form class="form-inline ml-3 mr-auto" method="get" action="{{ env.prefix }}">
-      <div class="my-2 my-md-0">{{ 'generation/generations'|trans(1)|capitalize }}{{ ':'|trans }}</div>
-      {%- for (k, v) in (list (conf.env) + list (conf.senv) + list (conf.henv)) | unique -%}
-        {%- if k != "an" && k != "dn" %}{{ print_hidden (k, v) }}{% endif -%}
-      {%- endfor -%}
+{%- block body -%}
+  
+  <h1>{{ 'tree'|trans|capitalize }} ({{ 'ancestors'|trans|capitalize }}/{{ 'descendants'|trans|capitalize }})</h1>
+  <form class="form-inline my-3" method="get" action="{{ env.prefix }}">
+    <div class="my-2 my-md-0">{{ 'generation/generations'|trans(1)|capitalize }}{{ ':'|trans }}</div>
+    {%- for (k, v) in (list (conf.env) + list (conf.senv) + list (conf.henv)) | unique -%}
+    {%- if k != "an" && k != "dn" %}{{ print_hidden (k, v) }}{% endif -%}
+    {%- endfor -%}
       <div class="input-group ml-3 my-2 my-md-0">
         <div class="input-group-prepend">
           <div class="input-group-text">{{ 'ancestors'|trans|capitalize }}</div>
@@ -283,11 +274,8 @@
         {{ 'visualize/show/hide/summary'|trans(0)|capitalize }}
       </button>
     </form>
-  </nav>
-{%- endblock -%}
 
-{%- block body -%}
-  <div id="panzoom-parent" class="border" style="width:100%;overflow:hidden;">
+  <div id="panzoom-parent" class="border my-3" style="width:100%;overflow:hidden;">
   <div id="panzoom">
     <div class="ascend" style="width:100%;display:flex;justify-content:center;">
       <div class="tree"><ul><li>{{ a_ascend (root, (env.an ? int (env.an) : 2), true) }}</li></ul></div>
