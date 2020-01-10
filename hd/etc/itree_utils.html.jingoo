@@ -1,0 +1,286 @@
+{%- include 'perso_utils.jingoo' -%}
+{%- include 'utils.jingoo' -%}
+
+{% macro itree_style_aux (descend, top) %}
+
+.{{ descend }} .tree ul {
+    padding: {% if top == "top" %}1rem{% else %}0{% endif %} .125rem;
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+}
+.{{ descend }} .tree li {
+    float: left;
+    text-align: center;
+    list-style-type: none;
+    position: relative;
+    padding: {% if top == "top" %}1rem .25rem 0 .25rem{% else %}0 .25rem 1rem .25rem{% endif %};
+}
+
+.{{ descend }} .tree li::before, .{{ descend }} .tree li::after{
+    content: '';
+    position: absolute; {{ top }}: 0;
+    right: calc(50% - 1px);
+    border-{{ top }}: 1px solid #ccc;
+    width: 50%;
+    height:1rem;
+}
+.{{ descend }} .tree li::after{
+    right: auto;
+    left: 50%;
+    border-left: 1px solid #ccc;
+}
+
+.{{ descend }} .tree li:first-child::before, .{{ descend }} .tree li:last-child::after{
+    border: 0 none;
+}
+
+.{{ descend }} .tree li:last-child::before{
+    border-right: 1px solid #ccc;
+}
+.{{ descend }} .tree ul ul::before{
+    content: '';
+    position: absolute;
+    {{ top }}: 0;
+    left: 50%;
+    border-left: 1px solid #ccc;
+    width: 0; height:1rem;
+}
+.{{ descend }} .tree li .tree-person {
+    border: 1px solid #ccc;
+    padding: .25rem .5rem;
+    text-decoration: none;
+    font-family: arial, verdana, tahoma;
+    font-size: 11px;
+    display: inline-block;
+}
+.{{ descend }} .tree li .tree-person:hover,
+               .{{ descend }} .tree li .tree-person:hover+ul li .tree-person  {
+    background: #c8e4f8; color: #000; border: 1px solid #94a0b4;
+}
+.{{ descend }} .tree li .tree-person:hover+ul li::after,
+.{{ descend }} .tree li .tree-person:hover+ul li::before,
+.{{ descend }} .tree li .tree-person:hover+ul::before,
+.{{ descend }} .tree li .tree-person:hover+ul ul::before{
+    border-color:  #94a0b4;
+}
+
+.{{ descend }} .tree > ul {
+    margin: 0;
+    padding: 0;
+}
+
+.{{ descend }} .tree a + ul::before { display: none ; }
+.{{ descend }} .tree a + ul { padding-{{ top }}: 0 ; }
+
+{%- endmacro -%}
+
+{% macro itree_style () %}
+
+    {{ itree_style_aux ("descend", "top") }}
+    {{ itree_style_aux ("ascend", "bottom") }}
+
+    .tree-person { position: relative ; }
+
+    .descend .tree li:only-child::before {
+        display: none;
+    }
+
+    .descend .tree li:only-child::after{
+        border-left: 1px solid #ccc;
+    }
+
+    .ascend .tree li {
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center ;
+    }
+
+    .descend .tree .li-union {
+        padding-top: 0 ;
+    }
+
+    .ascend .tree .li-union > ul {
+        padding-bottom: 0 ;
+    }
+
+    .ascend .tree .li-union > ul::before {
+        display: none ;
+    }
+
+    .itm-link {
+        display: flex ;
+        flex-direction: column;
+        align-items: center ;
+        color: inherit;
+    }
+
+    .itm-link:hover { color: inherit ; text-decoration: none ;}
+
+    .itm-link::after { display: none ; }
+
+    .itm-union > .dropdown-toggle:hover {
+        background: #c8e4f8; color: #000; border: 1px solid #94a0b4;
+    }
+
+    .itm-union >.dropdown-toggle  {
+        display:inline-block ;
+        border:1px solid #ccc ;
+        background-color:white;
+        border-radius:50%;
+        height:1rem;width:1rem;
+        overflow: hidden;
+        position: absolute;
+        transform: translate(-0.5rem, -0.5rem);
+        z-index: 1;
+    }
+
+    .dropdown-toggle-union::after { display: none ; }
+
+    .tree-sosa {
+        position: absolute;
+        top: -0.5rem;
+        left: -0.5rem ;
+        background-color: white ;
+        border-radius: 50%;
+        overflow: hidden ;
+    }
+
+    #panzoom-parent {
+        width: 100% ;
+        max-height: 100vh ;
+        overflow: hidden ;
+    }
+
+{%- endmacro itree_style -%}
+
+{%- macro itree_print_person (p) -%}
+<div class="tree-person">
+  {% if p.sosa %}<div class="tree-sosa">{{ display_sosa (p) }}</div>{% endif %}
+  <div class="dropdown">
+    <a class="dropdown-toggle itm-link" data-toggle="dropdown" href="#">
+      <strong>{{ p.surname }}</strong>
+      <strong>{{ p.first_name }}</strong>
+      <em>{{ p.dates ? p.dates : "&nbsp;" }}</em>
+    </a>
+    <div class="dropdown-menu">
+      <div class="dropdown-header">
+        {{ fso (p) }}
+      </div>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="{{ env.prefix }}{{ p.access }}">
+        <i class="fa fa-user"></i>
+        {{ 'visualize/show/hide/summary'|trans(0)|capitalize }}
+      </a>
+     <a class="dropdown-item"
+         href="{{ env.prefix }}m=MOD_IND&i={{ p.iper }}">
+        <i class="fa fa-edit"></i>
+        {{ 'modify'|trans|capitalize }}
+      </a>
+    </div>
+  </div>
+</div>
+{%- endmacro -%}
+
+{%- macro itree_print_union (u) -%}
+  <div class="dropdown itm-union">
+    <a class="dropdown-toggle dropdown-toggle-union" data-toggle="dropdown"
+       href="#"
+      {%- if u.spouse -%}
+       title="{{ 'with'|trans|capitalize }} {{ u.spouse.surname }} {{ u.spouse.first_name }}"
+{% endif %}
+       >
+    </a>
+    <div class="dropdown-menu">
+      <div class="dropdown-header">
+      {%- if u.spouse -%}
+        {{ 'with'|trans|capitalize }} {{ u.spouse.surname }} {{ u.spouse.first_name }}
+      {%- else -%}
+      <div class="d-flex align-items-center">
+        <i class="mr-2 fa fa-link"></i>
+        <div>
+          <div>{{ fso (u.father) }}</div>
+          <div>{{ fso (u.mother) }}</div>
+        </div>
+      </div>
+      {%- endif -%}
+      </div>
+      <div class="dropdown-divider"></div>
+      <p class="px-4 text-muted">
+        {{ length (u.children) }} {{ 'child/children'|trans (length (u.children) > 1 ? 1 : 0) }}
+      </p>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item"
+         href="{{ env.prefix }}m=MOD_FAM&i={{ u.ifam }}">
+        <i class="fa fa-edit"></i>
+        {{ 'modify'|trans|capitalize }} {{ 'family/families'|trans(0) }}
+      </a>
+    </div>
+  </div>
+{%- endmacro -%}
+
+{% macro itree_a_ascend (x, n, root) %}
+  {% if not root %}{{ itree_print_person(x) }}{% endif %}
+  {% if n > 0 && x.father %}
+  <ul>
+    <li class="li-union">
+      {{ itree_print_union (x.parents) }}
+      <ul>
+        <li>{{ itree_a_ascend (x.father, n - 1, false) }}</li>
+        <li>{{ itree_a_ascend (x.mother, n - 1, false) }}</li>
+    </li>
+    </ul>
+  </ul>
+  {% endif %}
+{% endmacro %}
+
+{% macro itree_a_descend (x, n, root) %}
+  {% if not root %}{{ itree_print_person(x) }}{% endif %}
+  {% if n > 0 && x.families && exists (((f) => (length (f.children) > 0)), x.families) %}
+  <ul>
+    {%- for f in x.families -%}
+    {% if f.children %}
+    <li class="li-union">
+      {{ itree_print_union (f) }}
+      <ul>
+        {% for x in f.children %}
+        <li>{{ itree_a_descend (x, n - 1, false) }}</li>
+        {% endfor %}
+      </ul>
+    </li>
+    {% endif %}
+    {% endfor %}
+  </ul>
+  {% endif %}
+{% endmacro %}
+
+{% macro print_itree (root, an, dn) %}
+  <div id="panzoom-parent" class="border my-3">
+  <div id="panzoom">
+    <div class="ascend" style="width:100%;display:flex;justify-content:center;">
+      <div class="tree"><ul><li>{{ itree_a_ascend (root, (an ? int (an) : 2), true) }}</li></ul></div>
+    </div>
+    <div style="width:100%;display:flex;justify-content:center;">
+      <div class="border p-3 text-center">
+        {{ root.surname }} {{ root.first_name }} <em>{{ root.dates }}</em>
+      </div>
+    </div>
+    <div class="descend" style="width:100%;display:flex;justify-content:center;">
+      <div class="tree"><ul><li>{{ itree_a_descend (root, (dn ? int (dn) : 2), true) }}</li></ul></div>
+    </div>
+  </div>
+
+  <script src="js/panzoom.min.js"></script>
+
+  <script>
+    const element = document.getElementById('panzoom') ;
+    const parent = document.getElementById('panzoom-parent') ;
+    const panzoom = Panzoom(element) ;
+    parent.addEventListener ('wheel', function(event) {
+        if (!event.shiftKey) return
+        panzoom.zoomWithWheel(event)
+    }) ;
+  </script>
+
+{% endmacro print_itree %}
