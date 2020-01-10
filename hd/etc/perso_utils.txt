@@ -54,11 +54,11 @@
     <a href="%prefix;m=MOD_IND;i=%xx.index;" title="[*modify::] %xx.first_name;%if;(xx.occ!="0").%xx.occ;%end; %xx.surname;">%nn;
   %end;
   %if;xx.is_male;
-    <i class="fa fa-mars male mx-1"></i>%nn;
+    <i class="fa fa-mars male mr-1"></i>%nn;
   %elseif;xx.is_female;
-    <i class="fa fa-venus female mx-1"></i>%nn;
+    <i class="fa fa-venus female mr-2"></i>%nn;
   %else;
-    <i class="fa fa-neuter neuter mx-1"></i>%nn;
+    <i class="fa fa-neuter neuter mr-2"></i>%nn;
   %end;%nn;
   %if;(wizard and not cancel_links and not xx.is_restricted)</a>%end;
 %end;
