@@ -1,4 +1,4 @@
-<!-- $Id: js.txt, v7.00 05/06/2019 04:17:29 $ -->
+<!-- $Id: js.txt, v7.00 10/01/2020 21:31:27 $ -->
 %if;(evar.templ="")
   %if;(bvar.use_cdn="yes")
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
