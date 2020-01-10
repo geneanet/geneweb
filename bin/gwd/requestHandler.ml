@@ -1016,7 +1016,7 @@ let defaultHandler : handler =
       match Util.p_getenv conf.env "i" with
       | Some i ->
         let root =
-          match find_person_in_env conf base "" with
+          match find_person_in_env conf base "p" with
           | Some p -> Gwxjg.Data.get_n_mk_person conf base (get_iper p)
           | None -> Tnull
         in
