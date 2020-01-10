@@ -2115,7 +2115,7 @@ TODO: obtenir les secondes valeurs valeurs jj/mm/aaaa pour les cas « ou | » 
       %end;
     </div>
   %end;
-
+%end;
 %include;trl
 %include;copyr
 </div>
