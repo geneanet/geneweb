@@ -9,6 +9,7 @@
       [*options] %if;(evar.m="D")[descendants]%elseif;(evar.m="A")[ancestors]%end;%nn;
     </a>
     %let;cond;%if;((evar.m="A" and (evar.t="Z" or evar.t="X" or evar.t="Y")) or (evar.m="D" and evar.t="D" or evar.t="T"))1%end;%in;
+    %let;root;%if;(evar.iz!="")&iz=%evar.iz;%end;%if;(evar.pz!="")&pz=%evar.pz;%end;%if;(evar.nz!="")&nz=%evar.nz;%end;%if;(evar.ocz!="" and evar.ocz!=0)&ocz=%evar.ocz;%end;%in;
     <span class="sr-only">—</span>
     <a role="button" class="btn btn-link ml-1 my-0 px-0 mb-1%if;(cond=1 and not has_children) disabled%end;"%sp;
     href="%prefix_base_password;%nn;
@@ -33,13 +34,13 @@
     <i class="fa fa-table fa-lg fa-fw mr-1" aria-hidden="true"></i>[*table] %if;(cond=1)[descendants]%else;[ancestors]%end;</a>
     <span class="sr-only">—</span>
     <a role="button" class="btn btn-link ml-2 my-0 px-0 mb-1"%sp;
-      href="%prefix_base_password;%if;(evar.templ!="")&templ=%evar.templ;%end;&%access;&m=%evar.m;&t=T&v=%evar.v;%if;(evar.m="A")&marriage=on%end;%if;(evar.image="off")&image=off%end;">%nn;
+      href="%prefix_base_password;%if;(evar.templ!="")&templ=%evar.templ;%end;&%access;%root;&m=%evar.m;&t=T&v=%evar.v;%if;(evar.m="A")&marriage=on%end;%if;(evar.image="off")&image=off%end;">%nn;
       <i class="fa fa-sitemap%if;(evar.m="A") fa-rotate-180%end; fa-fw mr-1" aria-hidden="true"></i>%if;(evar.m="D")[*descendants tree]%elseif;(evar.m="A")[*ascendants tree]%end;%nn;
     </a>
     <span class="sr-only">—</span>
     %let;cond2;%if;((evar.m="A" and evar.t!="H") or (evar.m="D" and evar.t="D"))1%end;%in;
     <a role="button" class="btn btn-link ml-1 my-0 px-0 mb-1%if;(cond2!=1 and not has_children) disabled%end;"%sp;
-      href="%prefix_base_password;%if;(evar.templ!="")&templ=%evar.templ;%end;&%access;%nn;
+      href="%prefix_base_password;%if;(evar.templ!="")&templ=%evar.templ;%end;&%access;%root;%nn;
             %if;(cond2=1)&m=A&t=H%nn;
             %else;&m=D&t=D%nn;
             %end;&v=%evar.v;">%nn;
