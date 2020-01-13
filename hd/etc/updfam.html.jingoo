@@ -309,7 +309,7 @@
         <div class="{{ line_control }}">
           <input name="{{ prefix + i }}_occ" type="text" size="5" maxlength="8" value="{{ p ? p.occ : 0 }}"
                  class="form-control"
-                 onchange="update_person_label ('{{ prefix + i }}')")
+                 onchange="update_person_label ('{{ prefix + i }}')"
                  id="{{ prefix + i }}_occ">
         </div>
       </div>
