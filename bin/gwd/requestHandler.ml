@@ -317,6 +317,7 @@ and handler =
   ; del_ind : handler_base
   ; del_ind_ok : handler_base
   ; f : handler_base
+  ; fam : handler_base
   ; forum : handler_base
   ; forum_add : handler_base
   ; forum_add_ok : handler_base
@@ -495,6 +496,7 @@ let dummyHandler =
   ; del_ind = dummy_base
   ; del_ind_ok = dummy_base
   ; f = dummy_base
+  ; fam = dummy_base
   ; forum = dummy_base
   ; forum_add = dummy_base
   ; forum_add_ok = dummy_base
@@ -853,6 +855,19 @@ let defaultHandler : handler =
       match find_person_in_env conf base "" with
       | Some p -> Perso.interp_templ "family" conf base p
       | _ -> self.very_unknown self conf base
+    end
+
+  ; fam = begin fun self conf base ->
+      match Util.p_getenv conf.env "i" with
+      | Some i ->
+        let ifam = Gwdb.ifam_of_string i in
+        let models =
+          ( "family"
+          , Gwxjg.Data.get_n_mk_family conf base ifam @@ Gwdb.foi base ifam)
+          :: Gwxjg.Data.default_env conf base
+        in
+        JgInterp.render ~conf ~file:"fam" ~models
+      | _ -> self.incorrect_request self conf base
     end
 
   ; forum = if_enabled_forum ForumDisplay.print

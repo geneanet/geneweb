@@ -109,6 +109,7 @@ let family_m conf base =
       | "DEL_IND" -> handler.del_ind
       | "DEL_IND_OK" -> handler.del_ind_ok
       | "F" -> handler.f
+      | "FAM" -> handler.fam
       | "FORUM" -> handler.forum
       | "FORUM_ADD" -> handler.forum_add
       | "FORUM_ADD_OK" -> handler.forum_add_ok

@@ -1,0 +1,51 @@
+{%- include 'perso_utils.jingoo' -%}
+{%- include 'utils.jingoo' -%}
+{%- include 'perso_pagebar.html.jingoo' -%}
+
+{%- extends "template.jingoo" -%}
+
+<!-- FIXME copied from updfam -->
+{%- macro columns (s, m, l) -%}
+  col-sm-{{ s }} col-md-{{ m }} col-lg-{{ l }}
+{%- endmacro columns -%}
+
+{%- macro fam_parent (p) -%}
+<div class="{{ columns (12,4,4) }}">
+  <div class="card">
+    <div class="card-body">
+      {{ short_display_person (p) }}
+    </div>
+  </div>
+</div>
+{%- endmacro -%}
+
+{%- block body -%}
+
+<h1>{{ 'family/families'|trans(0)|capitalize }} #{{ family.ifam }}</h1>
+
+<div class="row">
+  {{ fam_parent (family.father) }}
+  <div class="{{ columns (12,4,4) }}">
+    <div class="card">
+      <div class="card-header">
+        {%- switch fam.relation -%}
+        {%- case "MARRIED" || "NO_SEXES_CHECK_MARRIED" %}{{ 'marriage event'|trans|capitalize }}
+        {%- case "MARRIAGE_LICENSE" -%}{{ 'marriage licence'|trans|capitalize }}
+        {%- case "NOT_MARRIED" || "NO_SEXES_CHECK_NOT_MARRIED" %}{{ 'not married'|trans|capitalize }}
+        {%- case "ENGAGED" %}{{ 'engage event'|trans|capitalize }}
+        {%- case "PACS" -%}{{ 'PACS'|trans(n, t=date_place) }}
+        {%- case "MARRIAGE_BANN" -%}{{ 'marriage banns'|trans|capitalize }}
+        {%- case "MARRIAGE_CONTRACT" -%}{{ 'marriage contract'|trans|capitalize }}
+        {%- case "RESIDENCE" %}{{ 'residence'|trans|capitalize }}
+        {%- default %}{{ 'with'|trans|capitalize }}
+        {%- endswitch -%}
+      </div>
+      <div class="card-body">
+        <div>{{ family.marriage_place }}</div>
+      </div>
+    </div>
+  </div>
+  {{ fam_parent (family.mother) }}
+</div>
+
+{%- endblock -%}
