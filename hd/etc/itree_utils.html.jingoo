@@ -172,7 +172,7 @@
       <div class="dropdown-divider"></div>
       {{ dropdownItem ('fa-user', 'vital record'|trans, env.prefix + p.access) }}
       {{ dropdownItem ('fa-edit', 'modify'|trans, env.prefix + 'm=MOD_IND&i=' + p.iper) }}
-      {{ dropdownItem ('fa-sitemap', 'tree'|trans, env.prefix + p.access + '&m=ITREE&an=' + env.an + '&dn=' + env.dn) }}
+      {{ dropdownItem ('fa-sitemap', 'tree'|trans, env.prefix + p.access + '&m=ITREE&an=' + (env.an ? env.an : '0') + '&dn=' + (env.dn ? env.dn : '0')) }}
     </div>
   </div>
 </div>

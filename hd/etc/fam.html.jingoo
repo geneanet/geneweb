@@ -1,6 +1,7 @@
 {%- include 'perso_utils.jingoo' -%}
 {%- include 'utils.jingoo' -%}
 {%- include 'perso_pagebar.html.jingoo' -%}
+{%- include 'itree_utils.html.jingoo' -%}
 
 {%- extends "template.jingoo" -%}
 
@@ -9,12 +10,44 @@
   col-sm-{{ s }} col-md-{{ m }} col-lg-{{ l }}
 {%- endmacro columns -%}
 
+{%- macro fam_parent_itm (icn, txt) -%}
+<li>
+  <!-- <i class="fa fa-fw" style="color:#AAA;"></i> -->
+  {{ txt|capitalize }}
+</li>
+{%- endmacro -%}
+
+{%- macro fam_parent_title (icn, txt) -%}
+<div>
+  <strong>
+    <!-- <i class="fa fa-fw {{ icn }}"></i> -->
+    {{ txt|capitalize }}
+  </strong>
+</div>
+{%- endmacro -%}
+
 {%- macro fam_parent (p) -%}
 <div class="{{ columns (12,4,4) }}">
   <div class="card">
-    <div class="card-body">
-      {{ short_display_person (p) }}
-    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        {{ display_sosa (p) }} {{ p.first_name }} {{ p.surname }}
+      </li>
+      <li class="list-group-item">
+        {{ fam_parent_title ("fa-plus", 'birth'|trans) }}
+        <ul>
+          {{ fam_parent_itm ("fa-calendar-alt", DATE.string_of_ondate(p.birth_date)) }}
+          {{ fam_parent_itm ("fa-map-marker-alt", p.birth_place) }}
+        </ul>
+      </li>
+      <li class="list-group-item">
+        {{ fam_parent_title ("fa-times", 'death'|trans) }}
+        <ul>
+          {{ fam_parent_itm ("fa-calendar-alt", DATE.string_of_ondate(p.death.date)) }}
+          {{ fam_parent_itm ("fa-map-marker-alt", p.death_place) }}
+        </ul>
+      </li>
+    </ul>
   </div>
 </div>
 {%- endmacro -%}
@@ -26,9 +59,9 @@
 <div class="row">
   {{ fam_parent (family.father) }}
   <div class="{{ columns (12,4,4) }}">
-    <div class="card">
-      <div class="card-header">
-        {%- switch fam.relation -%}
+    <div class="card text-center">
+      <div class="card-header font-weight-bold">
+        {%- switch family.relation -%}
         {%- case "MARRIED" || "NO_SEXES_CHECK_MARRIED" %}{{ 'marriage event'|trans|capitalize }}
         {%- case "MARRIAGE_LICENSE" -%}{{ 'marriage licence'|trans|capitalize }}
         {%- case "NOT_MARRIED" || "NO_SEXES_CHECK_NOT_MARRIED" %}{{ 'not married'|trans|capitalize }}
@@ -40,12 +73,181 @@
         {%- default %}{{ 'with'|trans|capitalize }}
         {%- endswitch -%}
       </div>
-      <div class="card-body">
-        <div>{{ family.marriage_place }}</div>
-      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">{{ DATE.string_of_ondate(family.marriage_date)|capitalize }}</li>
+        <li class="list-group-item">{{ family.marriage_place|capitalize }}</li>
+      </ul>
     </div>
   </div>
   {{ fam_parent (family.mother) }}
 </div>
+
+
+<style>
+  {{ itree_style () }}
+  #panzoom-parent { padding:2rem; }
+  .tree > ul > li > ul > li > .tree-person {
+      border-width: 2px !important ;
+      border-color: black !important ;
+  }
+  .tree > ul > li::before,
+  .tree > ul > li::after,
+  .tree > ul > li > ul > li::before,
+  .tree > ul > li > ul > li::after {
+      border-width: 2px !important ;
+      border-color: black !important ;
+  }
+</style>
+
+
+<div id="panzoom-parent" class="border my-3">
+  <div id="panzoom">
+    <div class="ascend" style="width:100%;display:flex;justify-content:center;">
+      <div class="tree">
+        <ul>
+          <li class="li-union">
+            <ul>
+              <li>{{ itree_a_ascend (family.father, 1, false) }}</li>
+              <li>{{ itree_a_ascend (family.mother, 1, false) }}</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div style="width:100%;display:flex;justify-content:center;">
+      <div class="p-1 rounded-circle" style="border: 2px solid black;">
+        <i class="fa fa-link"></i>
+      </div>
+    </div>
+    <div class="descend" style="width:100%;display:flex;justify-content:center;">
+      <div class="tree">
+        <ul>
+          <li class="li-union">
+            <ul>
+              {% for x in family.children %}
+              <li>{{ itree_a_descend (x, 1, false) }}</li>
+              {% endfor %}
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{%- function events (fn=null, p) -%}
+  {{ map (((e) => { persons: ( e.spouse ? [p, e.spouse] : [p] ), event: e }), select (((e) => e.date && e.date.year && e.date.prec == "sure" && (fn == null || fn (e))), p.events)) }}
+{%- endfunction -%}
+
+{%- macro fam_event_icn (x) -%}
+{%- switch (x.event.kind) -%}
+{%- case "EPERS_BIRTH" -%}fa-user-plus
+{%- case "EPERS_DEATH" -%}fa-user-times
+{% case "EFAM_MARRIAGE"
+|| "EFAM_NO_MARRIAGE"
+|| "EFAM_NO_MENTION"
+|| "EFAM_ENGAGE"
+|| "EFAM_MARRIAGE_BANN"
+|| "EFAM_MARRIAGE_CONTRACT"
+|| "EFAM_MARRIAGE_LICENSE"
+|| "EFAM_PACS"
+|| "EFAM_RESIDENCE" -%}fa-link
+{% case "EFAM_DIVORCE"
+|| "EFAM_SEPARATED"
+|| "EFAM_ANNULATION" -%}fa-unlink
+{%- default -%}fa-square
+{%- endswitch -%}
+{%- endmacro -%}
+
+{%- set BIRTH = CAST.object
+      ([ [family.father.iper, approx_birth (family.father)]
+       , [family.mother.iper, approx_birth (family.mother)] ]
+       + map (((p) => [ p.iper, approx_birth (p) ] ), family.children) ) -%}
+
+{% macro color (p) %}style="color:#{{ DIGEST (fso(p)) }}"{% endmacro %}
+
+{%- macro print_event (x) -%}
+<div class="d-flex">
+  <div class="mr-3">
+    {%- if length (x.persons) == 2 -%}
+      <i class="fa fa-fw {{ fam_event_icn (x) }}" {{ color (x.persons[1]) }}></i>
+    {%- else -%}
+      <i class="fa fa-fw">&nbsp;</i>
+    {%- endif -%}
+    <i class="fa fa-fw {{ fam_event_icn (x) }}" {{ color (x.persons[0]) }}></i>
+  </div>
+  <div>
+    <div>
+      <strong>{{ x.event.name|capitalize }}</strong>
+      {% if x.event.note %}
+      <i class="fa fa-info-circle text-muted" title="{{ x.event.note }}"></i>
+      {% endif %}
+      <em>
+        –
+        {% for p in x.persons %}
+          {%- if loop.index0 %}, {% endif -%}
+          {{ fso (p) }}
+          {%- if BIRTH [p.iper] -%}
+            {%- set age = DATE.sub (x.event.date, BIRTH [p.iper]) -%}
+          {%- endif -%}
+          {%- if age && x.event.kind != "EPERS_BIRTH" %}
+            ({{ DATE.string_of_age (age) }})
+          {%- endif -%}
+        {%- endfor -%}
+      </em>
+    </div>
+    <div class="text-muted">{{ x.event.place }}</div>
+  </div>
+</div>
+{%- endmacro -%}
+
+{%- set events =
+events (family.father)
++ events (family.mother, fn = ((e) => (not e.spouse) || e.spouse.iper != family.father.iper))
++ flatten (map (events, family.children))
++ flatten (map (events, flatten (map (attr("children"), family.children))))
+-%}
+
+{%- set fam = namespace(previous_year = null) -%}
+{% for g in events | groupby (attr("event.date.year")) | sort (attribute = "grouper") %}
+{% if fam.previous_year is defined %}
+<div class="row">
+  <div class="border-right {{ columns (2,2,2) }}" style="height:{{ 10 * max ([1, g.grouper - fam.previous_year]) }}px"></div>
+  <div class="{{ columns (10,10,10) }}"></div>
+</div>
+{% endif %}
+{%- set fam.previous_year = g.grouper -%}
+
+<!-- <div class="font-weight-bold font-italic border-bottom mb-3"> -->
+<!--   {{ g.grouper }} -->
+<!-- </div> -->
+<div class="row">
+  {% for x in g.list | sort (attribute = "event.date") %}
+  <div class="text-right border-right {{ columns (2,2,2) }}">
+    {%- if x.event.date.day %}{{ x.event.date.day }} {% endif -%}
+    {%- if x.event.date.month %}{{ '(month)'|trans(x.event.date.month - 1) }} {% endif -%}
+    {{ x.event.date.year }}
+  </div>
+  <div class="{{ columns (10,10,10) }}">
+    {{ print_event (x) }}
+  </div>
+  {% endfor %}
+</div>
+{% endfor %}
+
+  <script src="js/panzoom.min.js"></script>
+
+  <script>
+    const element = document.getElementById('panzoom') ;
+    const parent = document.getElementById('panzoom-parent') ;
+    const panzoom = Panzoom(element) ;
+    parent.addEventListener ('wheel', function(event) {
+        if (!event.shiftKey) return
+        panzoom.zoomWithWheel(event)
+    }) ;
+  </script>
+
+
 
 {%- endblock -%}

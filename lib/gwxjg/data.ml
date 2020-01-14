@@ -1233,8 +1233,18 @@ let module_CAST =
     | Tbool false -> Tint 0
     | x -> failwith_type_error_1 "CAST.int" x
   in
+  let object_ =
+    func_arg1_no_kw @@ function
+    | Tobj _ as o -> o
+    | Tnull -> Tobj []
+    | Tlist x ->
+      Tobj (List.map (function Tlist [ Tstr k ; v ] | Tset [ Tstr k ; v ] -> (k,  v)
+                             | x -> failwith_type_error_1 "CAST.object(list)" x) x)
+    | x -> failwith_type_error_1 "CAST.object" x
+  in
   Tpat begin function
     | "int" -> int
+    | "object" -> object_
     | "string" -> string
     | _ -> raise Not_found
   end
@@ -1243,6 +1253,7 @@ let default_env conf base (* p *) =
   let conf_env = mk_conf conf in
   let module_NAME = module_NAME base in
   ("trans", trans conf)
+  :: ("DIGEST", func_arg1_no_kw (function Tstr x -> Tstr (String.sub (Digest.to_hex @@ Digest.string x) 0 6) | _ -> assert false))
   :: ("DATE", module_date conf)
   :: ("OPT", module_OPT)
   :: ("NAME", module_NAME)
@@ -1254,6 +1265,16 @@ let default_env conf base (* p *) =
   :: ("json_encode", func_arg1_no_kw (fun x -> Tstr (json_encode x) ))
   :: ("base", mk_base base)
   :: ("conf", conf_env)
+  :: ("flatten", func_arg1_no_kw (function
+      | Tlist x ->
+        Tlist
+          (List.fold_right (function Tlist list -> fun acc -> list @ acc
+                                   | x -> fun acc ->  x :: acc) x [])
+      | Tarray x ->
+        Tlist
+          (Array.fold_right (function Tlist list -> fun acc -> list @ acc
+                                    | x -> fun acc ->  x :: acc) x [])
+      | _ -> print_endline __LOC__ ; Tlist []) )
   :: ("TWIG", twig)
   :: ("LOG", log)
   :: ("CAST", module_CAST)

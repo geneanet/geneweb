@@ -155,19 +155,19 @@
 {%- endmacro -%}
 
 {%- macro print_person_death_age (xx) -%}
-  {%- if xx.birth_date.prec == "sure" and xx.death_date.prec == "sure" -%}
-    {{ 'at the age of (sure)'|trans }} {{ DATE.string_of_age (DATE.sub (xx.death_date, xx.birth_date)) }}
-  {%- elif xx.birth_date.prec == "maybe" or xx.death_date.prec == "maybe" -%}
-    {{ 'at the age of (maybe)'|trans }} {{ DATE.string_of_age (DATE.sub (xx.death_date, xx.birth_date)) }}
+  {%- if xx.birth_date.prec == "sure" and xx.death.date.prec == "sure" -%}
+    {{ 'at the age of (sure)'|trans }} {{ DATE.string_of_age (DATE.sub (xx.death.date, xx.birth_date)) }}
+  {%- elif xx.birth_date.prec == "maybe" or xx.death.date.prec == "maybe" -%}
+    {{ 'at the age of (maybe)'|trans }} {{ DATE.string_of_age (DATE.sub (xx.death.date, xx.birth_date)) }}
   {%- else -%}
-    {{ 'at the age of (about)'|trans }} {{ DATE.string_of_age (DATE.sub (xx.death_date, xx.birth_date)) }}
+    {{ 'at the age of (about)'|trans }} {{ DATE.string_of_age (DATE.sub (xx.death.date, xx.birth_date)) }}
   {%- endif -%}
 {%- endmacro -%}
 
 {%- macro print_person_death (xx, age = true, sep = " - ") -%}
-  {%- if xx.death_date or xx.death_place -%}
+  {%- if xx.death.date or xx.death_place -%}
     , {{ 'deceased'|trans(xx.sex) }}
-    {%- if xx.death_date %} {{ DATE.string_of_ondate (xx.death_date) }}{% endif -%}
+    {%- if xx.death.date %} {{ DATE.string_of_ondate (xx.death.date) }}{% endif -%}
     {%- if age && xx.is_computable_death_age %} {{ print_person_death_age (xx) }}{% endif -%}
     {%- if xx.death_place %} - {{ xx.death_place }}{% endif -%}
   {%- endif -%}
