@@ -163,6 +163,7 @@ let family_m conf base =
       | "OA" -> handler.oa
       | "OE" -> handler.oe
       | "P" -> handler.p
+      | "PROGRESS" -> handler.progress
       | "POP_PYR" -> handler.pop_pyr
       | "PS" -> handler.ps
       | "R" -> handler.r
@@ -262,7 +263,7 @@ let family_m_nobase conf =
   (* On passe en mode API, i.e. que les exceptions API sont levées. *)
   let () = Api_conf.set_mode_api () in
   match p_getenv conf.env "m" with
-    Some "API_ADD_FIRST_FAM" -> handler.api_add_first_fam handler conf
+  | Some "API_ADD_FIRST_FAM" -> handler.api_add_first_fam handler conf
   | Some _ | None -> ()
 #else
   Hutil.incorrect_request conf

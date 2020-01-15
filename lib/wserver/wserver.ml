@@ -8,6 +8,8 @@ type httpStatus =
   | Forbidden (* 403 *)
   | Not_Found (* 404 *)
 
+let connection_closed = ref false
+
 let eprintf = Printf.eprintf
 
 let sock_in = ref "wserver.sin"
@@ -20,6 +22,7 @@ let wserver_sock = ref Unix.stdout
 let wsocket () = !wserver_sock
 
 let wserver_oc = ref stdout
+let woc () = !wserver_oc
 
 let printnl fmt =
   Printf.ksprintf
@@ -61,13 +64,15 @@ let printf fmt =
   Printf.ksprintf (fun s -> output_string !wserver_oc s) fmt
 let wflush () = flush !wserver_oc
 
-let print_string s =
-  if !printing_state <> Contents then
-    begin
-      if !printing_state = Nothing then http OK;
-      printnl "";
-      printing_state := Contents
-    end;
+let print_string ?(unsafe = false) s =
+  if not unsafe then
+    if !printing_state <> Contents then
+      begin
+        if !printing_state = Nothing then http OK;
+        printnl "";
+        printing_state := Contents
+      end
+  ;
   output_string !wserver_oc s
 
 let hexa_digit x =
@@ -453,17 +458,19 @@ let wait_and_compact s =
     end
 
 let skip_possible_remaining_chars fd =
-  let b = Bytes.create 3 in
-  try
-    let rec loop () =
-      match Unix.select [fd] [] [] 5.0 with
-        [_], [], [] ->
+  if not !connection_closed then begin
+    let b = Bytes.create 3 in
+    try
+      let rec loop () =
+        match Unix.select [fd] [] [] 5.0 with
+          [_], [], [] ->
           let len = Unix.read fd b 0 (Bytes.length b) in
           if len = Bytes.length b then loop ()
-      | _ -> ()
-    in
-    loop ()
-  with Unix.Unix_error (Unix.ECONNRESET, _, _) -> ()
+        | _ -> ()
+      in
+      loop ()
+    with Unix.Unix_error (Unix.ECONNRESET, _, _) -> ()
+  end
 
 let check_stopping () =
   if Sys.file_exists !stop_server then
@@ -488,10 +495,6 @@ let accept_connection tmout max_clients callback s =
           Unix.close s;
           wserver_sock := t;
           wserver_oc := Unix.out_channel_of_descr t;
-          (*
-             j'ai l'impression que cette fermeture fait parfois bloquer le serveur...
-                        try Unix.close t with _ -> ();
-          *)
           treat_connection tmout callback addr t
         with
           Unix.Unix_error (Unix.ECONNRESET, "read", _) -> ()
@@ -574,6 +577,12 @@ let accept_connection tmout max_clients callback s =
     | exc -> cleanup (); raise exc
     end;
     cleanup ()
+
+let close_connection () =
+  print_endline __LOC__ ;
+  (try Unix.close !wserver_sock with _ -> ()) ;
+  (try close_out !wserver_oc with _ -> ());
+  connection_closed := true
 
 let f addr_opt port tmout max_clients g =
   match

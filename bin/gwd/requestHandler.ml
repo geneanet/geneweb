@@ -371,6 +371,7 @@ and handler =
   ; oa : handler_base
   ; oe : handler_base
   ; p : handler_base
+  ; progress : handler_base
   ; pop_pyr : handler_base
   ; ps : handler_base
   ; r : handler_base
@@ -550,6 +551,7 @@ let dummyHandler =
   ; oa = dummy_base
   ; oe = dummy_base
   ; p = dummy_base
+  ; progress = dummy_base
   ; pop_pyr = dummy_base
   ; ps = dummy_base
   ; r = dummy_base
@@ -965,39 +967,76 @@ let defaultHandler : handler =
       let num = (Opt.default 1 @@ Util.p_getint conf.env "pg") - 1 in
       let size = Opt.default 2000 @@ Util.p_getint conf.env "sz" in
       if not (is_cache_iper_inorder_uptodate conf base)
-      then build_cache_iper_inorder conf base ;
-      let page_count, letters, ipers, num =
-        read_cache_iper_inorder conf num size
-      in
-      let persons =
-        Array.map begin fun i ->
-          Gwxjg.Data.unsafe_mk_person conf base @@ Gwdb.poi base i
-        end ipers
-      in
-      let anchorAtIndex =
-        let fst_idx = size * num in
-        let list = List.map (fun (c, i) -> (i - fst_idx, c)) letters  in
-        Jg_types.func_arg1_no_kw @@ function
-        | Tint i ->
-          begin match List.assoc_opt i list with
-            |  Some s -> Tstr s
-            | None -> Tnull
+      then begin
+        Random.self_init () ;
+        let fifo = List_ind.list_ind_file conf ^ "_progress" in
+        print_endline fifo ;
+        let aux () =
+          print_endline @@  __LOC__ ^ ": " ^ fifo ;
+          let models = ("source", Tstr (Filename.basename fifo))
+                       :: ("steps", Tarray [|Tint 1 ; Tint 2|])
+                       :: Gwxjg.Data.default_env conf base
+          in
+          print_endline __LOC__ ;
+          JgInterp.render ~conf ~file:"progress" ~models ;
+          print_endline __LOC__ ;
+        in
+        if Sys.file_exists fifo then aux ()
+        else begin
+          let pid = Unix.fork () in
+          if pid <> 0 then begin
+            exit 0
+          end else begin
+            Wserver.close_connection () ;
+            let oc = Unix.openfile fifo [ Unix.O_WRONLY ; O_CREAT ; O_TRUNC ] 0o777 in
+            print_endline @@  __LOC__ ^ ": " ^ fifo ;
+            let progress step i =
+              print_endline @@ string_of_int i ;
+              let out = "event:step-" ^ string_of_int step ^ "\ndata:" ^ string_of_int i ^ "\n\n" in
+              let out = Bytes.unsafe_of_string out in
+              ignore @@ Unix.write oc out 0 (Bytes.length out) ;
+              print_endline __LOC__ ;
+            in
+            print_endline __LOC__ ;
+            build_cache_iper_inorder progress conf base ;
+            ignore @@ Unix.write oc (Bytes.unsafe_of_string "EOF") 0 3 ;
+            Unix.unlink fifo ;
           end
-        | x -> Jg_types.func_failure [x]
-      in
-      let letters =
-        List.map begin fun (c, i) ->
-          Tset [ Tstr c ; Tint (i / size + 1) ]
-        end letters
-      in
-      let models = ("letters", Tlist letters)
-                   :: ("anchorAtIndex", anchorAtIndex)
-                   :: ("persons", Tarray persons)
-                   :: ("page_num", Tint (num + 1))
-                   :: ("page_count", Tint page_count)
-                   :: Gwxjg.Data.default_env conf base
-      in
-      JgInterp.render ~conf ~file:"list_ind" ~models
+        end
+      end else begin
+        let page_count, letters, ipers, num =
+          read_cache_iper_inorder conf num size
+        in
+        let persons =
+          Array.map begin fun i ->
+            Gwxjg.Data.unsafe_mk_person conf base @@ Gwdb.poi base i
+          end ipers
+        in
+        let anchorAtIndex =
+          let fst_idx = size * num in
+          let list = List.map (fun (c, i) -> (i - fst_idx, c)) letters  in
+          Jg_types.func_arg1_no_kw @@ function
+          | Tint i ->
+            begin match List.assoc_opt i list with
+              |  Some s -> Tstr s
+              | None -> Tnull
+            end
+          | x -> Jg_types.func_failure [x]
+        in
+        let letters =
+          List.map begin fun (c, i) ->
+            Tset [ Tstr c ; Tint (i / size + 1) ]
+          end letters
+        in
+        let models = ("letters", Tlist letters)
+                     :: ("anchorAtIndex", anchorAtIndex)
+                     :: ("persons", Tarray persons)
+                     :: ("page_num", Tint (num + 1))
+                     :: ("page_count", Tint page_count)
+                     :: Gwxjg.Data.default_env conf base
+        in
+        JgInterp.render ~conf ~file:"list_ind" ~models
+      end
     end
 
   ; ll = begin fun _self conf base ->
@@ -1216,6 +1255,42 @@ let defaultHandler : handler =
       match p_getenv conf.env "v" with
       | Some v -> Some.first_name_print conf base v
       | None -> AllnDisplay.print_first_names conf base
+    end
+
+  ; progress = begin fun self conf base ->
+      print_endline __LOC__ ;
+      match p_getenv conf.env "token" with
+      | Some v ->
+        let v = Filename.concat (Util.base_path [] (conf.bname ^ ".gwb")) v in
+        print_endline @@ __LOC__ ^ ": " ^ v ;
+        let fd = Unix.openfile v [ Unix.O_RDONLY ] 0o000 in
+        Wserver.header "Content-Type: text/event-stream" ;
+        let buffer = Bytes.create 1024 in
+        begin try
+            let rec loop off =
+              match Unix.read fd buffer off (1024 - off) with
+              | 0 -> Unix.sleepf 0.1 ; loop off
+              | n ->
+                let s = Bytes.sub_string buffer 0 (off + n) in
+                let ri = String.rindex s '\n' in
+                let s' =
+                  if ri = String.length s - 1 then s
+                  else String.sub s 0 ri
+                in
+                let list = String.split_on_char '\n' s' in
+                List.iter begin function
+                  | "EOF" -> Wserver.wflush () ; raise End_of_file
+                  | s -> Wserver.print_string @@ s ^ "\n"
+                end list ;
+                Wserver.wflush () ;
+                let off = off + n - String.length s' in
+                if off < 0 then Bytes.blit buffer ri buffer 0 (String.length s - ri) ;
+                loop off
+            in
+            loop 0
+          with End_of_file -> Unix.close fd
+        end ;
+      | None -> self.incorrect_request self conf base
     end
 
   ; pop_pyr = begin fun self conf base ->

@@ -28,7 +28,8 @@ let is_cache_iper_inorder_uptodate conf base =
   with
     Unix.Unix_error _ -> false
 
-let build_cache_iper_inorder conf base =
+let build_cache_iper_inorder progress conf base =
+  print_endline __LOC__ ;
   let module PerSet =
     Set.Make (struct
       type t = (string * istr * int * iper)
@@ -42,18 +43,25 @@ let build_cache_iper_inorder conf base =
         | x -> x
     end)
   in
+  print_endline __LOC__ ;
   Gwdb.load_persons_array base ;
+  print_endline __LOC__ ;
   Gwdb.load_strings_array base ;
-  let set =
-    Gwdb.Collection.fold begin fun set p ->
+  print_endline __LOC__ ;
+  let (_, set) =
+    let len = Gwdb.nb_of_persons base in
+    let per = len / 100 in
+    Gwdb.Collection.fold begin fun (n, set) p ->
+      if n mod per = 0 then progress 1 (n / per) ;
       (* FIXME: stop checking is_empty_name when possible *)
-      if (Util.is_empty_name p) || not (Util.authorized_age conf base p) then set
-      else PerSet.add (Util.name_key base (sou base @@ get_surname p)
-                      , get_first_name p
-                      , get_occ p
-                      , get_iper p) set
-    end PerSet.empty (Gwdb.persons base)
+      if (Util.is_empty_name p) || not (Util.authorized_age conf base p) then (n + 1, set)
+      else (n + 1, PerSet.add (Util.name_key base (sou base @@ get_surname p)
+                              , get_first_name p
+                              , get_occ p
+                              , get_iper p) set)
+    end (0, PerSet.empty) (Gwdb.persons base)
   in
+  progress 1 100 ;
   Gwdb.clear_persons_array base ;
   Gwdb.clear_strings_array base ;
   let cache_filename = list_ind_file conf in
@@ -73,16 +81,19 @@ let build_cache_iper_inorder conf base =
   let m1 = pos_out oc in
   PerSet.iter (fun _ -> output_binary_int oc 0) set ;
   let m2 = pos_out oc in
+  let per = cnt / 100 in
   ignore @@
-  PerSet.fold begin fun (_, _, _, i) (m1, m2) ->
+  PerSet.fold begin fun (_, _, _, i) (c, m1, m2) ->
+    if c mod per = 0 then progress 2 (c / per) ;
     seek_out oc m1 ;
     output_binary_int oc m2 ;
     let m1 = pos_out oc in
     seek_out oc m2 ;
     output_value oc i ;
     let m2 = pos_out oc in
-    (m1, m2)
-  end set (m1, m2) ;
+    (c + 1, m1, m2)
+  end set (0, m1, m2) ;
+  progress 2 100 ;
   close_out oc
 
 let read_cache_iper_inorder conf page page_size =

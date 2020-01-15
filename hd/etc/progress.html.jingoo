@@ -1,0 +1,35 @@
+<html>
+  <head></head>
+  <body>
+
+    {% for i in steps %}
+      <progress id="step-{{ i }}" max="100" value="0" style="width:100%;"></progress>
+    {% endfor %}
+
+    <script>
+
+      var evtSource = new EventSource('{{ env.prefix }}m=PROGRESS&token={{ source }}');
+
+      console.log(evtSource.withCredentials);
+      console.log(evtSource.readyState);
+      console.log(evtSource.url);
+
+      evtSource.onopen = function() {
+      console.log("Connection to server opened.");
+      };
+
+      {% for i in steps %}
+        evtSource.addEventListener("step-{{ i }}", function(e) {
+        {% if loop.last %}if (e.data == "100") { evtSource.close () }{% endif %}
+        document.querySelector("#step-{{ i }}").value = e.data ;
+        });
+      {% endfor %}
+
+      evtSource.onerror = function(event) {
+      console.log(event)
+      console.log("EventSource failed.");
+      };
+
+    </script>
+  </body>
+</html>
