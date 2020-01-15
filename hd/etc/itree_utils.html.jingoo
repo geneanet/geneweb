@@ -178,40 +178,42 @@
 </div>
 {%- endmacro -%}
 
-{%- macro itree_print_union (u) -%}
-  <div class="dropdown itm-union">
-    <a class="dropdown-toggle dropdown-toggle-union" data-toggle="dropdown"
-       href="#"
-      {%- if u.spouse -%}
-       title="{{ 'with'|trans|capitalize }} {{ u.spouse.surname }} {{ u.spouse.first_name }}"
-{% endif %}
-       >
-    </a>
-    <div class="dropdown-menu">
-      <div class="dropdown-header">
+{%- macro itree_print_dropdown (u) -%}
+  <div class="dropdown-menu">
+    <div class="dropdown-header">
       {%- if u.spouse -%}
         {{ 'with'|trans|capitalize }} {{ u.spouse.surname }} {{ u.spouse.first_name }}
       {%- else -%}
-      <div class="d-flex align-items-center">
-        <i class="mr-2 fa fa-link"></i>
-        <div>
-          <div>{{ fso (u.father) }}</div>
-          <div>{{ fso (u.mother) }}</div>
+        <div class="d-flex align-items-center">
+          <i class="mr-2 fa fa-link"></i>
+          <div>
+            <div>{{ fso (u.father) }}</div>
+            <div>{{ fso (u.mother) }}</div>
+          </div>
         </div>
-      </div>
       {%- endif -%}
-      </div>
-      <div class="dropdown-divider"></div>
-      <p class="px-4 text-muted">
-        {{ length (u.children) }} {{ 'child/children'|trans (length (u.children) > 1 ? 1 : 0) }}
-      </p>
-      <div class="dropdown-divider"></div>
-      <a class="dropdown-item"
-         href="{{ env.prefix }}m=MOD_FAM&i={{ u.ifam }}">
-        <i class="fa fa-edit"></i>
-        {{ 'modify'|trans|capitalize }} {{ 'family/families'|trans(0) }}
-      </a>
     </div>
+    <div class="dropdown-divider"></div>
+    <p class="px-4 text-muted">
+      {{ length (u.children) }} {{ 'child/children'|trans (length (u.children) > 1 ? 1 : 0) }}
+    </p>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item"
+       href="{{ env.prefix }}m=MOD_FAM&i={{ u.ifam }}">
+       <i class="fa fa-edit"></i>
+       {{ 'modify'|trans|capitalize }} {{ 'family/families'|trans(0) }}
+    </a>
+  </div>
+{%- endmacro -%}
+
+{%- macro itree_print_union (u) -%}
+  <div class="dropdown itm-union">
+    <a class="dropdown-toggle dropdown-toggle-union" data-toggle="dropdown"
+       {%- if u.spouse -%}
+         title="{{ 'with'|trans|capitalize }} {{ u.spouse.surname }} {{ u.spouse.first_name }}"
+       {% endif %}>
+    </a>
+    {{ itree_print_dropdown (u) }}
   </div>
 {%- endmacro -%}
 

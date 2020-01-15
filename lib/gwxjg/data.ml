@@ -4,6 +4,207 @@ open Jg_types
 
 (* FIXME: remove [try ... with Not_found -> ...] wrapping.  *)
 
+module CONST = struct
+  let _Epers_Birth = Tstr "EPERS_BIRTH"
+  let _Epers_Baptism = Tstr "EPERS_BAPTISM"
+  let _Epers_Death = Tstr "EPERS_DEATH"
+  let _Epers_Burial = Tstr "EPERS_BURIAL"
+  let _Epers_Cremation = Tstr "EPERS_CREMATION"
+  let _Epers_Accomplishment = Tstr "EPERS_ACCOMPLISHMENT"
+  let _Epers_Acquisition = Tstr "EPERS_ACQUISITION"
+  let _Epers_Adhesion = Tstr "EPERS_ADHESION"
+  let _Epers_BaptismLDS = Tstr "EPERS_BAPTISMLDS"
+  let _Epers_BarMitzvah = Tstr "EPERS_BARMITZVAH"
+  let _Epers_BatMitzvah = Tstr "EPERS_BATMITZVAH"
+  let _Epers_Benediction = Tstr "EPERS_BENEDICTION"
+  let _Epers_ChangeName = Tstr "EPERS_CHANGENAME"
+  let _Epers_Circumcision = Tstr "EPERS_CIRCUMCISION"
+  let _Epers_Confirmation = Tstr "EPERS_CONFIRMATION"
+  let _Epers_ConfirmationLDS = Tstr "EPERS_CONFIRMATIONLDS"
+  let _Epers_Decoration = Tstr "EPERS_DECORATION"
+  let _Epers_DemobilisationMilitaire = Tstr "EPERS_DEMOBILISATIONMILITAIRE"
+  let _Epers_Diploma = Tstr "EPERS_DIPLOMA"
+  let _Epers_Distinction = Tstr "EPERS_DISTINCTION"
+  let _Epers_Dotation = Tstr "EPERS_DOTATION"
+  let _Epers_DotationLDS = Tstr "EPERS_DOTATIONLDS"
+  let _Epers_Education = Tstr "EPERS_EDUCATION"
+  let _Epers_Election = Tstr "EPERS_ELECTION"
+  let _Epers_Emigration = Tstr "EPERS_EMIGRATION"
+  let _Epers_Excommunication = Tstr "EPERS_EXCOMMUNICATION"
+  let _Epers_FamilyLinkLDS = Tstr "EPERS_FAMILYLINKLDS"
+  let _Epers_FirstCommunion = Tstr "EPERS_FIRSTCOMMUNION"
+  let _Epers_Funeral = Tstr "EPERS_FUNERAL"
+  let _Epers_Graduate = Tstr "EPERS_GRADUATE"
+  let _Epers_Hospitalisation = Tstr "EPERS_HOSPITALISATION"
+  let _Epers_Illness = Tstr "EPERS_ILLNESS"
+  let _Epers_Immigration = Tstr "EPERS_IMMIGRATION"
+  let _Epers_ListePassenger = Tstr "EPERS_LISTEPASSENGER"
+  let _Epers_MilitaryDistinction = Tstr "EPERS_MILITARYDISTINCTION"
+  let _Epers_MilitaryPromotion = Tstr "EPERS_MILITARYPROMOTION"
+  let _Epers_MilitaryService = Tstr "EPERS_MILITARYSERVICE"
+  let _Epers_MobilisationMilitaire = Tstr "EPERS_MOBILISATIONMILITAIRE"
+  let _Epers_Naturalisation = Tstr "EPERS_NATURALISATION"
+  let _Epers_Occupation = Tstr "EPERS_OCCUPATION"
+  let _Epers_Ordination = Tstr "EPERS_ORDINATION"
+  let _Epers_Property = Tstr "EPERS_PROPERTY"
+  let _Epers_Recensement = Tstr "EPERS_RECENSEMENT"
+  let _Epers_Residence = Tstr "EPERS_RESIDENCE"
+  let _Epers_Retired = Tstr "EPERS_RETIRED"
+  let _Epers_ScellentChildLDS = Tstr "EPERS_SCELLENTCHILDLDS"
+  let _Epers_ScellentParentLDS = Tstr "EPERS_SCELLENTPARENTLDS"
+  let _Epers_ScellentSpouseLDS = Tstr "EPERS_SCELLENTSPOUSELDS"
+  let _Epers_VenteBien = Tstr "EPERS_VENTEBIEN"
+  let _Epers_Will = Tstr "EPERS_WILL"
+  let _Efam_Marriage = Tstr "EFAM_MARRIAGE"
+  let _Efam_NoMarriage = Tstr "EFAM_NOMARRIAGE"
+  let _Efam_NoMention = Tstr "EFAM_NOMENTION"
+  let _Efam_Engage = Tstr "EFAM_ENGAGE"
+  let _Efam_Divorce = Tstr "EFAM_DIVORCE"
+  let _Efam_Separated = Tstr "EFAM_SEPARATED"
+  let _Efam_Annulation = Tstr "EFAM_ANNULATION"
+  let _Efam_MarriageBann = Tstr "EFAM_MARRIAGEBANN"
+  let _Efam_MarriageContract = Tstr "EFAM_MARRIAGECONTRACT"
+  let _Efam_MarriageLicense = Tstr "EFAM_MARRIAGELICENSE"
+  let _Efam_PACS = Tstr "EFAM_PACS"
+  let _Efam_Residence = Tstr "EFAM_RESIDENCE"
+end
+
+let module_CONST = begin
+  let open CONST in
+  let event_kinds =
+    Tarray [| _Epers_Birth
+            ; _Epers_Baptism
+            ; _Epers_Death
+            ; _Epers_Burial
+            ; _Epers_Cremation
+            ; _Epers_Accomplishment
+            ; _Epers_Acquisition
+            ; _Epers_Adhesion
+            ; _Epers_BaptismLDS
+            ; _Epers_BarMitzvah
+            ; _Epers_BatMitzvah
+            ; _Epers_Benediction
+            ; _Epers_ChangeName
+            ; _Epers_Circumcision
+            ; _Epers_Confirmation
+            ; _Epers_ConfirmationLDS
+            ; _Epers_Decoration
+            ; _Epers_DemobilisationMilitaire
+            ; _Epers_Diploma
+            ; _Epers_Distinction
+            ; _Epers_Dotation
+            ; _Epers_DotationLDS
+            ; _Epers_Education
+            ; _Epers_Election
+            ; _Epers_Emigration
+            ; _Epers_Excommunication
+            ; _Epers_FamilyLinkLDS
+            ; _Epers_FirstCommunion
+            ; _Epers_Funeral
+            ; _Epers_Graduate
+            ; _Epers_Hospitalisation
+            ; _Epers_Illness
+            ; _Epers_Immigration
+            ; _Epers_ListePassenger
+            ; _Epers_MilitaryDistinction
+            ; _Epers_MilitaryPromotion
+            ; _Epers_MilitaryService
+            ; _Epers_MobilisationMilitaire
+            ; _Epers_Naturalisation
+            ; _Epers_Occupation
+            ; _Epers_Ordination
+            ; _Epers_Property
+            ; _Epers_Recensement
+            ; _Epers_Residence
+            ; _Epers_Retired
+            ; _Epers_ScellentChildLDS
+            ; _Epers_ScellentParentLDS
+            ; _Epers_ScellentSpouseLDS
+            ; _Epers_VenteBien
+            ; _Epers_Will
+            ; _Efam_Marriage
+            ; _Efam_NoMarriage
+            ; _Efam_NoMention
+            ; _Efam_Engage
+            ; _Efam_Divorce
+            ; _Efam_Separated
+            ; _Efam_Annulation
+            ; _Efam_MarriageBann
+            ; _Efam_MarriageContract
+            ; _Efam_MarriageLicense
+            ; _Efam_PACS
+            ; _Efam_Residence
+           |]
+  in
+  Tpat begin function
+    | "Epers_Birth" -> _Epers_Birth
+    | "Epers_Baptism" -> _Epers_Baptism
+    | "Epers_Death" -> _Epers_Death
+    | "Epers_Burial" -> _Epers_Burial
+    | "Epers_Cremation" -> _Epers_Cremation
+    | "Epers_Accomplishment" -> _Epers_Accomplishment
+    | "Epers_Acquisition" -> _Epers_Acquisition
+    | "Epers_Adhesion" -> _Epers_Adhesion
+    | "Epers_BaptismLDS" -> _Epers_BaptismLDS
+    | "Epers_BarMitzvah" -> _Epers_BarMitzvah
+    | "Epers_BatMitzvah" -> _Epers_BatMitzvah
+    | "Epers_Benediction" -> _Epers_Benediction
+    | "Epers_ChangeName" -> _Epers_ChangeName
+    | "Epers_Circumcision" -> _Epers_Circumcision
+    | "Epers_Confirmation" -> _Epers_Confirmation
+    | "Epers_ConfirmationLDS" -> _Epers_ConfirmationLDS
+    | "Epers_Decoration" -> _Epers_Decoration
+    | "Epers_DemobilisationMilitaire" -> _Epers_DemobilisationMilitaire
+    | "Epers_Diploma" -> _Epers_Diploma
+    | "Epers_Distinction" -> _Epers_Distinction
+    | "Epers_Dotation" -> _Epers_Dotation
+    | "Epers_DotationLDS" -> _Epers_DotationLDS
+    | "Epers_Education" -> _Epers_Education
+    | "Epers_Election" -> _Epers_Election
+    | "Epers_Emigration" -> _Epers_Emigration
+    | "Epers_Excommunication" -> _Epers_Excommunication
+    | "Epers_FamilyLinkLDS" -> _Epers_FamilyLinkLDS
+    | "Epers_FirstCommunion" -> _Epers_FirstCommunion
+    | "Epers_Funeral" -> _Epers_Funeral
+    | "Epers_Graduate" -> _Epers_Graduate
+    | "Epers_Hospitalisation" -> _Epers_Hospitalisation
+    | "Epers_Illness" -> _Epers_Illness
+    | "Epers_Immigration" -> _Epers_Immigration
+    | "Epers_ListePassenger" -> _Epers_ListePassenger
+    | "Epers_MilitaryDistinction" -> _Epers_MilitaryDistinction
+    | "Epers_MilitaryPromotion" -> _Epers_MilitaryPromotion
+    | "Epers_MilitaryService" -> _Epers_MilitaryService
+    | "Epers_MobilisationMilitaire" -> _Epers_MobilisationMilitaire
+    | "Epers_Naturalisation" -> _Epers_Naturalisation
+    | "Epers_Occupation" -> _Epers_Occupation
+    | "Epers_Ordination" -> _Epers_Ordination
+    | "Epers_Property" -> _Epers_Property
+    | "Epers_Recensement" -> _Epers_Recensement
+    | "Epers_Residence" -> _Epers_Residence
+    | "Epers_Retired" -> _Epers_Retired
+    | "Epers_ScellentChildLDS" -> _Epers_ScellentChildLDS
+    | "Epers_ScellentParentLDS" -> _Epers_ScellentParentLDS
+    | "Epers_ScellentSpouseLDS" -> _Epers_ScellentSpouseLDS
+    | "Epers_VenteBien" -> _Epers_VenteBien
+    | "Epers_Will" -> _Epers_Will
+    | "Efam_Marriage" -> _Efam_Marriage
+    | "Efam_NoMarriage" -> _Efam_NoMarriage
+    | "Efam_NoMention" -> _Efam_NoMention
+    | "Efam_Engage" -> _Efam_Engage
+    | "Efam_Divorce" -> _Efam_Divorce
+    | "Efam_Separated" -> _Efam_Separated
+    | "Efam_Annulation" -> _Efam_Annulation
+    | "Efam_MarriageBann" -> _Efam_MarriageBann
+    | "Efam_MarriageContract" -> _Efam_MarriageContract
+    | "Efam_MarriageLicense" -> _Efam_MarriageLicense
+    | "Efam_PACS" -> _Efam_PACS
+    | "Efam_Residence" -> _Efam_Residence
+    | "event_kinds" -> event_kinds
+    | _ -> raise Not_found
+  end
+
+end
+
 let person_ht = Hashtbl.create 32
 
 let mk_opt fn = function None -> Tnull | Some x -> fn x
@@ -364,7 +565,74 @@ and mk_event conf base d =
     | None -> Tnull
     | Some i -> lazy_get_n_mk_person conf base i
   in
-  let kind = Tstr (E.kind d) in
+  let kind =
+    let (n, _, _, _, _, _, _) = d in
+    match n with
+    | Geneweb.Perso.Pevent Epers_Birth -> CONST._Epers_Birth
+    | Pevent Epers_Baptism -> CONST._Epers_Baptism
+    | Pevent Epers_Death -> CONST._Epers_Death
+    | Pevent Epers_Burial -> CONST._Epers_Burial
+    | Pevent Epers_Cremation -> CONST._Epers_Cremation
+    | Pevent Epers_Accomplishment -> CONST._Epers_Accomplishment
+    | Pevent Epers_Acquisition -> CONST._Epers_Acquisition
+    | Pevent Epers_Adhesion -> CONST._Epers_Adhesion
+    | Pevent Epers_BaptismLDS -> CONST._Epers_BaptismLDS
+    | Pevent Epers_BarMitzvah -> CONST._Epers_BarMitzvah
+    | Pevent Epers_BatMitzvah -> CONST._Epers_BatMitzvah
+    | Pevent Epers_Benediction -> CONST._Epers_Benediction
+    | Pevent Epers_ChangeName -> CONST._Epers_ChangeName
+    | Pevent Epers_Circumcision -> CONST._Epers_Circumcision
+    | Pevent Epers_Confirmation -> CONST._Epers_Confirmation
+    | Pevent Epers_ConfirmationLDS -> CONST._Epers_ConfirmationLDS
+    | Pevent Epers_Decoration -> CONST._Epers_Decoration
+    | Pevent Epers_DemobilisationMilitaire -> CONST._Epers_DemobilisationMilitaire
+    | Pevent Epers_Diploma -> CONST._Epers_Diploma
+    | Pevent Epers_Distinction -> CONST._Epers_Distinction
+    | Pevent Epers_Dotation -> CONST._Epers_Dotation
+    | Pevent Epers_DotationLDS -> CONST._Epers_DotationLDS
+    | Pevent Epers_Education -> CONST._Epers_Education
+    | Pevent Epers_Election -> CONST._Epers_Election
+    | Pevent Epers_Emigration -> CONST._Epers_Emigration
+    | Pevent Epers_Excommunication -> CONST._Epers_Excommunication
+    | Pevent Epers_FamilyLinkLDS -> CONST._Epers_FamilyLinkLDS
+    | Pevent Epers_FirstCommunion -> CONST._Epers_FirstCommunion
+    | Pevent Epers_Funeral -> CONST._Epers_Funeral
+    | Pevent Epers_Graduate -> CONST._Epers_Graduate
+    | Pevent Epers_Hospitalisation -> CONST._Epers_Hospitalisation
+    | Pevent Epers_Illness -> CONST._Epers_Illness
+    | Pevent Epers_Immigration -> CONST._Epers_Immigration
+    | Pevent Epers_ListePassenger -> CONST._Epers_ListePassenger
+    | Pevent Epers_MilitaryDistinction -> CONST._Epers_MilitaryDistinction
+    | Pevent Epers_MilitaryPromotion -> CONST._Epers_MilitaryPromotion
+    | Pevent Epers_MilitaryService -> CONST._Epers_MilitaryService
+    | Pevent Epers_MobilisationMilitaire -> CONST._Epers_MobilisationMilitaire
+    | Pevent Epers_Naturalisation -> CONST._Epers_Naturalisation
+    | Pevent Epers_Occupation -> CONST._Epers_Occupation
+    | Pevent Epers_Ordination -> CONST._Epers_Ordination
+    | Pevent Epers_Property -> CONST._Epers_Property
+    | Pevent Epers_Recensement -> CONST._Epers_Recensement
+    | Pevent Epers_Residence -> CONST._Epers_Residence
+    | Pevent Epers_Retired -> CONST._Epers_Retired
+    | Pevent Epers_ScellentChildLDS -> CONST._Epers_ScellentChildLDS
+    | Pevent Epers_ScellentParentLDS -> CONST._Epers_ScellentParentLDS
+    | Pevent Epers_ScellentSpouseLDS -> CONST._Epers_ScellentSpouseLDS
+    | Pevent Epers_VenteBien -> CONST._Epers_VenteBien
+    | Pevent Epers_Will -> CONST._Epers_Will
+    | Fevent Efam_Marriage -> CONST._Efam_Marriage
+    | Fevent Efam_NoMarriage -> CONST._Efam_NoMarriage
+    | Fevent Efam_NoMention -> CONST._Efam_NoMention
+    | Fevent Efam_Engage -> CONST._Efam_Engage
+    | Fevent Efam_Divorce -> CONST._Efam_Divorce
+    | Fevent Efam_Separated -> CONST._Efam_Separated
+    | Fevent Efam_Annulation -> CONST._Efam_Annulation
+    | Fevent Efam_MarriageBann -> CONST._Efam_MarriageBann
+    | Fevent Efam_MarriageContract -> CONST._Efam_MarriageContract
+    | Fevent Efam_MarriageLicense -> CONST._Efam_MarriageLicense
+    | Fevent Efam_PACS -> CONST._Efam_PACS
+    | Fevent Efam_Residence -> CONST._Efam_Residence
+    | Pevent Epers_Name _ -> Tnull
+    | Fevent Efam_Name _ -> Tnull
+  in
   let witnesses =
     match E.witnesses d with
     | [||] -> Tarray [||]
@@ -1249,6 +1517,80 @@ let module_CAST =
     | _ -> raise Not_found
   end
 
+let module_EVENT conf = begin
+  let trans = func_arg1_no_kw @@
+    let transl conf t = Tstr (Util.transl conf t) in
+    function
+    | Tstr "EPERS_BIRTH" -> transl conf "birth"
+    | Tstr "EPERS_BAPTISM" -> transl conf "baptism"
+    | Tstr "EPERS_DEATH" -> transl conf "death"
+    | Tstr "EPERS_BURIAL" -> transl conf "burial"
+    | Tstr "EPERS_CREMATION" -> transl conf "cremation"
+    | Tstr "EPERS_ACCOMPLISHMENT" -> transl conf "accomplishment"
+    | Tstr "EPERS_ACQUISITION" -> transl conf "acquisition"
+    | Tstr "EPERS_ADHESION" -> transl conf "adhesion"
+    | Tstr "EPERS_BAPTISMLDS" -> transl conf "baptismLDS"
+    | Tstr "EPERS_BARMITZVAH" -> transl conf "bar mitzvah"
+    | Tstr "EPERS_BATMITZVAH" -> transl conf "bat mitzvah"
+    | Tstr "EPERS_BENEDICTION" -> transl conf "benediction"
+    | Tstr "EPERS_CHANGENAME" -> transl conf "change name"
+    | Tstr "EPERS_CIRCUMCISION" -> transl conf "circumcision"
+    | Tstr "EPERS_CONFIRMATION" -> transl conf "confirmation"
+    | Tstr "EPERS_CONFIRMATIONLDS" -> transl conf "confirmation LDS"
+    | Tstr "EPERS_DECORATION" -> transl conf "decoration"
+    | Tstr "EPERS_DEMOBILISATIONMILITAIRE" -> transl conf "demobilisationMilitaire"
+    | Tstr "EPERS_DIPLOMA" -> transl conf "diploma"
+    | Tstr "EPERS_DISTINCTION" -> transl conf "distinction"
+    | Tstr "EPERS_DOTATION" -> transl conf "dotation"
+    | Tstr "EPERS_DOTATIONLDS" -> transl conf "dotationLDS"
+    | Tstr "EPERS_EDUCATION" -> transl conf "education"
+    | Tstr "EPERS_ELECTION" -> transl conf "election"
+    | Tstr "EPERS_EMIGRATION" -> transl conf "emigration"
+    | Tstr "EPERS_EXCOMMUNICATION" -> transl conf "excommunication"
+    | Tstr "EPERS_FAMILYLINKLDS" -> transl conf "familyLinkLDS"
+    | Tstr "EPERS_FIRSTCOMMUNION" -> transl conf "firstCommunion"
+    | Tstr "EPERS_FUNERAL" -> transl conf "funeral"
+    | Tstr "EPERS_GRADUATE" -> transl conf "graduate"
+    | Tstr "EPERS_HOSPITALISATION" -> transl conf "hospitalisation"
+    | Tstr "EPERS_ILLNESS" -> transl conf "illness"
+    | Tstr "EPERS_IMMIGRATION" -> transl conf "immigration"
+    | Tstr "EPERS_LISTEPASSENGER" -> transl conf "listePassenger"
+    | Tstr "EPERS_MILITARYDISTINCTION" -> transl conf "militaryDistinction"
+    | Tstr "EPERS_MILITARYPROMOTION" -> transl conf "militaryPromotion"
+    | Tstr "EPERS_MILITARYSERVICE" -> transl conf "militaryService"
+    | Tstr "EPERS_MOBILISATIONMILITAIRE" -> transl conf "mobilisationMilitaire"
+    | Tstr "EPERS_NATURALISATION" -> transl conf "naturalisation"
+    | Tstr "EPERS_OCCUPATION" -> Tstr (Util.transl_nth conf "occupation/occupations" 0)
+    | Tstr "EPERS_ORDINATION" -> transl conf "ordination"
+    | Tstr "EPERS_PROPERTY" -> transl conf "property"
+    | Tstr "EPERS_RECENSEMENT" -> transl conf "recensement"
+    | Tstr "EPERS_RESIDENCE" -> transl conf "residence"
+    | Tstr "EPERS_RETIRED" -> transl conf "retired"
+    | Tstr "EPERS_SCELLENTCHILDLDS" -> transl conf "scellentChildLDS"
+    | Tstr "EPERS_SCELLENTPARENTLDS" -> transl conf "scellentParentLDS"
+    | Tstr "EPERS_SCELLENTSPOUSELDS" -> transl conf "scellentSpouseLDS"
+    | Tstr "EPERS_VENTEBIEN" -> transl conf "venteBien"
+    | Tstr "EPERS_WILL" -> transl conf "will"
+    | Tstr "EFAM_MARRIAGE" -> transl conf "marriage event"
+    | Tstr "EFAM_NOMARRIAGE" -> transl conf "no marriage event"
+    | Tstr "EFAM_NOMENTION" -> transl conf "no mention"
+    | Tstr "EFAM_ENGAGE" -> transl conf "engage event"
+    | Tstr "EFAM_DIVORCE" -> transl conf "divorce event"
+    | Tstr "EFAM_SEPARATED" -> transl conf "separate event"
+    | Tstr "EFAM_ANNULATION" -> transl conf "annulation"
+    | Tstr "EFAM_MARRIAGEBANN" -> transl conf "marriage bann"
+    | Tstr "EFAM_MARRIAGECONTRACT" -> transl conf "marriage contract"
+    | Tstr "EFAM_MARRIAGELICENSE" -> transl conf "marriage licence"
+    | Tstr "EFAM_PACS" -> transl conf "PACS"
+    | Tstr "EFAM_RESIDENCE" -> transl conf "residence"
+    | _ -> Tstr ""
+  in
+  Tpat begin function
+    | "trans" -> trans
+    | _ -> raise Not_found
+  end
+end
+
 let default_env conf base (* p *) =
   let conf_env = mk_conf conf in
   let module_NAME = module_NAME base in
@@ -1258,6 +1600,8 @@ let default_env conf base (* p *) =
   :: ("OPT", module_OPT)
   :: ("NAME", module_NAME)
   :: ("GET_PERSON", get_person conf base)
+  :: ("CONST", module_CONST)
+  :: ("EVENT", module_EVENT conf)
   :: ("env", mk_env conf base)
   :: ("decode_varenv", decode_varenv)
   :: ("encode_varenv", encode_varenv)

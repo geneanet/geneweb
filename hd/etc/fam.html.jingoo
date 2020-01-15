@@ -11,243 +11,402 @@
 {%- endmacro columns -%}
 
 {%- macro fam_parent_itm (icn, txt) -%}
-<li>
-  <!-- <i class="fa fa-fw" style="color:#AAA;"></i> -->
-  {{ txt|capitalize }}
-</li>
+  <li>
+    <!-- <i class="fa fa-fw" style="color:#AAA;"></i> -->
+    {{ txt|capitalize }}
+  </li>
 {%- endmacro -%}
 
 {%- macro fam_parent_title (icn, txt) -%}
-<div>
-  <strong>
-    <!-- <i class="fa fa-fw {{ icn }}"></i> -->
-    {{ txt|capitalize }}
-  </strong>
-</div>
+  <div>
+    <strong>
+      <!-- <i class="fa fa-fw {{ icn }}"></i> -->
+      {{ txt|capitalize }}
+    </strong>
+  </div>
+{%- endmacro -%}
+
+{%- macro family_card (f) -%}
+  <div class="dropdown">
+    <a class="dropdown-toggle" data-toggle="dropdown">
+      {{ u.spouse.surname }} {{ u.spouse.first_name }}
+    </a>
+    {{ itree_print_dropdown (u) }}
+  </div>
 {%- endmacro -%}
 
 {%- macro fam_parent (p) -%}
-<div class="{{ columns (12,4,4) }}">
-  <div class="card">
-    <ul class="list-group list-group-flush">
-      <li class="list-group-item">
-        {{ display_sosa (p) }} {{ p.first_name }} {{ p.surname }}
-      </li>
-      <li class="list-group-item">
-        {{ fam_parent_title ("fa-plus", 'birth'|trans) }}
-        <ul>
-          {{ fam_parent_itm ("fa-calendar-alt", DATE.string_of_ondate(p.birth_date)) }}
-          {{ fam_parent_itm ("fa-map-marker-alt", p.birth_place) }}
-        </ul>
-      </li>
-      <li class="list-group-item">
-        {{ fam_parent_title ("fa-times", 'death'|trans) }}
-        <ul>
-          {{ fam_parent_itm ("fa-calendar-alt", DATE.string_of_ondate(p.death.date)) }}
-          {{ fam_parent_itm ("fa-map-marker-alt", p.death_place) }}
-        </ul>
-      </li>
-    </ul>
+  <div class="{{ columns (12,4,4) }}">
+    <div class="card">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          <strong>{{ display_sosa (p) }} {{ p.first_name }} {{ p.surname }}</strong>
+        </li>
+        {%- if p.birth_date || p.birth_place -%}
+          <li class="list-group-item">
+            {{ fam_parent_title ("fa-plus", 'birth'|trans) }}
+            <ul>
+              {%- if p.birth_date -%}
+                {{ fam_parent_itm ("fa-calendar-alt", DATE.string_of_ondate(p.birth_date)) }}
+              {% endif %}
+              {%- if p.birth_place -%}
+                {{ fam_parent_itm ("fa-map-marker-alt", p.birth_place) }}
+              {%- endif -%}
+            </ul>
+          </li>
+        {%- endif -%}
+        {%- if p.death && p.death.date || p.death_place -%}
+          <li class="list-group-item">
+            {{ fam_parent_title ("fa-times", 'death'|trans) }}
+            <ul>
+              {%- if p.death && p.death.date -%}
+                {{ fam_parent_itm ("fa-calendar-alt", DATE.string_of_ondate(p.death.date)) }}
+              {% endif %}
+              {%- if p.death_place -%}
+                {{ fam_parent_itm ("fa-map-marker-alt", p.death_place) }}
+              {% endif %}
+            </ul>
+          </li>
+        {%- endif -%}
+        {% set ofam = length (p.families) - 1 %}
+        {%- if ofam > 0 -%}
+          <li class="list-group-item">
+            {{ fam_parent_title ("fa-users", '+ ' + 'family/families'|trans(1)) }}
+            <ul>
+              {%- for u in p.families -%}
+                {%- if u.ifam != family.ifam -%}
+                  <li>{{ family_card (u) }}</li>
+                {%- endif -%}
+              {%- endfor -%}
+            </ul>
+          </li>
+        {%- endif -%}
+      </ul>
+    </div>
   </div>
-</div>
 {%- endmacro -%}
 
 {%- block body -%}
 
-<h1>{{ 'family/families'|trans(0)|capitalize }} #{{ family.ifam }}</h1>
+  <h1>{{ 'family/families'|trans(0)|capitalize }} #{{ family.ifam }}</h1>
 
-<div class="row">
-  {{ fam_parent (family.father) }}
-  <div class="{{ columns (12,4,4) }}">
-    <div class="card text-center">
-      <div class="card-header font-weight-bold">
-        {%- switch family.relation -%}
-        {%- case "MARRIED" || "NO_SEXES_CHECK_MARRIED" %}{{ 'marriage event'|trans|capitalize }}
-        {%- case "MARRIAGE_LICENSE" -%}{{ 'marriage licence'|trans|capitalize }}
-        {%- case "NOT_MARRIED" || "NO_SEXES_CHECK_NOT_MARRIED" %}{{ 'not married'|trans|capitalize }}
-        {%- case "ENGAGED" %}{{ 'engage event'|trans|capitalize }}
-        {%- case "PACS" -%}{{ 'PACS'|trans(n, t=date_place) }}
-        {%- case "MARRIAGE_BANN" -%}{{ 'marriage banns'|trans|capitalize }}
-        {%- case "MARRIAGE_CONTRACT" -%}{{ 'marriage contract'|trans|capitalize }}
-        {%- case "RESIDENCE" %}{{ 'residence'|trans|capitalize }}
-        {%- default %}{{ 'with'|trans|capitalize }}
+  <div class="row align-items-center">
+    {{ fam_parent (family.father) }}
+    <div class="{{ columns (12,4,4) }}">
+      <div class="card text-center">
+        <div class="card-header font-weight-bold">
+          {%- switch family.relation -%}
+          {%- case "MARRIED" || "NO_SEXES_CHECK_MARRIED" %}{{ 'marriage event'|trans|capitalize }}
+          {%- case "MARRIAGE_LICENSE" -%}{{ 'marriage licence'|trans|capitalize }}
+          {%- case "NOT_MARRIED" || "NO_SEXES_CHECK_NOT_MARRIED" %}{{ 'not married'|trans|capitalize }}
+          {%- case "ENGAGED" %}{{ 'engage event'|trans|capitalize }}
+          {%- case "PACS" -%}{{ 'PACS'|trans(n, t=date_place) }}
+          {%- case "MARRIAGE_BANN" -%}{{ 'marriage banns'|trans|capitalize }}
+          {%- case "MARRIAGE_CONTRACT" -%}{{ 'marriage contract'|trans|capitalize }}
+          {%- case "RESIDENCE" %}{{ 'residence'|trans|capitalize }}
+          {%- default %}{{ 'with'|trans|capitalize }}
         {%- endswitch -%}
-      </div>
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item">{{ DATE.string_of_ondate(family.marriage_date)|capitalize }}</li>
-        <li class="list-group-item">{{ family.marriage_place|capitalize }}</li>
-      </ul>
-    </div>
-  </div>
-  {{ fam_parent (family.mother) }}
-</div>
-
-
-<style>
-  {{ itree_style () }}
-  #panzoom-parent { padding:2rem; }
-  .tree > ul > li > ul > li > .tree-person {
-      border-width: 2px !important ;
-      border-color: black !important ;
-  }
-  .tree > ul > li::before,
-  .tree > ul > li::after,
-  .tree > ul > li > ul > li::before,
-  .tree > ul > li > ul > li::after {
-      border-width: 2px !important ;
-      border-color: black !important ;
-  }
-</style>
-
-
-<div id="panzoom-parent" class="border my-3">
-  <div id="panzoom">
-    <div class="ascend" style="width:100%;display:flex;justify-content:center;">
-      <div class="tree">
-        <ul>
-          <li class="li-union">
-            <ul>
-              <li>{{ itree_a_ascend (family.father, 1, false) }}</li>
-              <li>{{ itree_a_ascend (family.mother, 1, false) }}</li>
-            </ul>
-          </li>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">{{ DATE.string_of_ondate(family.marriage_date)|capitalize }}</li>
+          <li class="list-group-item">{{ family.marriage_place|capitalize }}</li>
         </ul>
       </div>
     </div>
-    <div style="width:100%;display:flex;justify-content:center;">
-      <div class="p-1 rounded-circle" style="border: 2px solid black;">
-        <i class="fa fa-link"></i>
+    {{ fam_parent (family.mother) }}
+  </div>
+
+  <div class="row">
+
+
+  <style>
+    {{ itree_style () }}
+    #panzoom-parent { padding:2rem; }
+    .tree > ul > li > ul > li > .tree-person {
+    border-width: 2px !important ;
+    border-color: black !important ;
+    }
+    .tree > ul > li::before,
+    .tree > ul > li::after,
+    .tree > ul > li > ul > li::before,
+    .tree > ul > li > ul > li::after {
+    border-width: 2px !important ;
+    border-color: black !important ;
+    }
+  </style>
+
+  <div id="panzoom-parent" class="border my-3">
+    <div id="panzoom">
+      <div class="ascend" style="width:100%;display:flex;justify-content:center;">
+        <div class="tree">
+          <ul>
+            <li class="li-union">
+              <ul>
+                <li>{{ itree_a_ascend (family.father, 1, false) }}</li>
+                <li>{{ itree_a_ascend (family.mother, 1, false) }}</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
-    <div class="descend" style="width:100%;display:flex;justify-content:center;">
-      <div class="tree">
-        <ul>
-          <li class="li-union">
-            <ul>
-              {% for x in family.children %}
-              <li>{{ itree_a_descend (x, 1, false) }}</li>
-              {% endfor %}
-            </ul>
-          </li>
-        </ul>
+      <div style="width:100%;display:flex;justify-content:center;">
+        <div class="p-1 rounded-circle" style="border: 2px solid black;">
+          <i class="fa fa-link"></i>
+        </div>
+      </div>
+      <div class="descend" style="width:100%;display:flex;justify-content:center;">
+        <div class="tree">
+          <ul>
+            <li class="li-union">
+              <ul>
+                {% for x in family.children %}
+                  <li>{{ itree_a_descend (x, 1, false) }}</li>
+                {% endfor %}
+              </ul>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
-</div>
-
-
-{%- function events (fn=null, p) -%}
-  {{ map (((e) => { persons: ( e.spouse ? [p, e.spouse] : [p] ), event: e }), select (((e) => e.date && e.date.year && e.date.prec == "sure" && (fn == null || fn (e))), p.events)) }}
-{%- endfunction -%}
 
 {%- macro fam_event_icn (x) -%}
-{%- switch (x.event.kind) -%}
-{%- case "EPERS_BIRTH" -%}fa-user-plus
-{%- case "EPERS_DEATH" -%}fa-user-times
-{% case "EFAM_MARRIAGE"
-|| "EFAM_NO_MARRIAGE"
-|| "EFAM_NO_MENTION"
-|| "EFAM_ENGAGE"
-|| "EFAM_MARRIAGE_BANN"
-|| "EFAM_MARRIAGE_CONTRACT"
-|| "EFAM_MARRIAGE_LICENSE"
-|| "EFAM_PACS"
-|| "EFAM_RESIDENCE" -%}fa-link
-{% case "EFAM_DIVORCE"
-|| "EFAM_SEPARATED"
-|| "EFAM_ANNULATION" -%}fa-unlink
-{%- default -%}fa-square
+  {%- switch (x.event.kind) -%}
+  {%- case CONST.Epers_Birth -%}fa-user-plus
+  {%- case CONST.Epers_Death -%}fa-user-times
+  {%- case CONST.Epers_Baptism -%}fa-church
+  {%- case CONST.Epers_MobilisationMilitaire -%}fa-bolt
+  {%- case CONST.Epers_Hospitalisation -%}fa-briefcase-medical
+  {% case CONST.Efam_Marriage
+  || CONST.Efam_NoMarriage
+  || CONST.Efam_NoMention
+  || CONST.Efam_Engage
+  || CONST.Efam_MarriageBann
+  || CONST.Efam_MarriageContract
+  || CONST.Efam_MarriageLicense
+  || CONST.Efam_PACS
+  || CONST.Efam_Residence -%}fa-Link
+  {% case CONST.Efam_Divorce
+  || CONST.Efam_Separated
+  || CONST.Efam_Annulation -%}fa-unlink
+  {%- default -%}fa-square
 {%- endswitch -%}
 {%- endmacro -%}
 
 {%- set BIRTH = CAST.object
-      ([ [family.father.iper, approx_birth (family.father)]
-       , [family.mother.iper, approx_birth (family.mother)] ]
-       + map (((p) => [ p.iper, approx_birth (p) ] ), family.children) ) -%}
+([ [family.father.iper, approx_birth (family.father)]
+, [family.mother.iper, approx_birth (family.mother)] ]
++ map (((p) => [ p.iper, approx_birth (p) ] ), family.children) ) -%}
 
-{% macro color (p) %}style="color:#{{ DIGEST (fso(p)) }}"{% endmacro %}
+{%- set all_persons = [family.father] + [family.mother] + family.children + flatten (map (attr("children"), family.children) ) -%}
+
+{%- set persons =
+    select (((p) => env.FAM_OPTIONS != "on" || env [ 'fam-p-show-' + p.iper ] == "on"), all_persons) -%}
+
+{%- function events (p) -%}
+  {{ map ( ((e) => { persons: ( e.spouse ? [p, e.spouse] : [p] ), event: e })
+         , select (((e) => e.date
+                           && e.date.year
+                           && e.date.prec == "sure"
+                           && (env.FAM_OPTIONS != "on" || env [ e.kind ] == "on") ), p.events) ) }}
+{%- endfunction -%}
+
+{%- set events = flatten (map (events, persons)) -%}
+
+{# Remove diplicate family events #}
+{%- set events = unique (eq=((e1, e2) =>
+                               e1.persons|length == 2
+                               && e2.persons|length == 2
+                               && e1.persons[0].iper == e2.persons[1].iper
+                               && e1.persons[1].iper == e2.persons[0].iper
+                               && e1.event.kind == e2.event.kind
+                               && e1.event.date == e2.event.date), events)-%}
+
+{%- set digest = CAST.object (map (((p) => [ p.iper, DIGEST (fso(p)) ] ), persons)) -%}
+
+{%- function color (p) -%}
+{%- set d = digest [ p.iper ] -%}
+{%- if d -%}{{ 'style="color:#' + d + '"' }}{%- endif -%}
+{%- endfunction -%}
+
+<style>
+.fam-timeline-evt {
+  position: relative;
+  border-radius: 3px;
+ }
+
+.fam-timeline-evt::before {
+  border: solid #dee2e6;
+  border-width: 0 1px 1px 0;
+  display: inline-block;
+  padding: 5px;
+  content: '';
+  position: absolute;
+  background-color: white;
+  transform: rotate(135deg);
+  right: 100%;
+  margin-right: -5px;
+  }
+</style>
 
 {%- macro print_event (x) -%}
-<div class="d-flex">
-  <div class="mr-3">
-    {%- if length (x.persons) == 2 -%}
-      <i class="fa fa-fw {{ fam_event_icn (x) }}" {{ color (x.persons[1]) }}></i>
-    {%- else -%}
-      <i class="fa fa-fw">&nbsp;</i>
-    {%- endif -%}
-    <i class="fa fa-fw {{ fam_event_icn (x) }}" {{ color (x.persons[0]) }}></i>
-  </div>
-  <div>
-    <div>
-      <strong>{{ x.event.name|capitalize }}</strong>
-      {% if x.event.note %}
-      <i class="fa fa-info-circle text-muted" title="{{ x.event.note }}"></i>
-      {% endif %}
-      <em>
-        –
-        {% for p in x.persons %}
-          {%- if loop.index0 %}, {% endif -%}
-          {{ fso (p) }}
-          {%- if BIRTH [p.iper] -%}
-            {%- set age = DATE.sub (x.event.date, BIRTH [p.iper]) -%}
-          {%- endif -%}
-          {%- if age && x.event.kind != "EPERS_BIRTH" %}
-            ({{ DATE.string_of_age (age) }})
-          {%- endif -%}
-        {%- endfor -%}
-      </em>
+  <div class="d-flex p-2 fam-timeline-evt border">
+    <div class="mr-3">
+      {%- if length (x.persons) == 2 && color (x.persons[1]) -%}
+        <i class="fa fa-fw {{ fam_event_icn (x) }}" {{ color (x.persons[1]) }}></i>
+      {%- else -%}
+        <i class="fa fa-fw">&nbsp;</i>
+      {%- endif -%}
+      <i class="fa fa-fw {{ fam_event_icn (x) }}" {{ color (x.persons[0]) }}></i>
     </div>
-    <div class="text-muted">{{ x.event.place }}</div>
+    <div>
+      <div>
+        <strong>{{ x.event.name|capitalize }}</strong>
+        {% if x.event.note %}
+          <i class="fa fa-info-circle text-muted" title="{{ x.event.note }}"></i>
+        {% endif %}
+        <span class="font-italic">
+          –
+          {% for p in x.persons %}
+            {%- if loop.index0 %}, {% endif -%}
+            {{ fso (p) }}
+            {%- if BIRTH [p.iper] -%}
+              {%- set age = DATE.sub (x.event.date, BIRTH [p.iper]) -%}
+            {%- endif -%}
+            {%- if age && x.event.kind != "EPERS_BIRTH" %}
+              ({{ DATE.string_of_age (age) }})
+            {%- endif -%}
+          {%- endfor -%}
+        </span>
+      </div>
+      <div class="text-muted">{{ x.event.place }}</div>
+    </div>
   </div>
-</div>
 {%- endmacro -%}
 
-{%- set events =
-events (family.father)
-+ events (family.mother, fn = ((e) => (not e.spouse) || e.spouse.iper != family.father.iper))
-+ flatten (map (events, family.children))
-+ flatten (map (events, flatten (map (attr("children"), family.children))))
--%}
+{%- set ns_fam = namespace(previous_date = null) -%}
 
-{%- set fam = namespace(previous_year = null) -%}
-{% for g in events | groupby (attr("event.date.year")) | sort (attribute = "grouper") %}
-{% if fam.previous_year is defined %}
-<div class="row">
-  <div class="border-right {{ columns (2,2,2) }}" style="height:{{ 10 * max ([1, g.grouper - fam.previous_year]) }}px"></div>
-  <div class="{{ columns (10,10,10) }}"></div>
+{%- function timeline_spacing (d) -%}
+{%- if ns_fam.previous_date == null -%}
+  {{ { day: 0, month: 0, year: 0 } }}
+{%- else -%}
+  {{ DATE.sub (d, ns_fam.previous_date) }}
+{%- endif -%}
+{%- endfunction -%}
+
+{%- macro input_switch (name=null, id=null, onclick=null, txt=null, checked=false) -%}
+  <div class="custom-control custom-switch">
+    <input type="checkbox"
+           class="custom-control-input"
+           {% if name %}name="{{ name }}"{% endif %}
+           {% if id %}id="{{ id }}"{% endif %}
+           {% if onclick %}onclick="{{ onclick }}"{% endif %}
+           value="on"
+           {% if checked %}checked{% endif %}>
+      {% if txt %}
+        <label class="custom-control-label" {% if id %}for="{{ id }}"{% endif %}>
+          {{ txt }}
+        </label>
+      {% endif %}
+  </div>
+{%- endmacro -%}
+
+<div class="card mt-3 mb-5 w-100">
+  <a class="card-header" data-toggle="collapse" href="#fam_timeline_controllers">
+    {{ 'options'|trans|capitalize }}
+  </a>
+  <form class="card-body collapse" id="fam_timeline_controllers" action="{{ env.prefix }}">
+    <input type="hidden" name="m" value="FAM">
+    <input type="hidden" name="FAM_OPTIONS" value="on">
+    {%- for (k, v) in (list (conf.env) + list (conf.senv) + list (conf.henv)) | unique -%}
+      {% if k != "m" && k != "FAM_OPTIONS"%}{{ print_hidden (k, v) }}{%- endif -%}
+      {%- endfor -%}
+      <h6 class="pt-3 border-bottom">{{ 'person/persons'|trans(1)|capitalize }}</h6>
+      <div class="row py-3">
+        {%- for p in all_persons -%}
+          <div class="{{ columns (12, 4, 4)}}">
+            {{ input_switch (name="fam-p-show-" + p.iper, id="fam-p" + p.iper,
+            onclick="toggleEvents('" + p.iper + "')",
+            txt=fso(p),
+            checked=(env.FAM_OPTIONS != "on" || env["fam-p-show-" + p.iper] == "on")) }}
+          </div>
+        {%- endfor -%}
+      </div>
+      <h6 class="pt-3 border-bottom">{{ 'event/events'|trans(1)|capitalize }}</h6>
+      <div class="row py-3">
+        {%- for k in CONST.event_kinds -%}
+          <div class="{{ columns (12, 4, 4)}}">
+            {{ input_switch (name=k,
+            id=k,
+            txt=k|EVENT.trans|capitalize,
+            checked=(env.FAM_OPTIONS != "on" || env[k] == "on")) }}
+          </div>
+        {%- endfor -%}
+      </div>
+      <div class="text-center mt-3">
+        <button class="btn btn-primary">
+          {{ 'apply modifications'|trans|capitalize }}
+        </button>
+      </div>
+  </form>
 </div>
-{% endif %}
-{%- set fam.previous_year = g.grouper -%}
 
-<!-- <div class="font-weight-bold font-italic border-bottom mb-3"> -->
-<!--   {{ g.grouper }} -->
-<!-- </div> -->
-<div class="row">
-  {% for x in g.list | sort (attribute = "event.date") %}
-  <div class="text-right border-right {{ columns (2,2,2) }}">
-    {%- if x.event.date.day %}{{ x.event.date.day }} {% endif -%}
-    {%- if x.event.date.month %}{{ '(month)'|trans(x.event.date.month - 1) }} {% endif -%}
-    {{ x.event.date.year }}
-  </div>
-  <div class="{{ columns (10,10,10) }}">
-    {{ print_event (x) }}
-  </div>
+<style>
+.hide-spacer .fam-timeline-spacer { min-height: .25rem !important ; max-height: .25rem !important ; visibility: hidden; }
+.fam-timeline-spacer { transition: min-height ease .5s ; }
+</style>
+
+<script>
+  function toggleSpacing () { $('#fam-timeline').toggleClass('hide-spacer') ; }
+</script>
+
+
+<div>
+  {{ input_switch (name="toggle-spacing",
+                   id="toggle-spacing",
+                   onclick="toggleSpacing()",
+                   txt='short display'|trans|capitalize,
+                   checked=false) }}
+</div>
+
+<div id="fam-timeline" class="{%- for (k, v) in digest %} show-p{{ k }}{% endfor %}">
+  {% for x in events | sort (attribute = "event.date.year") %}
+    {%- set d = timeline_spacing (x.event.date) -%}
+    {%- set gap = (d.year * 365 + d.month * 31 + d.day) / 20 -%}
+    {% if gap > 0 %}
+      <div class="row fam-timeline-spacer" style="min-height:{{ gap }}px">
+        <div class="{{ columns (2,2,2) }}"></div>
+        <div class="border-left {{ columns (10,10,10) }} d-flex align-items-stretch">
+          <div class="w-100 d-flex align-items-center justify-content-end">
+            <div class="mr-3 font-italic small text-secondary">{{ DATE.string_of_age (d) }}</div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    {%- set ns_fam.previous_date = x.event.date -%}
+    <div class="row {% if gap <= 0 %}mt-1{% endif %}">
+      <div class="text-right {{ columns (2,2,2) }}">
+        {%- if x.event.date.day %}{{ x.event.date.day }} {% endif -%}
+        {%- if x.event.date.month %}{{ '(month)'|trans(x.event.date.month - 1) }}<br>{% endif -%}
+        <strong>{{ x.event.date.year }}</strong>
+      </div>
+      <div class="border-left {{ columns (10,10,10) }}">
+        {{ print_event (x) }}
+      </div>
+    </div>
   {% endfor %}
 </div>
-{% endfor %}
 
-  <script src="js/panzoom.min.js"></script>
+<script src="js/panzoom.min.js"></script>
 
-  <script>
-    const element = document.getElementById('panzoom') ;
-    const parent = document.getElementById('panzoom-parent') ;
-    const panzoom = Panzoom(element) ;
-    parent.addEventListener ('wheel', function(event) {
-        if (!event.shiftKey) return
-        panzoom.zoomWithWheel(event)
-    }) ;
-  </script>
-
-
+<script>
+  const element = document.getElementById('panzoom') ;
+  const parent = document.getElementById('panzoom-parent') ;
+  const panzoom = Panzoom(element) ;
+  parent.addEventListener ('wheel', function(event) {
+  if (!event.shiftKey) return
+  panzoom.zoomWithWheel(event)
+  }) ;
+</script>
 
 {%- endblock -%}
