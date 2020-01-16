@@ -970,16 +970,12 @@ let defaultHandler : handler =
       then begin
         Random.self_init () ;
         let fifo = List_ind.list_ind_file conf ^ "_progress" in
-        print_endline fifo ;
         let aux () =
-          print_endline @@  __LOC__ ^ ": " ^ fifo ;
           let models = ("source", Tstr (Filename.basename fifo))
                        :: ("steps", Tarray [|Tint 1 ; Tint 2|])
                        :: Gwxjg.Data.default_env conf base
           in
-          print_endline __LOC__ ;
           JgInterp.render ~conf ~file:"progress" ~models ;
-          print_endline __LOC__ ;
         in
         if Sys.file_exists fifo then aux ()
         else begin
@@ -989,16 +985,13 @@ let defaultHandler : handler =
           end else begin
             Wserver.close_connection () ;
             let oc = Unix.openfile fifo [ Unix.O_WRONLY ; O_CREAT ; O_TRUNC ] 0o777 in
-            print_endline @@  __LOC__ ^ ": " ^ fifo ;
             let progress step i =
-              print_endline @@ string_of_int i ;
-              let out = "event:step-" ^ string_of_int step ^ "\ndata:" ^ string_of_int i ^ "\n\n" in
+              let out = "event:step-" ^ step ^ "\ndata:" ^ string_of_int i ^ "\n\n" in
               let out = Bytes.unsafe_of_string out in
-              ignore @@ Unix.write oc out 0 (Bytes.length out) ;
-              print_endline __LOC__ ;
+              ignore @@ Unix.write oc out 0 (Bytes.length out)
             in
-            print_endline __LOC__ ;
             build_cache_iper_inorder progress conf base ;
+            progress "redirect" 100 ;
             ignore @@ Unix.write oc (Bytes.unsafe_of_string "EOF") 0 3 ;
             Unix.unlink fifo ;
           end
@@ -1258,11 +1251,9 @@ let defaultHandler : handler =
     end
 
   ; progress = begin fun self conf base ->
-      print_endline __LOC__ ;
       match p_getenv conf.env "token" with
       | Some v ->
         let v = Filename.concat (Util.base_path [] (conf.bname ^ ".gwb")) v in
-        print_endline @@ __LOC__ ^ ": " ^ v ;
         let fd = Unix.openfile v [ Unix.O_RDONLY ] 0o000 in
         Wserver.header "Content-Type: text/event-stream" ;
         let buffer = Bytes.create 1024 in
