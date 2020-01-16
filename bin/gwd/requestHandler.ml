@@ -326,6 +326,8 @@ and handler =
   ; forum_search : handler_base
   ; forum_val : handler_base
   ; forum_view : handler_base
+  ; ftree : handler_base
+  ; ftimeline : handler_base
   ; h : handler_base
   ; hist : handler_base
   ; hist_clean : handler_base
@@ -506,6 +508,8 @@ let dummyHandler =
   ; forum_search = dummy_base
   ; forum_val = dummy_base
   ; forum_view = dummy_base
+  ; ftree = dummy_base
+  ; ftimeline = dummy_base
   ; h = dummy_base
   ; hist = dummy_base
   ; hist_clean = dummy_base
@@ -888,6 +892,32 @@ let defaultHandler : handler =
 
   ; forum_view = if_enabled_forum ForumDisplay.print
 
+  ; ftree = begin fun self conf base ->
+      match Util.p_getenv conf.env "i" with
+      | Some i ->
+        let ifam = Gwdb.ifam_of_string i in
+        let models =
+          ( "family"
+          , Gwxjg.Data.get_n_mk_family conf base ifam @@ Gwdb.foi base ifam)
+          :: Gwxjg.Data.default_env conf base
+        in
+        JgInterp.render ~conf ~file:"ftree" ~models
+      | _ -> self.incorrect_request self conf base
+    end
+
+  ; ftimeline = begin fun self conf base ->
+      match Util.p_getenv conf.env "i" with
+      | Some i ->
+        let ifam = Gwdb.ifam_of_string i in
+        let models =
+          ( "family"
+          , Gwxjg.Data.get_n_mk_family conf base ifam @@ Gwdb.foi base ifam)
+          :: Gwxjg.Data.default_env conf base
+        in
+        JgInterp.render ~conf ~file:"ftimeline" ~models
+      | _ -> self.incorrect_request self conf base
+    end
+
   ; h = begin fun self conf base ->
       match Util.p_getenv conf.env "v" with
       | Some "advanced" ->
@@ -966,35 +996,32 @@ let defaultHandler : handler =
       let open List_ind in
       let num = (Opt.default 1 @@ Util.p_getint conf.env "pg") - 1 in
       let size = Opt.default 2000 @@ Util.p_getint conf.env "sz" in
-      if not (is_cache_iper_inorder_uptodate conf base)
-      then begin
-        Random.self_init () ;
-        let fifo = List_ind.list_ind_file conf ^ "_progress" in
-        let aux () =
-          let models = ("source", Tstr (Filename.basename fifo))
-                       :: ("steps", Tarray [|Tint 1 ; Tint 2|])
-                       :: Gwxjg.Data.default_env conf base
-          in
-          JgInterp.render ~conf ~file:"progress" ~models ;
+      let fifo = List_ind.list_ind_file conf ^ "_progress" in
+      let aux () =
+        let models = ("source", Tstr (Filename.basename fifo))
+                     :: ("steps", Tarray [|Tint 1 ; Tint 2|])
+                     :: Gwxjg.Data.default_env conf base
         in
-        if Sys.file_exists fifo then aux ()
-        else begin
-          let pid = Unix.fork () in
-          if pid <> 0 then begin
-            exit 0
-          end else begin
-            Wserver.close_connection () ;
-            let oc = Unix.openfile fifo [ Unix.O_WRONLY ; O_CREAT ; O_TRUNC ] 0o777 in
-            let progress step i =
-              let out = "event:step-" ^ step ^ "\ndata:" ^ string_of_int i ^ "\n\n" in
-              let out = Bytes.unsafe_of_string out in
-              ignore @@ Unix.write oc out 0 (Bytes.length out)
-            in
-            build_cache_iper_inorder progress conf base ;
-            progress "redirect" 100 ;
-            ignore @@ Unix.write oc (Bytes.unsafe_of_string "EOF") 0 3 ;
-            Unix.unlink fifo ;
-          end
+        JgInterp.render ~conf ~file:"progress" ~models ;
+      in
+      if Sys.file_exists fifo then aux ()
+      else if not (is_cache_iper_inorder_uptodate conf base)
+      then begin
+        let pid = Unix.fork () in
+        if pid <> 0 then begin
+          exit 0
+        end else begin
+          Wserver.close_connection () ;
+          let oc = Unix.openfile fifo [ Unix.O_WRONLY ; O_CREAT ; O_TRUNC ] 0o777 in
+          let progress step i =
+            let out = "event:step-" ^ step ^ "\ndata:" ^ string_of_int i ^ "\n\n" in
+            let out = Bytes.unsafe_of_string out in
+            ignore @@ Unix.write oc out 0 (Bytes.length out)
+          in
+          build_cache_iper_inorder progress conf base ;
+          progress "redirect" 100 ;
+          ignore @@ Unix.write oc (Bytes.unsafe_of_string "EOF") 0 3 ;
+          Unix.unlink fifo ;
         end
       end else begin
         let page_count, letters, ipers, num =
@@ -1256,10 +1283,10 @@ let defaultHandler : handler =
         let v = Filename.concat (Util.base_path [] (conf.bname ^ ".gwb")) v in
         let fd = Unix.openfile v [ Unix.O_RDONLY ] 0o000 in
         Wserver.header "Content-Type: text/event-stream" ;
-        let buffer = Bytes.create 1024 in
+        let buffer = Bytes.create 4096 in
         begin try
             let rec loop off =
-              match Unix.read fd buffer off (1024 - off) with
+              match Unix.read fd buffer off (4096 - off) with
               | 0 -> Unix.sleepf 0.1 ; loop off
               | n ->
                 let s = Bytes.sub_string buffer 0 (off + n) in

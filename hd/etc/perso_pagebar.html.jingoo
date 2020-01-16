@@ -1,20 +1,6 @@
 {% include 'navbar_utils.jingoo' %}
 {% include 'perso_utils.jingoo' %}
 
-{% macro navItem (icn, txt, href, active) %}
-  <li class="nav-item">
-    <a class="nav-link{% if active %} active{% endif %}" href="{{ href }}">
-      <i class="fa {{ icn }} fa-fw"></i>
-      {{ txt }}
-    </a>
-  </li>
-{% endmacro %}
-
-<style>
-  #sub-topbar { margin: -1rem auto -1rem 0; display: flex; align-items:center; }
-  #sub-topbar .nav-link { padding-bottom: 1rem; margin-top: .5rem; }
-</style>
-
 {% macro pagebar () %}
   {% if root %}
   <strong>{{ fso (root) }}</strong>

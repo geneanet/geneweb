@@ -1,0 +1,12 @@
+{% include 'navbar_utils.jingoo' %}
+{% include 'perso_utils.jingoo' %}
+
+{% macro pagebar () %}
+<strong>{{ fso (family.father) }}<br>{{ fso (family.mother) }}</strong>
+<i class="fa fa-chevron-right ml-3"></i>
+<ul class="ml-3 nav nav-tabs" role="tablist">
+    {{ navItem ('fa-users', 'vital record'|trans|capitalize, env.prefix + 'm=FAM&i=' + family.ifam, env.m == "FAM") }}
+  {{ navItem ('fa-sitemap', 'tree'|trans|capitalize, env.prefix + 'm=FTREE&i=' + family.ifam, env.m == "FTREE") }}
+  {{ navItem ('fa-stream', 'time line'|trans|capitalize, env.prefix + 'm=FTIMELINE&i=' + family.ifam, env.m == "FTIMELINE") }}
+
+{% endmacro %}

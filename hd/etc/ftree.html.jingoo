@@ -1,0 +1,73 @@
+{%- include 'perso_utils.jingoo' -%}
+{%- include 'utils.jingoo' -%}
+{%- include 'family_pagebar.html.jingoo' -%}
+{%- include 'itree_utils.html.jingoo' -%}
+
+{%- extends "template.jingoo" -%}
+
+{% block body %}
+
+  <style>
+    {{ itree_style () }}
+    #panzoom-parent { padding:2rem; }
+    .tree > ul > li > ul > li > .tree-person {
+    border-width: 2px !important ;
+    border-color: black !important ;
+    }
+    .tree > ul > li::before,
+    .tree > ul > li::after,
+    .tree > ul > li > ul > li::before,
+    .tree > ul > li > ul > li::after {
+    border-width: 2px !important ;
+    border-color: black !important ;
+    }
+  </style>
+
+  <div id="panzoom-parent" class="border my-3">
+    <div id="panzoom">
+      <div class="ascend" style="width:100%;display:flex;justify-content:center;">
+        <div class="tree">
+          <ul>
+            <li class="li-union">
+              <ul>
+                <li>{{ itree_a_ascend (family.father, 1, false) }}</li>
+                <li>{{ itree_a_ascend (family.mother, 1, false) }}</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div style="width:100%;display:flex;justify-content:center;">
+        <div class="p-1 rounded-circle" style="border: 2px solid black;">
+          <i class="fa fa-link"></i>
+        </div>
+      </div>
+      <div class="descend" style="width:100%;display:flex;justify-content:center;">
+        <div class="tree">
+          <ul>
+            <li class="li-union">
+              <ul>
+                {% for x in family.children %}
+                  <li>{{ itree_a_descend (x, 1, false) }}</li>
+                {% endfor %}
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/panzoom.min.js"></script>
+
+  <script>
+    const element = document.getElementById('panzoom') ;
+    const parent = document.getElementById('panzoom-parent') ;
+    const panzoom = Panzoom(element) ;
+    parent.addEventListener ('wheel', function(event) {
+        if (!event.shiftKey) return
+        panzoom.zoomWithWheel(event)
+    }) ;
+  </script>
+
+{% endblock %}

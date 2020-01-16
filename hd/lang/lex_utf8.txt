@@ -11497,6 +11497,10 @@ sk: súkromé
 sl: zasebno
 sv: privat
 
+    progress_description
+en: Page is loading. Please wait.
+fr: La page est en train d'être générée, merci de patienter.
+
     property
 co: pruprietà
 de: persönliches Eigentum

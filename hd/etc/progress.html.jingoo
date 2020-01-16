@@ -10,7 +10,9 @@
     progress:last-child { border-right-width: 1px ; }
   </style>
 
-  <p>Loading...</p>
+  {% if title %}<h1>{{ title }}</h1>{% endif %}
+
+  <p>{{ 'progress_description'|trans }}</p>
 
   <div class="d-flex align-items-center mx-auto">
     {% for i in steps %}

@@ -118,6 +118,8 @@ let family_m conf base =
       | "FORUM_SEARCH" -> handler.forum_search
       | "FORUM_VAL" -> handler.forum_val
       | "FORUM_VIEW" -> handler.forum_view
+      | "FTIMELINE" -> handler.ftimeline
+      | "FTREE" -> handler.ftree
       | "H" -> handler.h
       | "HIST" -> handler.hist
       | "HIST_CLEAN" -> handler.hist_clean
