@@ -573,7 +573,7 @@ let check_pevents base warning p =
   check_order_pevents warning p ;
   check_witness_pevents base warning p
 
-let check_children ?(onchange = true) base warning (ifam, fam) fath moth =
+let check_siblings ?(onchange = true) base warning (ifam, fam) callback =
   let children =
     if onchange then
       let b = get_children fam in
@@ -589,14 +589,9 @@ let check_children ?(onchange = true) base warning (ifam, fam) fath moth =
       let child = poi base child in
       let b = obirth child in
       let gap = siblings_gap gap child b in
-      check_pevents base warning child;
       born_after_his_elder_sibling warning child b np ifam fam;
       close_siblings warning child np ifam ;
-      child_born_after_his_parent warning child fath;
-      child_born_after_his_parent warning child moth;
-      child_born_before_mother_death warning child moth;
-      possible_father warning child fath;
-      child_has_sex warning child;
+      callback child ;
       let np = match b with
         | Some d -> Some (child, d)
         | _ -> np
@@ -609,6 +604,15 @@ let check_children ?(onchange = true) base warning (ifam, fam) fath moth =
     let e = Date.time_elapsed d1 d2 in
     if e.year > max_siblings_gap then warning (DistantChildren (ifam, p1, p2))
    | _ -> ()
+
+let check_children ?(onchange = true) base warning (ifam, fam) fath moth =
+  check_siblings ~onchange base warning (ifam, fam) @@ fun child ->
+  check_pevents base warning child;
+  child_born_after_his_parent warning child fath;
+  child_born_after_his_parent warning child moth;
+  child_born_before_mother_death warning child moth;
+  possible_father warning child fath;
+  child_has_sex warning child
 
 let has_family_sources fam =
   not
@@ -737,7 +741,8 @@ let on_person_update base warning p =
       let fath = poi base @@ get_father fam in
       let moth = poi base @@ get_mother fam in
       child_born_after_his_parent warning p fath ;
-      child_born_after_his_parent warning p moth
+      child_born_after_his_parent warning p moth ;
+      check_siblings base warning (i, fam) ignore
     | _ -> ()
   end ;
   Array.iter begin fun ifam ->
