@@ -172,7 +172,7 @@
       <div class="dropdown-divider"></div>
       {{ dropdownItem ('fa-user', 'vital record'|trans, env.prefix + p.access) }}
       {{ dropdownItem ('fa-edit', 'modify'|trans, env.prefix + 'm=MOD_IND&i=' + p.iper) }}
-      {{ dropdownItem ('fa-sitemap', 'tree'|trans, env.prefix + p.access + '&m=ITREE&an=' + (env.an ? env.an : '0') + '&dn=' + (env.dn ? env.dn : '0')) }}
+      {{ dropdownItem ('fa-sitemap', 'tree'|trans, env.prefix + p.access + '&m=ITREE&an=' + (env.an ? env.an : '2') + '&dn=' + (env.dn ? env.dn : '2')) }}
     </div>
   </div>
 </div>
@@ -198,11 +198,8 @@
       {{ length (u.children) }} {{ 'child/children'|trans (length (u.children) > 1 ? 1 : 0) }}
     </p>
     <div class="dropdown-divider"></div>
-    <a class="dropdown-item"
-       href="{{ env.prefix }}m=MOD_FAM&i={{ u.ifam }}">
-       <i class="fa fa-edit"></i>
-       {{ 'modify'|trans|capitalize }} {{ 'family/families'|trans(0) }}
-    </a>
+    {{ dropdownItem ('fa-edit', 'modify'|trans|capitalize + ' ' + 'family/families'|trans(0), env.prefix + 'm=MOD_FAM&i=' + u.ifam) }}
+    {{ dropdownItem ('fa-sitemap', 'tree'|trans, env.prefix + 'm=FTREE&i=' + u.ifam) }}
   </div>
 {%- endmacro -%}
 
