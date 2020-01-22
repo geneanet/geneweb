@@ -495,7 +495,7 @@ let print_warning conf base =
       Wserver.printf
         (fcapitale
            (ftransl conf
-              "the following children of %t and %t are born very close"))
+              "the following children of %t and %t are born very distant"))
         (fun _ -> print_someone_strong conf base (poi base (get_father cpl)))
         (fun _ -> print_someone_strong conf base (poi base (get_mother cpl)));
       Wserver.printf ":\n";

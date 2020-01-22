@@ -13775,6 +13775,18 @@ pt: os seguintes filhos de %t e de %t nasceram muito próximos
 ru: даты рождения детей %t и %t очень близки
 sv: Följande barn till %t och %t är födda mycket tätt
 
+    the following children of %t and %t are born very distant
+de: Der Altersunterschied zwischen den 2 Kindern %t und %t ist extrem groß
+en: important age gap between the two children %t et %t
+es: importante diferencia de edad entre los niños %t y %t
+fi: merkityksellinen ikäero kahden lapsen %t ja %t välillä
+fr: les enfants suivants de %t et de %t ont des naissances très éloignées
+it: differenza di età molto importante tra i due figli %t e %t
+nl: belangrijk leeftijdsverschil tussen de twee kinderen %t en %t
+no: viktig aldersgap mellom de to barna %t et %t
+pt: diferença de idades importante entre os filhos %t e %t
+sv: viktigt åldersskillnad mellan de två barnen %t och %t
+
     the following children of %t and %t are not in order
 af: die volgende kinders van %t and %t is nie in die regte volgorde nie
 bg: следните деца на %t и %t не са в хронологичен ред
