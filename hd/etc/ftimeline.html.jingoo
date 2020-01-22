@@ -157,7 +157,7 @@
     {{ 'options'|trans|capitalize }}
   </a>
   <form class="card-body collapse" id="fam_timeline_controllers" action="{{ env.prefix }}">
-    <input type="hidden" name="m" value="FAM">
+    <input type="hidden" name="m" value="FTIMELINE">
     <input type="hidden" name="FAM_OPTIONS" value="on">
     {%- for (k, v) in (list (conf.env) + list (conf.senv) + list (conf.henv)) | unique -%}
       {% if k != "m" && k != "FAM_OPTIONS"%}{{ print_hidden (k, v) }}{%- endif -%}
