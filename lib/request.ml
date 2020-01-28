@@ -198,9 +198,6 @@ let family_m conf base =
           | "API_FIND_SOSA" -> handler.api_find_sosa
           | "API_INFO_BASE" -> handler.api_info_base
           | "API_INFO_IND" -> handler.api_info_ind
-          | "API_IMAGE" -> handler.api_image
-          | "API_IMAGE_EXT" -> handler.api_image_ext
-          | "API_IMAGE_ALL" -> handler.api_image_all
           | "API_IMAGE_PERSON" -> handler.api_image_person
           | "API_IMAGE_UPDATE" -> handler.api_image_update
           | "API_LAST_MODIFIED_PERSONS" -> handler.api_last_modified_persons
@@ -211,8 +208,6 @@ let family_m conf base =
           | "API_NB_ANCESTORS" -> handler.api_nb_ancestors
           | "API_NOTIFICATION_BIRTHDAY" -> handler.api_notification_birthday
           | "API_REF_PERSON_FROM_ID" -> handler.api_ref_person_from_id
-          | "API_REMOVE_IMAGE_EXT" -> handler.api_remove_image_ext
-          | "API_REMOVE_IMAGE_EXT_ALL" -> handler.api_remove_image_ext_all
           | "API_SEARCH" -> handler.api_search
           | "API_GRAPH_TREE_V2" -> handler.api_graph_tree_v2
           | "API_PERSON_TREE" -> handler.api_person_tree

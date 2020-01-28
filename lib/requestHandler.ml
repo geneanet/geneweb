@@ -406,9 +406,6 @@ and handler =
   ; api_find_sosa : handler_base
   ; api_info_base : handler_base
   ; api_info_ind : handler_base
-  ; api_image : handler_base
-  ; api_image_ext : handler_base
-  ; api_image_all : handler_base
   ; api_image_person : handler_base
   ; api_image_update : handler_base
   ; api_last_modified_persons : handler_base
@@ -419,8 +416,6 @@ and handler =
   ; api_nb_ancestors : handler_base
   ; api_notification_birthday : handler_base
   ; api_ref_person_from_id : handler_base
-  ; api_remove_image_ext : handler_base
-  ; api_remove_image_ext_all : handler_base
   ; api_search : handler_base
   ; api_graph_tree_v2 : handler_base
   ; api_person_tree : handler_base
@@ -581,9 +576,6 @@ let dummyHandler =
   ; api_find_sosa = dummy_base
   ; api_info_base = dummy_base
   ; api_info_ind = dummy_base
-  ; api_image = dummy_base
-  ; api_image_ext = dummy_base
-  ; api_image_all = dummy_base
   ; api_image_person = dummy_base
   ; api_image_update = dummy_base
   ; api_last_modified_persons = dummy_base
@@ -594,8 +586,6 @@ let dummyHandler =
   ; api_nb_ancestors = dummy_base
   ; api_notification_birthday = dummy_base
   ; api_ref_person_from_id = dummy_base
-  ; api_remove_image_ext = dummy_base
-  ; api_remove_image_ext_all = dummy_base
   ; api_search = dummy_base
   ; api_graph_tree_v2 = dummy_base
   ; api_person_tree = dummy_base
@@ -1277,18 +1267,6 @@ let defaultHandler : handler =
       Api.print_info_ind conf base
     end
 
-  ; api_image = begin fun _self conf base ->
-      Api.print_img conf base
-    end
-
-  ; api_image_ext = begin fun _self conf base ->
-      Api.print_img_ext conf base
-    end
-
-  ; api_image_all = begin fun _self conf base ->
-      Api.print_img_all conf base
-    end
-
   ; api_image_person = begin fun _self conf base ->
       Api.print_img_person conf base
     end
@@ -1327,14 +1305,6 @@ let defaultHandler : handler =
 
   ; api_ref_person_from_id = begin fun _self conf base ->
       Api.print_ref_person_from_ip conf base
-    end
-
-  ; api_remove_image_ext = begin fun _self conf base ->
-      if conf.wizard then Api.print_remove_image_ext base
-    end
-
-  ; api_remove_image_ext_all = begin fun _self conf base ->
-      if conf.wizard then Api.print_remove_image_ext_all base
     end
 
   ; api_search = begin fun _self conf base ->

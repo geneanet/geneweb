@@ -223,24 +223,6 @@ message SearchParams {
   optional bool maiden_name = 6 [default = false];
 }
 
-message Image {
-  required Person person = 1;
-  required string img = 2;
-}
-
-message FullImage {
-  required FullPerson person = 1;
-  required string img = 2;
-}
-
-message ListImages {
-  repeated Image list_images = 1;
-}
-
-message ListFullImages {
-  repeated FullImage images = 1;
-}
-
 message PersImg {
   required ReferencePerson person = 1;
   required string img = 2;
