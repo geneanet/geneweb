@@ -670,41 +670,6 @@ let print_all_persons conf base =
   let data = conv_data_list_person conf base filters list in
   print_result conf data
 
-
-let print_all_families conf base =
-  let params = get_params conf Mext.parse_all_families_params in
-  let filters = get_filters conf in
-  let from = params.M.All_families_params.from in
-  let limit = params.M.All_families_params.limit in
-  let nb_families = nb_of_families base in
-  let (from, limit) =
-    match (from, limit) with
-    | (Some f, Some l) -> (Int32.to_int f, Int32.to_int f + Int32.to_int l)
-    | (Some f, None) -> (Int32.to_int f, nb_families)
-    | (None, Some l) -> (0, Int32.to_int l)
-    | (None, None) -> (0, nb_families)
-  in
-  let () = Perso.build_sosa_ht conf base in
-  let len = limit - from in
-  let list =
-    Gwdb.Collection.fold_until
-      (fun (_, n) -> n < len)
-      begin fun ((list, n) as acc) i ->
-        if n < from then acc
-        else (i :: list, n + 1)
-      end ([], 0) (Gwdb.ifams base)
-  in
-  let data =
-    if filters.nb_results then
-      let len = M.Internal_int32.({value = Int32.of_int (List.length @@ fst list)}) in
-      Mext.gen_internal_int32 len
-    else
-      let list = List.map (fam_to_piqi_family conf base) (List.rev @@ fst list) in
-      let list = M.List_full_families.({families = list}) in
-      Mext.gen_list_full_families list
-  in
-  print_result conf data
-
 module StringMap =
   Map.Make
     (struct
