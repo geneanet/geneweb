@@ -206,7 +206,6 @@ let family_m conf base =
           | "API_LOOP_BASE" -> handler.api_loop_base
           | "API_MAX_ANCESTORS" -> handler.api_max_ancestors
           | "API_NB_ANCESTORS" -> handler.api_nb_ancestors
-          | "API_NOTIFICATION_BIRTHDAY" -> handler.api_notification_birthday
           | "API_REF_PERSON_FROM_ID" -> handler.api_ref_person_from_id
           | "API_SEARCH" -> handler.api_search
           | "API_GRAPH_TREE_V2" -> handler.api_graph_tree_v2

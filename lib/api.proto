@@ -267,10 +267,6 @@ message ClosePersonsParams {
   optional bool only_recent = 5 [default = false];
 }
 
-message AnniversaryParams {
-  optional int32 month = 1;
-}
-
 message GraphParams {
   optional int32 generation = 1;
   required ReferencePerson person = 2;
@@ -562,27 +558,6 @@ message ModificationStatus {
   required bool status = 1;
   required BaseWarnings base_warnings = 2;
   optional int32 index = 3;
-}
-
-enum NotifBirthdayParams {
-  CLOSE_PERSON = 0;
-  DESCEND_GRAND_PARENT = 1;
-  DESCEND_GREAT_GRAND_PARENT = 2;
-}
-
-message NotificationBirthdayParams {
-  required ReferencePerson person = 1;
-  required NotifBirthdayParams params = 2;
-  optional int32 month = 3;
-  optional int32 day = 4;
-}
-
-message NotificationBirthday {
-  required int32 number = 1;
-  required bool has_proprio_birthday = 2;
-  optional string firstname1 = 3;
-  optional string firstname2 = 4;
-  optional string firstname3 = 5;
 }
 
 // ***************************************************************************

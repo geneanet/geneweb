@@ -414,7 +414,6 @@ and handler =
   ; api_loop_base : handler_base
   ; api_max_ancestors : handler_base
   ; api_nb_ancestors : handler_base
-  ; api_notification_birthday : handler_base
   ; api_ref_person_from_id : handler_base
   ; api_search : handler_base
   ; api_graph_tree_v2 : handler_base
@@ -584,7 +583,6 @@ let dummyHandler =
   ; api_loop_base = dummy_base
   ; api_max_ancestors = dummy_base
   ; api_nb_ancestors = dummy_base
-  ; api_notification_birthday = dummy_base
   ; api_ref_person_from_id = dummy_base
   ; api_search = dummy_base
   ; api_graph_tree_v2 = dummy_base
@@ -1297,10 +1295,6 @@ let defaultHandler : handler =
 
   ; api_nb_ancestors = begin fun _self conf base ->
       Api_saisie_read.print_nb_ancestors conf base
-    end
-
-  ; api_notification_birthday = begin fun _self conf base ->
-      Api.print_notification_birthday conf base
     end
 
   ; api_ref_person_from_id = begin fun _self conf base ->
