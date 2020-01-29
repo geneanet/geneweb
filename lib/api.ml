@@ -3,6 +3,7 @@
 module M = Api_piqi
 module Mext = Api_piqi_ext
 
+open Config
 open Def
 open Gwdb
 open Util
@@ -514,6 +515,44 @@ let print_max_ancestors =
   let ref_p = person_to_reference_person base @@ poi base (fst !res) in
   let data = Mext.gen_reference_person ref_p in
   print_result conf data
+
+(**/**) (* API_IMAGE_ALL *)
+
+let print_img_all conf base =
+  let filters = get_filters conf in
+  let aux fp fl =
+    let list =
+      Gwdb.Collection.fold begin fun acc p ->
+        if not (is_empty_string (get_image p)) then
+          let img = sou base (get_image p) in
+          fp p img :: acc
+        else
+          match Api_util.find_image_file conf base p with
+          | Some img -> fp p img :: acc
+          | None -> acc
+      end [] (Gwdb.persons base)
+    in
+    if filters.nb_results then
+      let len = M.Internal_int32.({value = Int32.of_int (List.length list)}) in
+      let data = Mext.gen_internal_int32 len in
+      print_result conf data
+    else
+      print_result conf (fl list)
+  in
+  let base_loop = has_base_loop conf base in
+  if p_getenvbin conf.env "full_infos" = Some "1" then
+    aux
+      (fun p img ->
+         let p = pers_to_piqi_person_full conf base p base_loop Perso.get_sosa_person false in
+         M.Full_image.({person = p; img = img;}))
+      (fun list -> Mext.gen_list_full_images @@ M.List_full_images.({images = list}) )
+  else
+    aux
+      (fun p img ->
+         let p = pers_to_piqi_person_light conf base p base_loop Perso.get_sosa_person false in
+         M.Image.({person = p; img}))
+      (fun list ->
+         Mext.gen_list_images @@ M.List_images.({list_images = list}))
 
 
 (**/**) (* API_IMAGE_APP *)

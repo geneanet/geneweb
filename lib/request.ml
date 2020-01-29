@@ -198,6 +198,7 @@ let family_m conf base =
           | "API_FIND_SOSA" -> handler.api_find_sosa
           | "API_INFO_BASE" -> handler.api_info_base
           | "API_INFO_IND" -> handler.api_info_ind
+          | "API_IMAGE_ALL" -> handler.api_image_all
           | "API_IMAGE_PERSON" -> handler.api_image_person
           | "API_IMAGE_UPDATE" -> handler.api_image_update
           | "API_LAST_MODIFIED_PERSONS" -> handler.api_last_modified_persons

@@ -406,6 +406,7 @@ and handler =
   ; api_find_sosa : handler_base
   ; api_info_base : handler_base
   ; api_info_ind : handler_base
+  ; api_image_all : handler_base
   ; api_image_person : handler_base
   ; api_image_update : handler_base
   ; api_last_modified_persons : handler_base
@@ -576,6 +577,7 @@ let dummyHandler =
   ; api_find_sosa = dummy_base
   ; api_info_base = dummy_base
   ; api_info_ind = dummy_base
+  ; api_image_all = dummy_base
   ; api_image_person = dummy_base
   ; api_image_update = dummy_base
   ; api_last_modified_persons = dummy_base
@@ -1265,6 +1267,10 @@ let defaultHandler : handler =
 
   ; api_info_ind = begin fun _self conf base ->
       Api.print_info_ind conf base
+    end
+
+  ; api_image_all = begin fun _self conf base ->
+      Api.print_img_all conf base
     end
 
   ; api_image_person = begin fun _self conf base ->
