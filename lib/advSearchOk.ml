@@ -367,7 +367,11 @@ let advanced_search conf base max_answers =
   in
   List.rev list, len
 
-let searching_fields conf =
+(*
+  Returns a description string for the current advanced search results in the correct language.
+  e.g. "Search all Pierre, born in Paris, died in Paris"
+*)
+let searching_fields conf base =
   let test_string x =
     match p_getenv conf.env x with
       Some v -> if v <> "" then true else false
@@ -437,6 +441,17 @@ let searching_fields conf =
         search
     else search
   in
+  let get_sosa_filter_search conf base =
+    (* TODO check if needed else "" *)
+    if gets "sosa_filter" <> "" then
+      match Util.find_sosa_ref conf base with
+        Some p -> 
+          Printf.sprintf
+            (ftransl conf "direct ancestor of %s") (Util.person_text conf base p)
+      | None -> ""
+    else
+      ""
+  in
   (* Search type can be AND or OR. *)
   let search_type = gets "search_type" in
   let bapt_date_field_name =
@@ -472,6 +487,12 @@ let searching_fields conf =
   let search = "" in
   let search = string_field "first_name" search in
   let search = string_field "surname" search in
+  let sosa_filter_search = get_sosa_filter_search conf base in
+  let search =
+    if search = "" then sosa_filter_search
+    else if sosa_filter_search = "" then search
+    else search ^ ", " ^ sosa_filter_search
+  in
   let event_search = "" in
   let event_search =
     get_event_field_request birth_place_field_name birth_date_field_name

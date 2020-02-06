@@ -37,7 +37,7 @@ let print conf base =
   Hutil.header conf title;
   Wserver.printf "<p>\n";
   Wserver.printf "%s %s." (Utf8.capitalize (transl conf "searching all"))
-    (AdvSearchOk.searching_fields conf);
+    (AdvSearchOk.searching_fields conf base);
   Wserver.printf "</p>\n";
   let list = AdvSearchOk.advanced_search conf base max_answers in
   print_result conf base max_answers list; Hutil.trailer conf
